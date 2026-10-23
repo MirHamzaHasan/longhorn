@@ -65,7 +65,7 @@ jobs:
           retention-days: 14
       - name: Report console verification and artifact availability
         if: always()
-        run: node scripts/report-ci-artifacts.mjs console '${{ steps.verify-console.outcome }}' '${{ steps.console-artifact.outcome }}'
+        run: node scripts/report-ci-artifacts.mjs console '${{ steps.verify-console.outcome }}' '${{ steps.console-artifact.outcome }}' '${{ steps.console-artifact.outputs.artifact-id }}'
   independent-distribution:
     runs-on: ubuntu-24.04
     timeout-minutes: 25
@@ -97,4 +97,4 @@ jobs:
           retention-days: 14
       - name: Report application verification and artifact availability
         if: always()
-        run: node scripts/report-ci-artifacts.mjs application '${{ steps.verify-application.outcome }}' '${{ steps.application-artifact.outcome }}'
+        run: node scripts/report-ci-artifacts.mjs application '${{ steps.verify-application.outcome }}' '${{ steps.application-artifact.outcome }}' '${{ steps.application-artifact.outputs.artifact-id }}'

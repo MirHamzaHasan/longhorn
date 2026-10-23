@@ -35,7 +35,9 @@ a configured upload step alone does not prove an artifact was produced.
 Uploads are optional review outputs. Each has continue-on-error scoped only to
 its upload action. The actual source/native/browser/restore commands remain
 blocking. A final step writes verification and upload outcomes separately to the
-job summary and emits a warning when upload fails. A green verification job is
+job summary and emits a warning when upload fails. Availability requires a successful
+upload and a nonempty action artifact ID; success with no matching files never
+claims a download exists. A green verification job is
 not a claim that artifact storage or download succeeded.
 
 The first hosted upload attempt in
