@@ -16,7 +16,7 @@ account and browser jobs passed there. Package engines allow Node
 | Local durable receiver | Miniflare 3.20250718.3, workerd 1.20250718.0, compatibility date 2025-07-18 | Retained single-host Object SQLite directory; no managed cloud failover evidence |
 | Browser console | Playwright 1.64.1 Chromium, axe 4.14.0 | Both themes, desktop/phone widths, keyboard/scaled text; other engines and real-device AT remain manual |
 | Offline restore | PostgreSQL 18.4 pg_dump/pg_restore and retained local workerd storage | Stopped writers, fresh database/storage, explicit grants; not online/PITR replication |
-| Hosted CI | Ubuntu 24.04, Node/pnpm pinned as above | Source/runtime, account and browser gates executed; current PR checks/logs govern distribution/restore and exact-head results |
+| Hosted CI | Ubuntu 24.04, Node/pnpm pinned as above | All four verification paths executed, including restore; artifact quota limits downloads; current PR checks/logs govern exact-head results |
 
 The command application distribution is deliberately the Node/PostgreSQL profile.
 The framework's four runtime adapters remain modular; that does not make native

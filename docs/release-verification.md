@@ -30,13 +30,18 @@ The source is tracked on `codex/longhorn-v0.1` in the private
 [hosted run](https://github.com/MirHamzaHasan/longhorn/actions/runs/40036764130)
 provides actual Ubuntu evidence; source/runtimes, account operations and browser
 jobs passed, including 434 tests and independently generated runtime starters.
+The subsequent [distribution job](https://github.com/MirHamzaHasan/longhorn/actions/runs/40037309223/job/120699845875)
+also passed its frozen installation, real app workflow and offline restore step;
+its later upload failed on account storage quota. Those outcomes are distinct.
 Use the PR's current checks and linked job logs for the exact head commit's
 distribution/restore and overall result. An earlier green job never substitutes
 for a failed or unverified current source revision.
 
-[Review artifacts](ci-review-artifacts.md) retain actual browser captures and the
-application archive/checksum after successful independent verification. They are
-private run outputs with bounded retention. A green hosted run and artifact review
+[Review artifacts](ci-review-artifacts.md) attempt to retain actual browser captures
+and the application archive/checksum after successful independent verification.
+Verification and upload availability are reported separately; the observed account
+storage quota blocks hosted artifact creation, while local outputs remain available.
+Successful uploads are private run outputs with bounded retention. A green hosted run and artifact review
 are required before a tagged/published release. This workflow performs no registry
 publish, tag, merge or production deployment, and does not prove cloud failover
 or real-device assistive technology.
