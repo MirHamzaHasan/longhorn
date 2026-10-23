@@ -38,6 +38,16 @@ Use the PR's current checks and linked job logs for the exact head commit's
 distribution/restore and overall result. An earlier green job never substitutes
 for a failed or unverified current source revision.
 
+The Redis feature is reviewed separately in [draft PR #2](https://github.com/MirHamzaHasan/longhorn/pull/2),
+stacked on the v0.1 branch. Its first [hosted run](https://github.com/MirHamzaHasan/longhorn/actions/runs/40040877740)
+failed before any runner or step started. GitHub's check annotation says:
+“The job was not started because an Actions budget is preventing further use.”
+All five jobs therefore remain unverified on that revision in Ubuntu; this is
+separate from the earlier artifact storage limit and the passing baseline run.
+Local build, types, 449 source tests, the memory/Redis native gates and all four
+generated starters passed. The workflow remains blocking; restoring hosted runner
+availability and rerunning the current head is required before release.
+
 [Review artifacts](ci-review-artifacts.md) attempt to retain actual browser captures
 and the application archive/checksum after successful independent verification.
 Verification and upload availability are reported separately; the observed account

@@ -6,6 +6,8 @@ Connects [provider behavior](redis-cache.md), [transport](redis-node.md),
 Local evidence uses Node 20.19.4 and Redis 8.0.0. Full workspace types and 449 source
 tests pass. The dedicated Ubuntu job installs its own Redis binary; hosted results
 are revision-specific through [release verification](release-verification.md).
+The first hosted attempt was rejected before runner allocation because of the
+account's Actions budget. No Redis 7/Linux result is claimed from that attempt.
 
 ```sh
 pnpm test:redis-cache

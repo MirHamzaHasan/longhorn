@@ -23,7 +23,7 @@ downstream connections, verification, and current limits.
 | Coordinated offline state checkpoint | [Backup and restore](command-app-backup.md) | Starter maintenance tool | PostgreSQL archive, stopped receiver files, checksums and ACL repair |
 | Application schema/config upgrades | [Upgrade procedure](command-app-upgrades.md) | Deployment process | Retained artifact, maintenance checkpoint, immutable history and smoke checks |
 | Repeatable CI configuration | [Release verification](release-verification.md) | GitHub workflow | Source/types, native operations, Chromium and independent restore |
-| Verified deployment/runtime scope | [Support matrix](supported-runtimes.md) | Runtime and native evidence | Explicit versions, provider boundaries and pending hosted execution |
+| Verified deployment/runtime scope | [Support matrix](supported-runtimes.md) | Runtime and native evidence | Explicit versions, provider boundaries and revision-specific hosted availability |
 | Working web console | [Console](web-console.md) | PostgreSQL example browser client | Signup, history, commands, receipts and real API failures |
 | Console browser boundary | [Console security](console-security.md) | Fixed asset routes and client API helper | CSP, HttpOnly cookies, relative requests, session clearing |
 | Browser operator recovery | [Console recovery](console-recovery.md) | Console delivery/audit screens | Current allowance, deliberate retry, conflict and account attribution |
