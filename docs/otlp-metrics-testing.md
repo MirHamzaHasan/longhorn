@@ -42,3 +42,8 @@ the [official release asset](https://github.com/open-telemetry/opentelemetry-col
 The Ubuntu telemetry job runs both native trace/metric gates. Hosted execution is
 subject to the account's Actions budget; configured pins/jobs alone are not Linux
 execution evidence. Other profiles can supply a matching LONGHORN_OTELCOL_BIN.
+
+[Draft PR #3](https://github.com/MirHamzaHasan/longhorn/pull/3) tracks this feature.
+The [first hosted run](https://github.com/MirHamzaHasan/longhorn/actions/runs/40042192327)
+was rejected before any step because of the Actions budget. Local full build,
+workspace types and 464 source tests passed; hosted checks remain a separate gate.

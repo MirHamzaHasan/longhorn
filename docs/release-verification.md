@@ -49,6 +49,15 @@ Local build, types, 449 source tests, the memory/Redis native gates and all four
 generated starters passed. The workflow remains blocking; restoring hosted runner
 availability and rerunning the current head is required before release.
 
+Cumulative metric export is reviewed in [draft PR #3](https://github.com/MirHamzaHasan/longhorn/pull/3),
+stacked on the Redis branch. Its first [six-job run](https://github.com/MirHamzaHasan/longhorn/actions/runs/40042192327)
+also failed before runner allocation, with the same Actions budget annotation on
+the telemetry job. Local build/types, 464 tests, real collector trace/metric
+interoperability across four runtimes, reports outage/recovery, the demo's normal /
+interrupted startup and independent generic starters passed. The Linux collector
+archive is checksum-pinned and the telemetry job is configured, but that is not
+Linux execution evidence. Current PR checks must pass when runner use is available.
+
 [Review artifacts](ci-review-artifacts.md) attempt to retain actual browser captures
 and the application archive/checksum after successful independent verification.
 Verification and upload availability are reported separately; the observed account
