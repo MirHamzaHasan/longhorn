@@ -365,14 +365,17 @@ repairs function ACLs, reapplies minimal grants and processes a new command.
 [Upgrades](command-app-upgrades.md), [runtime matrix](supported-runtimes.md) and
 [CI](release-verification.md) document the operational boundaries.
 
-## Next: Hosted release verification
+## Hosted release review
 
-Run the authored CI workflow on the review branch in the connected private
-LongHorn repository, review
-the distributable and deployment configuration, and obtain real hosted execution
-evidence before tagging/publishing v0.1. Local gates do not establish Linux CI,
-cloud ingress/failover or real-device assistive technology. The [v0.1 plan](v0.1-plan.md)
-keeps that boundary explicit; no publication/deployment has occurred.
+[Draft PR #1](https://github.com/MirHamzaHasan/longhorn/pull/1) tracks the source
+review branch and its actual hosted checks. The initial run passed source/runtime,
+account-operation and browser jobs on Ubuntu, including 434 tests and the four
+independent CLI starters. Current checks/logs remain authoritative for the current
+head, including distribution/restore. [Locked dependencies](command-app-dependencies.md)
+and [retained review artifacts](ci-review-artifacts.md) make the tested application
+available for deliberate review before a tagged release. Cloud ingress/failover
+and real-device assistive technology remain separate verification boundaries.
+The [v0.1 plan](v0.1-plan.md) claims no merge, publication or production deployment.
 
 ## Subsequent framework modules
 

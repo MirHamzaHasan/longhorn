@@ -49,6 +49,17 @@ jobs:
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm build
       - run: node scripts/verify-console.mjs
+      - name: Retain console review captures
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: longhorn-console-${{ github.run_id }}
+          path: |
+            .artifacts/console/*.png
+            .artifacts/console/accessibility.json
+          include-hidden-files: true
+          if-no-files-found: warn
+          retention-days: 14
   independent-distribution:
     runs-on: ubuntu-24.04
     timeout-minutes: 25
@@ -64,3 +75,14 @@ jobs:
       - run: node scripts/prepare-postgres-clients.mjs
       - run: pnpm build
       - run: node scripts/verify-command-app.mjs
+      - name: Retain independently verified application
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: longhorn-command-app-${{ github.run_id }}
+          path: |
+            .artifacts/longhorn-command-app.tgz
+            .artifacts/longhorn-command-app.tgz.sha256
+          include-hidden-files: true
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 14

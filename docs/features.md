@@ -9,6 +9,7 @@ downstream connections, verification, and current limits.
 
 | Feature | Guide | Implementation owner | Connects to |
 | --- | --- | --- | --- |
+| Hosted review artifacts | [CI artifacts](ci-review-artifacts.md) | Browser/distribution workflow jobs | Actual captures, verified application archive, run identity and retention |
 | Locked application dependency graph | [Locked dependencies](command-app-dependencies.md) | Packager and shipped pnpm lock | Per-artifact resolution, CI-mode frozen install, manifest drift rejection |
 | Independent command application archive | [Distribution](command-app-distribution.md) | Packaging script and editable starter | Source, receiver, framework snapshot, fresh installation |
 | Persistent application deployment profile | [Deployment](command-app-deployment.md) | Starter scripts and host | Separate owner/runtime credentials, ingress/storage settings |

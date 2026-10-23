@@ -24,10 +24,19 @@ client tools for loopback QA. Native databases and processes are temporary and
 owned by each gate. The workflow needs no shared PostgreSQL service or cloud account.
 See [GitHub's Node workflow documentation](https://docs.github.com/en/actions/tutorials/build-and-test-code/nodejs).
 
-This local directory has no Git history. The connected private
-[LongHorn repository](https://github.com/MirHamzaHasan/longhorn) contains its initial
-license; the implementation is being prepared as a review branch/draft PR there.
-The workflow has been authored and locally validated. A hosted green run is required
-before a tagged/published release; local results do not establish Linux runner
-support or cloud deployment. Screenshots and package archives are local ignored
-artifacts; no registry publish, tag or deployment is performed by this workflow.
+The source is tracked on `codex/longhorn-v0.1` in the private
+[LongHorn repository](https://github.com/MirHamzaHasan/longhorn), with
+[draft PR #1](https://github.com/MirHamzaHasan/longhorn/pull/1) for review. The initial
+[hosted run](https://github.com/MirHamzaHasan/longhorn/actions/runs/40036764130)
+provides actual Ubuntu evidence; source/runtimes, account operations and browser
+jobs passed, including 434 tests and independently generated runtime starters.
+Use the PR's current checks and linked job logs for the exact head commit's
+distribution/restore and overall result. An earlier green job never substitutes
+for a failed or unverified current source revision.
+
+[Review artifacts](ci-review-artifacts.md) retain actual browser captures and the
+application archive/checksum after successful independent verification. They are
+private run outputs with bounded retention. A green hosted run and artifact review
+are required before a tagged/published release. This workflow performs no registry
+publish, tag, merge or production deployment, and does not prove cloud failover
+or real-device assistive technology.

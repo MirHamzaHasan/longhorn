@@ -874,8 +874,9 @@ uses its shipped tools/hosts, recovers an outage and restores retained state int
 a second deployment before proving a new computed command.
 
 CI configuration repeats source/native/browser/distribution gates with pinned
-tooling and no deployment credentials. Hosted execution is pending the source
-review branch in the connected private repository; runtime/platform evidence is documented per profile. See
+tooling and no deployment credentials. The tracked source review branch has a
+draft PR in the connected private repository; current hosted checks and job logs
+provide revision-specific evidence. Runtime/platform evidence is documented per profile. See
 [distribution](command-app-distribution.md), [grants](runtime-role-grants.md),
 [deployment](command-app-deployment.md), [restore](command-app-backup.md),
 [proof](command-app-testing.md), [upgrades](command-app-upgrades.md),
@@ -886,3 +887,6 @@ recorded hash and pinned package-manager identity. Packaging resolves only that
 staged graph with hooks disabled; recipient frozen installation retains its bytes.
 Native CI-mode installation after relocation rejects manifest drift before the
 real application/restore workflow. See [locked dependencies](command-app-dependencies.md).
+Hosted browser/distribution jobs retain only their explicit review outputs under
+run-specific artifact names: captures/accessibility results and the archive plus
+checksum after successful native verification. See [CI artifacts](ci-review-artifacts.md).
