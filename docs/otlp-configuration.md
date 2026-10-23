@@ -30,7 +30,10 @@ pnpm dev:jobs
 
 The jobs example supports these specific settings. Endpoint omitted/empty keeps
 the existing memory exporter. Timeout is milliseconds, default 10000 (1–60000).
-Service name defaults to longhorn-jobs; version is optional. Empty optional/default
+Service name defaults to longhorn-jobs; version is optional. The jobs host resolves a per-process service instance UUID
+(or explicit OTEL_SERVICE_INSTANCE_ID) and shares it across selected trace/metric
+exporters. Metric endpoint, headers, timeout and collection interval are independently
+opted in through the [metric host guide](jobs-metrics-export.md). Empty optional/default
 environment values act as unset. Process environment overrides optional .env files.
 Invalid header/endpoint configuration fails through field-only ConfigError messages.
 An explicitly injected resources.exporter overrides host selection for applications/tests.

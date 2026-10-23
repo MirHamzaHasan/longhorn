@@ -53,4 +53,6 @@ Fetch if other tooling would recursively trace the exporter itself.
 This implementation exports the framework's trace record model through OTLP/JSON.
 It does not install automatic instrumentation, global context, metric/log export,
 Protobuf/gRPC, compression or the full OpenTelemetry SDK environment surface.
+Metrics use the separate [metric exporter and reader](otlp-metrics.md); log export
+remains outside these adapters.
 Real collector interoperability is verified across [all four runtimes](otlp-native.md).

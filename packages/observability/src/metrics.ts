@@ -16,6 +16,9 @@ export type MetricSnapshot = {
   readonly name: string; readonly help: string; readonly kind: 'counter' | 'gauge' | 'histogram'
   readonly labelNames: readonly string[]; readonly boundaries: readonly number[]; readonly series: readonly MetricSeries[]
 }
+export type MetricCollection = { readonly startedAt: number;readonly collectedAt: number;readonly metrics: readonly MetricSnapshot[] }
+export interface MetricSource { collect(): MetricCollection }
+export interface MetricExporter { export(collection: MetricCollection): Promise<void>;close(): Promise<void> }
 type MutableSeries = { labels: Labels; value: number; count: number; sum: number; buckets: number[] }
 type Family = Omit<MetricSnapshot, 'series'> & { series: Map<string, MutableSeries> }
 export class MetricLimitError extends Error { constructor() { super('Metric capacity exceeded'); this.name = 'MetricLimitError' } }
@@ -25,7 +28,7 @@ function limit(value: number, name: string) {
   return value
 }
 function finite(value: number) { if (!Number.isFinite(value)) throw new Error('Metric values must be finite') }
-export class MetricRegistry implements Meter {
+export class MetricRegistry implements Meter, MetricSource {
   private readonly families = new Map<string, Family>()
   private readonly reserved = new Set<string>()
   private readonly maxMetrics: number
@@ -33,10 +36,24 @@ export class MetricRegistry implements Meter {
   private readonly maxTotalSeries: number
   private totalSeries = 0
   private closed = false
-  constructor(options: { maxMetrics?: number; maxSeriesPerMetric?: number; maxTotalSeries?: number } = {}) {
+  private readonly now: () => number
+  private readonly startedAt: number
+  private collectedAt: number
+  constructor(options: { maxMetrics?: number; maxSeriesPerMetric?: number; maxTotalSeries?: number; now?: () => number } = {}) {
     this.maxMetrics = limit(options.maxMetrics ?? 100, 'maxMetrics')
     this.maxSeriesPerMetric = limit(options.maxSeriesPerMetric ?? 100, 'maxSeriesPerMetric')
     this.maxTotalSeries = limit(options.maxTotalSeries ?? 1000, 'maxTotalSeries')
+    this.now = options.now ?? Date.now
+    this.startedAt = this.timestamp(); this.collectedAt = this.startedAt
+  }
+  private timestamp(): number {
+    const value = this.now()
+    if (!Number.isSafeInteger(value) || value < 0) throw new Error('Invalid metric clock')
+    return value
+  }
+  collect(): MetricCollection {
+    this.collectedAt = Math.max(this.collectedAt, this.timestamp())
+    return { startedAt: this.startedAt, collectedAt: this.collectedAt, metrics: this.snapshot() }
   }
   private define(options: MetricOptions<readonly string[]>, kind: Family['kind'], boundaries: readonly number[] = []): Family {
     if (this.closed) throw new MetricsClosedError()

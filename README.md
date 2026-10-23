@@ -297,6 +297,13 @@ shows collector reception. Ctrl+C drains both and removes demo data. See
 [report tracing](docs/jobs-otlp.md), [OTLP delivery](docs/otlp-delivery.md) and
 [collector setup/verification](docs/otlp-native.md).
 
+Run `pnpm demo:metrics` for actual cumulative metrics from the same reports app on
+http://127.0.0.1:3014. It pushes through an owned collector every second while
+Prometheus scraping and local tracing stay available. The
+[metric reader](docs/metric-reader.md), [OTLP metrics](docs/otlp-metrics.md),
+[host settings](docs/jobs-metrics-export.md) and [native proof](docs/otlp-metrics-testing.md)
+have separate connection and lifetime guides.
+
 ## Other runtimes
 
 Automatic report scheduling through Durable Object alarms is runnable at port 3008:
@@ -400,6 +407,7 @@ pnpm test:queues
 pnpm test:scheduler
 pnpm test:observability
 pnpm test:otlp
+pnpm test:otlp-metrics
 pnpm test:postgres
 pnpm --filter example-basic start
 ```
@@ -428,7 +436,8 @@ complete HTTP workflow. Typechecking uses built workspace declarations, so build
   schema-scoped migrations, restricted-role PostgreSQL tasks, durable PostgreSQL
   queue/schedule providers, idempotent background task reports, PostgreSQL credentials/
   sessions/shared throttling, account HTTP and owner-scoped private notes,
-  bounded OTLP/HTTP trace export, remote report observations and native collector QA,
+  bounded OTLP/HTTP trace/metric export, cumulative readers with serial point batches,
+  remote report observations and native collector QA,
   managed non-HTTP work, bounded Workers scheduled events, awaited consumer traces,
   a runnable KV audit pipeline, Durable Object SQLite transactions/migrations,
   persistent Worker queues/schedules/reports, platform queue events with explicit

@@ -24,18 +24,20 @@ response/protocol validation, Retry-After, warning/partial counts, bounded close
 an intentionally uncooperative custom Fetch. Its timed-out request keeps admission
 busy until settled, avoiding an unbounded collection of orphan transports.
 
-tooling/otelcol.json pins the official collector release and the macOS ARM64 archive
-SHA-256. First use downloads that archive into node_modules/.cache/longhorn, verifies
+tooling/otelcol.json pins the official collector release and macOS ARM64/Linux x64
+archive SHA-256 values. First use downloads the selected archive into node_modules/.cache/longhorn, verifies
 its checksum, and caches only the archive. Each run rechecks the checksum and extracts
 the known executable into its own temporary directory. Downloads are size/deadline
 bounded. The manifest source is the [official release](https://github.com/open-telemetry/opentelemetry-collector-releases/releases/tag/v0.163.2).
 The helper checks version and binds owned dynamic loopback ports. It does not alter
 system services, accounts, libraries or platform security.
 
-Only darwin-arm64 has a default pinned archive and native proof here. Other platforms
-can supply LONGHORN_OTELCOL_BIN pointing to a working matching-version collector and
-must run their own gate. The helper isolates each collector process, caps retained
-sink snapshots at 512 spans and stops only its owned child. Finally blocks remove
+Local native evidence remains darwin-arm64. The Ubuntu telemetry workflow selects
+the pinned Linux x64 archive; its actual execution depends on hosted runner
+availability. Other platforms can supply LONGHORN_OTELCOL_BIN pointing to a working
+matching-version collector and must run their own gate. The helper isolates each
+collector process, caps sink snapshots at 512 spans and 512 metric points separately
+and stops only its owned child. Finally blocks remove
 owned configs/binaries/sinks; the verified archive stays cached for later runs.
 
 pnpm demo:tracing uses the same collector with a temporary report database. Startup
@@ -43,3 +45,7 @@ signals cancel initialization, while normal shutdown drains the host before coll
 release. Neither command promises durable backend storage, production throughput,
 remote TLS credentials, multi-hop exactly-once delivery or a final Workers isolate
 flush outside its supported request/platform lifetime.
+
+The helper now also forwards metrics through a separate pipeline and exposes an
+independent bounded metric snapshot. [Metric verification](otlp-metrics-testing.md)
+and `pnpm demo:metrics` use that path; the trace API/demo retain their behavior.

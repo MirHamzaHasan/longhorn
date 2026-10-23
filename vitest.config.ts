@@ -19,6 +19,7 @@ export default defineConfig({
       '@longhorn/observability/hono': './packages/observability/src/hono.ts',
       '@longhorn/observability/prometheus': './packages/observability/src/prometheus.ts',
       '@longhorn/observability/memory': './packages/observability/src/memory.ts',
+      '@longhorn/observability/otlp-metrics': './packages/observability/src/otlp-metrics.ts',
       '@longhorn/observability/otlp': './packages/observability/src/otlp.ts',
       '@longhorn/observability': './packages/observability/src/index.ts',
       '@longhorn/scheduler/cron': './packages/scheduler/src/cron.ts',

@@ -2,6 +2,10 @@
   "version": "0.163.2",
   "releases": "https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download",
   "platforms": {
+    "linux-x64": {
+      "archive": "otelcol_0.163.2_linux_amd64.tar.gz",
+      "sha256": "9fbf3101331c88aab4b7f4cfd7c788b252e91e193793e39bd2154971c87f88a7"
+    },
     "darwin-arm64": {
       "archive": "otelcol_0.163.2_darwin_arm64.tar.gz",
       "sha256": "56c9c5ab73553f545e3cc4f60373730b8fc262f136e00a6fc13a5ea8107cbe4b"

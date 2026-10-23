@@ -3,6 +3,8 @@
 Owner: `@longhorn/observability` (`Meter`, `MetricRegistry`). Connects
 [HTTP telemetry](http-telemetry.md), [Prometheus export](prometheus.md) and
 [background diagnostics](jobs-observability.md).
+The optional [reader](metric-reader.md) and [OTLP exporter](otlp-metrics.md) push
+the same accumulated values without resetting the source or disabling Prometheus.
 
 ```ts
 const meter = new MetricRegistry({ maxMetrics: 100, maxSeriesPerMetric: 100, maxTotalSeries: 1000 })
@@ -47,7 +49,12 @@ Snapshots deeply detach family metadata, labels and bucket arrays. stats exposes
 definition/series counts and closed state. close is synchronous/idempotent; later
 registration/updates throw MetricsClosedError, while final snapshots remain readable.
 This registry is application/process/isolate-local and resets on restart. It does
-not scrape OS metrics, persist values or send them remotely.
+not scrape OS metrics or persist values. `collect()` adds a fixed registry start
+and current epoch-millisecond collection time to a detached snapshot. Optional
+`now` injection supports deterministic hosts/tests; invalid/negative/noninteger
+clock results reject, and backward clocks clamp to the previous collection time.
+Final collections remain readable after close. An explicitly selected reader /
+exporter owns remote delivery; no network/timer is installed by the registry.
 
 Strict API errors reach direct callers; [HTTP/background wrappers](http-telemetry.md)
 isolate recording failures from business results. Tests cover aggregation, invalid

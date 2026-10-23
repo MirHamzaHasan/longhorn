@@ -915,3 +915,27 @@ Retained values are shared across hosts; load fences are not distributed, so TTL
 and trusted invalidation remain application policy. See [provider](redis-cache.md),
 [codec](cache-json-codec.md), [transport](redis-node.md), [example](redis-tasks-example.md)
 and [native verification](redis-cache-testing.md).
+
+---
+
+## 34. Cumulative Metric Export and Reader Ownership
+
+The existing MetricRegistry now collects a detached snapshot with one cumulative
+start identity and a collection timestamp. Counter/gauge/histogram recording and
+Prometheus output keep their current contracts. `MetricSource` / `MetricExporter`
+are portable structural interfaces; core imports no exporter or timer.
+
+An explicitly started PeriodicMetricReader owns collection timing and one exporter.
+It splits by point count, sends batches serially and coalesces demand during active
+I/O into a fresh collection. Close stops admission/timers and includes final values
+before releasing the exporter. Source totals are not reset by export or failure.
+
+`@longhorn/observability/otlp-metrics` maps monotonic counters, signed gauges and
+cumulative histogram buckets into bounded OTLP/HTTP JSON. Traces/metrics share one
+delivery implementation while acknowledgements/errors retain their signal counts.
+The reports app opts into metrics independently of traces, refreshes background
+gauges without scraping and isolates collector failure from persisted business work
+and readiness. The owned demo and native collector prove all four runtime profiles,
+outage/recovery, actual Fetch cancellation and final export. See [reader](metric-reader.md),
+[metric transport](otlp-metrics.md), [mapping](otlp-metrics-json.md),
+[reports](jobs-metrics-export.md) and [native proof](otlp-metrics-testing.md).

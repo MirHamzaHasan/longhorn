@@ -7,6 +7,19 @@ name: LongHorn verification
 permissions:
   contents: read
 jobs:
+  telemetry:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 20.19.4
+      - run: npm install --global pnpm@12.6.0
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: node scripts/verify-otlp.mjs
+      - run: node scripts/verify-otlp-metrics.mjs
   redis-cache:
     runs-on: ubuntu-24.04
     timeout-minutes: 20

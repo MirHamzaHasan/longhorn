@@ -139,6 +139,19 @@ Local metrics/span queues remain process-owned rather than durable state. Option
 OTLP collector delivery is described below; global async context and platform-final
 flush guarantees remain outside this implementation.
 
+## Cumulative metric collector export implemented
+
+[Timed collections](metrics.md), [owned readers](metric-reader.md),
+[metric OTLP/JSON](otlp-metrics-json.md), [delivery](otlp-metrics.md),
+[report integration/demo](jobs-metrics-export.md) and [native proof](otlp-metrics-testing.md)
+extend the existing registry. HTTP/background values push independently of tracing
+and remain available through Prometheus. The real native collector verifies all
+four runtime profiles, serial point batches, cumulative identity, histogram bucket
+mapping, failure classification, actual socket cancellation, business work during
+collector outage, recovery and final drain. Traces/metrics share bounded HTTP
+delivery while preserving signal-specific acknowledgement counts. No delta reset,
+log transport or full OpenTelemetry SDK is claimed.
+
 ## PostgreSQL provider implemented
 
 [Connection/scalar policy](postgres.md), [transactions](postgres-transactions.md),

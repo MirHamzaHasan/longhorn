@@ -9,6 +9,11 @@ downstream connections, verification, and current limits.
 
 | Feature | Guide | Implementation owner | Connects to |
 | --- | --- | --- | --- |
+| Lifecycle-owned metric reader | [Metric reader](metric-reader.md) | `@longhorn/observability` | Timed cumulative collection, serial point batches, coalesced flush and final drain |
+| Remote metric transport | [OTLP metrics](otlp-metrics.md) | `@longhorn/observability/otlp-metrics` | Shared bounded Fetch delivery, metric-specific acknowledgements and secret-safe counters |
+| Cumulative metric record mapping | [Metric JSON](otlp-metrics-json.md) | Internal exporter encoder | Registry time identity, monotonic sums, signed gauges and disjoint histogram buckets |
+| Report metric push and demo | [Jobs metrics](jobs-metrics-export.md) | Jobs diagnostics and owned demo | Independent host configuration, refreshed gauges, source totals through outage and shutdown |
+| Native metric interoperability | [Metric proof](otlp-metrics-testing.md) | Real collector, gateway and four runtime fixtures | Actual normalized points, retries, HTTP peer cancellation, persisted report work and final export |
 | Redis cache provider | [Redis storage](redis-cache.md) | `@longhorn/cache/redis` | Existing typed cache, namespace isolation, server expiry, bounded SCAN clear and owned client |
 | Schema-validated cache JSON | [Cache JSON codec](cache-json-codec.md) | `@longhorn/cache/json` | Versioned undefined/value envelope, asynchronous application validation, byte/depth bounds |
 | Native Redis connection | [Node Redis](redis-node.md) | `@longhorn/node/redis` | Explicit TLS trust, bounded native deadlines/admission, no replay/reconnect and drained close |
@@ -121,7 +126,7 @@ downstream connections, verification, and current limits.
 | PostgreSQL account native proofs | [Auth verification](postgres-auth-testing.md) | Native harness and process fixtures | Scrypt, concurrent signup/throttle, replacement SIGKILL, HTTP restart/privacy |
 | Remote trace transport | [OTLP/HTTP](otlp-http.md) | `@longhorn/observability/otlp` | Explicit Fetch endpoint, resource identity, exclusive exporter lifetime |
 | OTLP trace record mapping | [OTLP JSON](otlp-json.md) | Internal exporter encoder | Hex IDs, decimal nanos, enums, typed values, UTF-8 request bounds |
-| Bounded telemetry delivery | [OTLP delivery](otlp-delivery.md) | `@longhorn/observability/otlp` | Deadline/retry/partial rules, response limits, cancellation and close |
+| Bounded telemetry delivery | [OTLP delivery](otlp-delivery.md) | Shared trace/metric HTTP engine | Deadline/retry/partial rules, signal acknowledgements, response limits, cancellation and close |
 | Explicit collector configuration | [OTLP configuration](otlp-configuration.md) | Exporter options and jobs host | Header parsing, opt-in environment selection, secret-free errors/stats |
 | Report remote tracing | [Jobs OTLP](jobs-otlp.md) | `examples/jobs` | HTTP/producer/consumer spans, diagnostics, failure isolation, demo |
 | Native collector interoperability | [OTLP native](otlp-native.md) | Owned collector/gateway and runtime fixtures | Real JSON roundtrip on four runtimes, outage behavior, pinned native tooling |
@@ -222,9 +227,13 @@ flowchart TD
   Audit --> AlarmClock
   App --> Config[Configuration]
   App --> Observability[Readiness + bounded metrics + explicit tracing]
-  App --> Otlp[OTLP HTTP JSON exporter]
+  App --> Otlp[OTLP trace HTTP JSON exporter]
   Otlp --> Observability
   Otlp --> Fetch[Host Web Standard Fetch]
+  App --> MetricReader[Owned metric reader]
+  MetricReader --> Observability
+  MetricReader --> MetricOtlp[OTLP cumulative metric exporter]
+  MetricOtlp --> Fetch
   HttpTelemetry[HTTP telemetry middleware] --> Observability
   HttpTelemetry --> Http
   App --> HttpTelemetry

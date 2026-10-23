@@ -98,3 +98,7 @@ Snapshots now include the optional `@longhorn/cache/json`, `@longhorn/cache/redi
 and Node-only `@longhorn/node/redis` exports. Starters continue to select memory;
 no Redis service/credentials are created by generation. The
 [Redis task profile](redis-tasks-example.md) shows explicit provider selection.
+The snapshots also retain the optional metric reader and `/otlp-metrics` export.
+Generated apps keep their existing local diagnostics; the
+[reports metrics profile](jobs-metrics-export.md) demonstrates explicit remote
+selection without adding collector credentials or a background reader to starters.

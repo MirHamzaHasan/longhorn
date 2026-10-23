@@ -1,8 +1,10 @@
 # OTLP delivery and lifetime
 
-Owner: OtlpHttpSpanExporter. Connects [Tracer queue ownership](tracing.md),
-[wire encoding](otlp-json.md), [configuration](otlp-configuration.md) and
-[native failure tests](otlp-native.md).
+Owner: shared `OtlpHttpDelivery` internals, used by OtlpHttpSpanExporter and
+OtlpHttpMetricExporter. Connects [Tracer queue ownership](tracing.md),
+[metric reader ownership](metric-reader.md), [trace encoding](otlp-json.md),
+[metric encoding](otlp-metrics-json.md), [configuration](otlp-configuration.md) and
+[native trace](otlp-native.md) / [metric tests](otlp-metrics-testing.md).
 
 | Option | Default | Allowed |
 | --- | --- | --- |
@@ -11,6 +13,7 @@ Owner: OtlpHttpSpanExporter. Connects [Tracer queue ownership](tracing.md),
 | initialRetryDelayMs | 200 | 1–60000 ms |
 | maxRetryDelayMs | 2000 | initial delay–60000 ms |
 | maxSpansPerBatch | 256 | 1–10000 |
+| maxDataPointsPerBatch (metric exporter) | 1000 | 1–10000 |
 | maxRequestBytes | 1048576 | 256–16777216 |
 | maxResponseBytes | 65536 | 1–4194304 |
 
@@ -36,11 +39,19 @@ The warnings counter records nonempty collector diagnostic messages, including
 messages attached to rejected partial responses; their text is always discarded.
 Since SpanExporter returns void, Tracer conservatively marks a rejected partial batch
 as dropped even when the collector accepted some; exporter.stats carries the finer count.
+Metrics apply the same rules to `rejectedDataPoints`, expose
+OtlpMetricExportError / acceptedDataPoints / rejectedDataPoints, and never interpret
+a point rejection as a span count. The reader conservatively marks a partially
+accepted metric collection as failed; later cumulative observations retain source
+totals. Repeated collections do not reset the registry.
 
 The exporter admits one batch and retains no pending queue. Tracer separately bounds
 active spans, completed queue and its in-flight batch. Busy/closed/invalid/oversized
 calls reject before network admission. Failed admitted batches increment failedBatches;
 Tracer reports/drops them without replacing the business result or original error.
+The metric reader owns point batching and completion-relative collection without
+a queue of old snapshots. Each batch has its own delivery deadline. Direct metric
+export callers retain the same busy/closed admission boundary.
 
 A custom Fetch must honor AbortSignal. If it does not settle after a deadline, its
 pending transport keeps admission busy, preventing repeated orphan requests. A late
@@ -50,7 +61,8 @@ cancel a transport that ignores cancellation.
 
 close stops new admission, waits for the active batch and memoizes terminal state.
 It does not close a global Fetch connection pool. Let Tracer close active spans and
-drain its queue first; never close from a span whose end is being awaited. Host/isolate
+drain its queue first; never close from a span whose end is being awaited.
+Metric readers collect once more before closing their exporter. Host/isolate
 lifetime remains authoritative. Request retry can duplicate telemetry after a lost
 acknowledgement, and a collector acknowledgement does not prove durable downstream
 storage. This is bounded best-effort telemetry, not a persistent outbox.
