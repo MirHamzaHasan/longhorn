@@ -1,0 +1,17 @@
+packages:
+  - "packages/*"
+  - "runtimes/*"
+  - "cli"
+  - "create-longhorn"
+  - "examples/*"
+
+allowBuilds:
+  esbuild: true
+  workerd: true
+  bun: true
+  deno: true
+  '@embedded-postgres/darwin-arm64': true
+  '@embedded-postgres/linux-x64': true
+
+minimumReleaseAgeExclude:
+  - '@types/bun@1.4.4'

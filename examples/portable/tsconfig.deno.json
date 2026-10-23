@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": [
+      "deno"
+    ]
+  },
+  "include": [
+    "src/app.ts",
+    "src/config.ts",
+    "src/deno.ts"
+  ]
+}

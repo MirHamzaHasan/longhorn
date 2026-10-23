@@ -1,0 +1,48 @@
+{
+  "name": "@longhorn/cli",
+  "version": "0.0.1",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts src/bin.ts --format esm --dts --clean && node scripts/snapshot.mjs",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {},
+  "bin": {
+    "longhorn": "./dist/bin.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "devDependencies": {
+    "@longhorn/outbox": "workspace:*",
+    "@longhorn/idempotency": "workspace:*",
+    "@types/node": "^22.13.10",
+    "@longhorn/container": "workspace:*",
+    "@longhorn/runtime": "workspace:*",
+    "@longhorn/http": "workspace:*",
+    "@longhorn/logger": "workspace:*",
+    "@longhorn/validation": "workspace:*",
+    "@longhorn/config": "workspace:*",
+    "@longhorn/database": "workspace:*",
+    "@longhorn/core": "workspace:*",
+    "@longhorn/node": "workspace:*",
+    "@longhorn/bun": "workspace:*",
+    "@longhorn/deno": "workspace:*",
+    "@longhorn/workers": "workspace:*",
+    "@longhorn/auth": "workspace:*",
+    "@longhorn/events": "workspace:*",
+    "@longhorn/cache": "workspace:*",
+    "@longhorn/queue": "workspace:*",
+    "@longhorn/scheduler": "workspace:*",
+    "@longhorn/observability": "workspace:*"
+  }
+}

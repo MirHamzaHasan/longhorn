@@ -1,0 +1,20 @@
+{
+  "name": "@longhorn/events",
+  "version": "0.0.1",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --dts --clean",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {},
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false
+}

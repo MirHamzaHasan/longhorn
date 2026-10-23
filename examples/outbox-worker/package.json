@@ -1,0 +1,12 @@
+{
+  "name": "example-outbox-worker", "private": true, "type": "module",
+  "scripts": { "build": "node build.mjs", "typecheck": "tsc --noEmit" },
+  "dependencies": {
+    "@longhorn/auth": "workspace:*",
+    "@longhorn/core": "workspace:*", "@longhorn/container": "workspace:*", "@longhorn/database": "workspace:*",
+    "@longhorn/idempotency": "workspace:*", "@longhorn/outbox": "workspace:*", "@longhorn/queue": "workspace:*",
+    "@longhorn/scheduler": "workspace:*", "@longhorn/observability": "workspace:*", "@longhorn/validation": "workspace:*",
+    "@longhorn/workers": "workspace:*", "hono": "^4.13.13", "zod": "^4.6.7"
+  },
+  "devDependencies": { "esbuild": "^0.28.2", "@cloudflare/workers-types": "^5.20261022.1" }
+}

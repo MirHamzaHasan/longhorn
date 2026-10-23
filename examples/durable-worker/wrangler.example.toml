@@ -1,0 +1,13 @@
+name = "longhorn-durable-reports"
+main = "dist/index.js"
+compatibility_date = "2025-07-18"
+
+[durable_objects]
+bindings = [{ name = "REPORTS", class_name = "ReportCoordinator" }]
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["ReportCoordinator"]
+
+[triggers]
+crons = ["* * * * *"]

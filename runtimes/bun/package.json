@@ -1,0 +1,25 @@
+{
+  "name": "@longhorn/bun",
+  "version": "0.0.1",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --dts --clean",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.4.3"
+  },
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@longhorn/runtime": "workspace:*"
+  }
+}

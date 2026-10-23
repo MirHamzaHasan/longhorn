@@ -1,0 +1,25 @@
+{
+  "name": "@longhorn/config",
+  "version": "0.0.1",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --dts --clean",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@longhorn/validation": "workspace:*"
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "devDependencies": {
+    "zod": "^4.6.7"
+  }
+}

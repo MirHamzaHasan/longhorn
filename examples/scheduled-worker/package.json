@@ -1,0 +1,13 @@
+{
+  "name": "example-scheduled-worker",
+  "private": true,
+  "type": "module",
+  "scripts": { "build": "node build.mjs", "typecheck": "tsc --noEmit" },
+  "dependencies": {
+    "@longhorn/core": "workspace:*", "@longhorn/container": "workspace:*",
+    "@longhorn/logger": "workspace:*", "@longhorn/observability": "workspace:*",
+    "@longhorn/queue": "workspace:*", "@longhorn/scheduler": "workspace:*",
+    "@longhorn/workers": "workspace:*", "zod": "^4.6.7"
+  },
+  "devDependencies": { "esbuild": "^0.28.2" }
+}

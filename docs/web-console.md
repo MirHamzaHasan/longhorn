@@ -1,0 +1,35 @@
+# Browser command console
+
+Owner: `examples/postgres/console/app.ts`, `app.css` and `src/console.ts`.
+Connects the existing [accounts](postgres-accounts.md), [history](account-command-history.md),
+[commands](account-operations.md), receipts and operator APIs through real browser requests.
+
+Run `pnpm demo:operator-accounts`, then open http://127.0.0.1:3010/console.
+Create an account, enter numbers such as `4, 8, 15`, open the saved command and
+refresh its status to read the computed receipt. Commands lists owned history;
+operators can explicitly select all commands. Load older uses the bounded server
+cursor; Refresh starts at the newest page. Times use the browser locale.
+
+The same built assets are included in `pnpm dev:operator-host` at `/console`.
+That host retains data in separately provisioned PostgreSQL and receipt storage;
+the demo removes its temporary state on exit. No schema or role administration
+is exposed through the browser. The API root remains at `/`.
+
+Hash navigation keeps all browser routes under `/console`. Route changes cancel
+old reads and prevent old responses replacing the new screen. API calls have a
+15-second browser deadline. Delivery/receipt updates require Refresh status;
+there is no promise of live push updates. A missing receipt and unavailable
+transport have distinct messages. Unknown legacy delivery metadata stays unknown.
+
+See [browser security](console-security.md), [recovery](console-recovery.md),
+[design rules](console-design.md) and [browser verification](console-testing.md).
+
+## Retrying a command submission
+
+The form keeps a random request key while the normalized numbers are unchanged.
+After a network failure or timeout, Try again submits that same key and numbers.
+If the first request committed, the server replays its original command/delivery
+IDs. Changing the numbers creates a new request key. Keys are kept in this page's
+memory only: reloading or leaving the form does not preserve a pending submission.
+Check command history after reloading an ambiguous submission. The existing
+[idempotency policy](idempotency.md) still bounds replay guarantees.

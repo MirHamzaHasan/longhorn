@@ -1,0 +1,16 @@
+node_modules/
+dist/
+*.tsbuildinfo
+.env
+.env.*
+!.env.example
+.operator.env
+.operator.env.local
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+*.sqlite-journal
+examples/durable-worker/data/
+examples/queue-worker/data/
+examples/outbox-worker/data/
+.artifacts/

@@ -1,0 +1,81 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./examples/queue-worker" },
+    { "path": "./examples/durable-worker" },
+    { "path": "./examples/scheduled-worker" },
+    { "path": "./examples/postgres" },
+    {
+      "path": "./examples/jobs"
+    },
+    {
+      "path": "./packages/core"
+    },
+    {
+      "path": "./packages/http"
+    },
+    {
+      "path": "./packages/config"
+    },
+    {
+      "path": "./packages/container"
+    },
+    {
+      "path": "./packages/validation"
+    },
+    {
+      "path": "./packages/events"
+    },
+    {
+      "path": "./packages/logger"
+    },
+    {
+      "path": "./packages/database"
+    },
+    {
+      "path": "./packages/auth"
+    },
+    {
+      "path": "./packages/cache"
+    },
+    {
+      "path": "./packages/queue"
+    },
+    {
+      "path": "./packages/scheduler"
+    },
+    {
+      "path": "./packages/observability"
+    },
+    {
+      "path": "./packages/runtime"
+    },
+    {
+      "path": "./runtimes/node"
+    },
+    {
+      "path": "./runtimes/bun"
+    },
+    {
+      "path": "./runtimes/deno"
+    },
+    {
+      "path": "./runtimes/workers"
+    },
+    {
+      "path": "./cli"
+    },
+    {
+      "path": "./create-longhorn"
+    },
+    {
+      "path": "./examples/basic"
+    },
+    {
+      "path": "./examples/portable"
+    },
+    {
+      "path": "./examples/auth"
+    }
+  ]
+}

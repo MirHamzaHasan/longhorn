@@ -1,0 +1,44 @@
+{
+  "name": "@longhorn/workers",
+  "version": "0.0.1",
+  "type": "module",
+  "exports": {
+    "./outbox": { "types": "./dist/outbox.d.ts", "import": "./dist/outbox.js" },
+    "./sqlite-alarms": {
+      "types": "./dist/sqlite-alarms.d.ts",
+      "import": "./dist/sqlite-alarms.js"
+    },
+    "./queue": {
+      "types": "./dist/queue.d.ts",
+      "import": "./dist/queue.js"
+    },
+    "./durable-sqlite": {
+      "types": "./dist/durable-sqlite.d.ts",
+      "import": "./dist/durable-sqlite.js"
+    },
+    "./scheduled": {
+      "types": "./dist/scheduled.d.ts",
+      "import": "./dist/scheduled.js"
+    },
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts src/scheduled.ts src/durable-sqlite.ts src/queue.ts src/sqlite-alarms.ts src/outbox.ts --format esm --dts --clean",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@longhorn/database": "workspace:*",
+    "@cloudflare/workers-types": "^5.20261022.1",
+    "@longhorn/runtime": "workspace:*"
+  },
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "devDependencies": {
+    "@longhorn/core": "workspace:*"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "name": "@longhorn/observability",
+  "version": "0.0.1",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./hono": {
+      "types": "./dist/hono.d.ts",
+      "import": "./dist/hono.js"
+    },
+    "./prometheus": {
+      "types": "./dist/prometheus.d.ts",
+      "import": "./dist/prometheus.js"
+    },
+    "./otlp": {
+      "types": "./dist/otlp.d.ts",
+      "import": "./dist/otlp.js"
+    },
+    "./memory": {
+      "types": "./dist/memory.d.ts",
+      "import": "./dist/memory.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts src/hono.ts src/prometheus.ts src/memory.ts src/otlp.ts --format esm --dts --clean",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": { "hono": "^4.13.13" },
+  "files": ["dist"],
+  "sideEffects": false
+}

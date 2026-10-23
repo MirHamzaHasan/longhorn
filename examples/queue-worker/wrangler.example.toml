@@ -1,0 +1,20 @@
+name = "longhorn-queue-receipts"
+main = "dist/index.js"
+compatibility_date = "2025-07-18"
+
+[[queues.producers]]
+binding = "MESSAGES"
+queue = "longhorn-messages"
+
+[[queues.consumers]]
+queue = "longhorn-messages"
+max_batch_size = 10
+max_batch_timeout = 1
+max_retries = 3
+
+[durable_objects]
+bindings = [{ name = "RECEIPTS", class_name = "ReceiptStore" }]
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["ReceiptStore"]

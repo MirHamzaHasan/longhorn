@@ -1,0 +1,24 @@
+{
+  "name": "example-postgres",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsup src/index.ts src/migrate.ts src/tasks.ts src/reports.ts src/migrations.ts src/app.ts src/operations.ts src/operations-migrations.ts src/operator-role.ts src/migrate-operations.ts src/operator-host.ts src/operator-config.ts src/operator-runtime.ts src/operation-transport.ts src/command-history.ts src/command-history-migrations.ts src/console-assets.ts src/runtime-grants.ts --format esm --clean && node build-console.mjs",
+    "typecheck": "tsc --noEmit && tsc -p console/tsconfig.json --noEmit",
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "migrate": "tsx src/migrate.ts"
+  },
+  "dependencies": {
+    "@longhorn/http": "workspace:*",
+    "@longhorn/outbox": "workspace:*",
+    "@longhorn/idempotency": "workspace:*",
+    "@longhorn/auth": "workspace:*",
+    "@longhorn/config": "workspace:*", "@longhorn/container": "workspace:*", "@longhorn/core": "workspace:*",
+    "@longhorn/database": "workspace:*", "@longhorn/logger": "workspace:*", "@longhorn/node": "workspace:*",
+    "@longhorn/observability": "workspace:*", "@longhorn/validation": "workspace:*",
+    "@longhorn/queue": "workspace:*", "@longhorn/scheduler": "workspace:*",
+    "hono": "^4.13.13", "zod": "^4.6.7"
+  },
+  "devDependencies": { "@types/node": "^22.13.10", "tsx": "^4.20.0", "esbuild":"^0.28.2" }
+}

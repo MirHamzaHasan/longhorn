@@ -1,0 +1,30 @@
+{
+  "name": "create-longhorn",
+  "version": "0.0.1",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts src/bin.ts --format esm --dts --clean",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@longhorn/cli": "workspace:*"
+  },
+  "bin": {
+    "create-longhorn": "./dist/bin.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.10"
+  }
+}

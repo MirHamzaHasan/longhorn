@@ -1,0 +1,16 @@
+{
+  "name": "@longhorn/outbox", "version": "0.0.1", "type": "module",
+  "exports": {
+    "./http": { "types": "./dist/http.d.ts", "import": "./dist/http.js" },
+    "./hono": { "types": "./dist/hono.d.ts", "import": "./dist/hono.js" },
+    ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" },
+    "./sqlite": { "types": "./dist/sqlite.d.ts", "import": "./dist/sqlite.js" },
+    "./postgres": { "types": "./dist/postgres.d.ts", "import": "./dist/postgres.js" }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts src/sqlite.ts src/postgres.ts src/hono.ts src/http.ts --format esm --dts --clean",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": { "@longhorn/database": "workspace:*", "@longhorn/queue": "workspace:*", "@longhorn/validation": "workspace:*", "@longhorn/http": "workspace:*", "hono": "^4.13.13", "zod": "^4.6.7" },
+  "files": ["dist"], "sideEffects": false
+}

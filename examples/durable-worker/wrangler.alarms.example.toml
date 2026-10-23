@@ -1,0 +1,10 @@
+name = "longhorn-alarm-reports"
+main = "dist/alarms.js"
+compatibility_date = "2025-07-18"
+
+[durable_objects]
+bindings = [{ name = "REPORTS", class_name = "ReportAlarmCoordinator" }]
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["ReportAlarmCoordinator"]

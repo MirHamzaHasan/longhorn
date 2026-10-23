@@ -1,0 +1,11 @@
+name = "longhorn-scheduled-audit"
+main = "dist/index.js"
+compatibility_date = "2025-07-18"
+
+[triggers]
+crons = ["* * * * *"]
+
+# Copy this file to your deployment configuration and supply your own namespace ID.
+# [[kv_namespaces]]
+# binding = "AUDIT"
+# id = "your-namespace-id"

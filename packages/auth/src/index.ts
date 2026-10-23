@@ -1,0 +1,6 @@
+export const PACKAGE_NAME = '@longhorn/auth'
+export { AuthService, AuthError, normalizeUsername } from './credentials.js'
+export { SessionManager } from './sessions.js'
+export type { AuthUser, CredentialUser, CredentialStore, LoginAttemptStore, PasswordHasher, AuthStore } from './types.js'
+export type { SessionStore, StoredSession, IssuedSession, Authenticated } from './types.js'
+export type { TransactionalAuthStore, RoleChangeResult } from './types.js'

@@ -1,0 +1,25 @@
+{
+  "name": "@longhorn/core",
+  "version": "0.0.0",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --dts --clean",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@longhorn/container": "workspace:*",
+    "@longhorn/http": "workspace:*",
+    "@longhorn/runtime": "workspace:*",
+    "@longhorn/logger": "workspace:*"
+  }
+}
