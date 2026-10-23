@@ -9,6 +9,11 @@ downstream connections, verification, and current limits.
 
 | Feature | Guide | Implementation owner | Connects to |
 | --- | --- | --- | --- |
+| Redis cache provider | [Redis storage](redis-cache.md) | `@longhorn/cache/redis` | Existing typed cache, namespace isolation, server expiry, bounded SCAN clear and owned client |
+| Schema-validated cache JSON | [Cache JSON codec](cache-json-codec.md) | `@longhorn/cache/json` | Versioned undefined/value envelope, asynchronous application validation, byte/depth bounds |
+| Native Redis connection | [Node Redis](redis-node.md) | `@longhorn/node/redis` | Explicit TLS trust, bounded native deadlines/admission, no replay/reconnect and drained close |
+| Shared task-summary cache profile | [Redis tasks](redis-tasks-example.md) | Basic task example | DI-selected store, SQLite authority, invalidation and explicit failure bypass |
+| Redis native verification | [Redis testing](redis-cache-testing.md) | Owned server/proxy/HTTP fixtures | Real expiry, ACL, restart, withheld acknowledgement, TLS, outage and startup cleanup |
 | Hosted review artifact reporting | [CI artifacts](ci-review-artifacts.md) | Browser/distribution workflow jobs | Separate verification/upload outcomes, quota warning, local fallback, bounded retention when available |
 | Locked application dependency graph | [Locked dependencies](command-app-dependencies.md) | Packager and shipped pnpm lock | Per-artifact resolution, CI-mode frozen install, manifest drift rejection |
 | Independent command application archive | [Distribution](command-app-distribution.md) | Packaging script and editable starter | Source, receiver, framework snapshot, fresh installation |

@@ -5,10 +5,11 @@ import { openSqlite } from '@longhorn/node/sqlite'
 import { initializeTasksDatabase, SqliteTasksStore } from './sqlite-tasks.js'
 import { TasksStoreToken } from './tasks.js'
 import { configureTaskCache } from './task-cache.js'
+import type { TaskCacheResources } from './task-cache.js'
 
 export const TaskDatabase = token<Database>('tasks database')
 
-export function configureSqliteStorage(app: Longhorn, filename: string): Longhorn {
+export function configureSqliteStorage(app: Longhorn, filename: string, cache: TaskCacheResources = {}): Longhorn {
   app.onStart(async () => {
     const database = await openSqlite({ filename })
     try {
@@ -26,5 +27,5 @@ export function configureSqliteStorage(app: Longhorn, filename: string): Longhor
       throw error
     }
   })
-  return configureTaskCache(app)
+  return configureTaskCache(app, cache)
 }

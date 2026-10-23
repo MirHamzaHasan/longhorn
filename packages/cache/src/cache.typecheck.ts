@@ -1,5 +1,7 @@
 import { Cache } from './index.js'
 import { MemoryCacheStore } from './memory.js'
+import { jsonCacheCodec } from './codec.js'
+import { RedisCacheStore, type RedisCommandClient } from './redis.js'
 
 function verifyCacheTypes(): void {
   const cache = new Cache<{ readonly id: string }>(new MemoryCacheStore())
@@ -17,4 +19,18 @@ function verifyCacheTypes(): void {
       const missing = entry.value
     }
   })
+}
+
+function verifyRedisTypes(client: RedisCommandClient): void {
+  type Profile = { readonly id: string }
+  const codec = jsonCacheCodec(async (value): Promise<Profile> => {
+    if (typeof value !== 'object' || value === null || !('id' in value) || typeof value.id !== 'string') throw new Error('Invalid profile')
+    return { id: value.id }
+  })
+  const store = new RedisCacheStore(client, { namespace: 'profiles', codec })
+  void store.set('one', { id: 'ok' }, 5000)
+  // @ts-expect-error An asynchronous parser preserves the declared value schema.
+  void store.set('two', { id: 12 }, 5000)
+  // @ts-expect-error A codec for profiles cannot back a number store.
+  new RedisCacheStore<number>(client, { namespace: 'numbers', codec })
 }

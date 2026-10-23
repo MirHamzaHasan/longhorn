@@ -106,6 +106,12 @@ TTL. Local writes invalidate it; external writes appear after expiry. Set
 uncached. See [task caching](docs/task-cache.md), [cache](docs/cache.md), and
 [memory storage](docs/memory-cache.md).
 
+For shared Redis-backed summaries, configure `examples/basic/.redis.env.example`
+as described in the [Redis task guide](docs/redis-tasks-example.md), then run
+`pnpm dev:redis-cache` (port 3013). SQLite remains authoritative; the optional
+[Redis provider](docs/redis-cache.md), [JSON codec](docs/cache-json-codec.md) and
+[Node connection](docs/redis-node.md) reuse the same DI and lifecycle boundaries.
+
 Invalid bodies return 400. Schema failures include field paths and messages. Missing
 tasks and unknown paths return 404. Ctrl+C closes the server.
 
@@ -389,6 +395,7 @@ pnpm test:projects
 pnpm test:auth
 pnpm test:events
 pnpm test:cache
+pnpm test:redis-cache
 pnpm test:queues
 pnpm test:scheduler
 pnpm test:observability
@@ -411,7 +418,9 @@ complete HTTP workflow. Typechecking uses built workspace declarations, so build
   a development CLI, standalone project starters, credentials, password hashing,
   sessions, cookie/origin checks, authorization, the persistent auth example,
   typed events, subscription ownership, task/portable/starter event observations,
-  typed caching with memory TTL/LRU and invalidation, typed durable queues,
+  typed caching with memory TTL/LRU and invalidation, optional Redis storage,
+  schema-validated JSON, owned Node Redis TCP/TLS and task-summary integration,
+  typed durable queues,
   SQLite job claims/retries/leases, workers, a persistent reports example,
   durable scheduling, UTC cron, atomic dispatch, cancellation, owned timers,
   explicit readiness, bounded metrics/Prometheus text, portable tracing/export,
@@ -452,9 +461,10 @@ provisioned database and configured service credential. `pnpm test:persistent-op
 verifies both actual hosts restarting and publisher interruption after remote commit.
 GET `/account/commands` provides bounded account history with live delivery
 metadata; `pnpm test:command-history` verifies upgrade, isolation and restart traversal.
-The [v0.1 plan](docs/v0.1-plan.md) continues with the web console, a complete
-example, setup/deployment and release hardening. [The roadmap](docs/roadmap.md)
-retains the remaining modules, dependencies and required verification.
+The [v0.1 plan](docs/v0.1-plan.md) now includes the working web console, complete
+example, independent locked application archive, setup/deployment and verified
+offline restore. [The roadmap](docs/roadmap.md) tracks subsequent modules,
+dependencies and required verification.
 
 The API is an early foundation. See [the architecture](docs/architecture.md) for package
 boundaries and [the example](examples/basic/src/app.ts) for the complete application.

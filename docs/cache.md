@@ -107,7 +107,9 @@ Values passed through this low-level contract are borrowed internal snapshots;
 adapters must not mutate them in place. Use the Cache manager for normal application
 access and copying. Store lifetime belongs to that one manager; close need not erase
 an external provider's persistent values, whereas clear explicitly invalidates its
-owned namespace. External provider integrations are not implemented yet.
+owned namespace. The optional [Redis provider](redis-cache.md) connects through
+an explicit [JSON codec](cache-json-codec.md) and [Node transport](redis-node.md).
+Memory remains the default; stronger cross-host fencing needs its own protocol.
 
 Unit and compile-only tests cover type boundaries, falsy hits, exact expiry, copying,
 shared work, invalidation races, asynchronous provider barriers, failures, and drain.

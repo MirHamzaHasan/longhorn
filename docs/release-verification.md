@@ -14,6 +14,7 @@ because package builds replace their declaration directories.
 | Job | Required checks |
 | --- | --- |
 | Source and runtimes | Build, types, source tests, native Node/Bun/Deno/workerd, independent generic CLI starters |
+| Redis cache | Owned Redis 7+ binary, existing memory-cache gate, shared codec/protocol on four runtimes and actual Node Redis/TLS/task HTTP integration |
 | Account operations | Native history upgrade/concurrency, transaction/account locks, persistent HTTP receiver/recovery |
 | Browser | Installed Chromium, actual full workflow, axe, keyboard, themes/widths and real captures |
 | Independent distribution | Relocated installed archive, native roles/schema, shipped HTTP flow, PostgreSQL 18 clients and offline restore |

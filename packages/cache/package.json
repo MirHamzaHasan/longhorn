@@ -7,13 +7,21 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
+    "./redis": {
+      "types": "./dist/redis.d.ts",
+      "import": "./dist/redis.js"
+    },
+    "./json": {
+      "types": "./dist/codec.d.ts",
+      "import": "./dist/codec.js"
+    },
     "./memory": {
       "types": "./dist/memory.d.ts",
       "import": "./dist/memory.js"
     }
   },
   "scripts": {
-    "build": "tsup src/index.ts src/memory.ts --format esm --dts --clean",
+    "build": "tsup src/index.ts src/memory.ts src/redis.ts src/codec.ts --format esm --dts --clean",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {},

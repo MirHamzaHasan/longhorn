@@ -12,6 +12,8 @@ account and browser jobs passed there. Package engines allow Node
 | Shared Fetch/core/DI/validation/config/logging | Node 20.19.4, Bun 1.4.4, Deno 2.9.6, workerd 1.20250718.0 | Shared packages and native/generic starter gates; runtime-specific entries remain explicit |
 | Generic CLI starters | All four runtime profiles above | Generated/relocated install, types/tests/build, native start/watch/shutdown |
 | HTTP service client/publisher | All four runtime profiles above | Real TCP to protected receipt receiver; does not imply PostgreSQL on all runtimes |
+| Redis codec/provider protocol | All four runtime profiles above | Built exports with a fake command client, including real workerd; no non-Node Redis TCP claim |
+| Native Redis task cache | Node 20.19.4, Redis 8.0.0, @redis/client 6.3.0 | Actual authenticated standalone server, TLS proxy, expiry/ACL/restart, native deadline destruction and HTTP outage fallback |
 | Persistent command console host | Node 20.19.4, PostgreSQL 18.4 | Native pg pool, scrypt, complete schema, fixed built assets and restricted role |
 | Local durable receiver | Miniflare 3.20250718.3, workerd 1.20250718.0, compatibility date 2025-07-18 | Retained single-host Object SQLite directory; no managed cloud failover evidence |
 | Browser console | Playwright 1.64.1 Chromium, axe 4.14.0 | Both themes, desktop/phone widths, keyboard/scaled text; other engines and real-device AT remain manual |

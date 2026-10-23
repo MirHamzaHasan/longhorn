@@ -302,8 +302,9 @@ and a clear barrier order provider I/O without serializing independent backend l
 Errors remain explicit, and cleanup drains accepted work before closing the store.
 
 `@longhorn/cache/memory` supplies bounded LRU storage with lazy TTL expiry and no
-background timers/native API. Cache/store ownership is per process or isolate;
-distributed providers and invalidation protocols remain future integrations.
+background timers/native API. Cache/store ownership is per process or isolate.
+The optional Redis adapter below shares retained values while coordinator load
+fences remain local; stronger distributed invalidation needs its own protocol.
 
 The tasks app caches only its derived `/summary` view. Local committed mutations
 invalidate directly, independently of observational events. Other processes' writes
@@ -890,3 +891,27 @@ real application/restore workflow. See [locked dependencies](command-app-depende
 Hosted browser/distribution jobs retain only their explicit review outputs under
 run-specific artifact names: captures/accessibility results and the archive plus
 checksum after successful native verification. See [CI artifacts](ci-review-artifacts.md).
+
+---
+
+## 33. Redis Cache Storage and Explicit Serialization
+
+`@longhorn/cache/redis` implements the existing CacheStore contract over a portable,
+exclusively owned command client. Namespaces isolate keys and bounded SCAN/UNLINK
+clear. Redis 7+ Lua keeps value/absolute expiry together and rejects expiry overflow
+before replacement. `@longhorn/cache/json` adds a versioned bounded envelope and
+application-supplied synchronous/asynchronous schema validation; memory storage
+retains its existing copy behavior without acquiring a serialization requirement.
+
+`@longhorn/node/redis` owns actual authenticated TCP/TLS. Native deadlines destroy
+the connection, admission is bounded, and offline queues/reconnect/replay are
+disabled. Close drains accepted work before releasing the transport. A timeout
+cannot roll back a server effect committed before acknowledgement loss.
+
+The separate task host acquires SQLite, the selected cache store and event observers
+through the existing DI/lifecycle architecture. Cache failure explicitly bypasses
+derived summaries while committed writes and direct task reads keep SQLite authority.
+Retained values are shared across hosts; load fences are not distributed, so TTL
+and trusted invalidation remain application policy. See [provider](redis-cache.md),
+[codec](cache-json-codec.md), [transport](redis-node.md), [example](redis-tasks-example.md)
+and [native verification](redis-cache-testing.md).

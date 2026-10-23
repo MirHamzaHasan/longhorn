@@ -6,6 +6,8 @@ dist/
 !.env.example
 .operator.env
 .operator.env.local
+.redis.env
+.redis.env.local
 *.sqlite
 *.sqlite-wal
 *.sqlite-shm

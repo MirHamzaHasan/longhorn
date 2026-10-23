@@ -20,7 +20,8 @@ no-store`, so browser/proxy caching does not obscure the application's cache beh
 | Part | Owns | Connects to |
 | --- | --- | --- |
 | `CACHE_TTL_MS` | Validated startup setting | Defaults to 5000 ms; accepts 0–3600000 |
-| `TaskSummaryCache` | DI token for `Cache<TaskSummary>` | Memory adapter, one value schema, 16-entry limit |
+| `TaskSummaryStore` | DI token for `CacheStore<TaskSummary>` | Memory by default (16 entries); an optional resource factory selects Redis |
+| `TaskSummaryCache` | DI token for `Cache<TaskSummary>` | Selected store plus validated TTL, one value schema |
 | `TasksService.summary` | Cached derived read | Shared load from `TasksStore.list`, public counts/timestamp |
 | Successful service mutations | Direct invalidation | Delete summary key before event observations/HTTP success |
 | `configureTaskCache` | Lifetime | Acquire after database and before event ownership |
@@ -39,8 +40,9 @@ This is not an atomic transaction spanning a source read, cache, and HTTP respon
 
 Other processes' writes do not invalidate this process's memory. Their changes can
 remain absent from `/summary` until expiry; `/tasks` and `/tasks/:id` retain their
-uncached source behavior. There is no cross-process event transport or distributed
-cache protocol. The generated timestamp makes the snapshot's computation time
+uncached source behavior. The default memory profile has no cross-process
+invalidation. The separate [Redis profile](redis-tasks-example.md) shares stored
+summaries with explicit TTL and consistency limits. The generated timestamp makes the snapshot's computation time
 visible, and the TTL defines the normal retention window.
 
 ## Failure and lifecycle policy

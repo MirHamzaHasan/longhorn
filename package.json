@@ -15,6 +15,8 @@
     "vitest": "^3.1.1"
   },
   "scripts": {
+    "dev:redis-cache": "pnpm --filter example-basic... build && node examples/basic/dist/redis-index.js",
+    "test:redis-cache": "pnpm build && node scripts/verify-redis-cache.mjs",
     "package:command-app": "pnpm build && node scripts/package-command-app.mjs",
     "test:command-app": "pnpm build && node scripts/verify-command-app.mjs",
     "test:console": "pnpm build && node scripts/verify-console.mjs",

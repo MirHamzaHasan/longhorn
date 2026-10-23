@@ -93,3 +93,8 @@ The persistent [tasks example](tasks-example.md) remains the integration referen
 for adding database contracts, migrations, and lifecycle-owned SQLite on Node.
 Choose provider implementations appropriate to the selected runtime. Feature
 selection and additional templates can build on this generator later.
+
+Snapshots now include the optional `@longhorn/cache/json`, `@longhorn/cache/redis`
+and Node-only `@longhorn/node/redis` exports. Starters continue to select memory;
+no Redis service/credentials are created by generation. The
+[Redis task profile](redis-tasks-example.md) shows explicit provider selection.

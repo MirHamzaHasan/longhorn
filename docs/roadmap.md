@@ -98,8 +98,13 @@ outbox/queue delivery remains separate.
 loads and generation fences handle concurrent misses and invalidation without
 repopulating from older work. `pnpm test:cache` checks the built contract across
 all targets and real HTTP, including the TTL boundary for external process writes.
-Normal task reads and auth remain uncached. Distributed cache providers remain
-future integrations with their own consistency protocols.
+Normal task reads and auth remain uncached. The optional [Redis provider](redis-cache.md)
+now supplies shared standalone Redis 7+ storage through a [schema codec](cache-json-codec.md)
+and [owned Node connection](redis-node.md). Its [task profile](redis-tasks-example.md)
+and [native gate](redis-cache-testing.md) prove restart retention, server expiry,
+namespace isolation, TLS, real command deadlines and authoritative outage fallback.
+The coordinator's loader fences remain process-local. Redis Cluster traversal,
+distributed version fencing and automatic reconnect/recovery need separate protocols.
 
 ## Durable queues implemented
 
