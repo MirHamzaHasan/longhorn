@@ -66,12 +66,16 @@ again identifies the Actions budget. Local frozen install/build/types, 480 tests
 native trace/metric/log collector gates, independent starters, archive/restore and
 the log demo passed. Hosted validation remains a distinct required release gate.
 
-D1 storage adds the seventh job, using actual local D1 bindings without cloud
+D1 storage is reviewed in [draft PR #5](https://github.com/MirHamzaHasan/longhorn/pull/5),
+stacked on logs. It adds the seventh job, using actual local D1 bindings without cloud
 credentials. Local frozen install/build/types, 491 tests in 83 files, the native
 D1 deployment/task/restart gate, Durable Object SQL regression, native runtimes
 and all four independent generic starters pass. The D1 provider is an optional
 batch capability; existing callback transaction stores keep their own gates.
-Hosted current-head execution remains required independently of local evidence.
+Its [first hosted attempt](https://github.com/MirHamzaHasan/longhorn/actions/runs/40045777156)
+failed all seven jobs before runner allocation or any executed step. The D1 check
+annotation identifies the same Actions budget restriction. Hosted current-head
+execution remains required independently of local evidence.
 
 [Review artifacts](ci-review-artifacts.md) attempt to retain actual browser captures
 and the application archive/checksum after successful independent verification.

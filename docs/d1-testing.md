@@ -47,3 +47,8 @@ replication/failover, production throughput, a timed-out query rollback, crash
 recovery during an in-flight cloud request or arbitrary platform final cleanup.
 Hosted checks and [the support matrix](supported-runtimes.md) record their own
 revision-specific availability; configured jobs are not execution evidence.
+
+[Draft PR #5](https://github.com/MirHamzaHasan/longhorn/pull/5) contains this feature.
+Its [first hosted run](https://github.com/MirHamzaHasan/longhorn/actions/runs/40045777156)
+failed all seven jobs before any runner or step started. The D1 annotation says
+the Actions budget prevented startup; no Linux execution is inferred from local QA.

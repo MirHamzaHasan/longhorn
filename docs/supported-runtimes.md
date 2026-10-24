@@ -23,6 +23,7 @@ account and browser jobs passed there. Package engines allow Node
 | Hosted CI baseline | Ubuntu 24.04, Node/pnpm pinned as above | Four v0.1 paths executed, including restore; artifact quota limits downloads |
 | Hosted CI Redis revision | Five jobs configured on Ubuntu 24.04 | Actions budget rejected every job before runner allocation; no Ubuntu execution evidence for this revision; current PR checks/logs govern exact-head results |
 | Hosted verification configuration | Seven jobs including D1 storage and native telemetry, pinned Linux x64 Collector 0.163.2 | Linux archive checksum is pinned; an available runner and successful exact-head execution are still required |
+| Hosted D1 revision | Seven jobs configured on Ubuntu 24.04 | First run rejected before any runner/step by the Actions budget; no Ubuntu D1 execution evidence; current PR checks govern the current head |
 
 The command application distribution is deliberately the Node/PostgreSQL profile.
 The framework's four runtime adapters remain modular; that does not make native
