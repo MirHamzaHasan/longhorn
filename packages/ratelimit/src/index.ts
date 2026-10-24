@@ -17,8 +17,10 @@ export class RateLimiter {
   private closing:Promise<void>|undefined
   constructor(options:{readonly store:RateLimitStorage;readonly scope:string;readonly limit?:number;readonly windowMs?:number;readonly now?:()=>number}){
     const policy=reservation({scope:options.scope,key:'0'.repeat(64),limit:options.limit??60,windowMs:options.windowMs??60_000})
-    if(typeof options.store?.consume!=='function'||typeof options.store.prune!=='function'||(options.store.clock!==undefined&&options.store.clock!=='application'&&options.store.clock!=='server')||(options.now!==undefined&&(typeof options.now!=='function'||options.store.clock==='server')))throw new RateLimitError('INPUT')
-    this.scope=policy.scope;this.limit=policy.limit;this.windowMs=policy.windowMs;this.store=options.store;this.serverClock=options.store.clock==='server';this.now=options.now??Date.now
+    if(typeof options.store?.consume!=='function'||typeof options.store.prune!=='function'||(options.now!==undefined&&typeof options.now!=='function'))throw new RateLimitError('INPUT')
+    const serverClock='clock' in options.store&&options.store.clock==='server'
+    if(serverClock&&options.now!==undefined)throw new RateLimitError('INPUT')
+    this.scope=policy.scope;this.limit=policy.limit;this.windowMs=policy.windowMs;this.store=options.store;this.serverClock=serverClock;this.now=options.now??Date.now
   }
   private admit<T>(work:()=>Promise<T>):Promise<T>{
     if(this.stopping)return Promise.reject(new RateLimitError('CLOSED'))

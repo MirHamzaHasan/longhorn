@@ -1,6 +1,6 @@
 import { expect,it,vi } from 'vitest'
 import { RateLimiter,RateLimitError } from './index.js'
-import type { RateLimitReservation,ServerTimedRateLimitStore } from './index.js'
+import type { RateLimitReservation,ServerTimedRateLimitStore,RateLimitStore } from './index.js'
 import { RedisRateLimitStore } from './redis.js'
 const request:RateLimitReservation={scope:'api:reports/v1',key:'a'.repeat(64),limit:2,windowMs:1000}
 function fixture(replies:unknown[]){const calls:string[][]=[],close=vi.fn();const client={async execute(command:readonly string[]){calls.push([...command]);return replies.shift()},close};return{store:new RedisRateLimitStore(client,{namespace:'one'}),client,calls,close}}
@@ -10,7 +10,6 @@ it('uses the declared server clock for remaining wait without consulting applica
 })
 it('keeps explicit client-clock overrides invalid on server-timed providers',()=>{
   const {store}=fixture([]);expect(()=>new RateLimiter({scope:'server',store,now:()=>0})).toThrow(RateLimitError)
-  for(const clock of ['unexpected',null,1])expect(()=>new RateLimiter({scope:'invalid',store:{...store,clock,consume:store.consume.bind(store),prune:store.prune.bind(store)} as unknown as ServerTimedRateLimitStore})).toThrow(RateLimitError)
 })
 it('uses one literal, hashed namespace key with policy-only arguments and snapshots options',async()=>{
   const calls:string[][]=[],client={async execute(command:readonly string[]){calls.push([...command]);return[1,1,1,2000,1000]}},options={namespace:'copied',maxConcurrent:1},store=new RedisRateLimitStore(client,options);options.namespace='changed'
@@ -44,4 +43,13 @@ it('validates namespace/admission/prune inputs before any native command',async(
   for(const namespace of ['', '*','one:two','a'.repeat(65)])expect(()=>new RedisRateLimitStore(state.client,{namespace})).toThrow(RateLimitError)
   for(const maxConcurrent of [0,1025,1.5,NaN])expect(()=>new RedisRateLimitStore(state.client,{namespace:'limits',maxConcurrent})).toThrow(RateLimitError)
   await expect(state.store.consume({...request,key:'raw subject'})).rejects.toMatchObject({code:'INPUT'});await expect(state.store.prune({limit:0})).rejects.toMatchObject({code:'INPUT'});expect(state.calls).toHaveLength(0)
+})
+it('keeps the original custom store port assignable with a private clock field',async()=>{
+  class CustomStore implements RateLimitStore {
+    private clock=0
+    async consume(input:RateLimitReservation,now:()=>number){this.clock=now();return{allowed:true,remaining:0,resetsAt:this.clock+input.windowMs}}
+    async prune(input:{now:number;limit:number}){this.clock=input.now;return 0}
+  }
+  const limiter=new RateLimiter({scope:'legacy',store:new CustomStore(),limit:1,windowMs:1000,now:()=>100})
+  expect(await limiter.consume('subject')).toEqual({allowed:true,remaining:0,resetsAt:1100,retryAfterMs:0});expect(await limiter.prune()).toBe(0);await limiter.close()
 })

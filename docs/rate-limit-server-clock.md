@@ -4,8 +4,8 @@ Owner: ServerTimedRateLimitStore/ServerTimedRateLimit and the RateLimiter coordi
 Connects [Redis](redis-rate-limits.md) without changing the existing
 [memory](rate-limit-memory.md) or [SQL](rate-limit-sql.md) time protocol.
 
-RateLimitStore retains its consume(request,now) callback. Its optional clock is
-'application'; omitted clock preserves the original contract. SQLite/PostgreSQL
+RateLimitStore retains its original shape and consume(request,now) callback, so
+custom providers can keep private implementation fields such as clock. SQLite/PostgreSQL
 sample that callback once after native ownership and before commit. prune receives
 application now plus its bounded limit. Existing custom providers remain valid.
 
