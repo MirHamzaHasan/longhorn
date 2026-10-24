@@ -13,7 +13,7 @@ const project = await createProject({
   directory: '../my-api',
   runtime: 'node', // node | bun | deno | workers
   name: 'my-api',  // optional; inferred from the destination otherwise
-  template: 'api', // optional; d1-tasks: workers, sqlite-tasks: node or bun
+  template: 'api', // optional; d1-tasks: workers, sqlite-tasks: node/bun/deno
 })
 console.log(project.directory, project.runtime, project.packages)
 ```
@@ -140,3 +140,11 @@ independent retention, with separate SQLite/PostgreSQL audit migration lists.
 Applications explicitly deploy [audit storage/grants](outbox-audit-storage.md) and
 supply [trusted identity policy](outbox-audit-attribution.md). No audit service or
 credential is enabled merely by generating a starter.
+
+The existing sqlite-tasks template now includes a native
+[Deno variant](deno-sqlite-starter.md), alongside Node/Bun. It snapshots the
+actual application/tests with a [checked mapping](deno-sqlite-starter-snapshot.md)
+and supplies [configured native launching](deno-sqlite-starter-permissions.md)
+and [owned source reloads](deno-sqlite-starter-development.md). The
+[packed installed gate](deno-sqlite-starter-testing.md) verifies its complete
+native workflow outside this checkout.

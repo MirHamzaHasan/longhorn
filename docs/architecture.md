@@ -1227,7 +1227,35 @@ Native verification proves exact binding/value boundaries, permission denial,
 same-file drain, existing SQL stores, lock/crash recovery and HTTP persistence.
 It traverses 1029 tasks and a maximum int64 ID, then actual Node/Bun peers read
 and update the same retained file for Deno to serve after restart. Independent
-Deno CLI task generation remains separate from the runnable host.
+Deno CLI task generation now uses that runnable host through the profile below.
 See [provider](deno-sqlite.md), [bindings](deno-sqlite-bindings.md),
 [transactions](deno-sqlite-transactions.md), [tasks](deno-sqlite-tasks.md) and
 [proof](deno-sqlite-testing.md).
+
+---
+
+## 46. Independent Deno SQLite Generation and Configured Native Development
+
+The CLI's public SQLite application profile now supports Deno without adding a
+public template name or changing descriptor version 1. Fixed Deno assets copy
+actual task source and host/storage wiring through checked mappings, retain all
+six application test files and include only the chosen framework closure.
+Test graphs compile to JavaScript, then native Deno runs node:test cases with
+real pinned assertions/mocks. A native Deno.Command persistence owner verifies
+actual child status and joins output readers before temporary storage cleanup.
+
+Node project tooling reads environment files/process overrides and validates the
+same compiled schema before selecting child grants. Deno receives only six app
+keys, selected host/data-directory permissions and its explicit versioned policy.
+Unique named permission JSON files preserve literal paths and are removed on
+normal/failed startup or owned shutdown. The pinned runtime currently labels
+named permissions experimental; compatibility remains an executed profile.
+
+The watcher serially drains old hosts before replacements, keeps service on
+compile errors, refreshes configuration per launch and stops on native/schema
+failure. Installed packed binaries prove relocation/frozen installs, all native
+application/persistence checks, actual outside-path/env/network denial, policy
+cleanup, concurrent writers, failed compile recovery and restored schema history.
+See [profile](deno-sqlite-starter.md), [mapping](deno-sqlite-starter-snapshot.md),
+[permissions](deno-sqlite-starter-permissions.md),
+[development](deno-sqlite-starter-development.md) and [proof](deno-sqlite-starter-testing.md).

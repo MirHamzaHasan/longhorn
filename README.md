@@ -36,6 +36,11 @@ For the same task application on native Bun, use
 The [Bun SQLite starter](docs/bun-sqlite-starter.md) includes native tests,
 retained file storage and owned development reloads.
 
+For the native Deno version, use
+`pnpm create:app ../deno-tasks --runtime deno --template sqlite-tasks`.
+The [Deno SQLite project](docs/deno-sqlite-starter.md) includes editable source,
+native tests, scoped launch permissions and retained development reloads.
+
 ## Run the command console
 
 ```sh

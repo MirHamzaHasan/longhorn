@@ -123,3 +123,10 @@ Snapshots retain optional `@longhorn/idempotency/batch-sqlite` when idempotency 
 selected through the graph. Generic starters enable no persistence/request keys;
 the [D1 replay profile](d1-idempotency-http.md) supplies explicit DI, deployment
 and response retention policy.
+
+The separate public sqlite-tasks profile supports Node, Bun and
+[native Deno](deno-sqlite-starter.md) task applications. The Deno profile owns
+its configured file/environment/network grants, Node source supervisor and native
+test/persistence tools. Its behavior is documented independently of the generic
+api runtime policies above; [installed verification](deno-sqlite-starter-testing.md)
+checks relocation, retained data, permission denial and source recovery.

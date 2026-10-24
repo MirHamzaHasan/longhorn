@@ -78,6 +78,11 @@ project checks, and exit status. `pnpm test:projects` invokes both built entrypo
 installs fresh projects, runs their checks and HTTP hosts, edits source to verify
 watching, and checks shutdown. See [starter templates](starter-templates.md).
 
+The persistent sqlite-tasks template supports Node, Bun and
+[Deno](deno-sqlite-starter.md). Its Deno variant has independent
+[native install/watch/permission verification](deno-sqlite-starter-testing.md);
+Workers keeps the d1-tasks profile. These choices do not alter the default api app.
+
 The initial CLI supports creation and existing project scripts. Feature generators,
 automatic framework upgrades, plugin installation, interactive prompts, deployment,
 and multi-process orchestration are not implemented. Native execution is verified

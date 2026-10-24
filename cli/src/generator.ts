@@ -33,7 +33,7 @@ export async function createProject(options: CreateProjectOptions): Promise<Crea
   const template = options.template ?? 'api'
   if (!templates.includes(template)) throw new Error(`Unknown template: ${template}`)
   if (template === 'd1-tasks' && options.runtime !== 'workers') throw new Error('The d1-tasks template requires --runtime workers')
-  if (template === 'sqlite-tasks' && options.runtime !== 'node' && options.runtime !== 'bun') throw new Error('The sqlite-tasks template requires --runtime node or bun')
+  if (template === 'sqlite-tasks' && options.runtime === 'workers') throw new Error('The sqlite-tasks template requires --runtime node, bun or deno')
   if (!options.directory.trim()) throw new Error('A destination directory is required')
   const directory = resolve(options.directory)
   const name = options.name ?? basename(directory).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
@@ -57,7 +57,7 @@ export async function createProject(options: CreateProjectOptions): Promise<Crea
       if (dependency.startsWith('@longhorn/')) include(dependency)
     }
   }
-  const application = template === 'd1-tasks' ? await readD1Template(framework) : template === 'sqlite-tasks' ? await readSqliteTemplate(framework, options.runtime as 'node'|'bun') : undefined
+  const application = template === 'd1-tasks' ? await readD1Template(framework) : template === 'sqlite-tasks' ? await readSqliteTemplate(framework, options.runtime as 'node'|'bun'|'deno') : undefined
   const direct = application ? Object.keys(application.dependencies).filter(name => name.startsWith('@longhorn/')) : ['@longhorn/core', '@longhorn/container', '@longhorn/logger', '@longhorn/validation', '@longhorn/events', '@longhorn/cache', '@longhorn/observability', `@longhorn/${options.runtime}`]
   if (!application) {
     if (options.runtime !== 'workers') direct.push('@longhorn/config')

@@ -39,7 +39,8 @@ same local SQLite format and checked schema. Concurrent processes use native
 SQLite locks; they do not share events/cache or an in-process gate.
 
 This is the public local example with the same policy as basic/Bun tasks, without
-account authentication. Independent Deno sqlite-tasks CLI generation is separate
-work; existing Node/Bun profiles retain their choices. See
+account authentication. [Independent Deno projects](deno-sqlite-starter.md) now
+ship this application through the CLI with their own configured launcher;
+existing Node/Bun profiles retain their choices. See
 [provider](deno-sqlite.md), [callback ownership](deno-sqlite-transactions.md),
 [bindings](deno-sqlite-bindings.md) and [actual native proof](deno-sqlite-testing.md).

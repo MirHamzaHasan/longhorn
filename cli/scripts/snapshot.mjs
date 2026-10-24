@@ -113,3 +113,57 @@ await writeFile(join(bunSqlite,'tests/persistence.mjs'),persistence.replace("'@l
 const bunExample=JSON.parse(await readFile(join(root,'examples/bun-sqlite/package.json'),'utf8')),bunHashes={}
 await record(bunSqlite,'',bunHashes)
 await writeFile(join(bunSqlite,'template.json'),JSON.stringify({schemaVersion:1,dependencies:bunExample.dependencies,devDependencies:{'@types/bun':'1.4.4','bun-runtime':'npm:bun@1.4.4',typescript:'^5.8.2',esbuild:'^0.28.2'},files:bunHashes},null,2)+'\n')
+
+const denoSqlite=join(output,'templates/deno-sqlite-tasks')
+await cp(join(root,'starters/deno-sqlite-tasks'),denoSqlite,{recursive:true})
+await mkdir(join(denoSqlite,'src'),{recursive:true})
+let denoTestCount=0
+for(const entry of await readdir(join(root,'examples/basic/src'),{withFileTypes:true})){
+  if(!entry.isFile())throw new Error('Basic source layout changed; review Deno template mapping')
+  if(entry.name.startsWith('redis-')||['index.ts','storage.ts'].includes(entry.name))continue
+  let source=await readFile(join(root,'examples/basic/src',entry.name),'utf8')
+  if(entry.name.endsWith('.test.ts')){
+    denoTestCount++
+    if(source.split("from 'vitest'").length!==2)throw new Error('Basic test runner changed; review Deno template mapping')
+    source=source.replace("from 'vitest'","from '../tests/runner.js'")
+    source=source.replaceAll("'@longhorn/node/sqlite'","'@longhorn/deno/sqlite'").replaceAll("'@longhorn/node'","'@longhorn/deno'").replaceAll('nodeRuntime','denoRuntime').replaceAll('real Node server','real Deno server')
+    if(entry.name==='cache.test.ts'){
+      const before='create: vi.fn(async (title)'
+      if(source.split(before).length!==2)throw new Error('Cache mock signature changed; review Deno template mapping')
+      source=source.replace(before,"create: vi.fn<TasksStore['create']>(async (title)")
+    }
+  }
+  if(source.includes('@longhorn/node')||source.includes("from 'vitest'"))throw new Error('Unexpected Node adapter/test runner import in Deno task source')
+  await writeFile(join(denoSqlite,'src',entry.name),source)
+}
+if(denoTestCount!==6)throw new Error('Deno application test set changed; review template mapping')
+for(const entry of['index.ts','storage.ts']){
+  let source=await readFile(join(root,'examples/deno-sqlite/src',entry),'utf8')
+  const matches=[...source.matchAll(/'\.\.\/\.\.\/basic\/src\/([a-z-]+\.js)'/g)]
+  if(matches.length!==(entry==='index.ts'?2:4))throw new Error('Deno task source paths changed; review template mapping')
+  source=source.replace(/'\.\.\/\.\.\/basic\/src\/([a-z-]+\.js)'/g,"'./$1'")
+  if(entry==='index.ts'){
+    if(source.split("{ PORT: '3017' }, environment").length!==2)throw new Error('Deno task default port changed; review template mapping')
+    source=source.replace("{ PORT: '3017' }, environment",'environment')
+  }
+  await writeFile(join(denoSqlite,'src',entry),source)
+}
+await cp(join(root,'examples/basic/.env.example'),join(denoSqlite,'.env.example'))
+await cp(join(root,'LICENSE'),join(denoSqlite,'LICENSE'))
+let denoPersistence=persistence.replace("'@longhorn/node/sqlite'","'@longhorn/deno/sqlite'")
+for(const declaration of ["import { spawn } from 'node:child_process'\n","import { once } from 'node:events'\n","import { createInterface } from 'node:readline'\n"]){
+  if(denoPersistence.split(declaration).length!==2)throw new Error('Deno persistence imports changed; review mapping')
+  denoPersistence=denoPersistence.replace(declaration,'')
+}
+const hostStart='async function start() {',hostEnd='async function request('
+if(denoPersistence.split(hostStart).length!==2||denoPersistence.split(hostEnd).length!==2)throw new Error('Deno persistence host ownership changed; review mapping')
+denoPersistence=denoPersistence.slice(0,denoPersistence.indexOf(hostStart))+denoPersistence.slice(denoPersistence.indexOf(hostEnd))
+if(denoPersistence.split('const processes = new Set()').length!==2)throw new Error('Deno persistence process set changed; review mapping')
+denoPersistence="import { createHosts } from './processes.mjs'\n"+denoPersistence.replace('const processes = new Set()','const hosts = createHosts({ root, directory, filename })\nconst { start, stop } = hosts')
+const cleanup='} finally {\n  await Promise.all([...processes].map'
+if(denoPersistence.split(cleanup).length!==2)throw new Error('Deno persistence cleanup changed; review mapping')
+denoPersistence=denoPersistence.slice(0,denoPersistence.indexOf(cleanup))+"} finally {\n  try { await hosts.close() } finally { await rm(directory, { recursive: true, force: true }) }\n}\n"
+await writeFile(join(denoSqlite,'tests/persistence.mjs'),denoPersistence)
+const denoExample=JSON.parse(await readFile(join(root,'examples/deno-sqlite/package.json'),'utf8')),denoHashes={}
+await record(denoSqlite,'',denoHashes)
+await writeFile(join(denoSqlite,'template.json'),JSON.stringify({schemaVersion:1,dependencies:denoExample.dependencies,devDependencies:{'@types/deno':'2.7.0','@types/node':'^22.13.10','deno-runtime':'npm:deno@2.9.6',expect:'30.5.2','jest-mock':'30.5.2',typescript:'^5.8.2',esbuild:'^0.28.2'},files:denoHashes},null,2)+'\n')

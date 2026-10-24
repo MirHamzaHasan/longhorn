@@ -14,8 +14,8 @@ pnpm dev
 
 Both creation binaries and createProject support this combination. Metadata stays
 `{ runtime: 'bun', template: 'sqlite-tasks' }`; bun-sqlite-tasks is an internal asset
-directory, not another public template. Node retains its existing variant. Deno
-and Workers SQLite combinations reject before filesystem output; Workers has the
+directory, not another public template. Node retains its existing variant;
+[Deno has its own native variant](deno-sqlite-starter.md). Workers selects the
 separate D1 profile. The four-runtime api template remains the default.
 
 The independent project owns editable task source, a built framework snapshot,

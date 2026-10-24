@@ -10,5 +10,5 @@ existing task app/repository, preserving tasks in data/longhorn.sqlite.
 [transaction ownership](../../docs/deno-sqlite-transactions.md) and
 [verification](../../docs/deno-sqlite-testing.md) each have a feature guide.
 `pnpm test:deno-sqlite` runs real Deno SQL/permissions/crash/HTTP and native
-Node/Bun file interoperability checks. Independent Deno CLI task generation is
-not included in this example milestone.
+Node/Bun file interoperability checks. [Independent Deno projects](../../docs/deno-sqlite-starter.md)
+now ship this same app through the CLI with their own configured native launcher.

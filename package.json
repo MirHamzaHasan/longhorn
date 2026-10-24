@@ -89,7 +89,8 @@
     "dev:jobs-native": "pnpm --filter example-jobs... build && node scripts/serve-native-jobs.mjs",
     "test:owned-native": "pnpm build && pnpm build:rust-reports && node scripts/verify-owned-native-reports.mjs",
     "test:deno-sqlite": "pnpm build && node scripts/verify-deno-sqlite.mjs",
-    "dev:deno-sqlite": "pnpm --filter example-deno-sqlite... build && deno run --no-prompt --no-lock --node-modules-dir=manual --allow-net=127.0.0.1 --allow-env=APP_NAME,HOST,PORT,LOG_LEVEL,DATABASE_PATH,CACHE_TTL_MS --allow-read=examples/deno-sqlite/data --allow-write=examples/deno-sqlite/data examples/deno-sqlite/dist/index.js"
+    "dev:deno-sqlite": "pnpm --filter example-deno-sqlite... build && deno run --no-prompt --no-lock --node-modules-dir=manual --allow-net=127.0.0.1 --allow-env=APP_NAME,HOST,PORT,LOG_LEVEL,DATABASE_PATH,CACHE_TTL_MS --allow-read=examples/deno-sqlite/data --allow-write=examples/deno-sqlite/data examples/deno-sqlite/dist/index.js",
+    "test:deno-sqlite-project": "pnpm build && node scripts/verify-sqlite-project.mjs deno"
   },
   "packageManager": "pnpm@12.6.0"
 }

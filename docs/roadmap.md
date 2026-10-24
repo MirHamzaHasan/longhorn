@@ -545,8 +545,23 @@ fence a native automatic rollback. The shared task app runs with explicit Deno
 file/network/environment grants and preserves tasks through native restart.
 Actual tests cover permissions, contention, crash recovery, 1029-task bounded
 reads/counts and Node/Bun/Deno writes to the same retained file with an int64 ID.
-SQL calls remain synchronous. Independent Deno task generation and deployment
-profiles remain subsequent work.
+SQL calls remain synchronous. Independent Deno generation is implemented below;
+deployment profiles remain subsequent work.
+
+## Independent Deno SQLite workflow implemented
+
+[Project selection](deno-sqlite-starter.md), [source/test mapping](deno-sqlite-starter-snapshot.md),
+[launch permissions](deno-sqlite-starter-permissions.md),
+[owned development](deno-sqlite-starter-development.md) and
+[installed verification](deno-sqlite-starter-testing.md) each have a guide. The
+same public sqlite-tasks profile now selects Node, Bun or Deno. Packed creation
+ships actual editable source/tests, a selected local framework closure and frozen
+installation. A Node launcher validates project environment settings and gives
+native Deno literal-path named grants, joining child and policy-file cleanup.
+Serial source replacements preserve old service on compile failure and retained
+storage across success. Native tests/persistence, actual grant denial and installed
+restart/schema recovery are verified. Production account/deployment policy and
+automatic updates remain independent work.
 
 ## Subsequent framework modules
 

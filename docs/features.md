@@ -9,6 +9,11 @@ downstream connections, verification, and current limits.
 
 | Feature | Guide | Implementation owner | Connects to |
 | --- | --- | --- | --- |
+| Independent Deno SQLite app | [Deno SQLite project](deno-sqlite-starter.md) | Existing CLI public SQLite profile | Native editable tasks, selected framework graph, relocation and retained development |
+| Checked Deno source/test distribution | [Deno source snapshot](deno-sqlite-starter-snapshot.md) | CLI builder and descriptor v1 | Actual app/tests, checked imports/port mapping, native case adapter and trusted assets |
+| Configured Deno project permissions | [Deno launcher policy](deno-sqlite-starter-permissions.md) | Project Node launcher and named grants | Shared schema, environment precedence, literal data paths, native denial and policy-file cleanup |
+| Owned Deno source development | [Deno replacements](deno-sqlite-starter-development.md) | Node/esbuild watcher and pinned Deno | Compile-failure retention, serial host drain, current config and failure reporting |
+| Packed Deno SQLite workflow proof | [Deno project verification](deno-sqlite-starter-testing.md) | Installed/relocated CLI gate | Frozen install, 47 native cases, persistence, grant denial, restart/watch/schema recovery |
 | Native Deno SQLite | [Deno storage](deno-sqlite.md) | Optional @longhorn/deno/sqlite | Native built-in driver, exact values/metadata, admission budgets and actual close |
 | Deno SQLite binding slots | [Binding plan](deno-sqlite-bindings.md) | Adapter-local SQL/slot scan | Exact arity, names/numbered holes, input snapshots and unchanged result column names |
 | Deno callback transaction ownership | [Deno transactions](deno-sqlite-transactions.md) | Canonical file gate and managed executors | Async callback lifetime, native rollback fencing and existing queue/scheduler/replay stores |

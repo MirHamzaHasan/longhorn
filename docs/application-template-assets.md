@@ -29,6 +29,13 @@ host/storage wiring are copied with checked import/runner/mock-type adaptations;
 the output excludes Node/Redis hosts and uses only the selected Bun closure.
 See [Bun distribution and proof](bun-sqlite-starter-testing.md).
 
+The Deno wrapper selects fixed deno-sqlite-tasks assets under the same public
+SQLite identity. It requires native test/launcher tools, uses esbuild/Deno build
+approvals and retains descriptor v1. Shared app/test source and Deno host/storage
+use checked mappings; named permission files are runtime-owned outputs rather
+than static descriptor assets. See [Deno snapshot](deno-sqlite-starter-snapshot.md),
+[launcher](deno-sqlite-starter-permissions.md) and [proof](deno-sqlite-starter-testing.md).
+
 Build snapshots copy application source from its working example, preserving bytes.
 The Node profile excludes the separate redis-* host/config files. Its persistence
 test is adapted from the proven repository gate at two checked import/entry paths;

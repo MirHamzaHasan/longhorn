@@ -84,6 +84,7 @@ jobs:
       - run: node scripts/verify-projects.mjs
       - run: node scripts/verify-sqlite-project.mjs
       - run: node scripts/verify-sqlite-project.mjs bun
+      - run: node scripts/verify-sqlite-project.mjs deno
   account-operations:
     runs-on: ubuntu-24.04
     timeout-minutes: 20

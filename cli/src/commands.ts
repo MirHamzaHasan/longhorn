@@ -23,7 +23,7 @@ const help = `LongHorn development CLI
 
 create-longhorn <directory> accepts the same creation options.
 The d1-tasks template requires --runtime workers and includes retained local D1 storage.
-The sqlite-tasks template requires --runtime node or bun and includes a persistent SQLite file.
+The sqlite-tasks template requires --runtime node, bun or deno and includes a persistent SQLite file.
 Generation uses a bundled framework snapshot; it never overwrites existing files.
 pnpm 12.6.0 and Node.js 20.19+ are required for project development.`
 
