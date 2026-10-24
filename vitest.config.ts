@@ -6,6 +6,7 @@ export default defineConfig({
   resolve: {
     alias: Object.entries({
       '@longhorn/http/client': './packages/http/src/client.ts',
+      '@longhorn/auth/scrypt': './packages/auth/src/scrypt.ts',
       '@longhorn/auth/bearer': './packages/auth/src/bearer.ts',
       '@longhorn/outbox/http': './packages/outbox/src/http.ts',
       '@longhorn/outbox/hono': './packages/outbox/src/hono.ts',

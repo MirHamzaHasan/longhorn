@@ -12,10 +12,10 @@ beforeEach(async () => {
   temporary = await mkdtemp(join(tmpdir(), 'longhorn-generator-'))
   framework = join(temporary, 'distribution')
   const packages: Record<string, { directory: string; dependencies: Record<string, string> }> = {}
-  for (const name of ['core', 'container', 'http', 'logger', 'runtime', 'config', 'validation', 'database', 'idempotency', 'events', 'cache', 'observability', ...runtimes]) {
+  for (const name of ['core', 'container', 'http', 'logger', 'runtime', 'config', 'validation', 'database', 'auth', 'idempotency', 'events', 'cache', 'observability', ...runtimes]) {
     const dependencies: Record<string, string> = name === 'core'
       ? { '@longhorn/container': '0.0.1', '@longhorn/http': '0.0.1', '@longhorn/logger': '0.0.1', '@longhorn/runtime': '0.0.1' }
-      : name === 'node' ? { '@longhorn/database': '0.0.1', '@longhorn/config': '0.0.1' } : ['bun','deno','idempotency'].includes(name) ? {'@longhorn/database':'0.0.1'} : {}
+      : name === 'node' ? { '@longhorn/database': '0.0.1', '@longhorn/config': '0.0.1', '@longhorn/auth':'0.0.1' } : ['bun','deno'].includes(name) ? {'@longhorn/database':'0.0.1','@longhorn/auth':'0.0.1'} : ['auth','idempotency'].includes(name) ? {'@longhorn/database':'0.0.1'} : {}
     const directory = join(framework, name)
     await mkdir(join(directory, 'dist'), { recursive: true })
     await writeFile(join(directory, 'dist/index.js'), `export const runtime = ${JSON.stringify(name)}\n`)

@@ -36,7 +36,7 @@ Session replacement inserts the new record and deletes the prior hash in one wri
 transaction. Failed insertion preserves the old session. Revocation deletes records;
 there is no local authentication cache. User-session and expiry indexes support
 all-device revocation and maintenance. Foreign keys require the connection provider
-to enable enforcement; the Node adapter does so.
+to enable enforcement; the Node, Bun and Deno adapters do so.
 
 Login-attempt reservations delete expired windows, then atomically insert/increment
 the account's counter. Counts saturate above the configured limit. Successful

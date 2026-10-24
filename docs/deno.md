@@ -54,3 +54,7 @@ through a separate native entrypoint, with [binding slots](deno-sqlite-bindings.
 [async ownership](deno-sqlite-transactions.md), a [persistent task host](deno-sqlite-tasks.md)
 and [native verification](deno-sqlite-testing.md). Importing denoRuntime does not
 import SQLite. File access stays behind explicit grants in the task host command.
+
+The optional [Deno password adapter](deno-passwords.md) supplies native asynchronous
+scrypt with the shared fixed policy. `pnpm dev:auth:deno` composes it with SQLite
+and scoped host permissions in the [auth application](native-auth-example.md).

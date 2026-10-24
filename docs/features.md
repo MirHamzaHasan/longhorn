@@ -9,6 +9,12 @@ downstream connections, verification, and current limits.
 
 | Feature | Guide | Implementation owner | Connects to |
 | --- | --- | --- | --- |
+| Shared fixed scrypt policy | [Password policy](scrypt-password-policy.md) | Optional @longhorn/auth/scrypt | Existing Node wire format, trusted native drivers, dummy work and actual-settlement admission |
+| Native Bun password hashing | [Bun passwords](bun-passwords.md) | Optional @longhorn/bun/passwords | Native async crypto, shared policy and PasswordHasher contract |
+| Native Deno password hashing | [Deno passwords](deno-passwords.md) | Optional @longhorn/deno/passwords | Native async crypto, shared policy and legacy/peer hashes |
+| Three native authentication hosts | [Native auth example](native-auth-example.md) | Existing auth app and explicit runtime hosts | Shared retained SQLite, credentials/sessions, cookie/role boundaries and drained native work |
+| Bounded private-note pages | [Note pages](auth-note-pages.md) | Shared auth example query/helper | Strict owner/cursor/limit SQL, original index, exact int64 IDs and live pagination |
+| Native password/auth proof | [Native auth testing](native-password-testing.md) | Actual Node/Bun/Deno processes | Independent raw crypto vectors, native signal drain, mixed sessions and large owner pages |
 | Independent Deno SQLite app | [Deno SQLite project](deno-sqlite-starter.md) | Existing CLI public SQLite profile | Native editable tasks, selected framework graph, relocation and retained development |
 | Checked Deno source/test distribution | [Deno source snapshot](deno-sqlite-starter-snapshot.md) | CLI builder and descriptor v1 | Actual app/tests, checked imports/port mapping, native case adapter and trusted assets |
 | Configured Deno project permissions | [Deno launcher policy](deno-sqlite-starter-permissions.md) | Project Node launcher and named grants | Shared schema, environment precedence, literal data paths, native denial and policy-file cleanup |
@@ -403,6 +409,10 @@ flowchart TD
   App --> AuthHttp
   AuthHttp --> Http
   Passwords[Node password adapter] --> Auth
+  Passwords --> ScryptPolicy[Shared scrypt policy]
+  BunPasswords[Bun password adapter] --> ScryptPolicy
+  DenoPasswords[Deno password adapter] --> ScryptPolicy
+  ScryptPolicy --> Auth
   App --> Passwords
   AuthSqlite[SQLite auth store] --> Auth
   AuthSqlite --> Database

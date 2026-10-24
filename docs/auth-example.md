@@ -6,9 +6,14 @@ The separate [tasks example](tasks-example.md) retains its public API and databa
 
 ```sh
 pnpm dev:auth
+pnpm dev:auth:bun
+pnpm dev:auth:deno
 ```
 
-Default address: `http://127.0.0.1:3001`. Settings come from optional `.env` and
+All three select native listeners, SQLite and compatible scrypt through the same
+shared application. See [native hosts](native-auth-example.md) for runtime-specific
+environment, permissions and shutdown. Default address: `http://127.0.0.1:3001`.
+Node settings come from optional `.env` and
 `.env.local` files in `examples/auth`, then process environment. Copy `.env.example`
 there for local changes. The database defaults to `examples/auth/data/auth.sqlite`.
 No seed user or default password is created. Committed accounts, sessions, notes,
@@ -54,13 +59,16 @@ hashes in response JSON.
 | POST `/auth/logout` | Revoke current token and clear cookie; idempotent 204 |
 | POST `/auth/logout-all` | Revoke the authenticated user's sessions across devices/processes |
 | GET `/admin` | Require current `admin` role; registration cannot grant it |
-| GET/POST `/notes` | List/create notes owned by the authenticated user |
+| GET `/notes` | Owner-scoped cursor page `{ notes, nextCursor }`; default 20, max 100 |
+| POST `/notes` | Create a note owned by the authenticated user |
 | DELETE `/notes/:id` | Delete only an owned note; other/missing IDs return 404 |
 
-`src/config.ts` owns typed settings. `src/index.ts` supplies native environment,
+`src/config.ts` owns typed settings. `src/index.ts`, `bun.ts` and `deno.ts` supply native environment,
 logger, shared scrypt hasher, SQLite acquisition, listener, and signals. `src/app.ts`
 owns migrations/DI registration, the typed Hono auth subrouter, validation, and
-owner-scoped queries. The database is acquired on startup and released after drain.
+owner-scoped queries; `src/notes.ts` owns [bounded list reads](auth-note-pages.md).
+Follow `nextCursor` to read the whole collection; this replaces the previous unbounded
+list response. The database is acquired on startup and released after drain.
 All covered responses use `no-store`; unsafe methods require the configured Origin.
 Bodies are limited to 8 KiB before route parsing. Registration rejects client role
 fields. Framework/core remains independent of these application routes.
@@ -78,3 +86,7 @@ and omission of secrets from logs. It uses temporary databases only. A separate
 browser bundle runs shared auth in actual workerd with explicit test-only providers.
 Unit/HTTP tests also exercise the failure cases without paying native hash costs
 for every assertion.
+
+`pnpm test:native-auth` adds independent Node/Bun/Deno password vectors, actual
+SIGTERM during native registration and a mixed three-host retained database check,
+including more than 1000 owner-scoped notes. See [native proof](native-password-testing.md).

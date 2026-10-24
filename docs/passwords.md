@@ -1,7 +1,8 @@
 # Node password hashing
 
 Owner: `createScryptPasswordHasher` from `@longhorn/node/passwords`. Implements the
-runtime-neutral `PasswordHasher` contract from `@longhorn/auth`. Native crypto stays
+runtime-neutral `PasswordHasher` contract from `@longhorn/auth` through the
+[shared scrypt policy](scrypt-password-policy.md). Native crypto stays
 in the Node runtime entrypoint; importing core or shared auth does not import it.
 
 ```ts
@@ -52,5 +53,8 @@ process verifier checks real registrations/login and database contents.
 
 Work factors are intentionally not caller-controlled. Other algorithms and runtime
 password adapters can implement `PasswordHasher`; they must retain dummy work for
-unknown accounts. This version does not migrate legacy hash formats, rehash
-automatically, apply a pepper, or provide a Bun/Deno/Worker password adapter.
+unknown accounts. The [Bun](bun-passwords.md) and [Deno](deno-passwords.md)
+adapters now retain this same fixed format, with
+[independent cross-runtime verification](native-password-testing.md). Native driver
+failures use a fixed secret-free error. This version does not migrate other hash
+formats, rehash automatically, apply a pepper, or provide a Worker password adapter.

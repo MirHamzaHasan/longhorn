@@ -221,11 +221,15 @@ dependencies, and example. [The roadmap](docs/roadmap.md) tracks the remaining w
 
 ```sh
 pnpm dev:auth
+pnpm dev:auth:bun
+pnpm dev:auth:deno
 ```
 
 This separate API runs at `http://127.0.0.1:3001` with local credentials, native
 scrypt, SQLite-backed sessions, exact write-origin checks, role guards, and private
-notes scoped to their owner. It creates no seed accounts. See the
+notes scoped to their owner in bounded cursor pages. Node, Bun and Deno select
+native password/SQLite adapters behind the same app and compatible retained state.
+It creates no seed accounts. See [native hosts](docs/native-auth-example.md) and the
 [auth example](docs/auth-example.md) for registration/login commands and settings,
 and [authentication](docs/authentication.md) for contracts and current limits.
 Each authentication feature has its own guide in the feature index.
@@ -472,6 +476,7 @@ pnpm test:outbox-recovery
 pnpm test:outbox-audit
 pnpm test:projects
 pnpm test:auth
+pnpm test:native-auth
 pnpm test:events
 pnpm test:cache
 pnpm test:redis-cache

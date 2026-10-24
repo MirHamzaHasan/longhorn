@@ -79,6 +79,9 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test
       - run: node scripts/verify-runtimes.mjs
+      - run: node scripts/verify-password-runtimes.mjs
+      - run: node scripts/verify-auth.mjs
+      - run: node scripts/verify-auth.mjs bun
       - run: node scripts/verify-bun-sqlite.mjs
       - run: node scripts/verify-deno-sqlite.mjs
       - run: node scripts/verify-projects.mjs

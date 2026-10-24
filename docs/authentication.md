@@ -2,8 +2,10 @@
 
 Owner: `@longhorn/auth`. Connects a `PasswordHasher`, account storage, login-attempt
 storage, and [sessions](sessions.md). Shared code uses Web Crypto and contains no
-Node APIs. The [Node password adapter](passwords.md) and [SQLite store](auth-sqlite.md)
-are separate choices; core does not automatically enable authentication.
+Node APIs. Explicit [Node](passwords.md), [Bun](bun-passwords.md) and
+[Deno](deno-passwords.md) password adapters share the same fixed policy.
+The [SQLite store](auth-sqlite.md) is a separate choice; core does not automatically
+enable authentication.
 The [PostgreSQL store](auth-postgres.md) supplies the same service contracts with native SQL.
 
 ```ts
@@ -36,8 +38,8 @@ Registration assigns `member`, with no client-controlled role argument. It retur
 only `{ id, username, roles }` and does not automatically log in.
 
 Login performs password verification for both existing and missing accounts. A
-`PasswordHasher` must perform dummy work for a missing or malformed hash; the Node
-adapter does so with the same scrypt parameters. Wrong and unknown credentials
+`PasswordHasher` must perform dummy work for a missing or malformed hash; the native
+adapters do so with the same scrypt parameters. Wrong and unknown credentials
 return the same `INVALID_CREDENTIALS` error. Valid login issues a fresh opaque
 session. Supplying a previous session token rotates it atomically in storage.
 
@@ -71,7 +73,7 @@ logger omits request bodies, cookies, and authorization headers.
 
 ```text
 HTTP validation -> AuthService -> CredentialStore + LoginAttemptStore
-                              -> PasswordHasher -> native Node scrypt
+                              -> PasswordHasher -> native Node/Bun/Deno scrypt
                               -> SessionManager -> SessionStore
 AuthService.authenticate -> session validation -> fresh account -> public principal
 ```
@@ -81,6 +83,8 @@ rotation, expiry, current roles, missing users, throttling, and store errors.
 `pnpm test:auth` verifies actual scrypt, native HTTP, SQLite, process restarts, and
 cross-process revocation. Its separate workerd fixture verifies portable contracts
 using explicit test-only password/store providers, not a Worker password adapter.
+The [native auth gate](native-password-testing.md) adds independent legacy/peer
+hashes, actual signal drain and mixed retained hosts.
 
 This initial module supplies local credentials and sessions. OAuth/OIDC, passkeys,
 MFA, password change/reset, email verification, recovery, breached-password checks,

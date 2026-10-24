@@ -11,6 +11,7 @@ account and browser jobs passed there. Package engines allow Node
 | --- | --- | --- |
 | Shared Fetch/core/DI/validation/config/logging | Node 20.19.4, Bun 1.4.4, Deno 2.9.6, workerd 1.20250718.0 | Shared packages and native/generic starter gates; runtime-specific entries remain explicit |
 | Generic CLI starters | All four runtime profiles above | Generated/relocated install, types/tests/build, native start/watch/shutdown |
+| Native passwords and retained auth | Node 20.19.4, Bun 1.4.4, Deno 2.9.6 on macOS ARM64 | Independent raw crypto/legacy/peer scrypt vectors, actual SIGTERM drain, same-file accounts/sessions/current roles and bounded private-note HTTP; [native proof](native-password-testing.md) |
 | Node SQLite task starter | Node 20.19.4, native libSQL SQLite on macOS ARM64 | Packed/frozen relocated install, real two-process HTTP, retained task/integrity, environment/source-watch/schema checks; activity/cache stay local |
 | Native Bun SQLite/task starter | Bun 1.4.4 on macOS ARM64 | Native callback ownership, packed/frozen relocated app, bun:test, retained HTTP and owned reloads; see [Bun storage](bun-sqlite.md) and [project proof](bun-sqlite-starter-testing.md) |
 | Native Deno SQLite/tasks | Deno 2.9.6, built-in SQLite 3.53.2 on macOS ARM64 | Exact binding slots/int64, callback ownership, permission/crash/lock tests and retained task HTTP; Node/Bun native file interoperability; [proof](deno-sqlite-testing.md) |
@@ -35,8 +36,9 @@ account and browser jobs passed there. Package engines allow Node
 | Hosted D1 revision | Seven jobs configured on Ubuntu 24.04 | First run rejected before any runner/step by the Actions budget; no Ubuntu D1 execution evidence; current PR checks govern the current head |
 
 The command application distribution is deliberately the Node/PostgreSQL profile.
-The framework's four runtime adapters remain modular; that does not make native
-Node scrypt or PostgreSQL imports valid in Workers/Bun/Deno hosts. Dedicated
+The framework's four runtime adapters remain modular. Bun/Deno passwords have their
+own verified native entries; there is no Worker scrypt provider or non-Node
+PostgreSQL claim from this work. Dedicated
 SQLite/Object and other feature gates document their provider scope separately
 through the [feature index](features.md). No packages have been published or
 production services deployed by this milestone.

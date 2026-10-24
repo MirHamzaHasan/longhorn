@@ -15,6 +15,7 @@ import type { Context } from 'hono'
 import { bodyLimit } from 'hono/body-limit'
 import { z } from 'zod'
 import type { AppConfig } from './config.js'
+import { listNotes, noteListQuery } from './notes.js'
 
 type Env = LonghornEnv & AuthEnv
 const Auth = token<AuthService>('authentication')
@@ -90,12 +91,10 @@ export function createAuthApp(config: AppConfig, resources: {
     return c.body(null, 204)
   })
   routes.get('/admin', auth.requireRole('admin'), (c) => c.json({ allowed: true }))
-  routes.get('/notes', auth.requireUser, async (c) => {
-    const rows = (await c.get('container').resolve(Connection).execute({
-      sql: 'SELECT id, title FROM private_notes WHERE owner_id = ? ORDER BY id', args: [c.get('auth')!.user.id],
-    })).rows
-    return c.json({ notes: rows.map((row) => ({ id: String(row.id), title: row.title })) })
-  })
+  routes.get('/notes', auth.requireUser, async (c, next) => {
+    if (Object.values(c.req.queries()).some(values => values.length !== 1)) return c.json({ error: 'Invalid note query' }, 400)
+    await next()
+  }, validate('query', noteListQuery), async (c) => c.json(await listNotes(c.get('container').resolve(Connection), c.get('auth')!.user.id, c.req.valid('query'))))
   routes.post('/notes', auth.requireUser, validate('json', note), async (c) => {
     const row = (await c.get('container').resolve(Connection).execute({
       sql: 'INSERT INTO private_notes (owner_id, title) VALUES (?, ?) RETURNING id, title',

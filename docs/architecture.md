@@ -253,7 +253,8 @@ Shared code creates opaque tokens with Web Crypto and stores only hashes. It own
 absolute session expiry, rotation, revocation, normalized username/password policy,
 and account-based throttling. Core does not enable auth automatically.
 
-`@longhorn/node/passwords` supplies bounded asynchronous native scrypt work.
+`@longhorn/node/passwords`, `@longhorn/bun/passwords` and `@longhorn/deno/passwords`
+supply bounded asynchronous native scrypt through `@longhorn/auth/scrypt` policy.
 `@longhorn/auth/sqlite` supplies account/session/attempt tables and atomic operations
 over the SQL contract; application code composes its exported migrations with the
 rest of the database history. Connection ownership stays with lifecycle hooks.
@@ -269,6 +270,9 @@ and owner-scoped notes, independently of the existing tasks database. See
 [authentication](authentication.md), [sessions](sessions.md), [passwords](passwords.md),
 [HTTP auth](auth-http.md), [authorization](authorization.md), [auth SQLite](auth-sqlite.md),
 and [the auth example](auth-example.md) for APIs, verification, and current limits.
+
+All three native hosts now compose the same auth app and retained schema; details
+and bounded private-note reads are recorded in [section 47](#47-native-password-policy-and-retained-authentication).
 
 ---
 
@@ -1259,3 +1263,28 @@ cleanup, concurrent writers, failed compile recovery and restored schema history
 See [profile](deno-sqlite-starter.md), [mapping](deno-sqlite-starter-snapshot.md),
 [permissions](deno-sqlite-starter-permissions.md),
 [development](deno-sqlite-starter-development.md) and [proof](deno-sqlite-starter-testing.md).
+
+---
+
+## 47. Native Password Policy and Retained Authentication
+
+The optional shared auth/scrypt entry owns fixed v1 wire parameters, Web Crypto
+salt generation, UTF-8 bounds, dummy verification, sanitized failures and FIFO
+admission through actual native settlement. Trusted Node/Bun/Deno adapters provide
+native async scrypt and equal-length timing-safe comparison. No native import or
+JavaScript KDF enters shared packages, and no Worker crypto backend is implied by
+the browser policy fixture. Existing Node hashes require no rewrite.
+
+Explicit native hosts compose the same credential/session service, SQLite auth
+store, cookie/origin/role guards and application lifecycle. Same-file peers observe
+session rotation/revocation and current roles. Each hasher/process owns its own
+memory budget; HTTP drain waits for accepted native work before closing SQL.
+
+Private-note GET now returns bounded owner-scoped cursor pages and exact int64
+strings. Strict query validation rejects unknown/duplicate keys; SQL binds the
+fresh user ID and limit-plus-one. The existing owner index supplies rowid order,
+so the original auth/note migrations remain unchanged. Live pagination does not
+promise a cross-request snapshot. Actual native vectors, signal drain and mixed
+retained HTTP tests cover the integration. See [policy](scrypt-password-policy.md),
+[Bun](bun-passwords.md), [Deno](deno-passwords.md), [hosts](native-auth-example.md),
+[notes](auth-note-pages.md) and [proof](native-password-testing.md).

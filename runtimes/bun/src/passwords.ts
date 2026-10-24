@@ -1,0 +1,15 @@
+import { scrypt, timingSafeEqual } from 'node:crypto'
+import { createScryptPasswordHasher as createPolicy } from '@longhorn/auth/scrypt'
+import type { PasswordHasher } from '@longhorn/auth'
+import type { ScryptOptions } from '@longhorn/auth/scrypt'
+
+/** Native derivation and comparison; the fixed format/admission policy is shared. */
+export function createScryptPasswordHasher(options: ScryptOptions = {}): PasswordHasher {
+  if (typeof Bun === 'undefined') throw new Error('The Bun password adapter must run in Bun')
+  return createPolicy({
+    derive: (password, salt, parameters) => new Promise((resolve, reject) => {
+      scrypt(password, salt, 64, parameters, (error, key) => error ? reject(error) : resolve(key))
+    }),
+    equal: timingSafeEqual,
+  }, options)
+}

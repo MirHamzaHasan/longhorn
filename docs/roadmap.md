@@ -63,8 +63,8 @@ for the contracts and concurrency/durability boundaries.
 [Bun](bun.md), [Deno](deno.md), and [Workers](workers.md) use the shared Fetch and
 lifecycle boundaries. `pnpm test:runtimes` executes pinned Bun/Deno binaries and local
 workerd, including bindings and background work. Node's SQLite provider remains
-Node-specific; the separate [native Bun provider](bun-sqlite.md) now implements
-the same callback database contract.
+Node-specific; the separate [native Bun](bun-sqlite.md) and
+[Deno](deno-sqlite.md) providers implement the same callback database contract.
 
 ## Project creation implemented
 
@@ -562,6 +562,22 @@ Serial source replacements preserve old service on compile failure and retained
 storage across success. Native tests/persistence, actual grant denial and installed
 restart/schema recovery are verified. Production account/deployment policy and
 automatic updates remain independent work.
+
+## Native passwords and retained authentication implemented
+
+The [shared scrypt policy](scrypt-password-policy.md) retains the original Node
+wire format and actual-settlement queue ownership. Explicit [Bun](bun-passwords.md)
+and [Deno](deno-passwords.md) native crypto entries now connect to the same
+[auth application](native-auth-example.md), native SQLite and scoped host settings.
+Private notes use [bounded owner pages](auth-note-pages.md) with the existing
+index and unchanged migration SQL. Clients follow `nextCursor` instead of relying
+on the previous unbounded list.
+
+The [native gate](native-password-testing.md) proves independent raw crypto and
+legacy/peer hashes, live event loops, real SIGTERM during accepted registration,
+mixed three-host sessions/roles/revocation and more than 1000 owner-scoped notes.
+Workerd still uses explicit test-only password drivers. Native auth CLI generation,
+account recovery/reset and additional runtime/OS evidence remain separate work.
 
 ## Subsequent framework modules
 

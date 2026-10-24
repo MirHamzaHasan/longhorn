@@ -54,3 +54,7 @@ keeps native locks through callback/participant completion. SQL itself remains
 synchronous and can block Bun's event loop. The HTTP entrypoint does not import it.
 Run `pnpm dev:bun-sqlite` for the [persistent task host](bun-sqlite-tasks.md), and
 `pnpm test:bun-sqlite` for [native storage/process verification](bun-sqlite-testing.md).
+
+The optional [Bun password adapter](bun-passwords.md) supplies native asynchronous
+scrypt with the shared fixed policy. `pnpm dev:auth:bun` composes it with SQLite
+in the existing [auth application](native-auth-example.md).
