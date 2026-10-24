@@ -45,3 +45,8 @@ Hosted d1-storage runs both D1 scripts. Prior revisions were blocked by the Acti
 budget before allocation; current PR checks remain the hosted authority. Local QA
 does not prove cloud failover, arbitrary platform-final cleanup, production
 throughput or retention under unsynchronized clocks.
+
+[Draft PR #6](https://github.com/MirHamzaHasan/longhorn/pull/6) records review.
+Its [first hosted run](https://github.com/MirHamzaHasan/longhorn/actions/runs/40046986448)
+failed all seven jobs with zero steps and no runner allocation. The D1 annotation
+identifies the Actions budget restriction, independently of the passing local gates.

@@ -77,13 +77,17 @@ failed all seven jobs before runner allocation or any executed step. The D1 chec
 annotation identifies the same Actions budget restriction. Hosted current-head
 execution remains required independently of local evidence.
 
-D1 request replay extends that job with verify-d1-idempotency.mjs. Local frozen
+D1 request replay is reviewed in [draft PR #6](https://github.com/MirHamzaHasan/longhorn/pull/6),
+stacked on D1 storage. It extends that job with verify-d1-idempotency.mjs. Local frozen
 install/build/types, 497 source tests, both native D1 gates, existing SQLite/
 PostgreSQL/Object idempotency gates and all four independent starters pass.
 The native HTTP gateway loses a committed reply before the client receives it;
 same-key retry/restart recovers one task/activity and the original response.
 The expanded base gate also verifies numeric keyset order through 9/10 and int64
 positions. Configured hosted checks remain separate from this local evidence.
+Its [first run](https://github.com/MirHamzaHasan/longhorn/actions/runs/40046986448)
+failed all seven jobs before any runner/step started. The D1 annotation again
+identifies the Actions budget; no Ubuntu replay execution is inferred.
 
 [Review artifacts](ci-review-artifacts.md) attempt to retain actual browser captures
 and the application archive/checksum after successful independent verification.
