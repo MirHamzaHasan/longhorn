@@ -99,12 +99,16 @@ Its [first run](https://github.com/MirHamzaHasan/longhorn/actions/runs/400481498
 failed all seven jobs with zero steps/no runner. The D1 annotation again names
 the Actions budget, independently of the passing local project checks.
 
-The standalone SQLite profile adds its packed/installed native persistence gate
+The standalone SQLite profile is reviewed in [draft PR #8](https://github.com/MirHamzaHasan/longhorn/pull/8),
+stacked on D1 generation. It adds its packed/installed native persistence gate
 to source/runtime verification. Local frozen install/build/types, 509 source
 tests, four default starters and installed SQLite/D1 workflows pass. Actual Node
 processes verify concurrent file writers, schema/integrity, env precedence,
 source watching and retained-state recovery after startup denial. Hosted current-
 head execution remains independent of that local evidence.
+Its [first run](https://github.com/MirHamzaHasan/longhorn/actions/runs/40049074639)
+failed all seven jobs before a runner/step started. The source/runtime annotation
+again identifies the Actions budget restriction.
 
 [Review artifacts](ci-review-artifacts.md) attempt to retain actual browser captures
 and the application archive/checksum after successful independent verification.
