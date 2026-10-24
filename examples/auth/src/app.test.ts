@@ -8,7 +8,7 @@ import type { Longhorn } from '@longhorn/core'
 const applications: Longhorn[] = []
 afterEach(async () => { await Promise.all(applications.map((app) => app.close())); applications.length = 0 })
 const password = 'a long test passphrase'
-const passwords = { hash: async () => 'test-encoded', verify: async (value: string, encoded: string | undefined) => !!encoded && value === password }
+const passwords = { hash: async (value: string) => 'fixture:' + value, verify: async (value: string, encoded: string | undefined) => encoded === 'fixture:' + value }
 
 async function setup(clock?: () => number) {
   const records: unknown[] = []
@@ -125,4 +125,37 @@ it('pages only the authenticated owner with canonical bounded queries and delete
   expect(await (await request('/notes?after=9223372036854775806', 'GET', undefined, bob.cookie)).json()).toEqual({ notes: [], nextCursor: null })
   const plan = await database.execute({ sql: 'EXPLAIN QUERY PLAN SELECT id,title FROM private_notes WHERE owner_id=? AND id>? ORDER BY id LIMIT ?', args: [aliceId, 39n, 101] })
   expect(plan.rows.some(row => String(row.detail).includes('private_notes_owner'))).toBe(true)
+})
+
+it('changes a password through the guarded route and clears every subject cookie while preserving peers and notes', async () => {
+  const { request, register, login, records } = await setup(() => 1000)
+  await register('alice'); await register('bob')
+  const first = await login('alice'), second = await login('alice'), bob = await login('bob')
+  const nextPassword = 'a different fixture passphrase'
+  await request('/notes', 'POST', { title: 'Retained after password change' }, first.cookie)
+  expect((await request('/auth/password', 'POST', { currentPassword: password, nextPassword }, undefined)).status).toBe(401)
+  expect((await request('/auth/password', 'POST', { currentPassword: password, nextPassword }, first.cookie, 'https://attacker.example')).status).toBe(403)
+  expect((await request('/auth/password', 'POST', { currentPassword: password, nextPassword, userId: 'bob' }, first.cookie)).status).toBe(400)
+  const changed = await request('/auth/password', 'POST', { currentPassword: password, nextPassword }, first.cookie)
+  expect(changed.status).toBe(204); expect(changed.headers.get('Cache-Control')).toBe('no-store')
+  expect(changed.headers.getSetCookie().at(-1)).toContain('longhorn_dev=')
+  expect(changed.headers.getSetCookie().at(-1)).toContain('Max-Age=0')
+  for (const cookie of [first.cookie, second.cookie]) expect((await request('/auth/session', 'GET', undefined, cookie)).status).toBe(401)
+  expect((await request('/auth/session', 'GET', undefined, bob.cookie)).status).toBe(200)
+  expect((await request('/auth/login', 'POST', { username: 'alice', password })).status).toBe(401)
+  const logged = await request('/auth/login', 'POST', { username: 'alice', password: nextPassword })
+  expect(logged.status).toBe(200)
+  const cookie = logged.headers.getSetCookie().at(-1)!.split(';')[0]!
+  expect((await (await request('/notes', 'GET', undefined, cookie)).json()).notes).toHaveLength(1)
+  expect(JSON.stringify(records)).not.toContain(nextPassword)
+})
+
+it('preserves the credential and active session on bad reauthentication and shares the durable attempt limit', async () => {
+  const { request, register, login } = await setup(() => 1000)
+  await register('alice'); const current = await login('alice')
+  const nextPassword = 'a different fixture passphrase'
+  for (let index = 0; index < 10; index++) expect((await request('/auth/password', 'POST', { currentPassword: 'wrong', nextPassword }, current.cookie)).status).toBe(401)
+  expect((await request('/auth/session', 'GET', undefined, current.cookie)).status).toBe(200)
+  const blocked = await request('/auth/password', 'POST', { currentPassword: password, nextPassword }, current.cookie)
+  expect(blocked.status).toBe(429); expect(blocked.headers.get('Retry-After')).toBe('900')
 })

@@ -86,9 +86,14 @@ using explicit test-only password/store providers, not a Worker password adapter
 The [native auth gate](native-password-testing.md) adds independent legacy/peer
 hashes, actual signal drain and mixed retained hosts.
 
+Opt-in [password changes](password-changes.md) now reauthenticate the current
+password and atomically revoke subject sessions. Current SQL stores always use
+[credential-fenced issuance](password-session-fencing.md), including login-only
+services; legacy custom stores retain their existing basic login contract.
+
 This initial module supplies local credentials and sessions. OAuth/OIDC, passkeys,
-MFA, password change/reset, email verification, recovery, breached-password checks,
-and automatic hash upgrades are not implemented. Sensitive account changes should
-add reauthentication and revocation policies when those features are implemented.
+MFA, password reset, email verification, recovery, breached-password checks,
+and automatic hash upgrades are not implemented. Further sensitive account changes
+need their own reauthentication and revocation policies.
 The [OWASP authentication guidance](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html)
 is a reference for that subsequent work.

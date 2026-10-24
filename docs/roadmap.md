@@ -583,7 +583,7 @@ evidence remain separate work.
 ## Independent native auth workflow implemented
 
 The [sqlite-auth profile](auth-starter.md) generates Node, Bun or Deno projects
-with actual editable auth source, native crypto/storage, five copied app cases
+with actual editable auth source, native crypto/storage, seven copied app cases
 and per-feature guides. [Checked assets](auth-starter-snapshot.md) retain descriptor
 v1 and selected dependency closure. The [launcher](auth-starter-launcher.md) applies
 the shared schema/environment policy and literal Deno grants; [development](auth-starter-development.md)
@@ -591,6 +591,22 @@ keeps service on compile errors and serially drains native replacements.
 The [packed gate](auth-starter-testing.md) verifies relocated frozen installs,
 native persistence, independent hashes, retained account/session policy and bounded
 private notes, configured denial, source reload and schema restoration.
+
+## Authenticated password changes implemented
+
+[Service policy](password-changes.md) now requires a current session/password,
+derives outside SQL and atomically replaces credentials while revoking subject
+sessions. [Conditional issuance](password-session-fencing.md) prevents old verifiers
+from issuing afterward, including current login-only SQL hosts. The
+[SQLite port](sqlite-password-changes.md) retains its original schema; the
+[PostgreSQL port](postgres-password-changes.md) appends two restricted functions
+after the complete operations history without granting direct password UPDATE.
+[HTTP routes](password-change-http.md) clear cookies on 204 and preserve peers/notes.
+
+[Native proof](password-change-testing.md) covers stale/concurrent work, real lock
+wait expiry, SQL rollback, four backend SIGKILL checkpoints, active KDF drain and
+retained HTTP/generated projects. Every old login writer must be upgraded before
+enabling mutations. Recovery/reset, MFA and a password-settings UI remain separate.
 
 ## Subsequent framework modules
 

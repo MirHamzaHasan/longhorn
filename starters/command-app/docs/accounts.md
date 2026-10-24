@@ -8,4 +8,8 @@ server principal. Mutations reauthenticate inside their managed transaction.
 Role changes through the trusted operator CLI revoke previous sessions. There
 is no public role-management endpoint or default operator/password.
 
+[Authenticated password changes](password-changes.md) use current-password
+verification and revoke all subject sessions. Current login commits check the
+credential again after ownership, so an old verifier cannot issue after replacement.
+
 Connects [commands](commands.md), [console](console.md) and [deployment](deployment.md).

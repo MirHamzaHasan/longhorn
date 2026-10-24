@@ -9,6 +9,12 @@ downstream connections, verification, and current limits.
 
 | Feature | Guide | Implementation owner | Connects to |
 | --- | --- | --- | --- |
+| Authenticated password replacement | [Password changes](password-changes.md) | AuthService opt-in capability | Current password, fixed input policy, durable reauthentication budget and atomic session revocation |
+| Credential-fenced session issuance | [Session fencing](password-session-fencing.md) | SessionManager.createIf and SQL store ports | Private candidates, expected-hash commit, current login-only hosts and old-verifier rejection |
+| Native SQLite credential mutation | [SQLite passwords](sqlite-password-changes.md) | Optional auth/sqlite-passwords | Existing schema, managed transaction, post-ownership expiry and copied inputs |
+| Restricted PostgreSQL credential mutation | [PostgreSQL passwords](postgres-password-changes.md) | Optional auth/postgres-passwords | Shared/exclusive advisory protocol, two owner-deployed functions, explicit grants and original history |
+| Guarded password HTTP | [Password HTTP](password-change-http.md) | Native auth/optional PostgreSQL routes | Exact origin/cookie, strict reauthentication JSON, 204 clear and preserved peers/notes |
+| Password change native proof | [Password testing](password-change-testing.md) | Actual SQL/runtimes and generated projects | Stale-login/replacement races, trigger rollback, SIGKILL before commit, active KDF drain and retained HTTP |
 | CLI forwarding to owned scripts | [Script owners](cli-owned-scripts.md) | CLI execute and fixed auth dev/start scripts | One parent signal, native drain, generic fallback and POSIX terminal-group proof |
 | Independent native auth projects | [Auth starter](auth-starter.md) | CLI sqlite-auth profile | Selected Node/Bun/Deno, real editable app, native crypto/SQLite and connected guides |
 | Checked auth source/test snapshot | [Auth assets](auth-starter-snapshot.md) | CLI snapshot builder and descriptor v1 | Exact shared source, checked native test mapping, selected package closure and independent archives |

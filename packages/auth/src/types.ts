@@ -26,7 +26,23 @@ export interface LoginAttemptStore {
   consumeLoginAttempt(key: string, now: number, limit: number, windowMs: number): Promise<number | undefined>
   clearLoginAttempts(key: string): Promise<void>
 }
-export interface AuthStore extends CredentialStore, SessionStore, LoginAttemptStore {}
+export type PasswordSessionInput = {
+  readonly session: StoredSession; readonly previousHash?: string
+  readonly expectedPasswordHash: string; readonly attemptKey: string
+}
+export type PasswordChangeInput = {
+  readonly userId: string; readonly tokenHash: string
+  readonly expectedPasswordHash: string; readonly nextPasswordHash: string; readonly attemptKey: string
+}
+/** One borrowed account/session database; all mutations commit together or have no effect. */
+export interface PasswordChangeStore {
+  createSession(input: PasswordSessionInput): Promise<boolean>
+  /** Sample the trusted synchronous clock after obtaining user/session ownership. */
+  replacePassword(input: PasswordChangeInput, now: () => number): Promise<boolean>
+}
+export interface AuthStore extends CredentialStore, SessionStore, LoginAttemptStore {
+  readonly passwordChanges?: PasswordChangeStore
+}
 export interface TransactionalAuthStore extends AuthStore {
   /** Retain native/coordinated authorization ownership until the caller's transaction finishes. */
   readAuthenticationInTransaction(transaction: SqlExecutor, tokenHash: string): Promise<{ readonly user: AuthUser; readonly session: StoredSession } | undefined>

@@ -7,6 +7,7 @@ import { startHost, stopHost } from '../host.mjs'
 
 const directory = await mkdtemp(join(tmpdir(), 'longhorn-auth-persistence-')), hosts = [], tokens = []
 const password = 'a long native persistence passphrase', origin = 'http://127.0.0.1:3001'
+const nextPassword = 'a changed native persistence passphrase'
 const environment = { HOST: '127.0.0.1', PORT: '0', AUTH_ORIGIN: origin, AUTH_COOKIE_SECURE: 'false',
   SESSION_TTL_SECONDS: '28800', DATABASE_PATH: join(directory, 'accounts.sqlite'), LOG_LEVEL: 'info' }
 async function start() {
@@ -29,8 +30,8 @@ const request = (url, path, { method = 'GET', body, cookie, from = origin } = {}
   method, headers: { Origin: from, 'Content-Type': 'application/json', ...(cookie ? { Cookie: cookie } : {}) },
   ...(body === undefined ? {} : { body: JSON.stringify(body) }), signal: AbortSignal.timeout(15000),
 })
-async function login(url, username, previous) {
-  const response = await request(url, '/auth/login', { method: 'POST', body: { username, password }, cookie: previous })
+async function login(url, username, previous, suppliedPassword = password) {
+  const response = await request(url, '/auth/login', { method: 'POST', body: { username, password: suppliedPassword }, cookie: previous })
   assert.equal(response.status, 200)
   const header = response.headers.getSetCookie().at(-1)
   assert.ok(header.startsWith('longhorn_dev=') && header.includes('HttpOnly') && header.includes('SameSite=Strict'))
@@ -64,20 +65,28 @@ try {
   assert.equal((await request(second.url, '/auth/logout-all', { method: 'POST', cookie: rotated })).status, 204)
   for (const cookie of [rotated, other]) assert.equal((await request(first.url, '/auth/session', { cookie })).status, 401)
   assert.equal((await request(second.url, '/auth/session', { cookie: bob })).status, 200)
+  const current = await login(first.url, 'alice'), device = await login(second.url, 'alice')
+  const changed = await request(first.url, '/auth/password', { method: 'POST', cookie: current, body: { currentPassword: password, nextPassword } })
+  assert.equal(changed.status, 204); assert.ok(changed.headers.getSetCookie().at(-1).includes('Max-Age=0'))
+  for (const cookie of [current, device]) assert.equal((await request(second.url, '/auth/session', { cookie })).status, 401)
+  assert.equal((await request(second.url, '/auth/session', { cookie: bob })).status, 200)
+  assert.equal((await request(first.url, '/auth/login', { method: 'POST', body: { username: 'alice', password } })).status, 401)
+  const fresh = await login(second.url, 'alice', undefined, nextPassword)
+  assert.deepEqual(await (await request(first.url, '/notes', { cookie: fresh })).json(), { notes: [note], nextCursor: null })
   for (let attempt = 0; attempt < 10; attempt++) {
     assert.equal((await request(first.url, '/auth/login', { method: 'POST', body: { username: 'alice', password: 'wrong' } })).status, 401)
   }
   await stopHost(first.owned)
   first = await start()
-  const blocked = await request(first.url, '/auth/login', { method: 'POST', body: { username: 'alice', password } })
+  const blocked = await request(first.url, '/auth/login', { method: 'POST', body: { username: 'alice', password: nextPassword } })
   assert.equal(blocked.status, 429); assert.ok(Number(blocked.headers.get('Retry-After')) > 0)
   await stopHost(first.owned); await stopHost(second.owned)
   for (const host of hosts) {
-    assert.ok(!host.output().includes(password)); assert.ok(!host.output().includes('scrypt$v=1$'))
+    assert.ok(!host.output().includes(password)); assert.ok(!host.output().includes(nextPassword)); assert.ok(!host.output().includes('scrypt$v=1$'))
     for (const token of tokens) assert.ok(!host.output().includes(token))
     assert.ok(host.records.some(record => record.message === 'Application stopped'))
   }
-  console.log('Native auth persistence: actual passwords, retained accounts/sessions/notes, owner/origin/role checks, rotation/revocation, durable throttle and clean close passed.')
+  console.log('Native auth persistence: actual passwords/change/all-session revocation, retained accounts/sessions/notes, owner/origin/role checks, rotation/revocation, durable throttle and clean close passed.')
 } finally {
   const results = await Promise.allSettled(hosts.map(stopHost))
   await rm(directory, { recursive: true, force: true })

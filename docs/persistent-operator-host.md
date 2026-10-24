@@ -9,6 +9,12 @@ This executable uses a database you provision and a separately configured durabl
 receiver. It never starts/stops your database service or deletes application data.
 The existing demo:operator-accounts remains an explicitly temporary sandbox.
 
+This host now enables [authenticated password changes](password-change-http.md)
+at POST `/account/password`, requiring the appended password migration and two
+specific function grants. Current-password verification happens outside SQL and
+success clears all subject sessions. The browser console has no settings screen
+for this API yet. Stop old login writers during the documented upgrade.
+
 1. Provision PostgreSQL owner/runtime roles and deploy the full operations profile
    using pnpm migrate:account-operations in the provisioning shell. Apply the
    grants documented in the provisioning/roles guides.

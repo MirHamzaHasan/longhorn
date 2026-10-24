@@ -7,6 +7,8 @@ export default defineConfig({
     alias: Object.entries({
       '@longhorn/http/client': './packages/http/src/client.ts',
       '@longhorn/auth/scrypt': './packages/auth/src/scrypt.ts',
+      '@longhorn/auth/sqlite-passwords': './packages/auth/src/sqlite-passwords.ts',
+      '@longhorn/auth/postgres-passwords': './packages/auth/src/postgres-passwords.ts',
       '@longhorn/auth/bearer': './packages/auth/src/bearer.ts',
       '@longhorn/outbox/http': './packages/outbox/src/http.ts',
       '@longhorn/outbox/hono': './packages/outbox/src/hono.ts',
@@ -79,7 +81,7 @@ export default defineConfig({
     })),
   },
   test: {
-    exclude: [...configDefaults.exclude, '**/*.postgres.test.ts'],
+    exclude: [...configDefaults.exclude, '**/*.postgres.test.ts', '**/*.pg.test.ts'],
     include: ['packages/*/src/**/*.test.ts', 'runtimes/*/src/**/*.test.ts', 'examples/*/src/**/*.test.ts', 'cli/src/**/*.test.ts'],
   },
 })

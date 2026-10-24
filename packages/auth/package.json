@@ -26,10 +26,18 @@
     "./scrypt": {
       "types": "./dist/scrypt.d.ts",
       "import": "./dist/scrypt.js"
+    },
+    "./sqlite-passwords": {
+      "types": "./dist/sqlite-passwords.d.ts",
+      "import": "./dist/sqlite-passwords.js"
+    },
+    "./postgres-passwords": {
+      "types": "./dist/postgres-passwords.d.ts",
+      "import": "./dist/postgres-passwords.js"
     }
   },
   "scripts": {
-    "build": "tsup src/index.ts src/hono.ts src/sqlite.ts src/postgres.ts src/bearer.ts src/scrypt.ts --format esm --dts --clean",
+    "build": "tsup src/index.ts src/hono.ts src/sqlite.ts src/postgres.ts src/bearer.ts src/scrypt.ts src/sqlite-passwords.ts src/postgres-passwords.ts --format esm --dts --clean",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

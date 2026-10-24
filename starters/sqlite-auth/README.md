@@ -38,6 +38,8 @@ curl 'http://127.0.0.1:3001/notes?limit=20' -b /tmp/longhorn-auth-cookies.txt
 The cookie file is a credential; remove it when finished. Registration creates a
 member and does not sign in automatically. Follow `nextCursor` to read later note
 pages. For a compiled host, run `pnpm build` then `pnpm start`.
+POST `/auth/password` changes the authenticated user's password with current-password
+verification and all-session revocation; see [the flow](docs/password-changes.md).
 
 The loopback example explicitly uses insecure development cookies. An HTTPS
 deployment requires `AUTH_COOKIE_SECURE=true`, the exact HTTPS `AUTH_ORIGIN` and

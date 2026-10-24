@@ -150,7 +150,7 @@ and [owned source reloads](deno-sqlite-starter-development.md). The
 native workflow outside this checkout.
 
 The explicit [sqlite-auth profile](auth-starter.md) now selects Node/Bun/Deno
-native hosts with the actual auth source and five source cases. Its
+native hosts with the actual auth source and seven source cases. Its
 [checked assets](auth-starter-snapshot.md), [launch permissions](auth-starter-launcher.md)
 and [owned development](auth-starter-development.md) use the same generator/descriptor
 boundary. [Packed native proof](auth-starter-testing.md) verifies independent accounts,

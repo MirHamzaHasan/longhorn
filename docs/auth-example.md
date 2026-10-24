@@ -58,6 +58,7 @@ hashes in response JSON.
 | GET `/auth/session` | Public principal and expiry, or 401 |
 | POST `/auth/logout` | Revoke current token and clear cookie; idempotent 204 |
 | POST `/auth/logout-all` | Revoke the authenticated user's sessions across devices/processes |
+| POST `/auth/password` | Reauthenticate current password, replace it and revoke every subject session |
 | GET `/admin` | Require current `admin` role; registration cannot grant it |
 | GET `/notes` | Owner-scoped cursor page `{ notes, nextCursor }`; default 20, max 100 |
 | POST `/notes` | Create a note owned by the authenticated user |
@@ -90,3 +91,6 @@ for every assertion.
 `pnpm test:native-auth` adds independent Node/Bun/Deno password vectors, actual
 SIGTERM during native registration and a mixed three-host retained database check,
 including more than 1000 owner-scoped notes. See [native proof](native-password-testing.md).
+The [password-change route](password-change-http.md) additionally clears cookies,
+rejects old credentials and preserves notes/other users. Its
+[fault/race gate](password-change-testing.md) verifies atomic mutation and native drain.

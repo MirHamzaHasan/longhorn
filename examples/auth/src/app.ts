@@ -22,6 +22,7 @@ const Auth = token<AuthService>('authentication')
 const Connection = token<Database>('auth example database')
 const credentials = z.object({ username: z.string().min(3).max(64), password: z.string().min(1).max(256) }).strict()
 const registration = credentials.extend({ password: z.string().min(15).max(256) })
+const passwordChange = z.object({ currentPassword: z.string().min(1).max(256), nextPassword: z.string().min(15).max(256) }).strict()
 const note = z.object({ title: z.string().trim().min(1).max(200) }).strict()
 
 function failure(c: Context<Env>, error: unknown): Response {
@@ -49,7 +50,7 @@ export function createAuthApp(config: AppConfig, resources: {
       app.container.register(provide(Connection, { factory: () => database }))
       app.container.register(provide(Auth, { deps: [Connection], factory: (connection) => new AuthService(
         new SqliteAuthStore(connection), resources.passwords, {
-          sessionTtlMs: config.sessionTtlMs, ...(resources.clock ? { clock: resources.clock } : {}),
+          sessionTtlMs: config.sessionTtlMs, passwordChanges: true, ...(resources.clock ? { clock: resources.clock } : {}),
         },
       ) }))
       return () => database.close()
@@ -91,6 +92,13 @@ export function createAuthApp(config: AppConfig, resources: {
     return c.body(null, 204)
   })
   routes.get('/admin', auth.requireRole('admin'), (c) => c.json({ allowed: true }))
+  routes.post('/auth/password', auth.requireUser, validate('json', passwordChange), async c => {
+    const input = c.req.valid('json')
+    try {
+      await c.get('container').resolve(Auth).changePassword(auth.token(c), input.currentPassword, input.nextPassword)
+      auth.clearSession(c); return c.body(null, 204)
+    } catch (error) { return failure(c, error) }
+  })
   routes.get('/notes', auth.requireUser, async (c, next) => {
     if (Object.values(c.req.queries()).some(values => values.length !== 1)) return c.json({ error: 'Invalid note query' }, 400)
     await next()

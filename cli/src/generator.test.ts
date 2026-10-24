@@ -31,7 +31,7 @@ describe('project generation', () => {
     const directory = join(framework, 'templates', runtime + '-sqlite-auth'), files: Record<string, string> = {}
     for (const path of ['README.md', 'build.mjs', 'build.config.mjs', 'dev.mjs', 'host.mjs', 'start.mjs',
       'src/index.ts', 'src/app.ts', 'src/config.ts', 'src/notes.ts', 'src/app.test.ts', 'tests/persistence.mjs',
-      ...['features', 'accounts', 'passwords', 'sessions', 'http', 'notes', 'configuration', 'lifecycle', 'migrations', 'testing'].map(name => 'docs/' + name + '.md'),
+      ...['features', 'accounts', 'passwords', 'sessions', 'http', 'notes', 'configuration', 'lifecycle', 'migrations', 'testing', 'password-changes'].map(name => 'docs/' + name + '.md'),
       ...(runtime === 'deno' ? ['build-tests.mjs', 'tests/runner.ts', 'tests/permissions.mjs'] : [])]) {
       const target = join(directory, path), content = path === 'README.md' ? '# {{PROJECT_NAME}}\n' : 'editable auth asset\n'
       await mkdir(join(target, '..'), { recursive: true }); await writeFile(target, content)

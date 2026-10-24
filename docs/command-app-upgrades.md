@@ -32,3 +32,10 @@ any writes after the checkpoint according to the deployment's recovery policy.
 There is no automatic down migration or lossless cross-system rollback claim.
 The legacy history upgrade interruption/rollback and concurrent migration behavior
 are separately proven in [native history verification](command-history-testing.md).
+
+The password-change revision appends its two function definitions after that
+complete history and requires refreshed explicit runtime grants. Stop every old
+login writer before enabling mutations; upgraded login-only stores also honor the
+[credential fence](password-session-fencing.md). The
+[password upgrade guide](postgres-password-changes.md) records the grants and rollback
+boundaries. Never splice the new migration into an already deployed prefix.

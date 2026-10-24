@@ -37,8 +37,8 @@ text and checked for nonempty strings on every read; malformed persisted roles f
 closed as a storage error. AuthService copies/freezes public principals and reloads
 roles for each authentication; the store installs no account/session cache.
 
-The schema checks a JSON array shape, not every role's domain meaning. Administrative
-role changes, password resets/upgrades, account disable/delete APIs, email identity,
+The schema checks a JSON array shape, not every role's domain meaning. Trusted role
+changes use [operator provisioning](operator-provisioning.md). Password resets/upgrades, account disable/delete APIs, email identity,
 OAuth, passkeys and MFA remain separate work. SQL access to credentials is trusted;
 storage encryption/backup/network policy belongs to deployment. Hashing uses the
 existing [native password adapter](passwords.md), outside this storage module.
@@ -49,6 +49,12 @@ schema CREATE and migration history access are not needed by the implemented API
 The [role guide](postgres-roles.md) gives concrete grants. These table privileges
 are not per-account row-level authorization; private HTTP data uses explicit owner
 filters documented separately.
+
+Current store-backed logins now use [conditional credential commits](password-session-fencing.md)
+through the borrowed password capability without additional table mutation grants.
+Authenticated [password replacement](postgres-password-changes.md) is separately
+enabled with two appended owner-deployed functions and specific EXECUTE grants.
+The original base schema/history remains intact.
 
 [Native tests](postgres-auth-testing.md) verify uniqueness, live roles, malformed
 roles, cascades, atomic sessions, shared throttles and actual scrypt HTTP processes.

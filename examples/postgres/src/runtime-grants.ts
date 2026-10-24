@@ -1,4 +1,5 @@
 import type { Database } from '@longhorn/database'
+import { postgresPasswordFunctions } from '@longhorn/auth/postgres-passwords'
 
 /** Trusted deployment tool only; does not create roles or remove existing privileges. */
 export async function grantOperatorRuntime(database: Database, role: string): Promise<void> {
@@ -16,6 +17,7 @@ export async function grantOperatorRuntime(database: Database, role: string): Pr
       'GRANT SELECT,INSERT,DELETE ON TABLE longhorn_auth.sessions,longhorn_pg_example.private_notes',
       'GRANT SELECT,INSERT,UPDATE,DELETE ON TABLE longhorn_auth.attempts,longhorn_idempotency.requests',
       'GRANT EXECUTE ON FUNCTION longhorn_auth.lock_session_user(text)',
+      ...postgresPasswordFunctions.map(signature=>'GRANT EXECUTE ON FUNCTION '+signature),
     ]) await tx.execute(statement + ' TO ' + target)
   })
 }

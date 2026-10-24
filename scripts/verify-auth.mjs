@@ -19,6 +19,7 @@ const temporary = await mkdtemp(join(tmpdir(), 'longhorn-auth-'))
 const filename = join(temporary, 'auth.sqlite')
 const origin = 'http://127.0.0.1:3001'
 const password = 'a long native test passphrase'
+const nextPassword = 'a changed native test passphrase'
 const instances = []
 const tokens = []
 let inspector
@@ -71,8 +72,8 @@ async function request(url, path, { method = 'GET', body, cookie, requestOrigin 
     ...(body === undefined ? {} : { body: JSON.stringify(body) }), signal: AbortSignal.timeout(10000),
   })
 }
-async function login(url, username, previous) {
-  const response = await request(url, '/auth/login', { method: 'POST', body: { username, password }, cookie: previous })
+async function login(url, username, previous, suppliedPassword = password) {
+  const response = await request(url, '/auth/login', { method: 'POST', body: { username, password: suppliedPassword }, cookie: previous })
   assert.equal(response.status, 200, await response.clone().text())
   const cookie = response.headers.getSetCookie().at(-1)
   assert.ok(cookie?.startsWith('longhorn_dev='))
@@ -201,17 +202,35 @@ try {
   assert.ok(plan.rows.some(row => String(row.detail).includes('private_notes_owner')))
   assert.equal((await inspector.execute('PRAGMA integrity_check')).rows[0]?.integrity_check, 'ok')
   assert.equal((await inspector.execute('SELECT count(*) AS count FROM longhorn_migrations')).rows[0]?.count, 2n)
-  const encodedHashes = (await inspector.execute('SELECT password_hash FROM longhorn_auth_users')).rows.map(row => row.password_hash)
+  const changeDevice = await login(b, 'alice')
+  assert.equal((await request(a, '/auth/password', { method: 'POST', cookie: paged.cookie, body: { currentPassword: password, nextPassword }, requestOrigin: 'https://attacker.example' })).status, 403)
+  assert.equal((await request(a, '/auth/password', { method: 'POST', cookie: paged.cookie, body: { currentPassword: 'wrong', nextPassword } })).status, 401)
+  assert.equal((await request(a, '/auth/password', { method: 'POST', cookie: paged.cookie, body: { currentPassword: password, nextPassword, userId: bob.user.id } })).status, 400)
+  const changed = await request(a, '/auth/password', { method: 'POST', cookie: paged.cookie, body: { currentPassword: password, nextPassword } })
+  assert.equal(changed.status, 204); assert.ok(changed.headers.getSetCookie().at(-1).includes('Max-Age=0'))
+  for (const base of [a, b, ...(thirdUrl ? [thirdUrl] : [])]) {
+    for (const cookie of [paged.cookie, changeDevice.cookie]) assert.equal((await request(base, '/auth/session', { cookie })).status, 401)
+    assert.equal((await request(base, '/auth/session', { cookie: bob.cookie })).status, 200)
+    assert.equal((await request(base, '/auth/login', { method: 'POST', body: { username: 'alice', password } })).status, 401)
+  }
+  const changedLogin = await login(thirdUrl ?? b, 'alice', undefined, nextPassword)
+  assert.equal((await request(a, '/auth/session', { cookie: changedLogin.cookie })).status, 200)
+  assert.equal((await (await request(b, '/notes?limit=1', { cookie: changedLogin.cookie })).json()).notes.length, 1)
+  await stop(first); first = launch(); a = await ready(first)
+  assert.equal((await request(a, '/auth/session', { cookie: changedLogin.cookie })).status, 200)
+  await login(a, 'alice', undefined, nextPassword)
+  const encodedHashes = [...hashes, ...(await inspector.execute('SELECT password_hash FROM longhorn_auth_users')).rows.map(row => row.password_hash)]
   await stop(first); await stop(second); if (third) await stop(third)
   const invalid = launch({ AUTH_ORIGIN: 'http://remote.example', DATABASE_PATH: join(temporary, 'invalid.sqlite') })
   assert.equal((await invalid.ended).code, 1)
   assert.ok(invalid.output().includes('loopback'))
   for (const instance of instances) {
     assert.ok(!instance.output().includes(password), 'Password leaked to process logs')
+    assert.ok(!instance.output().includes(nextPassword), 'Changed password leaked to process logs')
     for (const token of tokens) assert.ok(!instance.output().includes(token), 'Session token leaked to process logs')
     for (const hash of encodedHashes) assert.ok(!instance.output().includes(hash), 'Encoded password leaked to process logs')
   }
-  console.log(runtime + ' authentication verified: native scrypt, cookie/origin boundaries, ownership, live roles, durable sessions, rotation, expiry, cross-process revocation, throttling, restart, and secret-free logs.')
+  console.log(runtime + ' authentication verified: native scrypt, password change/all-session revocation, cookie/origin boundaries, ownership, live roles, durable sessions, rotation, expiry, cross-process revocation, throttling, restart, and secret-free logs.')
 
   if (runtime === 'node') {
   const bundle = join(temporary, 'worker')

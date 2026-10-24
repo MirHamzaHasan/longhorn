@@ -4,6 +4,7 @@
 | --- | --- | --- |
 | Accounts and login | [Accounts](accounts.md) | AuthService, account/attempt stores and native password provider |
 | Native password work | [Passwords](passwords.md) | Selected runtime/passwords and shared fixed scrypt policy |
+| Password replacement | [Password changes](password-changes.md) | Current-password reauthentication, fenced login and atomic all-session revocation |
 | Durable sessions | [Sessions](sessions.md) | SessionManager and SQLite hash-only session records |
 | Cookies and origin guards | [HTTP](http.md) | Typed Hono auth subrouter and current-principal guards |
 | Owner-scoped note pages | [Notes](notes.md) | Authenticated user, bound SQLite predicates and exact cursors |

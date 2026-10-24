@@ -1,6 +1,7 @@
 import type { Database, Migration, SqlRow, SqlExecutor } from '@longhorn/database'
 import { assertTransactionExecutor } from '@longhorn/database/transactions'
 import { normalizeUsername } from './credentials.js'
+import { PostgresPasswordStore } from './postgres-passwords.js'
 import type { TransactionalAuthStore, AuthUser, CredentialUser, StoredSession, RoleChangeResult } from './types.js'
 
 /** Append once to the application's complete owner-deployed PostgreSQL history. */
@@ -63,8 +64,10 @@ function timestamp(value: number): number {
 
 /** Borrows a PostgreSQL database. Password/token policy and connection ownership remain outside this store. */
 export class PostgresAuthStore implements TransactionalAuthStore {
+  readonly passwordChanges: PostgresPasswordStore
   constructor(private readonly database: Database) {
     if (database.dialect!==undefined && database.dialect!=='postgres') throw new Error('PostgreSQL auth requires a PostgreSQL database')
+    this.passwordChanges = new PostgresPasswordStore(database)
   }
   async createUser(input: CredentialUser): Promise<boolean> {
     return (await this.database.execute({ sql: `INSERT INTO longhorn_auth.users(id,username,password_hash,roles)

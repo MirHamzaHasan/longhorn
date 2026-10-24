@@ -11,7 +11,7 @@ with automatic installation, relocates each project and checks its exact editabl
 app/host/test mapping and selected framework graph. Every shipped source/package/doc
 asset is scanned for workspace paths/dependencies. Frozen installation leaves the
 lock unchanged; installed CLI typecheck/test/build commands execute independently.
-All five source auth cases run with actual selected native SQLite. Their explicitly
+All seven source auth cases run with actual selected native SQLite. Their explicitly
 fake password provider is test-only, so the separate native gate is required.
 
 The shipped persistence command creates temporary users and exercises real native

@@ -18,5 +18,7 @@ provide network-wide rate limiting.
 
 Roles reload from storage for each request. `/admin` requires a current admin;
 signup cannot grant that role. This starter supplies no public role-management,
-password reset/change, email-verification or recovery endpoints. Trusted account
+password reset, email-verification or recovery endpoints. Authenticated
+[password changes](password-changes.md) use current-password verification and atomic
+all-session revocation. Trusted account
 administration and deployment policy remain application-owned.

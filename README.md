@@ -239,6 +239,12 @@ It creates no seed accounts. See [native hosts](docs/native-auth-example.md) and
 and [authentication](docs/authentication.md) for contracts and current limits.
 Each authentication feature has its own guide in the feature index.
 
+Native auth apps also expose [authenticated password changes](docs/password-change-http.md)
+with current-password verification and atomic all-session revocation. Current SQL
+login paths [fence stale verifiers](docs/password-session-fencing.md). The PostgreSQL
+operator API uses an [appended restricted deployment](docs/postgres-password-changes.md);
+`pnpm test:password-changes` checks native races, crash rollback and KDF drain.
+
 ## Background jobs example
 
 ```sh

@@ -1295,7 +1295,7 @@ retained HTTP tests cover the integration. See [policy](scrypt-password-policy.m
 
 The explicit sqlite-auth profile selects Node/Bun/Deno through the existing
 generator and trusted descriptor v1. The builder copies actual shared auth source,
-selects the native host and retains all five app cases with checked runner/SQLite
+selects the native host and retains all seven app cases with checked runner/SQLite
 mapping. Only the selected framework dependency closure is installed through local
 relative file overrides. Each generated feature has a Markdown connection guide.
 
@@ -1312,3 +1312,30 @@ denial, restored retained state, owned reloads and actual Deno permission bounda
 are verified independently of the workspace. See [profile](auth-starter.md),
 [assets](auth-starter-snapshot.md), [launching](auth-starter-launcher.md),
 [development](auth-starter-development.md) and [proof](auth-starter-testing.md).
+
+---
+
+## 49. Password Replacement and Credential-Fenced Session Commits
+
+AuthService explicitly enables mutation through its store's atomic password
+capability. Current SQL stores also condition session issuance on the copied hash,
+including login-only services. SessionManager keeps generated tokens private until
+the trusted conditional commit succeeds. Legacy custom stores retain their basic
+contract; direct session/raw SQL writers do not automatically join this protocol.
+
+Native verification and replacement hashing happen before SQL ownership. SQLite
+uses its managed write transaction; PostgreSQL's ordinary login path uses a shared
+transaction advisory lock and existing table privileges. Replacement takes the
+matching exclusive lock before user/session rows, samples the service clock after
+ownership and commits hash update, subject-session purge and attempt clearing
+together. The PostgreSQL operations history appends two hardened functions and
+specific runtime grants without changing prior migrations or granting user UPDATE.
+
+Native auth/generated apps and the PostgreSQL operator API expose strict cookie/
+origin-guarded password routes. A 204 clears the cookie and requires a fresh login;
+roles, notes and other users survive. Real stale/concurrent work, row/file ownership,
+trigger rollback, pre-commit SIGKILL and live KDF shutdown are verified. Upgrade all
+old login hosts before enabling mutations. See [policy](password-changes.md),
+[issuance](password-session-fencing.md), [SQLite](sqlite-password-changes.md),
+[PostgreSQL](postgres-password-changes.md), [HTTP](password-change-http.md) and
+[proof](password-change-testing.md).

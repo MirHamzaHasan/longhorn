@@ -13,6 +13,8 @@ derived only from that validated identifier. It never interpolates passwords.
 The table grants cover tasks/reports, queue/scheduler, account/session/attempt/note,
 idempotency, command history and recovery audit resources. It grants the existing
 transaction-auth function EXECUTE while preserving the migration's PUBLIC revoke.
+The appended [password capability](postgres-password-changes.md) adds only its two
+function EXECUTE grants. Direct password/role UPDATE remains forbidden.
 Runtime user UPDATE, audit mutation, migration metadata and queue maintenance
 DELETE remain excluded. The history identity is GENERATED ALWAYS and requires no
 additional runtime sequence grant for ordinary inserts.

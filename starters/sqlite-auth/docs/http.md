@@ -10,6 +10,7 @@ Owner: `src/app.ts`, using `@longhorn/auth/hono`, Hono validation and applicatio
 | GET `/auth/session` | Current principal and expiry, or 401 |
 | POST `/auth/logout` | Idempotent token revocation and cookie clear |
 | POST `/auth/logout-all` | Authenticated all-device revocation |
+| POST `/auth/password` | Current-password verification, atomic replacement/revocation and cookie clear |
 | GET `/admin` | Current admin role required |
 | GET/POST `/notes` | Owner-scoped page/create |
 | DELETE `/notes/:id` | Owned delete; missing/other-owner IDs return 404 |

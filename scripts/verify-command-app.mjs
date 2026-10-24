@@ -78,6 +78,7 @@ try{
   }
   let receiver=await startReceiver(),host=await startHost()
   const password='a long native starter passphrase',post=(input,cookie)=>({method:'POST',headers:{Origin:origin,'Content-Type':'application/json',...(cookie?{Cookie:cookie}:{})},body:JSON.stringify(input)})
+  const nextPassword='a changed native starter passphrase';secrets.push(password,nextPassword)
   for(const username of ['starter.member','starter.operator'])assert.equal((await fetch(origin+'/account/register',post({username,password}))).status,201)
   await run('pnpm',['operator','grant','starter.operator'],directory,deploy)
   const login=async username=>{const response=await fetch(origin+'/account/login',post({username,password}));assert.equal(response.status,200);const cookie=response.headers.get('set-cookie').split(';')[0];secrets.push(cookie.split('=')[1]);return cookie}
@@ -137,8 +138,21 @@ try{
   const retainedAudit=await(await fetch(origin+'/account/operations/audit',{headers:{Cookie:operator}})).json();assert.equal(retainedAudit.records[0].reason,'provider-restored')
   const next=await fetch(origin+'/account/commands',post({id:'after-restore',numbers:[7,9]},member));assert.equal(next.status,201);const newCommand=await next.json();await waitFor(async()=>{const value=await receipt(newCommand.command.id,member);return value&&value.receipts[0].result.sum===16})
   const runtime=await openPostgres({connectionString:restoredAppUrl.href})
-  try{await assert.rejects(runtime.execute("UPDATE longhorn_auth.users SET roles='[]'::jsonb"));await assert.rejects(runtime.execute("UPDATE longhorn_outbox.recovery_audit SET reason='manual-retry'"));await assert.rejects(runtime.execute('SELECT * FROM longhorn_pg_example.longhorn_migrations'))}finally{await runtime.close()}
+  try{await assert.rejects(runtime.execute("UPDATE longhorn_auth.users SET roles='[]'::jsonb"));await assert.rejects(runtime.execute("UPDATE longhorn_auth.users SET password_hash='forged'"));await assert.rejects(runtime.execute("UPDATE longhorn_outbox.recovery_audit SET reason='manual-retry'"));await assert.rejects(runtime.execute('SELECT * FROM longhorn_pg_example.longhorn_migrations'))}finally{await runtime.close()}
   console.log('Offline restore: checksum rejection, complete schema/history/identity, sessions/roles, replay, receipts and audit restored into a new database/storage path; PUBLIC auth execution revoked, minimal grants reapplied and a new computed command verified.')
+  const extra=await login('starter.member')
+  const changed=await fetch(origin+'/account/password',post({currentPassword:password,nextPassword},member))
+  assert.equal(changed.status,204);assert.ok(changed.headers.get('set-cookie').includes('Max-Age=0'))
+  for(const cookie of[member,extra])assert.equal((await fetch(origin+'/account/session',{headers:{Cookie:cookie}})).status,401)
+  assert.equal((await fetch(origin+'/account/session',{headers:{Cookie:operator}})).status,200)
+  assert.equal((await fetch(origin+'/account/login',post({username:'starter.member',password}))).status,401)
+  const logged=await fetch(origin+'/account/login',post({username:'starter.member',password:nextPassword}));assert.equal(logged.status,200)
+  const fresh=logged.headers.get('set-cookie').split(';')[0];secrets.push(fresh.split('=')[1]);await logged.json()
+  assert.equal((await(await fetch(origin+'/account/commands',{headers:{Cookie:fresh}})).json()).commands.length,3)
+  assert.equal((await stop(host)).code,0);host=await startHost()
+  assert.equal((await fetch(origin+'/account/session',{headers:{Cookie:fresh}})).status,200)
+  for(const secret of secrets)assert.ok(!host.output().includes(secret),'Restored host logged a credential')
+  console.log('Restored password capability: explicit function regrant permits native replacement and all-session revocation without direct password UPDATE; current history/peer session survive a host restart.')
 }finally{
   await browser?.close();await Promise.all([...instances].map(stop));await admin?.close();await cluster?.stop();await rm(temporary,{recursive:true,force:true})
 }

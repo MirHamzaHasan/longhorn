@@ -53,7 +53,7 @@ try{
   assert.equal(await visibleColumn(),0);assert.equal((await end(held,'SIGKILL')).signal,'SIGKILL');assert.equal(await visibleColumn(),0)
   const migrations=[launch(),launch()];const added=[]
   for(const instance of migrations){const result=await stage(instance,'migrated');added.push(result.added);assert.equal((await end(instance)).code,0)}
-  assert.deepEqual(added.map(value=>value.length).sort(),[0,1]);assert.deepEqual(added.flat(),['postgres_account_operations/002_command_history'])
+  assert.deepEqual(added.map(value=>value.length).sort(),[0,2]);assert.deepEqual(added.flat(),['postgres_account_operations/002_command_history','longhorn_postgres_auth/003_password_changes'])
   const afterHistory=(await owner.execute('SELECT id,checksum FROM longhorn_pg_example.longhorn_migrations ORDER BY position')).rows;assert.deepEqual(afterHistory.slice(0,beforeHistory.length),beforeHistory)
   const legacyRows=(await owner.execute('SELECT id,delivery_id,created_at,history_id FROM longhorn_pg_example.operator_commands ORDER BY history_id')).rows
   assert.equal(legacyRows.find(value=>value.id===a.id).delivery_id,aDelivery.id);assert.equal(Number(legacyRows.find(value=>value.id===a.id).created_at),aDelivery.createdAt)
