@@ -28,7 +28,7 @@ async function completed(instance){const timer=setTimeout(()=>instance.child.kil
 const service=item=>item.resource.attributes.find(a=>a.key==='service.name')?.value.stringValue
 function verifyWire(result){
   const records=collector.logsSnapshot().filter(item=>service(item)==='longhorn-logs-'+result.runtime);assert.equal(records.length,4)
-  assert.deepEqual(records.map(item=>item.log.severityNumber),[5,9,13,17]);assert.deepEqual(records.map(item=>item.log.severityText),['DEBUG','INFO','WARN','ERROR'])
+  assert.deepEqual(records.map(item=>item.log.severityNumber),[5,9,13,17]);assert.deepEqual(records.map(item=>item.log.severityText),['debug','info','warn','error'])
   for(const item of records){assert.equal(item.scope.name,'@longhorn/observability');assert.equal(item.log.timeUnixNano,'1792760000000000000');assert.equal(item.log.observedTimeUnixNano,'1792760000010250000')}
   const debug=records[0].log,attributes=Object.fromEntries(debug.attributes.map(a=>[a.key,a.value]))
   assert.deepEqual(attributes.integer,{intValue:'42'});assert.deepEqual(attributes.fraction,{doubleValue:1.5});assert.deepEqual(attributes.yes,{boolValue:true})

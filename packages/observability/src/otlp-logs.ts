@@ -30,7 +30,7 @@ export class OtlpHttpLogExporter implements LogExporter {
       const parts=[this.envelope.prefix];let bytes=encoder.encode(this.envelope.prefix+this.envelope.suffix).byteLength
       for(const[index,input]of entries.entries()){
         const {entry}=snapshotLogEntry(input,this.recordBytes),{record,context}=entry
-        const item=JSON.stringify({timeUnixNano:otlpNanos(Date.parse(record.timestamp)),observedTimeUnixNano:otlpNanos(entry.observedAt),severityNumber:severities[record.level],severityText:record.level.toUpperCase(),
+        const item=JSON.stringify({timeUnixNano:otlpNanos(Date.parse(record.timestamp)),observedTimeUnixNano:otlpNanos(entry.observedAt),severityNumber:severities[record.level],severityText:record.level,
           body:{stringValue:record.message},attributes:Object.entries(record.fields).map(([key,value])=>({key,value:logAnyValue(value)})),
           ...(context?{traceId:context.traceId,spanId:context.spanId,flags:context.sampled?1:0}:{})})
         const separator=index?',':'';bytes+=encoder.encode(separator+item).byteLength

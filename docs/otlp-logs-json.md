@@ -9,7 +9,7 @@ with traces and metrics.
 | --- | --- |
 | Canonical ISO timestamp | timeUnixNano decimal string |
 | Observed epoch milliseconds | observedTimeUnixNano decimal string |
-| debug / info / warn / error | Numeric severities 5 / 9 / 13 / 17 and uppercase text |
+| debug / info / warn / error | Numeric severities 5 / 9 / 13 / 17; original level text preserved |
 | Message | Body stringValue |
 | Normalized fields | Attributes with recursive AnyValue encoding |
 | Explicit SpanContext | Hex traceId/spanId and sampled flag |

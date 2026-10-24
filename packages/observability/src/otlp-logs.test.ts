@@ -11,7 +11,7 @@ it('encodes event/observed nanos, severities, recursive typed fields, explicit c
   const exporter=new OtlpHttpLogExporter(options(async(_url,init)=>{body=String(init!.body);authorization=new Headers(init!.headers).get('authorization')!;return ok()},{headers}))
   const input=entry(),pending=exporter.export([input]);headers.authorization='changed';(input.record.fields as {integer:number}).integer=99;await pending
   const wire=JSON.parse(body).resourceLogs[0].scopeLogs[0].logRecords[0]
-  expect(wire).toMatchObject({severityNumber:9,severityText:'INFO',body:{stringValue:'completed'},timeUnixNano:'1792756800000000000',observedTimeUnixNano:'1792760000010250000',traceId:'1'.repeat(32),spanId:'2'.repeat(16),flags:1})
+  expect(wire).toMatchObject({severityNumber:9,severityText:'info',body:{stringValue:'completed'},timeUnixNano:'1792756800000000000',observedTimeUnixNano:'1792760000010250000',traceId:'1'.repeat(32),spanId:'2'.repeat(16),flags:1})
   expect(wire.attributes).toContainEqual({key:'integer',value:{intValue:'42'}});expect(wire.attributes).toContainEqual({key:'fraction',value:{doubleValue:1.5}})
   expect(wire.attributes).toContainEqual({key:'array',value:{arrayValue:{values:[{intValue:'1'},{stringValue:'雪😀'},{}]}}})
   expect(wire.attributes).toContainEqual({key:'object',value:{kvlistValue:{values:[{key:'status',value:{stringValue:'ok'}}]}}})

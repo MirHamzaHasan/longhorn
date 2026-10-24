@@ -40,3 +40,8 @@ The account's Actions budget has blocked earlier revisions before startup; a
 configured job alone is not hosted execution evidence. Workers final delivery is
 verified inside a request, not after arbitrary platform disposal. No durable
 remote retention, production throughput or cloud failover is claimed.
+
+[Draft PR #4](https://github.com/MirHamzaHasan/longhorn/pull/4) records review and
+current-head checks. The [first hosted attempt](https://github.com/MirHamzaHasan/longhorn/actions/runs/40043462081)
+was rejected before runner allocation by the Actions budget. The full local
+source suite has 480 passing tests; no Linux execution is inferred from that result.

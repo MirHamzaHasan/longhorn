@@ -58,6 +58,13 @@ interrupted startup and independent generic starters passed. The Linux collector
 archive is checksum-pinned and the telemetry job is configured, but that is not
 Linux execution evidence. Current PR checks must pass when runner use is available.
 
+Buffered log delivery is reviewed in [draft PR #4](https://github.com/MirHamzaHasan/longhorn/pull/4),
+stacked on metrics. Its first [hosted run](https://github.com/MirHamzaHasan/longhorn/actions/runs/40043462081)
+failed all six jobs before any runner/step started. The telemetry check annotation
+again identifies the Actions budget. Local frozen install/build/types, 480 tests,
+native trace/metric/log collector gates, independent starters, archive/restore and
+the log demo passed. Hosted validation remains a distinct required release gate.
+
 [Review artifacts](ci-review-artifacts.md) attempt to retain actual browser captures
 and the application archive/checksum after successful independent verification.
 Verification and upload availability are reported separately; the observed account

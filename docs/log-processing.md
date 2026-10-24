@@ -58,3 +58,5 @@ contain record/export/close operations without source record, endpoint or raw ca
 The synchronous onError observer is isolated. Direct feedback into the same sink
 during that observer is counted/dropped to prevent recursive network logging;
 using a separate local logger remains the intended error path.
+Exporter/custom transport diagnostics should use that separate sink too;
+asynchronous feedback into the exporting pipeline remains application-owned.
