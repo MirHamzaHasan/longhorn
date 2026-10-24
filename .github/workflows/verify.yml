@@ -178,6 +178,7 @@ jobs:
             .artifacts/longhorn-command-project.tgz
             .artifacts/longhorn-command-project.tgz.sha256
             .artifacts/command-project-proof.json
+            .artifacts/command-development-proof.json
           include-hidden-files: true
           if-no-files-found: error
           compression-level: 0

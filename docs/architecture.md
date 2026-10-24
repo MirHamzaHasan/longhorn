@@ -1619,3 +1619,28 @@ runs the complete PostgreSQL/workerd/browser/backup/restore workflow through the
 installed CLI, including custom exit codes and POSIX terminal-group interruption.
 See [profile](command-project.md), [snapshot](command-project-snapshot.md),
 [lifetime](command-project-lifecycle.md) and [proof](command-project-testing.md).
+
+
+## 64. Source Generations with Serial Native Replacement
+
+The generated command app now has a Node source owner over existing esbuild
+settings. Recursive source watches and app-profile polling feed one debounced
+revision sequence. Server/browser builds settle in memory together; failed or
+superseded work cannot publish. A usable generation drains its current native
+child before writing and rechecks admission before starting the replacement.
+CLI forwarding targets the unchanged dev owner once, preserving custom scripts.
+
+A separate receiver role watches only receiver source and owns Miniflare/workerd
+through its existing host. Both roles keep retained stores and independent output
+paths. Shutdown closes watches, settles builds and awaits real child exit. Forced
+stop is a failure; configuration/child failures stop the loop instead of silently
+serving stale config. One-off builds and arbitrary competing writers remain explicit.
+
+Installed native proof edits actual app/browser/recursive modules and receiver
+source, preserves paired output across compile failure, holds SQL-backed HTTP
+through reload, consumes the latest edits after drain and retains replay/session/
+computed receipts. Private profile recovery, POSIX group interrupts and a real
+noncooperative child's forced-stop failure verify the ownership boundary. See
+[app loop](command-source-development.md), [builds](command-development-builds.md),
+[lifetime](command-development-lifecycle.md), [receiver](receiver-source-development.md)
+and [proof](command-development-testing.md).

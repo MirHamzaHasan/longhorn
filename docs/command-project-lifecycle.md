@@ -21,10 +21,11 @@ delegation and its process-tree signal policy. Installed tests verify the pnpm
 script environment and a nonzero custom exit; hooks cannot be silently bypassed
 by the direct-host optimization. Existing sqlite-auth launcher handling is retained.
 
-The generated dev script keeps its existing behavior: build once, then Node watches
-the built host. Source changes require rebuilding and restarting the affected
-app/browser/receiver. This profile does not add source-aware reload, automatic
-framework upgrades or multi-host orchestration.
+The generated [source development owner](command-source-development.md) now watches
+app/console code and private profiles, with a separate receiver development command.
+Its unchanged node dev.mjs script also receives direct-owner CLI signal forwarding
+when hooks are absent. [Build and native drain](command-development-lifecycle.md)
+retain admitted work through actual settlement.
 
 The installed native gate sends SIGTERM to the CLI owner during real app restarts,
 checks a clean result and rebinds the same listener. On POSIX it also sends an

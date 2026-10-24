@@ -61,6 +61,8 @@ async function execute(args: string[], cwd: string): Promise<number> {
       if (manifest.longhorn?.template === 'sqlite-auth' && manifest.scripts?.[command] === `node ${command}.mjs`) launcher = `${command}.mjs`
       if (manifest.longhorn?.template === 'command-app' && command === 'start'
         && manifest.scripts?.start === 'node dist/operator-host.js') launcher = 'dist/operator-host.js'
+      if (manifest.longhorn?.template === 'command-app' && command === 'dev'
+        && manifest.scripts?.dev === 'node dev.mjs') launcher = 'dev.mjs'
     }
   }
   return new Promise((resolve, reject) => {

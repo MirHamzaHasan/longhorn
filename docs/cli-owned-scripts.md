@@ -15,7 +15,9 @@ its [launcher](auth-starter-launcher.md) retains the native child through actual
 exit. The CLI waits for the owner and preserves its result.
 
 The [command-app profile](command-project-lifecycle.md) also runs its unchanged
-`node dist/operator-host.js` start owner directly when pre/post hooks are absent.
+`node dist/operator-host.js` start owner and `node dev.mjs` source watcher directly
+when the matching pre/post hooks are absent. The watcher owns a separate native
+process group and [paired builds](command-development-builds.md).
 Its installed real app workflow verifies ordinary owner shutdown and POSIX group
 interrupt, with listener release and retained-state restart.
 

@@ -12,6 +12,7 @@ import { startPostgresCluster } from './postgres-cluster.mjs'
 import { openPostgres } from '../runtimes/node/dist/postgres.js'
 import { Idempotency } from '../packages/idempotency/dist/index.js'
 import { PostgresIdempotencyStore } from '../packages/idempotency/dist/postgres.js'
+import { verifyCommandDevelopment } from './verify-command-development.mjs'
 
 // Internal QA inputs let the packed CLI project use this same complete workflow.
 const options=new Map(),args=process.argv.slice(2)
@@ -206,6 +207,10 @@ try{
   assert.ok(!(await sessionPage.context().cookies()).some(cookie=>cookie.name==='longhorn_dev'));await browser.close();browser=undefined
   for(const secret of secrets)assert.ok(!host.output().includes(secret),'Restored host logged a credential')
   console.log('Restored password capability: shipped browser Account form and explicit function regrant permit native replacement and all-session revocation without direct password UPDATE; current history/peer session survive a host restart; shipped scoped sign-out controls preserve the current browser and isolate the operator; Run again creates a separate command/receipt from a restored source after deep-link reload; live delivery filters and clear-filter fallback use the restored metadata; shipped audit NDJSON export preserves the exact restored actor/reason/outcome through an operator session; shipped command NDJSON export contains exactly the four restored/new commands without numbers or queue secrets; shipped receipt v1 exports the four actual computations and one fresh command after restore; saved history filters survive actual reload and browser Back/Forward in the restored app; restored personal history view survives checkpoint, fresh login and a shipped revision update; restored ID search preserves status and a reloadable normalized query, and v2 NDJSON exports exactly its matched command.')
+  if(cli){
+    assert.equal((await stop(host)).code,0);assert.equal((await stop(receiver)).code,0)
+    await verifyCommandDevelopment({directory,cli,origin,receiverEnvironment:receiverEnv,ownerUrl:restoredOwnerUrl.href,username:'starter.member',password:nextPassword})
+  }
 }finally{
   await browser?.close();await Promise.all([...instances].map(stop));await admin?.close();await cluster?.stop();await rm(temporary,{recursive:true,force:true})
 }

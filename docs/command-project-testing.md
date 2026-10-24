@@ -48,3 +48,8 @@ The independent-distribution CI job runs both archive and packed-project gates
 before attempting to upload their source artifacts. Hosted execution and upload
 availability remain separate evidence from local results. No new browser screen,
 tagged release, registry publication or deployed infrastructure is claimed.
+
+The restored CLI-created artifact additionally runs [source development proof](command-development-testing.md).
+It edits actual app/browser/receiver source, observes paired failure/recovery, holds
+a real SQL-backed HTTP write through reload and verifies retained sessions/replies/
+receipts, private profiles, terminal shutdown and explicit forced-stop failure.

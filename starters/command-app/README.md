@@ -28,3 +28,6 @@ both hosts. Open http://127.0.0.1:3011/console to create an account and submit
 [Offline backup and restore](docs/backup.md) preserves both retained stores through
 a verified maintenance checkpoint.
 There are no default accounts, passwords or remotely deployed services.
+
+After setup, use `pnpm dev` for app/console source reloads and `pnpm dev:receiver`
+in the separate receiver shell. See [development](docs/development.md).

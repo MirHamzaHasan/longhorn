@@ -25,6 +25,7 @@ one. Preserve [dependency policy](dependencies.md) for later deployments.
 `longhorn build`, `typecheck` and `test` run the project scripts. `longhorn start`
 starts the unchanged fixed Node host directly and forwards shutdown once to that
 resource owner. Custom start scripts or pre/post hooks use normal pnpm delegation.
-`pnpm dev` builds once and watches built host output; after application/browser/
-receiver source edits, rebuild and restart as described in [setup](setup.md).
+`pnpm dev` owns source-aware app/console rebuilds and graceful host replacement.
+`pnpm dev:receiver` separately watches the retained receiver. See
+[development](development.md) and [setup](setup.md).
 Receiver startup remains a separate `pnpm receiver` command with its own settings.

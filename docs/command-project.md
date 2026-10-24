@@ -43,3 +43,7 @@ already carries a lock and its origin hash. Both forms have the same checked
 application template and selected local framework closure; neither needs this
 checkout after creation. See [dependency policy](command-app-dependencies.md)
 and [deployment](command-app-deployment.md).
+
+Generated apps now include [source development](command-source-development.md):
+paired app/console rebuilds, private profile reload and a separate retained receiver
+watch command. Existing setup, account policy and deployment ownership are retained.

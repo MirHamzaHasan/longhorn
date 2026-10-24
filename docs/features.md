@@ -9,6 +9,11 @@ downstream connections, verification, and current limits.
 
 | Feature | Guide | Implementation owner | Connects to |
 | --- | --- | --- | --- |
+| Command source development | [App source loop](command-source-development.md) | Generated dev.mjs and shared build settings | Recursive server/console source, private profiles and usable paired generations |
+| Development build admission | [Build coordination](command-development-builds.md) | One owned revision/debounce/build sequence | In-memory output, superseded work, old native exit and per-role output |
+| Development native lifetime | [Process drain](command-development-lifecycle.md) | Fixed CLI dev owner and isolated Node child | Actual close, awaited builds, failed/forced stop and generic script fallback |
+| Receiver source development | [Receiver watch](receiver-source-development.md) | Separate role and Miniflare resource owner | Protected source reload, retained receipt storage and independent app output |
+| Native development proof | [Watch verification](command-development-testing.md) | Installed CLI, real SQL/HTTP and retained workerd | Compile/recovery, recursive modules, active request drain, latest edits and forced-stop failure |
 | Complete command CLI profile | [Command project](command-project.md) | Existing CLI createProject and shared archive recipe | Node/PostgreSQL console, explicit receiver, editable source and setup |
 | Command template snapshot | [Checked source](command-project-snapshot.md) | CLI snapshot builder and shared descriptor reader | Actual app/tests/guides, selected local graph and atomic publication |
 | Command CLI host ownership | [Script lifetime](command-project-lifecycle.md) | Fixed start script and native host | One owner signal, custom/hook pnpm fallback and actual exit |
@@ -354,6 +359,9 @@ flowchart TD
   RequestCleanup --> Lifecycle
   OperatorHost --> RequestCleanup
   CommandProject[Command app CLI profile] --> OperatorHost
+  CommandProject --> SourceDevelopment[Owned source development]
+  SourceDevelopment --> OperatorHost
+  SourceDevelopment --> ReceiverDevelopment[Separate receipt receiver owner]
   CommandProject --> TemplateAssets[Shared checked application assets]
   CommandProject --> Distribution[Independent application archive]
   Idempotency --> TxPublish

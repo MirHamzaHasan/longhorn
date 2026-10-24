@@ -70,3 +70,8 @@ Its exact upload paths additionally include longhorn-command-project.tgz, its
 SHA-256 sidecar and command-project-proof.json. These are source/aggregate QA
 outputs created before native accounts/data; test environment and stores remain
 excluded. Upload follows successful execution of both complete workflows.
+
+The packed project gate also records [development proof](command-development-testing.md)
+in the exact command-development-proof.json upload path. It contains only aggregate
+outcomes; edited test source, credentials and retained SQL/receiver stores remain
+outside the uploaded source artifacts.

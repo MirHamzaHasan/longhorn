@@ -98,3 +98,7 @@ Choose `--runtime node --template command-app` for the [complete command project
 including the actual PostgreSQL console, receiver, deployment and backup tools.
 Creation prints setup instructions; database and receiver configuration are explicit.
 Its [fixed start owner](command-project-lifecycle.md) preserves custom/hook pnpm behavior.
+
+The unchanged command-app dev script now selects its [source owner](command-source-development.md)
+directly, with one forwarded signal and actual native drain. Receiver development
+uses the generated app's separate pnpm dev:receiver script and receiver shell.

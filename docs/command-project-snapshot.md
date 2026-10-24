@@ -39,3 +39,7 @@ It no longer maintains a parallel source-copy recipe. Whole-directory staging an
 the final destination check preserve occupied/symlink targets and prevent partial
 publication if validation/copy fails. Generated application source belongs to the
 developer after creation; the original hashes do not forbid edits or upgrade it.
+
+The template also requires [development tools](command-source-development.md):
+shared build settings, one source owner, native close helper and their generated
+guide. They use existing Node/esbuild dependencies and the same checked recipe.

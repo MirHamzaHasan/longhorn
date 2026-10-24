@@ -771,8 +771,21 @@ keeps database/receiver setup explicit; installation resolves the initial graph.
 [Host script ownership](command-project-lifecycle.md) preserves direct native drain
 and custom/hook pnpm behavior. [Packed verification](command-project-testing.md)
 uses relocated installed packages and the complete actual SQL/browser/restore flow.
-Source-aware command-host development and automatic framework upgrades remain
-separate work; the existing build/output-watch behavior is documented.
+[Source-aware development](command-source-development.md) is now implemented below.
+Automatic framework upgrades remain separate work.
+
+
+## Command and receiver source development implemented
+
+The [command source loop](command-source-development.md) now builds actual app and
+console source together, reloads private profiles and preserves running output on
+compile failure. [One build sequence](command-development-builds.md) fences latest
+edits around [native close](command-development-lifecycle.md). A separate
+[receiver watcher](receiver-source-development.md) retains its own storage/output.
+[Installed proof](command-development-testing.md) covers real recursive edits,
+SQL/HTTP held through reload, latest generations, replay/session/receipt persistence,
+config failure, terminal cleanup and a forced stop reported as failure. Automatic
+framework upgrades and multi-host orchestration remain separate work.
 
 ## Subsequent framework modules
 

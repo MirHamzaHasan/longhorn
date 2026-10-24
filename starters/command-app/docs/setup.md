@@ -47,8 +47,10 @@ Role changes revoke prior sessions. `pnpm operator revoke USERNAME` removes it.
 Do not supply deployment credentials to the browser or app shell.
 
 Ctrl+C drains the owned host. It does not remove PostgreSQL or receiver data.
-`pnpm dev` builds then watches the Node host; after editing browser/receiver code,
-run `pnpm build` and restart the relevant host. There is no unclaimed hot reload.
+`pnpm dev` watches app/console source and the private operator profiles. Use
+`pnpm dev:receiver` in the separate receiver shell for receiver source reloads.
+Compile errors retain a running generation; see [development](development.md)
+for build ownership, shutdown and startup-failure behavior.
 
 The complete profile includes [history-filter indexes](history-filters.md). Their
 regular transactional builds block writes, so deploy them during stopped-writer
