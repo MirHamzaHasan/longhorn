@@ -2,7 +2,7 @@
 
 Owner: TasksStore.counts and SqliteTasksStore.counts in examples/basic. Connects
 [paged task reads](sqlite-task-pages.md) to the existing
-[summary cache](task-cache.md), Node/Bun storage and optional Redis cache profile.
+[summary cache](task-cache.md), Node/Bun/[Deno storage](deno-sqlite.md) and optional Redis cache profile.
 
 GET /summary keeps its existing numeric total/completed/pending fields and ISO
 generatedAt timestamp. Counts describe the whole task collection, independently

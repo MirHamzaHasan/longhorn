@@ -48,3 +48,9 @@ uses static imports and needs no runtime read permission for dynamic module load
 rebinding, error responses, and the executable example's configuration, DI,
 validation, logs, and signals. Deno 2.9.6 is pinned for verification; the adapter's
 type project uses the compatible Deno declaration package.
+
+Optional [Deno SQLite](deno-sqlite.md) now implements the shared Database contract
+through a separate native entrypoint, with [binding slots](deno-sqlite-bindings.md),
+[async ownership](deno-sqlite-transactions.md), a [persistent task host](deno-sqlite-tasks.md)
+and [native verification](deno-sqlite-testing.md). Importing denoRuntime does not
+import SQLite. File access stays behind explicit grants in the task host command.

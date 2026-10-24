@@ -472,7 +472,8 @@ autocommit through a caught rollback error. Existing queue/scheduler/replay stor
 run unchanged. The task host shares Node's application/repository and persists
 through real process restarts. Native gates prove lock contention, SIGKILL recovery,
 participant failures and concurrent HTTP writers. SQL I/O remains synchronous;
-distributed locking and Deno-specific persistence are separate work. An independent
+distributed locking remains separate work. Native Deno persistence is implemented
+below. An independent
 Bun starter now uses this provider as described below.
 
 ## Independent Bun SQLite workflow implemented
@@ -530,6 +531,22 @@ queue/readiness work drains. The new host starts/probes Rust with random credent
 before HTTP readiness, retains SQLite across restarts, rolls back failed binds and
 recovers durable attempts after native failure. Parent crash supervision,
 descendant ownership and automatic restart remain host deployment concerns.
+
+## Native Deno SQLite implemented
+
+[Provider](deno-sqlite.md), [binding slots](deno-sqlite-bindings.md),
+[callback ownership](deno-sqlite-transactions.md), [task host](deno-sqlite-tasks.md)
+and [native proof](deno-sqlite-testing.md) each have a guide. The optional Deno
+entrypoint implements the existing Database over its built-in node:sqlite.
+Exact input/slot checks prevent omitted bindings from becoming native NULLs;
+native all() preserves step failures that the pinned iterator can hide. Async
+transactions retain canonical file ownership across awaits, join publishers and
+fence a native automatic rollback. The shared task app runs with explicit Deno
+file/network/environment grants and preserves tasks through native restart.
+Actual tests cover permissions, contention, crash recovery, 1029-task bounded
+reads/counts and Node/Bun/Deno writes to the same retained file with an int64 ID.
+SQL calls remain synchronous. Independent Deno task generation and deployment
+profiles remain subsequent work.
 
 ## Subsequent framework modules
 

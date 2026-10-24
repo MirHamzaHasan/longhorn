@@ -2,7 +2,7 @@
 
 Owner: examples/basic task query schema, service/store contract and SQL repository.
 The same source runs in the [Node example](tasks-example.md), [Bun host](bun-sqlite-tasks.md),
-Redis cache profile and independent Node/Bun SQLite starters.
+Redis cache profile, [Deno host](deno-sqlite-tasks.md) and independent Node/Bun SQLite starters.
 
 GET /tasks now returns `{ tasks, nextCursor }`. It defaults to 20 rows and accepts:
 

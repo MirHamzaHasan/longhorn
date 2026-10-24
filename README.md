@@ -436,6 +436,12 @@ using native `bun:sqlite` and the existing task service/repository. The optional
 [Bun storage entrypoint](docs/bun-sqlite.md) supports async callback transactions
 and managed publishers; native SQL itself executes synchronously.
 
+`pnpm dev:deno-sqlite` runs the same persistent task API at
+http://127.0.0.1:3017 using [Deno storage](docs/deno-sqlite.md) and explicit file
+permissions. The [host](docs/deno-sqlite-tasks.md),
+[binding slots](docs/deno-sqlite-bindings.md), [async transactions](docs/deno-sqlite-transactions.md)
+and [native tests](docs/deno-sqlite-testing.md) explain the connections.
+
 ## Checks and built execution
 
 ```sh
@@ -445,6 +451,7 @@ pnpm test
 pnpm test:persistence
 pnpm test:runtimes
 pnpm test:bun-sqlite
+pnpm test:deno-sqlite
 pnpm test:worker-scheduled
 pnpm test:worker-storage
 pnpm test:d1

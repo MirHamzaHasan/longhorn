@@ -9,6 +9,11 @@ downstream connections, verification, and current limits.
 
 | Feature | Guide | Implementation owner | Connects to |
 | --- | --- | --- | --- |
+| Native Deno SQLite | [Deno storage](deno-sqlite.md) | Optional @longhorn/deno/sqlite | Native built-in driver, exact values/metadata, admission budgets and actual close |
+| Deno SQLite binding slots | [Binding plan](deno-sqlite-bindings.md) | Adapter-local SQL/slot scan | Exact arity, names/numbered holes, input snapshots and unchanged result column names |
+| Deno callback transaction ownership | [Deno transactions](deno-sqlite-transactions.md) | Canonical file gate and managed executors | Async callback lifetime, native rollback fencing and existing queue/scheduler/replay stores |
+| Persistent Deno tasks | [Deno task host](deno-sqlite-tasks.md) | Same shared task app/repository | Scoped runtime permissions, checked schema, pages/counts, local observations and retained restart |
+| Native Deno storage proof | [Deno SQL testing](deno-sqlite-testing.md) | Real Deno processes and Node/Bun peers | Permission denial, crash/lock behavior, 1029-task pages and retained int64 interoperability |
 | Owned Node executable | [Managed process](managed-node-process.md) | Optional @longhorn/node/process | Absolute trusted executable, bounded output/startup, cancellation, actual exit and forced-stop failure |
 | Async report computation acquisition | [Report resources](report-computer-resources.md) | Jobs resource factory and ReportCompute DI | Startup rollback, dependency readiness and queue-before-computation/storage drain |
 | Lifecycle-owned Rust service | [Owned native reports](owned-native-reports.md) | Node jobs application resource | Minimal child environment, random credential, versioned health, client-before-child release |

@@ -80,6 +80,7 @@ jobs:
       - run: pnpm test
       - run: node scripts/verify-runtimes.mjs
       - run: node scripts/verify-bun-sqlite.mjs
+      - run: node scripts/verify-deno-sqlite.mjs
       - run: node scripts/verify-projects.mjs
       - run: node scripts/verify-sqlite-project.mjs
       - run: node scripts/verify-sqlite-project.mjs bun

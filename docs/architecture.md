@@ -1202,3 +1202,32 @@ gates prove the boundaries; parent crash/service supervision remains deployment-
 See [process](managed-node-process.md), [DI](report-computer-resources.md),
 [Rust resource](owned-native-reports.md), [host](native-jobs-host.md) and
 [proof](managed-process-testing.md).
+
+---
+
+## 45. Native Deno SQLite Behind the Existing Database Contract
+
+The optional @longhorn/deno/sqlite entrypoint uses Deno's built-in node:sqlite
+driver without importing native SQL into shared packages or the HTTP adapter.
+The adapter snapshots values, validates exact SQLite slot arity and plans native
+named/positional bindings without rewriting SQL or column names. It reads int64
+as bigint, normalizes safe integer inputs and preserves direct change metadata.
+Native all() propagates step errors; output checks follow materialization and do
+not claim a native CPU/memory deadline or a write rollback after decode failure.
+
+Canonical main-file identity shares a FIFO gate across handles. Async callbacks
+open BEGIN IMMEDIATE, own managed publication through actual completion and verify
+native transaction state before subsequent SQL/commit. A caught OR ROLLBACK error
+cannot turn later writes into autocommit. The native open path keeps the caller's
+granted spelling while canonical identity handles symlink coordination.
+
+The Deno host composes the same task app/repository, checksummed migrations,
+events and summary cache with explicit environment/network/file permissions.
+Native verification proves exact binding/value boundaries, permission denial,
+same-file drain, existing SQL stores, lock/crash recovery and HTTP persistence.
+It traverses 1029 tasks and a maximum int64 ID, then actual Node/Bun peers read
+and update the same retained file for Deno to serve after restart. Independent
+Deno CLI task generation remains separate from the runnable host.
+See [provider](deno-sqlite.md), [bindings](deno-sqlite-bindings.md),
+[transactions](deno-sqlite-transactions.md), [tasks](deno-sqlite-tasks.md) and
+[proof](deno-sqlite-testing.md).

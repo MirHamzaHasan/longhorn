@@ -61,6 +61,7 @@ by [configuration](configuration.md). Node.js 20.19.0+ is supported.
 | Node | `app.listen(nodeRuntime)` | Native Node listener through Hono |
 | Bun | `app.listen(bunRuntime)` | Native Bun.serve listener |
 | Bun SQLite | `@longhorn/bun/sqlite` | Optional native local-file Database and async transaction ownership |
+| Deno SQLite | `@longhorn/deno/sqlite` | Optional native local-file Database, explicit file grants and async transaction ownership |
 | Deno | `app.listen(denoRuntime)` | Native Deno.serve listener |
 | Workers | `export default createWorker(app)` | Platform listener/isolate; per-request env/context |
 | Workers scheduled | `export default createScheduledWorker(app, options)` | Fetch plus bounded platform scheduled events and managed completion |
