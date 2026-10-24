@@ -30,3 +30,7 @@ ambiguous committed reservation.
 [D1 batch storage](d1-limit-lifecycle.md) joins the same server-time admission and
 drain, borrowing its existing atomic handle. Native batch rollback differs from a
 lost post-commit acknowledgement; neither path is automatically retried.
+
+[Object ownership](object-limit-lifecycle.md) uses the existing managed SQLite
+store and drains HTTP/limiter work before Object SQL. Quota commits participate in
+the existing alarm hook without making bucket expiry a wakeup candidate.

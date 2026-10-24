@@ -96,6 +96,16 @@ jobs:
       - run: pnpm build
       - run: pnpm typecheck
       - run: pnpm test
+      - run: node scripts/verify-object-rate-limits.mjs
+      - name: Retain Object request limit proof
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: object-request-limit-proof
+          path: .artifacts/object-rate-limit-proof.json
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 14
       - run: node scripts/verify-runtimes.mjs
       - run: node scripts/verify-password-runtimes.mjs
       - run: node scripts/verify-auth.mjs

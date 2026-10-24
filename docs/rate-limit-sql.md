@@ -37,3 +37,8 @@ Keep shared clocks/policies aligned. SQLite write contention uses its existing
 provider admission/transaction rules; PostgreSQL serializes only competing bucket
 rows. D1 BatchDatabase is a different contract. See [native SQL/process-death
 proof](rate-limit-testing.md) and the [command upgrade](command-request-limits.md).
+
+[Durable Object SQLite](object-request-limits.md) also uses this existing managed
+SQLite store. Native input-gate ownership precedes the clock sample; its report
+profiles [append schema](object-limit-deployment.md) after their complete histories.
+See [native Object proof](object-limit-testing.md).

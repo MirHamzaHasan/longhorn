@@ -2,6 +2,7 @@
   "name": "example-durable-worker", "private": true, "type": "module",
   "scripts": { "build": "node build.mjs", "typecheck": "tsc --noEmit" },
   "dependencies": {
+    "@longhorn/config": "workspace:*", "@longhorn/ratelimit": "workspace:*",
     "@longhorn/core": "workspace:*", "@longhorn/container": "workspace:*",
     "@longhorn/database": "workspace:*", "@longhorn/queue": "workspace:*", "@longhorn/observability": "workspace:*",
     "@longhorn/scheduler": "workspace:*", "@longhorn/validation": "workspace:*",

@@ -36,7 +36,7 @@ native alarm -> clock.alarm -> app.run -> DI consumer span
 The new build emits dist/alarms.js alongside the existing manual cron dist/index.js.
 Both reuse createReportApp and runReportBatch; the alarm variant appends the clock
 migration and acquires clock ownership before queue/scheduler resources. Cleanup
-closes scheduler -> queue -> clock -> database, with shared tracing closed last.
+closes HTTP -> optional limiter -> scheduler -> queue -> clock -> database, with shared tracing closed last.
 It configures one managed report queue, ten-item batches and a twenty-second
 cooperative alarm budget. SQL leases/retries create wakeups for abandoned/delayed
 jobs, not only new schedule definitions. Remaining backlog keeps a near-future alarm.
@@ -59,3 +59,8 @@ the report processor directly.
 binding/class migration and omits cron configuration. No account resources are
 created or deployed by these commands. [Native verification](workers-alarm-testing.md)
 uses temporary paths, automatic event delivery, failure windows and restart.
+
+The [optional report submission budget](object-report-limits.md) shares both POST
+routes and persists with this profile. Its schema appends after the alarm history.
+Quota expiry creates no native alarm and an exhausted budget does not stop queued
+reports. See [ownership](object-limit-lifecycle.md) and [native proof](object-limit-testing.md).

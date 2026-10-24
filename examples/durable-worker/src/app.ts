@@ -1,3 +1,5 @@
+import { configureReportLimits, reportLimitMigrations } from './request-limits.js'
+import type { ReportLimitOptions } from './request-limits.js'
 import { Longhorn } from '@longhorn/core'
 import { provide, token } from '@longhorn/container'
 import { migrate } from '@longhorn/database'
@@ -19,7 +21,7 @@ const ReportDatabase = token<Database>('durable report database')
 const ReportQueue = token<Queue<ReportInput>>('durable report queue')
 const ReportScheduler = token<Scheduler>('durable report scheduler')
 export const ReportClock = token<SqliteAlarmClock>('durable report alarm clock')
-type ReportAppOptions = { migrations?: readonly Migration[]; clock?: (app: Longhorn, database: Database) => SqliteAlarmClock }
+type ReportAppOptions = { requestLimits?: ReportLimitOptions; migrations?: readonly Migration[]; clock?: (app: Longhorn, database: Database) => SqliteAlarmClock }
 const scheduleSchema = z.object({
   id: z.string().min(1).max(100).regex(/^[A-Za-z0-9._-]+$/),
   numbers: reportSchema.shape.numbers,
@@ -33,7 +35,7 @@ export function createReportApp(state: DurableSqliteState, options: ReportAppOpt
   if (clock) app.container.register(provide(ReportClock, { factory: () => clock }))
   app.onStart(async () => {
     try {
-      await migrate(database, options.migrations ?? migrations)
+      await migrate(database, [...(options.migrations ?? migrations), ...reportLimitMigrations])
       app.container.register(provide(ReportDatabase, { factory: () => database }))
       return () => database.close()
     } catch (error) { await database.close(); throw error }
@@ -49,7 +51,8 @@ export function createReportApp(state: DurableSqliteState, options: ReportAppOpt
   app.http.use('*', async (c, next) => { c.header('Cache-Control', 'no-store'); await next() })
   app.http.get('/health', c => c.json({ status: 'ok', storage: 'durable-object-sqlite' }))
   if (clock) app.http.get('/alarm', async c => c.json({ clock: clock.stats(), nextAlarm: await clock.getAlarm() }))
-  app.http.post('/reports', validate('json', reportSchema), async c => {
+  const submissionBudget = configureReportLimits(app, ReportDatabase, options.requestLimits)
+  app.http.post('/reports', submissionBudget, validate('json', reportSchema), async c => {
     const job = await app.container.resolve(ReportQueue).enqueue(c.req.valid('json'))
     c.header('Location', '/reports/'+job.id); return c.json({ job }, 202)
   })
@@ -59,7 +62,7 @@ export function createReportApp(state: DurableSqliteState, options: ReportAppOpt
     const row = (await app.container.resolve(ReportDatabase).execute({ sql: 'SELECT result FROM worker_reports WHERE job_id = ?', args: [id] })).rows[0]
     return c.json({ job, result: row ? JSON.parse(String(row.result)) as unknown : null })
   })
-  app.http.post('/report-schedules', validate('json', scheduleSchema), async c => {
+  app.http.post('/report-schedules', submissionBudget, validate('json', scheduleSchema), async c => {
     const { id, numbers, at } = c.req.valid('json')
     try {
       const schedule = await app.container.resolve(ReportScheduler).at(app.container.resolve(ReportQueue), { numbers }, { id, at })

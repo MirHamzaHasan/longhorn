@@ -1746,3 +1746,32 @@ held shutdown, competing upgrades and two-worker admission. The packed relocated
 starter also proves separate-host quota retention and original replay after expiry.
 See [provider](batch-rate-limits.md), [API](d1-request-limits.md),
 [deployment](d1-limit-schema.md) and [native/installed proof](d1-limit-testing.md).
+
+
+## 69. Existing Managed Limits inside Object Ownership
+
+Durable Object SQL already implements the managed Database transaction contract.
+The unchanged SQLite limiter store therefore supplies native input-gate/write
+ownership, post-lock application time, committed counters and bounded pruning
+without another provider facade. Each Object owns its own budget; scoped hashes
+do not coordinate distinct Object databases.
+
+The report app registers an optional limiter after its SQL/clock/queue/scheduler
+resources. Both submission POSTs share a fixed server-selected application budget,
+after body size and before validation or immutable schedule checks. Default-off
+typed settings are validated before owner resources. Reads/cancellation/background
+work keep their existing execution path. HTTP and limiter work drain before SQL.
+
+Migration composition appends the unchanged bucket schema after each complete old
+profile, including the alarm suffix. Disable/re-enable preserves rows. Quota SQL
+still uses the existing all-handle commit hook, while wakeup planning derives only
+from real jobs/schedules/leases/failure floors. Quota expiry creates no alarm and
+an adequate future wakeup is not slid by denial.
+
+Native proof exercises actual actor aborts before/after commit, held input-gate
+clock/shutdown, forty clients, old-profile upgrade rollback and real background
+sums. Separate shipped hosts prove retained budgets, unmetered processing while
+disabled and private live-policy failure after re-enabling.
+See [store](object-request-limits.md), [API](object-report-limits.md),
+[deployment](object-limit-deployment.md), [lifetime](object-limit-lifecycle.md) and
+[verification](object-limit-testing.md).

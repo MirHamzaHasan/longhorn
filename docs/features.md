@@ -9,6 +9,11 @@ downstream connections, verification, and current limits.
 
 | Feature | Guide | Implementation owner | Connects to |
 | --- | --- | --- | --- |
+| Object SQLite request budgets | [Existing managed store](object-request-limits.md) | SqliteRateLimitStore over createDurableSqlite | Native input gate, post-ownership clock, transaction rollback and persisted counters |
+| Shared Object report budget | [Optional HTTP policy](object-report-limits.md) | Default-off scheduled/alarm report app | Both POST routes, typed bindings, DI, counted validation and unaffected background work |
+| Object quota schema deployment | [Complete profiles](object-limit-deployment.md) | Report app migration composition | Unchanged scheduled/alarm history prefix, appended shared schema and retained toggles |
+| Object quota drain and alarms | [Lifecycle](object-limit-lifecycle.md) | Existing limiter, Object SQL and clock hook | Accepted native work, borrowed binding, ambiguous commit and unchanged wakeup candidates |
+| Native Object quota proof | [Verification](object-limit-testing.md) | Actual workerd and shipped Node owners | Forty-client contention, aborts, upgrades, automatic results, retention and disable/re-enable |
 | Native SQLite batch request limits | [Batch store](batch-rate-limits.md) | Optional @longhorn/ratelimit/batch-sqlite | One UPSERT/RETURNING, database time, policy guard and bounded prune |
 | D1 task creation attempt budget | [Public route](d1-request-limits.md) | Default-off example/starter capability | Shared public identity, validation/replay ordering and retained effects |
 | D1 quota deployment | [Schema profile](d1-limit-schema.md) | Appended batch migration | Original checksum prefix, complete startup verification and private owner deployment |
@@ -499,6 +504,9 @@ flowchart TD
   DurableReports --> QueueSqlite
   DurableReports --> ScheduleSqlite
   DurableReports --> ScheduledWorker
+  DurableReports --> ObjectBudget[Optional shared report attempt budget]
+  ObjectBudget --> ManagedLimit[Existing managed SQLite limiter]
+  ManagedLimit --> DurableSql
   QueueEvents[Workers queue event adapter] --> ManagedWork
   QueueEvents --> Workers
   BrokerQueue[Platform broker batches] --> QueueEvents

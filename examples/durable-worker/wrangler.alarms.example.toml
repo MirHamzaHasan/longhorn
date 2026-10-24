@@ -2,6 +2,11 @@ name = "longhorn-alarm-reports"
 main = "dist/alarms.js"
 compatibility_date = "2025-07-18"
 
+[vars]
+REPORT_LIMIT_ENABLED = "false"
+REPORT_LIMIT_REQUESTS = "60"
+REPORT_LIMIT_WINDOW_MS = "60000"
+
 [durable_objects]
 bindings = [{ name = "REPORTS", class_name = "ReportAlarmCoordinator" }]
 

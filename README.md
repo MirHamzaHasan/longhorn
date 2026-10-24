@@ -595,3 +595,17 @@ lost-reply HTTP shutdown. Each part has its guide in the feature index.
 budgets, validation/replay and retained worker state. Run pnpm test:d1-rate-limits
 for actual workerd rollback, concurrency, expiry, upgrade and shutdown evidence.
 The generated starter ships its own policy guide and opt-in native tests.
+
+[Optional Object report budgets](docs/object-report-limits.md) share one quota
+across direct and scheduled submissions, including the automatic-alarm profile:
+
+```sh
+REPORT_LIMIT_ENABLED=true REPORT_LIMIT_REQUESTS=3 pnpm dev:durable-worker
+REPORT_LIMIT_ENABLED=true REPORT_LIMIT_REQUESTS=3 pnpm dev:alarm-worker
+```
+
+Run either host independently. Background reports still complete after HTTP quota
+exhaustion. Run `pnpm test:object-rate-limits` for native concurrency, upgrade,
+interruption and retained-host proof. Each part has its own guide:
+[store](docs/object-request-limits.md), [deployment](docs/object-limit-deployment.md),
+[lifecycle](docs/object-limit-lifecycle.md) and [verification](docs/object-limit-testing.md).

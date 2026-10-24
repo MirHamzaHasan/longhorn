@@ -44,8 +44,9 @@ The [HTTP adapter](rate-limit-http.md) hides them behind a generic 503.
 
 [Lifecycle](rate-limit-lifecycle.md) owns admission and drain. There is no implicit
 timer, listener, database acquisition, migration or cleanup. Node/Bun/Deno native SQLite and Node PostgreSQL use their managed stores. Actual
-workerd D1 now uses the optional server-timed batch provider; Durable Object SQL
-keeps its separate contract. See [D1 proof](d1-limit-testing.md).
+workerd D1 uses the optional server-timed batch provider. Durable Object SQL uses
+the existing managed SQLite store and application clock. See [D1 proof](d1-limit-testing.md)
+and [Object integration](object-request-limits.md).
 
 The optional Redis provider borrows the existing Node command connection, uses one
 atomic reservation and native expiry, and receives no client clock. An explicit

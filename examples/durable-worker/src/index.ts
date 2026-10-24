@@ -2,16 +2,21 @@ import type { DurableObjectId, DurableObjectState } from '@cloudflare/workers-ty
 import { Longhorn } from '@longhorn/core'
 import { createScheduledWorker } from '@longhorn/workers/scheduled'
 import { createReportApp } from './app.js'
+import { parseReportConfig } from './config.js'
+import type { ReportLimitBindings } from './config.js'
 
 // Use the Web Standard subset at the Fetch boundary; platform storage types stay in the Object.
-type Bindings = { REPORTS: {
+type Bindings = ReportLimitBindings & { REPORTS: {
   idFromName(name: string): DurableObjectId
   get(id: DurableObjectId): { fetch(request: Request | string, init?: RequestInit): Promise<Response> }
 } }
 export class ReportCoordinator {
-  private readonly app
-  constructor(state: DurableObjectState) { this.app = createReportApp(state) }
-  async fetch(request: Request): Promise<Response> { return await this.app.fetch(request) }
+  private readonly app: Longhorn | undefined
+  constructor(state: DurableObjectState, bindings: ReportLimitBindings = {}) {
+    const config = parseReportConfig(bindings)
+    this.app = config ? createReportApp(state, config) : undefined
+  }
+  async fetch(request: Request): Promise<Response> { return this.app ? await this.app.fetch(request) : Response.json({ error: 'Report configuration unavailable' }, { status: 503 }) }
 }
 const app = new Longhorn<Bindings>()
 const coordinator = (bindings: Bindings) => bindings.REPORTS.get(bindings.REPORTS.idFromName('reports'))

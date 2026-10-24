@@ -8,15 +8,19 @@ import { alarmClockMigrations, createSqliteAlarmClock } from '@longhorn/workers/
 import type { WorkerAlarmInfo, SqliteAlarmClock } from '@longhorn/workers/sqlite-alarms'
 import { createReportApp, ReportClock, runReportBatch } from './app.js'
 import { migrations, reportQueueName } from './reports.js'
+import { parseReportConfig } from './config.js'
+import type { ReportLimitBindings } from './config.js'
 
-type Bindings = { REPORTS: { idFromName(name: string): DurableObjectId; get(id: DurableObjectId): { fetch(request: Request): Promise<Response> } } }
+type Bindings = ReportLimitBindings & { REPORTS: { idFromName(name: string): DurableObjectId; get(id: DurableObjectId): { fetch(request: Request): Promise<Response> } } }
 const Diagnostics = token<Tracer>('alarm report tracing')
 export class ReportAlarmCoordinator {
-  private readonly app: Longhorn
-  private readonly clock: SqliteAlarmClock
-  constructor(state: DurableObjectState) {
+  private readonly app: Longhorn | undefined
+  private readonly clock: SqliteAlarmClock | undefined
+  constructor(state: DurableObjectState, bindings: ReportLimitBindings = {}) {
+    const config = parseReportConfig(bindings)
+    if (!config) { this.app = undefined; this.clock = undefined; return }
     const exporter = new MemorySpanExporter(), tracer = new Tracer({ exporter })
-    const app = createReportApp(state, { migrations: [...migrations, ...alarmClockMigrations], clock: (application, database) => createSqliteAlarmClock(state, {
+    const app = createReportApp(state, { ...config, migrations: [...migrations, ...alarmClockMigrations], clock: (application, database) => createSqliteAlarmClock(state, {
       database, application, queues: [reportQueueName], batchSize: 10, timeoutMs: 20000,
       handle: async ({ signal, limit }) => {
         try { await application.container.resolve(Diagnostics).trace('alarm.reports', () => runReportBatch(application, limit, signal), { kind: 'consumer', attributes: { 'trigger.kind': 'alarm' } }) }
@@ -28,8 +32,8 @@ export class ReportAlarmCoordinator {
     app.http.get('/alarm-traces', async c => { await tracer.flush(); return c.json({ spans: exporter.snapshot(), stats: tracer.snapshot() }) })
     this.app = app; this.clock = app.container.resolve(ReportClock)
   }
-  async fetch(request: Request): Promise<Response> { return await this.app.fetch(request) }
-  alarm(info?: WorkerAlarmInfo): Promise<void> { return this.clock.alarm(info) }
+  async fetch(request: Request): Promise<Response> { return this.app ? await this.app.fetch(request) : Response.json({ error: 'Report configuration unavailable' }, { status: 503 }) }
+  alarm(info?: WorkerAlarmInfo): Promise<void> { return this.clock ? this.clock.alarm(info) : Promise.reject(new Error('Report configuration unavailable')) }
 }
 const app = new Longhorn<Bindings>()
 for (const path of ['/health','/reports','/reports/:id','/report-schedules','/report-schedules/:id','/alarm','/alarm-traces']) {

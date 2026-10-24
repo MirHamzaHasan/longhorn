@@ -44,7 +44,7 @@ platform scheduled event -> bounded outer adapter -> awaited Object /_tick
 
 The Object class exports a Fetch handler without Node imports. Every reconstructed
 instance gets a fresh app/lifecycle; its SQL rows carry state across reconstruction.
-Cleanup order is scheduler -> queue -> provider; the platform still owns eviction.
+Cleanup order is HTTP -> optional limiter -> scheduler -> queue -> provider; the platform still owns eviction.
 The outer scheduled handler admits one invocation per instance with a twenty-second
 cooperative budget and does not close the shared app per event.
 
@@ -75,3 +75,8 @@ See [native verification](workers-durable-testing.md).
 persistent local namespace. It processes due schedules and pending/retrying/leased
 jobs through native alarms instead of this entrypoint's outer cron tick. See
 [the automatic example](alarm-report-example.md) and [recovery limits](alarm-recovery.md).
+
+Both report submission routes support a [default-off shared budget](object-report-limits.md).
+It uses the existing SQLite store over Object SQL and appends its migration after
+the complete selected profile. See [upgrade](object-limit-deployment.md) and
+[native quota proof](object-limit-testing.md).

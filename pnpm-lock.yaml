@@ -493,6 +493,9 @@ importers:
 
   examples/durable-worker:
     dependencies:
+      '@longhorn/config':
+        specifier: workspace:*
+        version: link:../../packages/config
       '@longhorn/container':
         specifier: workspace:*
         version: link:../../packages/container
@@ -508,6 +511,9 @@ importers:
       '@longhorn/queue':
         specifier: workspace:*
         version: link:../../packages/queue
+      '@longhorn/ratelimit':
+        specifier: workspace:*
+        version: link:../../packages/ratelimit
       '@longhorn/scheduler':
         specifier: workspace:*
         version: link:../../packages/scheduler
