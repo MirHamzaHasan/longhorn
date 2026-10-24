@@ -5,6 +5,7 @@ import { configDefaults, defineConfig } from 'vitest/config'
 export default defineConfig({
   resolve: {
     alias: Object.entries({
+      '@longhorn/ratelimit/redis': './packages/ratelimit/src/redis.ts',
       '@longhorn/ratelimit/hono': './packages/ratelimit/src/hono.ts',
       '@longhorn/ratelimit/memory': './packages/ratelimit/src/memory.ts',
       '@longhorn/ratelimit/sqlite': './packages/ratelimit/src/sqlite.ts',

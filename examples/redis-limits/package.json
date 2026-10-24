@@ -1,0 +1,23 @@
+{
+  "name": "example-redis-limits",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsup src/app.ts src/config.ts src/index.ts --format esm --dts --clean",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@longhorn/auth": "workspace:*",
+    "@longhorn/config": "workspace:*",
+    "@longhorn/container": "workspace:*",
+    "@longhorn/core": "workspace:*",
+    "@longhorn/logger": "workspace:*",
+    "@longhorn/node": "workspace:*",
+    "@longhorn/observability": "workspace:*",
+    "@longhorn/ratelimit": "workspace:*",
+    "@longhorn/validation": "workspace:*",
+    "hono": "^4.13.13",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": { "@types/node": "^22.13.10" }
+}

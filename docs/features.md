@@ -9,6 +9,12 @@ downstream connections, verification, and current limits.
 
 | Feature | Guide | Implementation owner | Connects to |
 | --- | --- | --- | --- |
+| Redis request attempt limits | [Redis store](redis-rate-limits.md) | Optional @longhorn/ratelimit/redis | Atomic server-clock reservations, fixed expiry and scoped hashes |
+| Server-owned limiter time | [Clock contract](rate-limit-server-clock.md) | Explicit storage union and coordinator | Server observedAt, existing SQL callbacks and unchanged public decisions |
+| Redis budget deployment | [Authority and durability](redis-rate-limit-deployment.md) | Dedicated trusted Redis and minimal ACL | Noeviction, native TTL, explicit persistence and stable labels |
+| Redis limiter lifetime | [Borrowed connection](redis-rate-limit-lifecycle.md) | Existing Node connection and limiter drain | Ambiguous commitment, no retries, real deadline and retained windows |
+| Protected Redis limit example | [Report API](redis-rate-limit-example.md) | examples/redis-limits | Typed config, bearer mapping, shared hosts, calculation and readiness |
+| Native Redis budget proof | [Verification](redis-rate-limit-testing.md) | Redis server, real TCP/HTTP and finite runtimes | Eighty-way contention, ACL denial, SIGKILL/AOF and lost-reply shutdown |
 | Portable request attempt limits | [Limiter](request-limits.md) | @longhorn/ratelimit | Scoped hashed identity, fixed windows, policy mismatch and explicit drain |
 | Bounded memory request limits | [Memory store](rate-limit-memory.md) | Map and indexed expiry heap | Capacity fail-closed, live bucket preservation and bounded pruning |
 | Managed SQL request limits | [SQL stores](rate-limit-sql.md) | SQLite/PostgreSQL provider subpaths | Post-ownership clock, committed counters, owner migrations and separate maintenance |

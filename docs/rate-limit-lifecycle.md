@@ -21,3 +21,8 @@ uses existing reverse release. Disabled hosts install no limiter provider. Nativ
 verification holds a real PostgreSQL row lock, starts a request and closes the
 app; HTTP/limiter/pool shutdown waits for the lock to release. A package test also
 checks close called synchronously from an admitted provider. See [proof](rate-limit-testing.md).
+
+[Server-timed providers](rate-limit-server-clock.md) join the same admission/drain
+without sampling the application clock. The [Redis store](redis-rate-limit-lifecycle.md)
+borrows its command connection; close never deletes native TTL keys or retries an
+ambiguous committed reservation.

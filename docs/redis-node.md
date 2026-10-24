@@ -27,3 +27,8 @@ new connection/cache explicitly after a failed channel. No implicit healthy-memo
 fallback is selected by the adapter. The task example's application service owns
 its existing authoritative-read fallback policy. See
 [node-redis production usage](https://redis.io/docs/latest/develop/clients/nodejs/produsage/).
+
+The same connection also supplies the optional [Redis request limiter](redis-rate-limits.md).
+That provider borrows the connection. Its host must drain all limiters before
+closing the client, and must not let an independently owned cache close a client
+still in use by a limiter. See [ownership](redis-rate-limit-lifecycle.md).

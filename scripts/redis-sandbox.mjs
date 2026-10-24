@@ -18,11 +18,11 @@ export async function startRedisSandbox() {
     'requirepass ' + password,'save ""','appendonly yes','appendfsync always'].join('\n') + '\n', { mode: 0o600 })
   let instance, closed = false, closing
   const open = options => openRedis({ url, allowInsecureLoopback: true, ...options })
-  async function stopServer() {
+  async function stopServer(signal = 'SIGTERM') {
     if (!instance) return
-    if (instance.child.exitCode === null && instance.child.signalCode === null) instance.child.kill('SIGTERM')
+    if (instance.child.exitCode === null && instance.child.signalCode === null) instance.child.kill(signal)
     const timer = setTimeout(() => { if (instance.child.exitCode === null && instance.child.signalCode === null) instance.child.kill('SIGKILL') }, 5000)
-    try { await instance.ended } finally { clearTimeout(timer) }
+    try { return await instance.ended } finally { clearTimeout(timer) }
   }
   async function start() {
     if (closed || instance?.child.exitCode === null && instance?.child.signalCode === null) throw new Error('Redis sandbox cannot start in its current state')

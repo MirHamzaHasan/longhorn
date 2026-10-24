@@ -1,7 +1,7 @@
 # Request attempt limits
 
 Owner: @longhorn/ratelimit. Connects the [memory provider](rate-limit-memory.md),
-[SQL providers](rate-limit-sql.md), [Hono middleware](rate-limit-http.md),
+[SQL providers](rate-limit-sql.md), [Redis provider](redis-rate-limits.md), [Hono middleware](rate-limit-http.md),
 [command application](command-request-limits.md) and [native proof](rate-limit-testing.md).
 Authentication's login throttle remains separate and unchanged.
 
@@ -31,7 +31,8 @@ The store receives SHA-256 over UTF-8 JSON ['longhorn.rate-limit.v1',scope,subje
 Raw subjects never enter the provider. Deterministic hashes are pseudonyms, not
 secrets or encryption; guessable identities can still be tested offline.
 
-All hosts sharing a scope/subject must agree on limit/window and clocks. A live
+All hosts sharing a scope/subject must agree on limit/window. Application-clock
+stores also require synchronized host clocks; Redis uses its own [server time](rate-limit-server-clock.md). A live
 window rejects a different policy with POLICY_MISMATCH; its expiry admits the new
 policy. Explicitly versioning the scope starts a distinct budget. Backward wall
 clock changes may extend a live wait, while forward changes can start a window.
@@ -45,3 +46,8 @@ The [HTTP adapter](rate-limit-http.md) hides them behind a generic 503.
 timer, listener, database acquisition, migration or cleanup. D1 and Durable Object
 SQL adapters are not implemented for this package. Node/Bun/Deno native SQLite and
 Node PostgreSQL are verified; workerd uses the finite memory/Hono contract.
+
+The optional Redis provider borrows the existing Node command connection, uses one
+atomic reservation and native expiry, and receives no client clock. An explicit
+now override is invalid for a server-timed store. See [deployment](redis-rate-limit-deployment.md),
+[working protected example](redis-rate-limit-example.md) and [proof](redis-rate-limit-testing.md).

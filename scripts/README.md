@@ -255,3 +255,8 @@ Owned fixture resources are always disposed. See [native audit proof](../docs/ou
 The command application has a default-off authenticated account budget, checked by
 startup/readiness/preflight and preserved by backup. Run pnpm test:rate-limits for
 actual runtime, SQL contention/crash, upgrade and HTTP verification.
+
+[Redis request limits](../docs/redis-rate-limit-testing.md) add atomic server-clock budgets over the existing
+Node connection. The protected report example runs with pnpm dev:redis-limits;
+pnpm test:redis-limits verifies actual contention, TTL, ACL, crash recovery and
+lost-reply HTTP shutdown. Each part has its guide in the feature index.

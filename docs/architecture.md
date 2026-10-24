@@ -26,6 +26,7 @@ longhorn/
 │   ├── scheduler/         # Task scheduling & cron utilities
 │   ├── observability/     # Metrics, tracing, and health check utilities
 │   ├── idempotency/       # Durable request ownership and JSON result replay
+│   ├── ratelimit/         # Explicit per-subject budgets and storage adapters
 │   ├── outbox/            # Transactional outgoing messages and broker delivery
 │   └── runtime/           # Base runtime contracts & adapter interfaces
 │
@@ -1693,3 +1694,30 @@ Native proof covers all four runtimes, real SQL contention/commit death, killed 
 competing owner upgrades, two HTTP hosts and independently restored artifacts.
 See [contract](request-limits.md), [providers](rate-limit-sql.md),
 [application](command-request-limits.md) and [proof](rate-limit-testing.md).
+
+
+## 67. Server-Clock Reservations over a Borrowed Redis Port
+
+An explicit server-timed store contract joins the existing RateLimiter without
+changing application-clock SQL/memory providers. Server stores receive no host
+time and return their sampled observedAt; the coordinator validates it and derives
+the existing public retry decision. An explicit now override is rejected for that
+mode. Admission/drain still owns accepted work before borrowed resource release.
+
+The optional Redis provider imports only Web Standards. It uses a versioned literal
+namespace/scope/hash key, validates policy/count/expiry, then performs one final
+SET with native absolute TTL inside EVAL. Denials retain expiry and counts saturate;
+policy conflicts/corrupt state fail closed. Native TTL replaces table scanning;
+prune returns zero. Runtime needs no delete/scan/admin commands. Hosts own Redis
+noeviction, persistence, verified transport and clock policy.
+
+The existing Node command adapter supplies actual TCP/TLS and bounded no-retry
+deadlines. A separate protected report example maps a bearer capability to a stable
+configured subject and computes real validated results. Two hosts share attempts,
+including invalid input; token rotation preserves the same budget. Lost replies
+can retain a committed attempt, so close awaits actual work and never refunds it.
+Native tests prove contention, queued server time, TTL, ACL, killed AOF recovery
+and real HTTP shutdown after a withheld committed reply. Other runtimes execute an
+explicit fake protocol client rather than claim an unimplemented native transport.
+See [provider](redis-rate-limits.md), [time](rate-limit-server-clock.md),
+[example](redis-rate-limit-example.md) and [verification](redis-rate-limit-testing.md).

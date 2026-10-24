@@ -65,6 +65,14 @@ jobs:
       - run: pnpm build
       - run: node scripts/verify-cache.mjs
       - run: node scripts/verify-redis-cache.mjs
+      - run: node scripts/verify-redis-limits.mjs
+      - name: Retain Redis request limit proof
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: redis-request-limit-proof
+          path: .artifacts/redis-rate-limit-proof.json
+          if-no-files-found: error
   source-and-runtimes:
     runs-on: ubuntu-24.04
     timeout-minutes: 20

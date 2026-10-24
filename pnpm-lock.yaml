@@ -782,6 +782,46 @@ importers:
         specifier: ^0.28.2
         version: 0.28.2
 
+  examples/redis-limits:
+    dependencies:
+      '@longhorn/auth':
+        specifier: workspace:*
+        version: link:../../packages/auth
+      '@longhorn/config':
+        specifier: workspace:*
+        version: link:../../packages/config
+      '@longhorn/container':
+        specifier: workspace:*
+        version: link:../../packages/container
+      '@longhorn/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@longhorn/logger':
+        specifier: workspace:*
+        version: link:../../packages/logger
+      '@longhorn/node':
+        specifier: workspace:*
+        version: link:../../runtimes/node
+      '@longhorn/observability':
+        specifier: workspace:*
+        version: link:../../packages/observability
+      '@longhorn/ratelimit':
+        specifier: workspace:*
+        version: link:../../packages/ratelimit
+      '@longhorn/validation':
+        specifier: workspace:*
+        version: link:../../packages/validation
+      hono:
+        specifier: ^4.13.13
+        version: 4.13.13
+      zod:
+        specifier: ^4.6.7
+        version: 4.6.7
+    devDependencies:
+      '@types/node':
+        specifier: ^22.13.10
+        version: 22.20.4
+
   examples/scheduled-worker:
     dependencies:
       '@longhorn/container':
