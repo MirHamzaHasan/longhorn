@@ -98,15 +98,18 @@ try{
   const delivery=async()=>{const response=await fetch(origin+'/account/operations/deliveries/'+failed.delivery.id,{headers:{Cookie:operator}});assert.equal(response.status,200);return(await response.json()).delivery}
   await waitFor(async()=>(await delivery()).state==='failed');const observed=await delivery()
   receiver=await startReceiver()
+  browser=await chromium.launch();const followPage=await browser.newPage();await followPage.goto(origin+'/console#/login');await followPage.getByLabel('Username',{exact:true}).fill('starter.member');await followPage.getByLabel('Password',{exact:true}).fill(password);await followPage.getByRole('button',{name:'Sign in',exact:true}).click();await expect(followPage.getByRole('heading',{name:'Your commands',exact:true})).toBeVisible()
+  await followPage.getByRole('link',{name:'Command '+failed.command.id.slice(0,8),exact:true}).click();await expect(followPage.getByRole('button',{name:'Follow updates',exact:true})).toBeVisible();await followPage.getByRole('button',{name:'Follow updates',exact:true}).click()
   const recovered=await fetch(origin+'/account/operations/deliveries/'+failed.delivery.id+'/retry',post({expectedMaxAttempts:observed.maxAttempts,additionalAttempts:1,reason:'provider-restored'},operator));assert.equal(recovered.status,202)
   await waitFor(async()=>{const value=await receipt(failed.command.id,member);return value&&value.receipts[0].result.sum===40})
+  await expect(followPage.locator('.receipt-values')).toContainText('40',{timeout:15000});await expect(followPage.locator('.follow-updates [role=status]')).toHaveText('Receipt received. Updates stopped.');await browser.close();browser=undefined
   assert.equal((await stop(host)).code,0);assert.equal((await stop(receiver)).code,0)
   receiver=await startReceiver();host=await startHost()
   const history=await(await fetch(origin+'/account/commands',{headers})).json();assert.equal(history.commands.length,2)
   assert.equal((await receipt(first.command.id,member)).receipts[0].result.sum,27)
   const audit=await(await fetch(origin+'/account/operations/audit',{headers:{Cookie:operator}})).json();assert.equal(audit.records.length,1);assert.equal(audit.records[0].reason,'provider-restored')
   for(const instance of [host,receiver]){for(const secret of secrets)assert.ok(!instance.output().includes(secret),'Host logged a credential');assert.equal((await stop(instance)).code,0)}
-  console.log('Command distribution: shipped schema/grants and separate credential shells, actual browser assets, native sessions, scoped replay/history, protected receipts, denial checks, outage/retry/audit and both-process persistence verified.')
+  console.log('Command distribution: shipped schema/grants and separate credential shells, actual browser assets, native sessions, scoped replay/history, protected receipts, denial checks, outage/retry/audit, shipped automatic receipt updates without manual refresh and both-process persistence verified.')
 
   const clients=process.env.LONGHORN_PG_CLIENT_BIN??JSON.parse(await readFile(join(root,'.artifacts/postgres-clients.json'),'utf8')).directory
   const backup=join(temporary,'checkpoint'),backupEnvironment={...deploy,RECEIVER_DATA_PATH:receiverPath,LONGHORN_PG_CLIENT_BIN:clients}
@@ -163,7 +166,7 @@ try{
   await sessionPage.reload();await expect(sessionPage.getByLabel('Numbers',{exact:true})).toHaveValue('4, 8, 15')
   const rerunResponse=sessionPage.waitForResponse(value=>value.url()===origin+'/account/commands'&&value.request().method()==='POST')
   await sessionPage.getByRole('button',{name:'Create command',exact:true}).click();const rerunAccepted=await rerunResponse;assert.equal(rerunAccepted.status(),201);const rerunSaved=await rerunAccepted.json();assert.notEqual(rerunSaved.command.id,first.command.id);assert.notEqual(rerunSaved.delivery.id,first.delivery.id)
-  await expect(sessionPage.getByRole('heading',{name:'Command '+rerunSaved.command.id.slice(0,8),exact:true})).toBeVisible();await waitFor(async()=>{const value=await receipt(rerunSaved.command.id,fresh);return value&&value.receipts[0].result.sum===27});assert.equal((await receipt(first.command.id,fresh)).receipts[0].result.sum,27)
+  await expect(sessionPage.getByRole('heading',{name:'Command '+rerunSaved.command.id.slice(0,8),exact:true})).toBeVisible();await waitFor(async()=>{const value=await receipt(rerunSaved.command.id,fresh);return value&&value.receipts[0].result.sum===27});assert.equal((await receipt(first.command.id,fresh)).receipts[0].result.sum,27);await expect(sessionPage.locator('.receipt-values')).toContainText('27',{timeout:15000})
   await sessionPage.getByRole('link',{name:'Commands',exact:true}).click();await expect(sessionPage.getByRole('heading',{name:'Your commands',exact:true})).toBeVisible();await sessionPage.getByLabel('Delivery status',{exact:true}).selectOption('succeeded');await expect(sessionPage.locator('ul.rows>li')).toHaveCount(4)
   await sessionPage.getByLabel('Delivery status',{exact:true}).selectOption('failed');await expect(sessionPage.getByRole('heading',{name:'No matching commands',exact:true})).toBeVisible();await sessionPage.getByRole('button',{name:'Show all',exact:true}).click();await expect(sessionPage.getByLabel('Delivery status',{exact:true})).toHaveValue('all');await expect(sessionPage.locator('ul.rows>li')).toHaveCount(4)
   for(const cookie of await sessionPage.context().cookies())secrets.push(cookie.value)

@@ -16,6 +16,7 @@
 | [Remote delivery](delivery.md) | src/operation-transport.ts | Explicit protected HTTP receiver, bounded transport, dispatcher leases |
 | [Receipt effect](receipts.md) | receiver/receiver.ts, receipts.ts, message-effect.ts | Validated numbers, SQL effect dedupe, matching synchronous acknowledgement |
 | [Operator recovery](recovery.md) | operations.ts and console/app.ts | Conditional allowance, deliberate retry, durable account-attributed audit |
+| [Command updates](command-updates.md) | console/command-follow.ts and app.ts | Bounded protected reads, automatic receipt arrival, pause/resume and page disposal |
 | [Browser](console.md) | console/app.ts and app.css, src/console.ts | Relative APIs, fixed CSP assets, light/dark responsive layouts |
 | [Runtime](lifecycle.md) | src/operator-host.ts | Typed configuration, DI/lifecycle, role checks, readiness and graceful shutdown |
 | [Deployment](schema.md) | src/operations-migrations.ts, runtime-grants.ts | Complete immutable schema history, separate owner/runtime authority |

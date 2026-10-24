@@ -48,3 +48,9 @@ test row; its real GET supplies the malformed data. Six new states plus two
 [History filtering](history-filter-testing.md) adds real status/scope changes,
 missing metadata, filtered pagination/cancellation and recovered membership.
 Its six states and two scaled phone captures contribute another 26 frames.
+
+`pnpm test:console` also runs [command following](command-follow-testing.md), which
+writes 26 additional captures under `.artifacts/console/follow`. Its actual broker
+receipt arrives without Refresh status; pause/resume, terminal/error stop, focus,
+canceled reads, offline and viewer/session boundaries use built browser assets.
+The three browser gates together produce 201 captures, with separate reports.

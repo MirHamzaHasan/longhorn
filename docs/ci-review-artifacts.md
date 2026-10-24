@@ -10,6 +10,8 @@ visible. Successful captures cover the existing light/dark desktop/phone and
 failure-state workflow using real application data. Nested
 [account captures](console-account-testing.md) and their accessibility report are
 also included under the same artifact; paths do not broaden to database state.
+The nested [command-follow captures](command-follow-testing.md) and their report
+are included by the same exact console paths.
 
 The independent-distribution job attempts `longhorn-command-app-RUN_ID` only after
 the relocated frozen install, app workflow and offline restore gate succeeds.

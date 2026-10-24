@@ -113,6 +113,10 @@ downstream connections, verification, and current limits.
 | Reuse saved command numbers | [Run again](command-rerun.md) | Existing detail/review form and protected APIs | Admitted source, explicit review, fresh request key, separate command/delivery and preserved original |
 | Displayed-account consistency | [Viewer binding](console-viewer-binding.md) | Optional PostgreSQL account middleware and console helper | Cookie-derived principal matching, stale-view 401, no handler effects and preserved other cookie |
 | Native command reuse proof | [Reuse testing](command-rerun-testing.md) | Actual Chromium/PostgreSQL/broker and restored app | Real receipts, edited/manual replay, scope, legacy data, navigation, account switch and 117 captures |
+| Command detail updates | [Live updates](command-live-updates.md) | Existing protected detail and receipt GETs | Real receipt arrival, terminal stop, one cycle at a time and bounded explicit restarts |
+| Page-owned update lifetime | [Follow lifetime](command-follow-lifecycle.md) | Console controller and API cancellation | Hidden/offline pause, fixed deadline, generation fences and navigation disposal |
+| Browser follow controls | [Receipt following](console-command-follow.md) | Existing detail screen and kit | Pause/resume, polite state messages, stable keyboard focus and manual refresh |
+| Native command follow proof | [Follow testing](command-follow-testing.md) | Native SQL/broker, Chromium and independent archive | Real receipt without refresh, cancellation/auth boundaries, budgets and 26 accessible captures |
 | Working web console | [Console](web-console.md) | PostgreSQL example browser client | Signup, history, commands, receipts and real API failures |
 | Console browser boundary | [Console security](console-security.md) | Fixed asset routes and client API helper | CSP, HttpOnly cookies, relative requests, session clearing |
 | Browser account settings | [Account](console-account.md) | Console Account route and host capability | Password confirmation, current-session probe, pending navigation, secret clearing and sign-in after replacement |
@@ -322,6 +326,9 @@ flowchart TD
   HistoryFilters --> FilterIndexes[Owner-deployed partial indexes]
   HistoryFilters --> HistoryConsole[Browser scope and status selection]
   History --> Database
+  HistoryConsole --> CommandFollow[Bounded command detail updates]
+  CommandFollow --> FollowLifetime[Page and visibility ownership]
+  CommandFollow --> OutboxExample
   Operations --> OutboxRecovery[Conditional outgoing recovery]
   OutboxRecovery --> Outbox
   OutboxRecovery --> Database

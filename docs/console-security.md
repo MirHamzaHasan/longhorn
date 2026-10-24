@@ -49,3 +49,9 @@ never selects an owner or grants a role. Switched-cookie views fail before priva
 handlers and preserve the valid other-account cookie.
 [Saved command reviews](command-rerun.md) keep copied numbers/request keys in memory
 only and use the normal owner-scoped read plus transaction-authenticated write.
+
+[Command following](command-follow-lifecycle.md) joins a cycle AbortSignal with the
+ordinary page-read signal. It checks cancellation before handling a response's
+status or data, disposes listeners/timers on navigation and never submits a mutation.
+A hidden/offline tab pauses within a fixed bounded run; active 401 responses retain
+the existing session/viewer clearing policy.

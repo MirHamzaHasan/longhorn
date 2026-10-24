@@ -57,3 +57,8 @@ Before scoped sign-out, that same restored browser selects Delivered and sees
 all four actual commands, selects Failed and sees an empty result, then uses Show
 all to restore the complete list. This exercises the shipped [filter assets](console-history-filters.md),
 query/cursor schema and appended indexes after restore/regrant/restart.
+
+The shipped detail also [follows a failed command](command-follow-testing.md) while
+an actual operator recovery delivers its receipt. Chromium receives that computed
+result without Refresh status before both processes restart. The later restored
+rerun must likewise show its actual receipt in the current detail before leaving.

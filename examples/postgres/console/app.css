@@ -23,3 +23,5 @@ input,select,textarea{border-color:#788078}
 .command-source{font-size:.9rem;color:var(--muted);margin:0 0 20px}.command-source a{display:inline-flex;align-items:center;min-height:44px}
 
 .history-tools>div{flex:1;min-width:190px;max-width:280px}@media(max-width:640px){.history-tools>div{max-width:none}}
+
+.follow-updates{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin:0 0 24px;padding:0 0 20px;border-bottom:1px solid var(--border)}.follow-updates p{margin:0;max-width:650px}.follow-updates button{flex-shrink:0}.follow-updates button[aria-disabled=true]{opacity:.7;cursor:default}

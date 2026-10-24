@@ -1435,3 +1435,21 @@ cursor restart/int64/role checks, minimal grants, browser states/cancellation an
 independently restored assets verify the connection. See [API](history-status-filters.md),
 [cursor rules](history-filter-cursors.md), [deployment](history-filter-migrations.md),
 [browser](console-history-filters.md) and [proof](history-filter-testing.md).
+
+## 55. Page-Owned Delivery and Receipt Following
+
+Command detail can follow its existing protected detail/receipt reads until a real
+receipt or terminal metadata arrives. One browser-owned controller waits between
+settled cycles, caps checks and wall time, and joins visibility/connectivity with
+route lifetime. Pause/expiry/navigation abort the cycle and invalidate its generation;
+no new run overlaps an unsettled old promise. The API joins page and cycle signals
+and checks cancellation before applying response/auth effects. Mutations, history,
+recovery forms and schema remain under their existing contracts.
+
+Data regions update without replacing the route or moving focus. Explicit controls
+and a polite status region explain paused, complete, unavailable and uncertain
+outcomes. Unit clocks exercise default budgets and cancellation races; native SQL,
+broker receipts and Chromium prove real results, focus, error stop, viewer/session
+boundaries and shipped application behavior. See [behavior](command-live-updates.md),
+[lifetime](command-follow-lifecycle.md), [controls](console-command-follow.md) and
+[proof](command-follow-testing.md).

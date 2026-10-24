@@ -6,7 +6,7 @@ Connects the existing [accounts](postgres-accounts.md), [history](account-comman
 
 Run `pnpm demo:operator-accounts`, then open http://127.0.0.1:3010/console.
 Create an account, enter numbers such as `4, 8, 15`, open the saved command and
-refresh its status to read the computed receipt. Commands lists owned history;
+follow its status until the computed receipt arrives. Commands lists owned history;
 operators can explicitly select all commands. Load older uses the bounded server
 cursor; Refresh starts at the newest page. Open a saved command and choose
 [Run again](command-rerun.md) to review its numbers and create a separate command. Times use the browser locale.
@@ -22,8 +22,9 @@ is exposed through the browser. The API root remains at `/`.
 
 Hash navigation keeps all browser routes under `/console`. Route changes cancel
 old reads and prevent old responses replacing the new screen. API calls have a
-15-second browser deadline. Delivery/receipt updates require Refresh status;
-there is no promise of live push updates. A missing receipt and unavailable
+15-second browser deadline. [Command detail updates](command-live-updates.md)
+use bounded reads with pause/resume and automatic terminal stop. Refresh status
+remains available; this is not live push. A missing receipt and unavailable
 transport have distinct messages. Unknown legacy delivery metadata stays unknown.
 
 See [browser security](console-security.md), [recovery](console-recovery.md),

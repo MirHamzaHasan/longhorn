@@ -21,3 +21,7 @@ under another tab's switched cookie, without clearing the valid other session.
 Selection starts a fresh page; Show all retains scope. Older-page cancellation
 cannot replace or announce errors on the new selection. Controls stack on phones
 and selection resets on a full reload.
+
+[Command updates](command-updates.md) follow unfinished delivery/receipt detail
+with a bounded read loop. Pause/resume and manual refresh remain available; hidden/
+offline tabs pause and navigation disposes the loop without moving keyboard focus.

@@ -30,3 +30,8 @@ states come from API responses or explicitly entered numbers. Screens are verifi
 through real Chromium captures in light/dark, laptop/phone widths, keyboard use,
 scaled text and automated accessibility checks. Real-device assistive technology
 remains a separate manual verification boundary.
+
+[Receipt following](console-command-follow.md) updates only data regions and keeps
+its keyboard control stable. A polite local status region reports state changes;
+unchanged cycles create no repeated notice, animation or countdown. Explicit pause,
+resume and manual refresh remain visible within the existing detail hierarchy.

@@ -661,6 +661,16 @@ covers real queue transitions, DDL interruption/concurrency, saved cursors, rest
 grants, actual index plans, 117 command captures and filtering in the restored app.
 Exports, text search, saved filter URLs and automated polling remain separate work.
 
+## Command delivery and receipt following implemented
+
+[Command detail](command-live-updates.md) now checks boundedly for actual delivery/
+receipt changes and stops automatically at terminal results. [Page lifetime](command-follow-lifecycle.md)
+handles hidden/offline pause, generation fencing, time/check limits and navigation.
+[Controls](console-command-follow.md) preserve focus and require explicit retry after
+errors or limits. [Proof](command-follow-testing.md) covers native results, cancellation,
+auth boundaries, 26 additional captures and the shipped independent application.
+Server push, background synchronization and automatic recovery remain separate work.
+
 ## Subsequent framework modules
 
 | Module | Depends on | Required proof |

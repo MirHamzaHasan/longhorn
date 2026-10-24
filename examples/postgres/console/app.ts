@@ -1,5 +1,6 @@
 import './app.css'
 import { CommandCopyError,copyCommandNumbers,parseNumbers } from './numbers.js'
+import { createCommandFollow } from './command-follow.js'
 
 type User={id:string;username:string;roles:string[]}
 type Delivery={id:string;state:'pending'|'running'|'succeeded'|'failed';attempts:number;maxAttempts:number;availableAt:number;updatedAt:number;lastFailure:string|null}
@@ -10,7 +11,7 @@ const root=document.querySelector<HTMLElement>('#main')!,notice=document.querySe
 const sidebar=document.querySelector<HTMLElement>('#sidebar')!,identity=document.querySelector<HTMLElement>('#identity')!,operatorNav=document.querySelector<HTMLElement>('#operator-nav')!
 const themeButton=document.querySelector<HTMLButtonElement>('#theme')!,logout=document.querySelector<HTMLButtonElement>('#logout')!
 let user:User|undefined,version=0,reads=new AbortController(),scope='mine',deliveryState='failed',historyState='all',noticeRoute=''
-let clearPageSecrets=()=>{},accountPending=false,pendingKind:'password'|'sessions'|undefined
+let clearPageSecrets=()=>{},clearPageWork=()=>{},accountPending=false,pendingKind:'password'|'sessions'|undefined
 const reasons:Record<string,string>={'manual-retry':'Manual retry','provider-restored':'Provider restored','configuration-fixed':'Configuration fixed',investigating:'Investigating'}
 const stateLabels:Record<string,string>={pending:'Pending',running:'Sending',succeeded:'Delivered',failed:'Failed',unknown:'Unavailable'}
 function node<K extends keyof HTMLElementTagNameMap>(tag:K,text?:string,className?:string):HTMLElementTagNameMap[K]{const value=document.createElement(tag);if(text!==undefined)value.textContent=text;if(className)value.className=className;return value}
@@ -31,22 +32,23 @@ function operator(){return user?.roles.includes('numbers-operator')??false}
 class RequestError extends Error{constructor(readonly status:number,message:string,readonly data:unknown,readonly retryAfter?:number){super(message)}}
 function viewerChanged(data:unknown):boolean{return !!data&&typeof data==='object'&&'code'in data&&data.code==='VIEWER_CHANGED'}
 function sessionMessage(data:unknown):string{return viewerChanged(data)?'Your active account changed. Sign in or reload to continue.':'Your session ended. Sign in to continue.'}
-async function api<T>(path:string,body?:unknown,options:{preserveUnauthorized?:boolean;acrossNavigation?:boolean;expectedStatus?:number}={}):Promise<T>{
-  const controller=new AbortController(),parent=body===undefined&&!options.acrossNavigation?reads.signal:undefined;let expired=false
-  const abort=()=>controller.abort();parent?.addEventListener('abort',abort,{once:true});if(parent?.aborted)abort()
+async function api<T>(path:string,body?:unknown,options:{preserveUnauthorized?:boolean;acrossNavigation?:boolean;expectedStatus?:number;signal?:AbortSignal}={}):Promise<T>{
+  const controller=new AbortController(),parents=[body===undefined&&!options.acrossNavigation?reads.signal:undefined,options.signal].filter((signal):signal is AbortSignal=>!!signal);let expired=false
+  const abort=()=>controller.abort();for(const parent of parents){parent.addEventListener('abort',abort,{once:true});if(parent.aborted)abort()}
   const timer=setTimeout(()=>{expired=true;controller.abort()},15000)
   try{
     const response=await fetch('/account'+path,{method:body===undefined?'GET':'POST',credentials:'same-origin',cache:'no-store',headers:{...(body===undefined?{}:{'Content-Type':'application/json'}),...(user?{'X-LongHorn-Viewer':user.id}:{})},signal:controller.signal,...(body===undefined?{}:{body:JSON.stringify(body)})})
     let data:unknown=null
     if(response.status!==204){try{data=await response.json()}catch(error){if(controller.signal.aborted)throw error;throw new RequestError(response.status,'The response could not be read. Try again.',null)}}
+    if(parents.some(parent=>parent.aborted))throw new DOMException('Navigation cancelled','AbortError')
     if(!response.ok){
       if(response.status===401&&user&&!options.preserveUnauthorized){user=undefined;syncAccount();announce(sessionMessage(data),true,'#/login');location.hash='#/login';void render()}
       const message=data&&typeof data==='object'&&'error'in data&&typeof data.error==='string'?data.error.slice(0,200):'The request could not be completed.';const retry=response.headers.get('Retry-After');throw new RequestError(response.status,message,data,retry&&/^\d+$/.test(retry)&&Number(retry)<=86400?Number(retry):undefined)
     }
     if(options.expectedStatus&&response.status!==options.expectedStatus)throw new RequestError(0,'Unexpected response status',null)
     return data as T
-  }catch(error){if(error instanceof RequestError)throw error;if(parent?.aborted)throw new DOMException('Navigation cancelled','AbortError');throw new RequestError(0,expired?'The request timed out. Try again.':'Could not reach LongHorn. Try again.',undefined)}
-  finally{clearTimeout(timer);parent?.removeEventListener('abort',abort)}
+  }catch(error){if(error instanceof RequestError)throw error;if(parents.some(parent=>parent.aborted))throw new DOMException('Navigation cancelled','AbortError');throw new RequestError(0,expired?'The request timed out. Try again.':'Could not reach LongHorn. Try again.',undefined)}
+  finally{clearTimeout(timer);for(const parent of parents)parent.removeEventListener('abort',abort)}
 }
 function syncAccount(){logout.disabled=accountPending;for(const control of root.querySelectorAll<HTMLInputElement|HTMLButtonElement>('[data-account-control]'))control.disabled=accountPending;document.body.dataset.authenticated=String(!!user);sidebar.hidden=!user;logout.hidden=!user;operatorNav.hidden=!operator();identity.textContent=user?user.username+(operator()?' · Operator':' · Member'):''}
 function welcome(){const value=node('section',undefined,'welcome');value.append(node('p','Command operations','eyebrow'),node('h1','Keep each command in view'),node('p','Create a command. Follow its delivery and receipt.'));const actions=node('div',undefined,'actions');actions.append(link('Sign in','#/login','button primary'),link('Create account','#/register','button'));value.append(actions,node('p','Your history stays with your account. Operators can inspect delivery failures and record recovery actions.','welcome-note'));return value}
@@ -213,15 +215,51 @@ async function commandsPage(){
   },'more');more.hidden=!cursor;value.append(more);return value
 }
 function deliveryDetails(delivery:Delivery){return details({'Delivery ID':node('code',delivery.id),'Status':status(delivery.state),'Attempts':delivery.attempts+' of '+delivery.maxAttempts,'Updated':time(delivery.updatedAt),'Available':time(delivery.availableAt),'Last failure':delivery.lastFailure??'None'})}
+type CommandDetail={command:{id:string;numbers:number[]};history:Command}
+type CommandReceipts={receipts:{messageId:string;result:{count:number;sum:number;min:number;max:number}}[]}
+async function readCommandReceipt(id:string,signal?:AbortSignal):Promise<CommandReceipts|null>{
+  try{return await api<CommandReceipts>('/commands/'+id+'/receipt',undefined,signal?{signal}:{})}
+  catch(error){if(error instanceof RequestError&&error.status===404)return null;throw error}
+}
 async function commandPage(id:string){
-  const data=await api<{command:{id:string;numbers:number[]};history:Command}>('/commands/'+id),value=node('div');value.append(link('Back to commands','#/commands','back'),title('Command '+id.slice(0,8),'Submitted '+time(data.history.createdAt),refresh('Refresh status'),link('Run again','#/new/'+id,'button')))
+  const current=version,data=await api<CommandDetail>('/commands/'+id),value=node('div');let history=data.history,received=false,receiptUnavailable=false
+  value.append(link('Back to commands','#/commands','back'),title('Command '+id.slice(0,8),'Submitted '+time(history.createdAt),refresh('Refresh status'),link('Run again','#/new/'+id,'button')))
   const layout=node('div',undefined,'detail-grid'),input=node('section',undefined,'panel');input.append(node('h2','Your numbers'),node('p',data.command.numbers.join(', '),'numbers'),details({'Command ID':node('code',id)}));layout.append(input)
-  const delivery=node('section',undefined,'panel');delivery.append(node('h2','Delivery'))
-  if(data.history.delivery)delivery.append(deliveryDetails(data.history.delivery));else delivery.append(node('p',data.history.deliveryId?'Delivery metadata is no longer available.':'Delivery metadata could not be recovered.','subtle'))
-  if(operator()&&data.history.deliveryId)delivery.append(link('Inspect delivery','#/deliveries/'+data.history.deliveryId,'back'));layout.append(delivery)
-  const receipt=node('section',undefined,'panel wide');receipt.append(node('h2','Computed receipt'))
-  try{const results=await api<{receipts:{messageId:string;result:{count:number;sum:number;min:number;max:number}}[]}>('/commands/'+id+'/receipt');for(const entry of results.receipts){const computed=node('dl',undefined,'receipt-values');for(const[label,amount]of Object.entries({Count:entry.result.count,Sum:entry.result.sum,Minimum:entry.result.min,Maximum:entry.result.max})){const pair=node('div');pair.append(node('dt',label),node('dd',String(amount)));computed.append(pair)}receipt.append(computed,details({'Message ID':node('code',entry.messageId)}))}}
-  catch(reason){if(!(reason instanceof RequestError))throw reason;if(reason.status===401)throw reason;receipt.append(node('p',reason.status===404?'No receipt yet. Refresh status after delivery.':'The receipt service is unavailable. Refresh to try again.','subtle'))}
+  const delivery=node('section',undefined,'panel'),facts=node('div');delivery.append(node('h2','Delivery'),facts)
+  const showDelivery=()=>{facts.replaceChildren(history.delivery?deliveryDetails(history.delivery):node('p',history.deliveryId?'Delivery metadata is no longer available.':'Delivery metadata could not be recovered.','subtle'))};showDelivery()
+  if(operator()&&history.deliveryId)delivery.append(link('Inspect delivery','#/deliveries/'+history.deliveryId,'back'));layout.append(delivery)
+  const receipt=node('section',undefined,'panel wide'),receiptBody=node('div');receipt.append(node('h2','Computed receipt'),receiptBody)
+  const showReceipt=(results:CommandReceipts|null)=>{
+    received=!!results?.receipts.length;receiptBody.replaceChildren()
+    if(!received){receiptBody.append(node('p',receiptUnavailable?'The receipt service is unavailable. Refresh to try again.':'No receipt yet. Refresh status to check again.','subtle'));return}
+    for(const entry of results!.receipts){const computed=node('dl',undefined,'receipt-values');for(const[label,amount]of Object.entries({Count:entry.result.count,Sum:entry.result.sum,Minimum:entry.result.min,Maximum:entry.result.max})){const pair=node('div');pair.append(node('dt',label),node('dd',String(amount)));computed.append(pair)}receiptBody.append(computed,details({'Message ID':node('code',entry.messageId)}))}
+  }
+  try{showReceipt(await readCommandReceipt(id))}
+  catch(error){if(!(error instanceof RequestError)||error.status===401||error.status===403)throw error;receiptUnavailable=true;showReceipt(null)}
+  if(current!==version)throw new DOMException('Navigation cancelled','AbortError')
+  if(!received){
+    const updates=node('div',undefined,'follow-updates'),progress=node('p',undefined,'subtle'),control=button('Follow updates',()=>{if(!finished){if(follow.active)follow.stop();else follow.start()}})
+    let finished=false;progress.setAttribute('role','status');progress.setAttribute('aria-live','polite');progress.setAttribute('aria-atomic','true')
+    progress.textContent='Follow delivery and receipt for up to two minutes.'
+    const follow=createCommandFollow({
+      async read(signal){
+        const next=await api<CommandDetail>('/commands/'+id,undefined,{signal}),result=await readCommandReceipt(id,signal)
+        if(signal.aborted||current!==version)throw new DOMException('Navigation cancelled','AbortError')
+        history=next.history;receiptUnavailable=false;showDelivery();showReceipt(result)
+        return received||!history.delivery||history.delivery.state==='failed'
+      },
+      change(state,error){
+        if(current!==version)return
+        finished=state==='complete';control.setAttribute('aria-disabled',String(finished));control.textContent=finished?'Updates finished':state==='following'||state==='paused'?'Pause updates':state==='limit'?'Check again':state==='error'?'Try updates':'Resume updates'
+        progress.textContent=state==='following'?'Checking delivery and receipt for up to two minutes.':state==='paused'?'Updates paused while this tab is hidden or offline.':state==='stopped'?'Updates paused. Refresh status or resume when you’re ready.':state==='limit'?'Updates stopped after two minutes or 30 checks. Refresh status or check again.':state==='error'?'Updates stopped. '+(error instanceof Error?error.message:'Refresh status to try again.'):received?'Receipt received. Updates stopped.':history.delivery?.state==='failed'?'Delivery failed. Updates stopped.':'Delivery metadata is unavailable. Updates stopped.'
+      },
+    })
+    const visibility=()=>follow.setPaused(document.hidden||!navigator.onLine)
+    document.addEventListener('visibilitychange',visibility);addEventListener('online',visibility);addEventListener('offline',visibility)
+    clearPageWork=()=>{follow.dispose();document.removeEventListener('visibilitychange',visibility);removeEventListener('online',visibility);removeEventListener('offline',visibility)}
+    visibility();updates.append(progress,control);value.append(updates)
+    if(!receiptUnavailable&&history.delivery&&history.delivery.state!=='failed')follow.start()
+  }
   layout.append(receipt);value.append(layout);return value
 }
 function deliveryRow(delivery:Delivery){const row=node('li',undefined,'row'),name=node('div');name.append(link('Delivery '+delivery.id.slice(0,8),'#/deliveries/'+delivery.id),node('div',delivery.id,'row-id'));row.append(name,cell('Updated',time(delivery.updatedAt)),cell('State',status(delivery.state)),cell('Attempts',delivery.attempts+' / '+delivery.maxAttempts));return row}
@@ -255,7 +293,7 @@ async function auditPage(id?:string){
   let cursor=data.nextCursor;const more=button('Load more actions',()=>{if(!cursor)return;more.disabled=true;const current=version;void api<Page<{records:Audit[]}>>('/operations/audit'+query+'&after='+encodeURIComponent(cursor)).then(next=>{if(current!==version)return;rows.append(...next.records.map(auditRow));cursor=next.nextCursor;more.hidden=!cursor;announce('Loaded '+next.records.length+' recovery actions.')}).catch(reason=>announce((reason as Error).message,true)).finally(()=>{more.disabled=false})},'more');more.hidden=!cursor;value.append(more);return value
 }
 async function render(){
-  const current=++version;clearPageSecrets();clearPageSecrets=()=>{};reads.abort();reads=new AbortController();root.setAttribute('aria-busy','true');const [page='commands',id]=location.hash.replace(/^#\/?/,'').split('/')
+  const current=++version;clearPageWork();clearPageWork=()=>{};clearPageSecrets();clearPageSecrets=()=>{};reads.abort();reads=new AbortController();root.setAttribute('aria-busy','true');const [page='commands',id]=location.hash.replace(/^#\/?/,'').split('/')
   if(noticeRoute!==location.hash)notice.hidden=true
   for(const element of document.querySelectorAll<HTMLAnchorElement>('[data-nav]')){if(element.dataset.nav===page)element.setAttribute('aria-current','page');else element.removeAttribute('aria-current')}
   root.replaceChildren(title('Opening '+(page==='new'?'a command':page),'Reading the latest saved state.'))
@@ -282,7 +320,7 @@ let saved:string|null=null;try{saved=localStorage.getItem('longhorn-theme')}catc
 setTheme(saved?saved==='dark':matchMedia('(prefers-color-scheme: dark)').matches)
 themeButton.addEventListener('click',()=>setTheme(document.documentElement.dataset.theme!=='dark',true))
 logout.addEventListener('click',()=>{if(accountPending||logout.disabled)return;logout.disabled=true;void api('/logout',{}).then(()=>{user=undefined;syncAccount();announce('Signed out.');location.hash='#/welcome';void render()}).catch(reason=>announce((reason as Error).message,true)).finally(()=>{logout.disabled=false})})
-addEventListener('hashchange',()=>{void render()});addEventListener('pagehide',()=>{++version;reads.abort();clearPageSecrets();root.replaceChildren();sidebar.hidden=true;identity.textContent=''})
+addEventListener('hashchange',()=>{void render()});addEventListener('pagehide',()=>{++version;clearPageWork();reads.abort();clearPageSecrets();root.replaceChildren();sidebar.hidden=true;identity.textContent=''})
 addEventListener('pageshow',event=>{if(event.persisted)location.reload()})
 document.querySelector<HTMLAnchorElement>('.skip')!.addEventListener('click',event=>{event.preventDefault();root.focus()})
 void api<{user:User}>('/session').then(session=>{user=session.user}).catch(error=>{if(!(error instanceof RequestError&&error.status===401))announce('Could not check your session. Sign in to try again.',true)}).finally(()=>{syncAccount();void render()})
