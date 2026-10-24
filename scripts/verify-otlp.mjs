@@ -95,7 +95,7 @@ try {
   }
   console.log('Native Fetch: partial/permanent/redirect/oversized responses are not retried; a stalled HTTP response expires within the batch deadline.')
   const host=launch(process.execPath,[join(root,'examples/jobs/dist/index.js')],{ HOST: '127.0.0.1',PORT: '0',LOG_LEVEL: 'info',DATABASE_PATH: join(temporary,'jobs.sqlite'),WORKER_ENABLED: 'true',SCHEDULER_ENABLED: 'false',SHUTDOWN_GRACE_MS: '0',
-    OTEL_EXPORTER_OTLP_METRICS_ENDPOINT: '',OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: endpoint,OTEL_EXPORTER_OTLP_TRACES_HEADERS: 'authorization='+encodeURIComponent(authorization),OTEL_EXPORTER_OTLP_TRACES_TIMEOUT: '500',OTEL_SERVICE_NAME: 'longhorn-jobs-native',OTEL_SERVICE_VERSION: '1.2.3' })
+    OTEL_EXPORTER_OTLP_LOGS_ENDPOINT: '',OTEL_EXPORTER_OTLP_METRICS_ENDPOINT: '',OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: endpoint,OTEL_EXPORTER_OTLP_TRACES_HEADERS: 'authorization='+encodeURIComponent(authorization),OTEL_EXPORTER_OTLP_TRACES_TIMEOUT: '500',OTEL_SERVICE_NAME: 'longhorn-jobs-native',OTEL_SERVICE_VERSION: '1.2.3' })
   const url=(await record(host,value => value.message==='HTTP server listening')).fields.url
   const request=(path,body) => fetch(url+path,{ signal: AbortSignal.timeout(5000),...(body===undefined ? {} : { method: 'POST',headers: { 'Content-Type': 'application/json' },body: JSON.stringify(body) }) })
   const created=await request('/reports',{ numbers: [7,8] });assert.equal(created.status,202);const { job }=await created.json()

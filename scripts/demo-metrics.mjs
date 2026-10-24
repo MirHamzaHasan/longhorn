@@ -26,7 +26,7 @@ try{
   if(!requested){
     host=spawn(process.execPath,[fileURLToPath(new URL('../examples/jobs/dist/index.js',import.meta.url))],{detached:true,stdio:'inherit',env:{...process.env,
       HOST:'127.0.0.1',PORT:process.env.PORT??'3014',DATABASE_PATH:join(directory,'jobs.sqlite'),LOG_LEVEL:'info',WORKER_ENABLED:'true',SCHEDULER_ENABLED:'true',SHUTDOWN_GRACE_MS:'0',OTEL_SERVICE_NAME:'longhorn-metrics-demo',
-      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:'',OTEL_EXPORTER_OTLP_METRICS_ENDPOINT:collector.metricsEndpoint,OTEL_EXPORTER_OTLP_METRICS_HEADERS:'',OTEL_EXPORTER_OTLP_METRICS_TIMEOUT:'2000',OTEL_METRIC_EXPORT_INTERVAL:'1000',
+      OTEL_EXPORTER_OTLP_LOGS_ENDPOINT:'',OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:'',OTEL_EXPORTER_OTLP_METRICS_ENDPOINT:collector.metricsEndpoint,OTEL_EXPORTER_OTLP_METRICS_HEADERS:'',OTEL_EXPORTER_OTLP_METRICS_TIMEOUT:'2000',OTEL_METRIC_EXPORT_INTERVAL:'1000',
     }})
     host.on('error',()=>{process.exitCode=1});ended=new Promise(resolve=>host.once('close',resolve));await ended
     if(!requested&&host.exitCode!==0)process.exitCode=1

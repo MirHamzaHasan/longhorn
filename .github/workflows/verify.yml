@@ -20,6 +20,7 @@ jobs:
       - run: pnpm build
       - run: node scripts/verify-otlp.mjs
       - run: node scripts/verify-otlp-metrics.mjs
+      - run: node scripts/verify-otlp-logs.mjs
   redis-cache:
     runs-on: ubuntu-24.04
     timeout-minutes: 20

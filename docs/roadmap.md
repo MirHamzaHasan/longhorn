@@ -395,6 +395,19 @@ available for deliberate review before a tagged release. Cloud ingress/failover
 and real-device assistive technology remain separate verification boundaries.
 The [v0.1 plan](v0.1-plan.md) claims no merge, publication or production deployment.
 
+## Buffered log export implemented
+
+[Sink fanout](logger-sinks.md), [buffering](log-processing.md),
+[log encoding](otlp-logs-json.md), [OTLP delivery](otlp-logs.md),
+[reports/demo](jobs-logs-export.md) and [native proof](otlp-logs-testing.md)
+connect synchronous logging to owned asynchronous export. Count/byte limits include
+active work, overflow drops newest records, and final drain follows all application
+producers. The reports host keeps full console output with an explicit remote
+metadata projection and correlation to real spans. Native collector proofs cover
+four runtimes, typed values, cancellation, ambiguous acknowledgement, overload and
+business work through collector outage. Delivery remains best effort; durable
+spooling and a complete OpenTelemetry SDK remain separate integrations.
+
 ## Subsequent framework modules
 
 | Module | Depends on | Required proof |

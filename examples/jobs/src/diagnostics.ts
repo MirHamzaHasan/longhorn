@@ -3,7 +3,7 @@ import { provide, token } from '@longhorn/container'
 import type { Database } from '@longhorn/database'
 import type { JobHandler } from '@longhorn/queue'
 import { MetricRegistry, PeriodicMetricReader, Readiness, Tracer } from '@longhorn/observability'
-import type { MetricExporter, SpanContext, SpanExporter } from '@longhorn/observability'
+import type { BufferedLogProcessor, MetricExporter, SpanContext, SpanExporter } from '@longhorn/observability'
 import { httpTelemetry, livenessHandler, readinessHandler, requestSpan } from '@longhorn/observability/hono'
 import { MemorySpanExporter } from '@longhorn/observability/memory'
 import { OtlpHttpSpanExporter } from '@longhorn/observability/otlp'
@@ -16,7 +16,7 @@ type RunnerStatus = { state: string; active: boolean; errors: number; dispatched
 export const JobsDiagnostics = token<ReturnType<typeof configureDiagnostics>>('jobs diagnostics')
 
 export function configureDiagnostics(app: Longhorn, config: AppConfig, resources: {
-  database: () => Database; worker: () => WorkerStatus; scheduler: () => RunnerStatus; exporter?: SpanExporter; metricExporter?: MetricExporter
+  database: () => Database; worker: () => WorkerStatus; scheduler: () => RunnerStatus; exporter?: SpanExporter; metricExporter?: MetricExporter; logs?: BufferedLogProcessor
 }) {
   const meter = new MetricRegistry(), exporter = resources.exporter ?? (config.otlp ? new OtlpHttpSpanExporter(config.otlp) : new MemorySpanExporter({ capacity: 128 }))
   const tracer = new Tracer({ exporter, onError: () => app.logger.warn('Trace export failed', { component: 'tracing' }) })
@@ -44,7 +44,7 @@ export function configureDiagnostics(app: Longhorn, config: AppConfig, resources
   app.http.use('*', http.middleware)
   app.http.use('*', async (c, next) => {
     const span = requestSpan(c)
-    if (span) c.set('logger', c.get('logger').child({ traceId: span.context.traceId, spanId: span.context.spanId }))
+    if (span) c.set('logger', c.get('logger').child({ traceId: span.context.traceId, spanId: span.context.spanId, traceSampled: span.context.sampled }))
     await next()
   })
   app.http.get('/livez', livenessHandler(() => app.state !== 'failed' && app.state !== 'stopped'))
@@ -64,6 +64,7 @@ export function configureDiagnostics(app: Longhorn, config: AppConfig, resources
       worker: config.workerEnabled ? resources.worker() : { state: 'disabled' }, scheduler: config.schedulerEnabled ? resources.scheduler() : { state: 'disabled' },
       ...(exporter instanceof OtlpHttpSpanExporter ? { otlp: exporter.stats() } : {}),
       ...(metricReader ? { metricReader: metricReader.stats() } : {}),
+      ...(resources.logs ? { logs: resources.logs.stats() } : {}),
       ...(metricExporter instanceof OtlpHttpMetricExporter ? { otlpMetrics: metricExporter.stats() } : {}) })
   })
   app.onStop(async () => {
@@ -74,7 +75,7 @@ export function configureDiagnostics(app: Longhorn, config: AppConfig, resources
     if (errors.length) throw new AggregateError(errors, 'Observability cleanup failed')
   })
   const diagnostics = {
-    meter, tracer, readiness, metricReader,
+    meter, tracer, readiness, metricReader, logs: resources.logs,
     startMetrics: () => metricReader?.start(),
     beginDrain: () => readiness.beginDrain(),
     backgroundError: (component: 'worker' | 'scheduler') => safe(() => failures.add(1, { component })),

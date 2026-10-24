@@ -285,7 +285,7 @@ GET /operations/audit returns bounded history that survives delivery cleanup.
 See [HTTP](docs/outbox-audit-http.md), [attribution](docs/outbox-audit-attribution.md)
 and [audit schema/privileges](docs/outbox-audit-storage.md).
 
-## Trace collector demo
+## Telemetry collector demos
 
 ```sh
 pnpm demo:tracing
@@ -303,6 +303,13 @@ Prometheus scraping and local tracing stay available. The
 [metric reader](docs/metric-reader.md), [OTLP metrics](docs/otlp-metrics.md),
 [host settings](docs/jobs-metrics-export.md) and [native proof](docs/otlp-metrics-testing.md)
 have separate connection and lifetime guides.
+
+Run `pnpm demo:logs` for local console output plus remote structured logs from the
+reports API at http://127.0.0.1:3015. A [bounded processor](docs/log-processing.md)
+keeps logging synchronous and drains final records during application shutdown.
+[Sink composition](docs/logger-sinks.md), [OTLP encoding](docs/otlp-logs-json.md),
+[host projection/settings](docs/jobs-logs-export.md) and [native proof](docs/otlp-logs-testing.md)
+each have a guide.
 
 ## Other runtimes
 
@@ -408,6 +415,7 @@ pnpm test:scheduler
 pnpm test:observability
 pnpm test:otlp
 pnpm test:otlp-metrics
+pnpm test:otlp-logs
 pnpm test:postgres
 pnpm --filter example-basic start
 ```
@@ -437,7 +445,8 @@ complete HTTP workflow. Typechecking uses built workspace declarations, so build
   queue/schedule providers, idempotent background task reports, PostgreSQL credentials/
   sessions/shared throttling, account HTTP and owner-scoped private notes,
   bounded OTLP/HTTP trace/metric export, cumulative readers with serial point batches,
-  remote report observations and native collector QA,
+  remote report observations, buffered OTLP logs with explicit sink fanout/final drain,
+  and native collector QA,
   managed non-HTTP work, bounded Workers scheduled events, awaited consumer traces,
   a runnable KV audit pipeline, Durable Object SQLite transactions/migrations,
   persistent Worker queues/schedules/reports, platform queue events with explicit

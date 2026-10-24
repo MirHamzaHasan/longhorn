@@ -30,7 +30,7 @@ try {
     host=spawn(process.execPath,[fileURLToPath(new URL('../examples/jobs/dist/index.js',import.meta.url))],{
       detached: true,stdio: 'inherit',env: { ...process.env,HOST: '127.0.0.1',PORT: process.env.PORT ?? '3004',DATABASE_PATH: join(directory,'jobs.sqlite'),
         LOG_LEVEL: 'info',WORKER_ENABLED: 'true',SCHEDULER_ENABLED: 'true',SHUTDOWN_GRACE_MS: '0',OTEL_SERVICE_NAME: 'longhorn-tracing-demo',
-        OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: collector.endpoint,OTEL_EXPORTER_OTLP_TRACES_HEADERS: '',OTEL_EXPORTER_OTLP_TRACES_TIMEOUT: '2000' },
+        OTEL_EXPORTER_OTLP_LOGS_ENDPOINT: '',OTEL_EXPORTER_OTLP_METRICS_ENDPOINT: '',OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: collector.endpoint,OTEL_EXPORTER_OTLP_TRACES_HEADERS: '',OTEL_EXPORTER_OTLP_TRACES_TIMEOUT: '2000' },
     })
     host.on('error',() => { process.exitCode=1 });ended=new Promise(resolve => host.once('close',resolve));await ended
     if (!requested && host.exitCode!==0) process.exitCode=1

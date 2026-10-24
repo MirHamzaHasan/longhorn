@@ -102,3 +102,6 @@ The snapshots also retain the optional metric reader and `/otlp-metrics` export.
 Generated apps keep their existing local diagnostics; the
 [reports metrics profile](jobs-metrics-export.md) demonstrates explicit remote
 selection without adding collector credentials or a background reader to starters.
+Snapshots retain the optional log processor, sink helpers and `/otlp-logs` export
+as well. Default starters keep local logging; [the reports profile](jobs-logs-export.md)
+shows explicit remote configuration and final processor ownership.

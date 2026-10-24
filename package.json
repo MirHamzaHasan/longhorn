@@ -15,6 +15,8 @@
     "vitest": "^3.1.1"
   },
   "scripts": {
+    "test:otlp-logs": "pnpm build && node scripts/verify-otlp-logs.mjs",
+    "demo:logs": "pnpm build && node scripts/demo-logs.mjs",
     "test:otlp-metrics": "pnpm build && node scripts/verify-otlp-metrics.mjs",
     "demo:metrics": "pnpm build && node scripts/demo-metrics.mjs",
     "dev:redis-cache": "pnpm --filter example-basic... build && node examples/basic/dist/redis-index.js",

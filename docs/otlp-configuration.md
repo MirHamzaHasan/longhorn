@@ -37,6 +37,10 @@ opted in through the [metric host guide](jobs-metrics-export.md). Empty optional
 environment values act as unset. Process environment overrides optional .env files.
 Invalid header/endpoint configuration fails through field-only ConfigError messages.
 An explicitly injected resources.exporter overrides host selection for applications/tests.
+The [log host profile](jobs-logs-export.md) adds independent LOGS_ENDPOINT /
+LOGS_HEADERS / LOGS_TIMEOUT fields with the full OTEL_EXPORTER_OTLP_ prefix. It
+shares the service instance identity and retains console output; the logger itself
+does not read environment configuration.
 
 This is a deliberate host configuration surface, not full OpenTelemetry SDK config.
 OTEL_EXPORTER_OTLP_ENDPOINT, protocol/gzip/gRPC settings, automatic resource detection,

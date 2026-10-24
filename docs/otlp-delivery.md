@@ -1,10 +1,11 @@
 # OTLP delivery and lifetime
 
 Owner: shared `OtlpHttpDelivery` internals, used by OtlpHttpSpanExporter and
-OtlpHttpMetricExporter. Connects [Tracer queue ownership](tracing.md),
+OtlpHttpMetricExporter / OtlpHttpLogExporter. Connects [Tracer queue ownership](tracing.md),
 [metric reader ownership](metric-reader.md), [trace encoding](otlp-json.md),
 [metric encoding](otlp-metrics-json.md), [configuration](otlp-configuration.md) and
-[native trace](otlp-native.md) / [metric tests](otlp-metrics-testing.md).
+[native trace](otlp-native.md), [metric tests](otlp-metrics-testing.md) and
+[buffered log delivery](otlp-logs.md).
 
 | Option | Default | Allowed |
 | --- | --- | --- |
@@ -14,6 +15,7 @@ OtlpHttpMetricExporter. Connects [Tracer queue ownership](tracing.md),
 | maxRetryDelayMs | 2000 | initial delay–60000 ms |
 | maxSpansPerBatch | 256 | 1–10000 |
 | maxDataPointsPerBatch (metric exporter) | 1000 | 1–10000 |
+| maxLogRecordsPerBatch (log exporter) | 128 | 1–10000 |
 | maxRequestBytes | 1048576 | 256–16777216 |
 | maxResponseBytes | 65536 | 1–4194304 |
 
@@ -44,6 +46,9 @@ OtlpMetricExportError / acceptedDataPoints / rejectedDataPoints, and never inter
 a point rejection as a span count. The reader conservatively marks a partially
 accepted metric collection as failed; later cumulative observations retain source
 totals. Repeated collections do not reset the registry.
+Logs apply the same rules to rejectedLogRecords, with log-specific errors and
+accepted/rejected counters. The buffer conservatively drops a failed partial batch;
+it does not requeue logs or infer that timeout means the collector never received them.
 
 The exporter admits one batch and retains no pending queue. Tracer separately bounds
 active spans, completed queue and its in-flight batch. Busy/closed/invalid/oversized

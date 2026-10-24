@@ -1,8 +1,17 @@
 import { afterEach, expect, it, vi } from 'vitest'
-import { createLogger } from './index.js'
+import { createLogger,consoleLogSink,fanoutLogSinks } from './index.js'
 import type { LogRecord } from './index.js'
 
 afterEach(() => vi.restoreAllMocks())
+
+it('fans out the same normalized record in order, snapshots sink selection and isolates one failing sink',()=>{
+  const first=vi.fn(()=>{throw new Error('offline')}),second=vi.fn(),sinks=[first,second],sink=fanoutLogSinks(sinks)
+  sinks.pop();createLogger({sink,clock:()=>new Date(0)}).warn('Event',{password:'private'})
+  expect(first).toHaveBeenCalledTimes(1);expect(second).toHaveBeenCalledTimes(1)
+  expect(second.mock.calls[0]![0]).toEqual({timestamp:'1970-01-01T00:00:00.000Z',level:'warn',message:'Event',fields:{password:'[Redacted]'}})
+  const warn=vi.spyOn(console,'warn').mockImplementation(()=>{});consoleLogSink(second.mock.calls[0]![0]);expect(warn).toHaveBeenCalledTimes(1)
+  expect(()=>fanoutLogSinks([])).toThrow();expect(()=>fanoutLogSinks(new Array(1))).toThrow()
+})
 
 it('filters levels and emits a stable structured record', () => {
   const records: LogRecord[] = []

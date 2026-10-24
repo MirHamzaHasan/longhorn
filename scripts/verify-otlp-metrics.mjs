@@ -81,7 +81,7 @@ try{
   }
   await waitFor(()=>stalledClosed===2);meter.close()
   console.log('Native metric Fetch: partial/permanent/redirect/oversized responses do not replay; stalled headers and body expire and release their actual HTTP peers.')
-  const host=launch(process.execPath,[join(root,'examples/jobs/dist/index.js')],{HOST:'127.0.0.1',PORT:'0',LOG_LEVEL:'info',DATABASE_PATH:join(temporary,'jobs.sqlite'),WORKER_ENABLED:'true',SCHEDULER_ENABLED:'false',SHUTDOWN_GRACE_MS:'0',OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:'',
+  const host=launch(process.execPath,[join(root,'examples/jobs/dist/index.js')],{HOST:'127.0.0.1',PORT:'0',LOG_LEVEL:'info',DATABASE_PATH:join(temporary,'jobs.sqlite'),WORKER_ENABLED:'true',SCHEDULER_ENABLED:'false',SHUTDOWN_GRACE_MS:'0',OTEL_EXPORTER_OTLP_LOGS_ENDPOINT:'',OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:'',
     OTEL_EXPORTER_OTLP_METRICS_ENDPOINT:endpoint,OTEL_EXPORTER_OTLP_METRICS_HEADERS:'authorization='+encodeURIComponent(authorization),OTEL_EXPORTER_OTLP_METRICS_TIMEOUT:'500',OTEL_METRIC_EXPORT_INTERVAL:'100',OTEL_SERVICE_NAME:'longhorn-jobs-metrics',OTEL_SERVICE_INSTANCE_ID:'owned-jobs-instance'})
   const record=await waitFor(()=>{if(host.child.exitCode!==null)throw new Error(host.output().replaceAll(authorization,'[redacted]'));return host.records.find(r=>r.message==='HTTP server listening')})
   const url=record.fields.url,request=(path,body)=>fetch(url+path,{signal:AbortSignal.timeout(5000),...(body===undefined?{}:{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})})

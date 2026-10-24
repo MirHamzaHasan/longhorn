@@ -57,3 +57,4 @@ collector text, endpoint, headers and raw causes are discarded.
 Custom labels/resources remain application-owned data. This exporter adds no metric
 redaction, automatic OS instrumentation, durable storage, delta temporality,
 exemplars, unit inference, log export, Protobuf/gRPC or complete OTel SDK surface.
+Logs have their own [exporter and buffering contract](otlp-logs.md).

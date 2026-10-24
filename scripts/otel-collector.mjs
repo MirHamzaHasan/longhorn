@@ -45,8 +45,8 @@ async function port() {
 }
 /** Owns one temporary collector and loopback JSON sink. Never modifies system services. */
 export async function startOtelCollector(options={}) {
-  const directory=await mkdtemp(join(tmpdir(),'longhorn-otel-')),records=[],metricRecords=[]
-  let child,ended,sink,closing,output='',received=0,receivedMetricPoints=0
+  const directory=await mkdtemp(join(tmpdir(),'longhorn-otel-')),records=[],metricRecords=[],logRecords=[]
+  let child,ended,sink,closing,output='',received=0,receivedMetricPoints=0,receivedLogRecords=0
   const stop=() => closing ??= (async () => {
     try {
       if (child && child.exitCode===null && child.signalCode===null) {
@@ -81,15 +81,21 @@ export async function startOtelCollector(options={}) {
           }
         }
         options.onMetrics?.(acceptedMetrics)
+        const acceptedLogs=[]
+        for(const resource of value.resourceLogs??[])for(const scope of resource.scopeLogs??[])for(const log of scope.logRecords??[]){
+          const item={resource:resource.resource,scope:scope.scope,log};acceptedLogs.push(item);logRecords.push(item);receivedLogRecords++
+          if(logRecords.length>512)logRecords.shift()
+        }
+        options.onLogs?.(acceptedLogs)
         response.writeHead(200,{ 'Content-Type': 'application/json' });response.end('{}')
       } catch { response.writeHead(400,{ 'Content-Type': 'application/json' });response.end('{}') }
     })
     await new Promise((resolve,reject) => { sink.once('error',reject);sink.listen(0,'127.0.0.1',resolve) })
-    const receiver=await port(),endpoint=`http://127.0.0.1:${receiver}/v1/traces`,metricsEndpoint=`http://127.0.0.1:${receiver}/v1/metrics`,config=join(directory,'collector.json')
+    const receiver=await port(),endpoint=`http://127.0.0.1:${receiver}/v1/traces`,metricsEndpoint=`http://127.0.0.1:${receiver}/v1/metrics`,logsEndpoint=`http://127.0.0.1:${receiver}/v1/logs`,config=join(directory,'collector.json')
     await writeFile(config,JSON.stringify({
       receivers: { otlp: { protocols: { http: { endpoint: `127.0.0.1:${receiver}` } } } },
-      exporters: { 'otlphttp/roundtrip': { traces_endpoint: `http://127.0.0.1:${sink.address().port}/v1/traces`,metrics_endpoint: `http://127.0.0.1:${sink.address().port}/v1/metrics`,encoding: 'json',compression: 'none',retry_on_failure: { enabled: false },sending_queue: { enabled: false } } },
-      service: { telemetry: { logs: { level: 'error' },metrics: { level: 'none',readers: [] } },pipelines: { traces: { receivers: ['otlp'],exporters: ['otlphttp/roundtrip'] },metrics: { receivers: ['otlp'],exporters: ['otlphttp/roundtrip'] } } },
+      exporters: { 'otlphttp/roundtrip': { traces_endpoint: `http://127.0.0.1:${sink.address().port}/v1/traces`,metrics_endpoint: `http://127.0.0.1:${sink.address().port}/v1/metrics`,logs_endpoint: `http://127.0.0.1:${sink.address().port}/v1/logs`,encoding: 'json',compression: 'none',retry_on_failure: { enabled: false },sending_queue: { enabled: false } } },
+      service: { telemetry: { logs: { level: 'error' },metrics: { level: 'none',readers: [] } },pipelines: { traces: { receivers: ['otlp'],exporters: ['otlphttp/roundtrip'] },metrics: { receivers: ['otlp'],exporters: ['otlphttp/roundtrip'] },logs: { receivers: ['otlp'],exporters: ['otlphttp/roundtrip'] } } },
     }))
     child=spawn(executable,['--config',config],{ detached: true,stdio: ['ignore','pipe','pipe'] })
     child.on('error',error => { output=(output+error.message).slice(-16384) })
@@ -106,6 +112,6 @@ export async function startOtelCollector(options={}) {
       if (Date.now()>deadline) throw new Error('Owned collector did not become ready: '+output)
       await new Promise(resolve => setTimeout(resolve,20))
     }
-    return { endpoint,metricsEndpoint,directory,version,snapshot: () => structuredClone(records),metricsSnapshot: () => structuredClone(metricRecords),stats: () => ({ received,retained: records.length,receivedMetricPoints,retainedMetricPoints: metricRecords.length }),stop }
+    return { endpoint,metricsEndpoint,logsEndpoint,directory,version,snapshot: () => structuredClone(records),metricsSnapshot: () => structuredClone(metricRecords),logsSnapshot: () => structuredClone(logRecords),stats: () => ({ received,retained: records.length,receivedMetricPoints,retainedMetricPoints: metricRecords.length,receivedLogRecords,retainedLogRecords:logRecords.length }),stop }
   } catch (error) { await stop();throw error }
 }

@@ -15,6 +15,10 @@
       "types": "./dist/prometheus.d.ts",
       "import": "./dist/prometheus.js"
     },
+    "./otlp-logs": {
+      "types": "./dist/otlp-logs.d.ts",
+      "import": "./dist/otlp-logs.js"
+    },
     "./otlp-metrics": {
       "types": "./dist/otlp-metrics.d.ts",
       "import": "./dist/otlp-metrics.js"
@@ -29,10 +33,10 @@
     }
   },
   "scripts": {
-    "build": "tsup src/index.ts src/hono.ts src/prometheus.ts src/memory.ts src/otlp.ts src/otlp-metrics.ts --format esm --dts --clean",
+    "build": "tsup src/index.ts src/hono.ts src/prometheus.ts src/memory.ts src/otlp.ts src/otlp-metrics.ts src/otlp-logs.ts --format esm --dts --clean",
     "typecheck": "tsc --noEmit"
   },
-  "dependencies": { "hono": "^4.13.13" },
+  "dependencies": { "hono": "^4.13.13", "@longhorn/logger": "workspace:*" },
   "files": ["dist"],
   "sideEffects": false
 }

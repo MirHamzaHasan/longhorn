@@ -939,3 +939,30 @@ and readiness. The owned demo and native collector prove all four runtime profil
 outage/recovery, actual Fetch cancellation and final export. See [reader](metric-reader.md),
 [metric transport](otlp-metrics.md), [mapping](otlp-metrics-json.md),
 [reports](jobs-metrics-export.md) and [native proof](otlp-metrics-testing.md).
+
+---
+
+## 35. Synchronous Logging and Owned Remote Delivery
+
+`@longhorn/logger` keeps its existing synchronous record, redaction and console
+behavior. Explicit fanout composes readonly normalized records across isolated
+sinks. Observability consumes the logger's record type, preserving a one-way
+dependency: the logger/core never import an exporter. A BufferedLogProcessor
+snapshots entries and observed time, bounds count/normalized bytes including active
+work, serializes asynchronous export and drops newest overflow without blocking
+business work. It owns final drain and one exporter; no disk spool is implied.
+
+`@longhorn/observability/otlp-logs` encodes severity, event/observed nanoseconds,
+recursive AnyValue attributes and explicit span context. The existing HTTP engine
+adds log-specific partial acknowledgements while keeping bounded retries, byte
+limits, native cancellation and sanitized errors. A lost reply cannot establish
+that a collector never accepted a record; telemetry delivery is best effort.
+
+The reports host independently selects logs, keeps local console output and
+projects known metadata remotely. Its context matches actual server spans and
+its export failures report only locally. Final processor close runs after all
+application/diagnostics hooks, including the Application stopped record. Native
+collector proofs cover four runtimes, overload and real report work through an
+outage. See [sinks](logger-sinks.md), [processor](log-processing.md),
+[transport](otlp-logs.md), [mapping](otlp-logs-json.md),
+[host](jobs-logs-export.md) and [proof](otlp-logs-testing.md).

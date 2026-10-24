@@ -9,6 +9,12 @@ downstream connections, verification, and current limits.
 
 | Feature | Guide | Implementation owner | Connects to |
 | --- | --- | --- | --- |
+| Explicit synchronous sink fanout | [Log sinks](logger-sinks.md) | `@longhorn/logger` | Existing normalization/console routing, ordered destinations and exception isolation |
+| Buffered async log delivery | [Log processing](log-processing.md) | `@longhorn/observability` | Synchronous sink, count/byte admission including active work, serial export and final drain |
+| Remote log transport | [OTLP logs](otlp-logs.md) | `@longhorn/observability/otlp-logs` | Shared Fetch delivery, log-specific acknowledgements, bounded batches and sanitized errors |
+| Log record wire mapping | [Log JSON](otlp-logs-json.md) | Entry snapshot / exporter encoder | Event/observed clocks, severity, nested AnyValue and explicit trace context |
+| Report remote logs and demo | [Jobs logs](jobs-logs-export.md) | Jobs logger/config/lifecycle | Local output, remote metadata projection, correlation, diagnostics and close after producers |
+| Native log interoperability | [Log proof](otlp-logs-testing.md) | Real collector / gateway / four runtimes | Normalized fields, cancellation, ambiguous acknowledgement, overload, actual report outage/recovery |
 | Lifecycle-owned metric reader | [Metric reader](metric-reader.md) | `@longhorn/observability` | Timed cumulative collection, serial point batches, coalesced flush and final drain |
 | Remote metric transport | [OTLP metrics](otlp-metrics.md) | `@longhorn/observability/otlp-metrics` | Shared bounded Fetch delivery, metric-specific acknowledgements and secret-safe counters |
 | Cumulative metric record mapping | [Metric JSON](otlp-metrics-json.md) | Internal exporter encoder | Registry time identity, monotonic sums, signed gauges and disjoint histogram buckets |
@@ -234,6 +240,10 @@ flowchart TD
   MetricReader --> Observability
   MetricReader --> MetricOtlp[OTLP cumulative metric exporter]
   MetricOtlp --> Fetch
+  App --> LogProcessor[Bounded log processor]
+  LogProcessor --> Logger
+  LogProcessor --> LogOtlp[OTLP log exporter]
+  LogOtlp --> Fetch
   HttpTelemetry[HTTP telemetry middleware] --> Observability
   HttpTelemetry --> Http
   App --> HttpTelemetry

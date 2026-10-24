@@ -36,13 +36,13 @@ function span(input: SpanRecord) {
     startTimeUnixNano: otlpNanos(input.startedAt),endTimeUnixNano: otlpNanos(input.endedAt),attributes: attributes(input.attributes),status: { code: statuses[input.status] } }
 }
 /** Snapshot resource metadata once. Only the bounded serialized envelope is retained. */
-export function otlpEnvelope(resource: OtlpResource,signal: 'traces' | 'metrics' = 'traces'): { prefix: string;suffix: string } {
+export function otlpEnvelope(resource: OtlpResource,signal: 'traces' | 'metrics' | 'logs' = 'traces'): { prefix: string;suffix: string } {
   text(resource.serviceName)
   if (resource.serviceVersion!==undefined) text(resource.serviceVersion)
   const extra=resource.resourceAttributes ?? {}
   if (Object.hasOwn(extra,'service.name') || Object.hasOwn(extra,'service.version')) throw new Error('Reserved OTLP resource attribute')
   const resourceAttributes=attributes({ ...extra,'service.name': resource.serviceName,...(resource.serviceVersion===undefined ? {} : { 'service.version': resource.serviceVersion }) })
-  const [resources,scopes,items]=signal==='metrics' ? ['resourceMetrics','scopeMetrics','metrics'] : ['resourceSpans','scopeSpans','spans']
+  const [resources,scopes,items]=signal==='logs' ? ['resourceLogs','scopeLogs','logRecords'] : signal==='metrics' ? ['resourceMetrics','scopeMetrics','metrics'] : ['resourceSpans','scopeSpans','spans']
   return { prefix: `{"${resources}":[{"resource":{"attributes":${JSON.stringify(resourceAttributes)}},"${scopes}":[{"scope":{"name":"@longhorn/observability","version":"0.0.1"},"${items}":[`,suffix: ']}]}]}' }
 }
 /** Incremental byte accounting rejects oversized batches before serializing the remaining spans. */

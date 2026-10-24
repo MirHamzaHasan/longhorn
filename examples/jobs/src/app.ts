@@ -3,7 +3,7 @@ import { provide, token } from '@longhorn/container'
 import { migrate } from '@longhorn/database'
 import type { Database } from '@longhorn/database'
 import type { Logger } from '@longhorn/logger'
-import type { MetricExporter, SpanExporter } from '@longhorn/observability'
+import type { BufferedLogProcessor, MetricExporter, SpanExporter } from '@longhorn/observability'
 import { requestSpan } from '@longhorn/observability/hono'
 import { Queue, QueueStoreError, QueueWorker } from '@longhorn/queue'
 import { queueMigrations, SqliteQueueStore } from '@longhorn/queue/sqlite'
@@ -16,6 +16,7 @@ import { reportHandler, reportMigrations, reportQueueName, reportSchema } from '
 import type { ReportInput } from './reports.js'
 import { reportScheduleSchema } from './schedules.js'
 import { configureDiagnostics } from './diagnostics.js'
+import { createJobsLogging } from './logging.js'
 
 export const ReportDatabase = token<Database>('report database')
 export const ReportQueue = token<Queue<ReportInput>>('report queue')
@@ -23,12 +24,17 @@ export const ReportWorker = token<QueueWorker<ReportInput>>('report worker')
 export const ReportScheduler = token<Scheduler>('report scheduler')
 export const ReportScheduleRunner = token<SchedulerRunner>('report schedule runner')
 
-export function createJobsApp(config: AppConfig, resources: { openDatabase: () => Promise<Database>; logger?: Logger; now?: () => number; exporter?: SpanExporter; metricExporter?: MetricExporter }): Longhorn {
-  const app = new Longhorn(resources.logger ? { logger: resources.logger } : {})
+export function createJobsApp(config: AppConfig, resources: { openDatabase: () => Promise<Database>; logger?: Logger; now?: () => number; exporter?: SpanExporter; metricExporter?: MetricExporter; logs?: BufferedLogProcessor }): Longhorn {
+  const selected = !resources.logger && !resources.logs && config.otlpLogs ? createJobsLogging(config) : undefined
+  const logger = resources.logger ?? selected?.logger, logs = resources.logs ?? selected?.processor
+  const app = new Longhorn(logger ? { logger } : {})
+  // Registered first so final log drain runs after diagnostics and all other stop hooks.
+  if (logs) app.onStop(() => logs.close())
   const diagnostics = configureDiagnostics(app, config, {
     database: () => app.container.resolve(ReportDatabase), worker: () => app.container.resolve(ReportWorker).snapshot(),
     scheduler: () => app.container.resolve(ReportScheduleRunner).snapshot(), ...(resources.exporter ? { exporter: resources.exporter } : {}),
     ...(resources.metricExporter ? { metricExporter: resources.metricExporter } : {}),
+    ...(logs ? { logs } : {}),
   })
   app.container.register(provide(ReportQueue, { deps: [ReportDatabase], factory: (database) => new Queue({
     name: reportQueueName, schema: reportSchema, store: new SqliteQueueStore(database),

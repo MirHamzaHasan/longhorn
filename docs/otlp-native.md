@@ -37,7 +37,7 @@ the pinned Linux x64 archive; its actual execution depends on hosted runner
 availability. Other platforms can supply LONGHORN_OTELCOL_BIN pointing to a working
 matching-version collector and must run their own gate. The helper isolates each
 collector process, caps sink snapshots at 512 spans and 512 metric points separately
-and stops only its owned child. Finally blocks remove
+and a separate 512-record log snapshot, and stops only its owned child. Finally blocks remove
 owned configs/binaries/sinks; the verified archive stays cached for later runs.
 
 pnpm demo:tracing uses the same collector with a temporary report database. Startup
@@ -49,3 +49,5 @@ flush outside its supported request/platform lifetime.
 The helper now also forwards metrics through a separate pipeline and exposes an
 independent bounded metric snapshot. [Metric verification](otlp-metrics-testing.md)
 and `pnpm demo:metrics` use that path; the trace API/demo retain their behavior.
+The helper also supplies an independent log pipeline for [log verification](otlp-logs-testing.md)
+and `pnpm demo:logs`. Signal-specific snapshots/counters never mix record kinds.

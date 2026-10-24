@@ -57,17 +57,24 @@ function normalize(value: unknown, redactions: ReadonlySet<string>, seen = new W
   }
 }
 
-function consoleSink(record: LogRecord): void {
+export function consoleLogSink(record: LogRecord): void {
   const line = JSON.stringify(record)
   if (record.level === 'error') console.error(line)
   else if (record.level === 'warn') console.warn(line)
   else console.log(line)
 }
 
+/** Sinks borrow one readonly normalized record; failure of one does not skip another. */
+export function fanoutLogSinks(sinks: readonly LogSink[]): LogSink {
+  if (!Array.isArray(sinks) || sinks.length<1 || sinks.length>16 || [...sinks].some(sink => typeof sink!=='function')) throw new TypeError('Invalid log sinks')
+  const selected=[...sinks]
+  return record => { for (const sink of selected) { try { sink(record) } catch {} } }
+}
+
 export function createLogger(options: LoggerOptions = {}): Logger {
   const threshold = priorities[options.level ?? 'info']
   const redactions = new Set((options.redact ?? defaultRedactions).map((key) => key.toLowerCase()))
-  const sink = options.sink ?? consoleSink
+  const sink = options.sink ?? consoleLogSink
   const clock = options.clock ?? (() => new Date())
 
   function build(bindings: LogFields): Logger {

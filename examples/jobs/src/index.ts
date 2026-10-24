@@ -8,15 +8,16 @@ import { fileURLToPath } from 'node:url'
 import { createJobsApp } from './app.js'
 import { configSchema } from './config.js'
 import { JobsDiagnostics } from './diagnostics.js'
+import { createJobsLogging } from './logging.js'
 
 const bootstrap = createLogger({ bindings: { app: 'jobs-example' } })
 try {
   const config = await loadConfig(configSchema, await readEnv({
     files: [new URL('../.env', import.meta.url), new URL('../.env.local', import.meta.url)], ignoreMissing: true,
   }))
-  const logger = createLogger({ level: config.logLevel, bindings: { app: 'jobs-example' } })
+  const logging = createJobsLogging(config), logger = logging.logger
   const filename = config.databasePath === ':memory:' ? ':memory:' : resolve(fileURLToPath(new URL('..', import.meta.url)), config.databasePath)
-  const app = createJobsApp(config, { logger, openDatabase: () => openSqlite({ filename }) })
+  const app = createJobsApp(config, { logger, ...(logging.processor ? { logs: logging.processor } : {}), openDatabase: () => openSqlite({ filename }) })
     .onStop(() => { logger.info('Application stopped') })
   const server = await app.listen(nodeRuntime, { hostname: config.hostname, port: config.port })
   logger.info('HTTP server listening', { url: server.url })

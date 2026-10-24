@@ -33,7 +33,9 @@ for warnings, and `console.log` for info/debug.
 Options include `level`, `bindings`, `sink`, `redact`, and `clock`. A custom sink
 receives a structured record synchronously. A custom clock returns a `Date`. Sinks
 are best-effort: exceptions do not interrupt request handling or resource cleanup.
-Async delivery, flushing, and transport buffering are not implemented.
+The logger itself remains synchronous. [Sink fanout](logger-sinks.md) composes local
+destinations, while the optional [buffered processor](log-processing.md) supplies
+owned asynchronous delivery, flush and final drain without changing logger methods.
 
 ## Field serialization
 
@@ -47,6 +49,8 @@ By default, matching field keys are redacted recursively, case-insensitively:
 `redact` replaces this list, so include the defaults when adding custom keys.
 Messages, stack traces, URL path segments, and values under other keys are supplied
 by application code and are not scanned for sensitive text.
+The [remote reports profile](jobs-logs-export.md) explicitly projects metadata before
+export. No remote destination is automatically selected by the logger package.
 
 ## Request logging
 

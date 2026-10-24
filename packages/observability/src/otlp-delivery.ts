@@ -5,7 +5,7 @@ export class OtlpDeliveryError extends Error {
   }
 }
 export type OtlpHttpDeliveryOptions = {
-  readonly rejectedField: 'rejectedSpans' | 'rejectedDataPoints'
+  readonly rejectedField: 'rejectedSpans' | 'rejectedDataPoints' | 'rejectedLogRecords'
   /** Exact signal URL, e.g. http://127.0.0.1:4318/v1/traces. No ambient environment is read. */
   readonly endpoint: string
   readonly headers?: Readonly<Record<string,string>>
@@ -83,7 +83,7 @@ async function body(response: Response,signal: AbortSignal,maximum: number): Pro
     try { void reader.cancel().catch(() => {});reader.releaseLock() } catch { /* Deadline still bounds the export Promise. */ }
   }
 }
-function acknowledgement(value: unknown,count: number,field: 'rejectedSpans' | 'rejectedDataPoints'): { partial: boolean;rejected: number;warning: boolean } {
+function acknowledgement(value: unknown,count: number,field: 'rejectedSpans' | 'rejectedDataPoints' | 'rejectedLogRecords'): { partial: boolean;rejected: number;warning: boolean } {
   if (!value || typeof value!=='object' || Array.isArray(value)) throw new OtlpDeliveryError('protocol')
   const partial=(value as Record<string,unknown>).partialSuccess
   if (partial===undefined) return { partial: false,rejected: 0,warning: false }
@@ -97,7 +97,7 @@ function acknowledgement(value: unknown,count: number,field: 'rejectedSpans' | '
 
 /** Shared signal-neutral HTTP ownership; wrappers own serialization and public error metadata. */
 export class OtlpHttpDelivery {
-  private readonly rejectedField: 'rejectedSpans' | 'rejectedDataPoints'
+  private readonly rejectedField: 'rejectedSpans' | 'rejectedDataPoints' | 'rejectedLogRecords'
   private readonly endpoint: string
   private readonly headers: Headers
   private readonly send: typeof globalThis.fetch
