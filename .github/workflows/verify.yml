@@ -64,6 +64,7 @@ jobs:
       - run: pnpm test
       - run: node scripts/verify-runtimes.mjs
       - run: node scripts/verify-projects.mjs
+      - run: node scripts/verify-sqlite-project.mjs
   account-operations:
     runs-on: ubuntu-24.04
     timeout-minutes: 20

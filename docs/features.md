@@ -9,6 +9,10 @@ downstream connections, verification, and current limits.
 
 | Feature | Guide | Implementation owner | Connects to |
 | --- | --- | --- | --- |
+| Persistent Node SQLite project | [SQLite starter](sqlite-starter.md) | CLI SQLite profile | Editable task service, native file persistence, typed events and derived memory cache |
+| Shared application asset reader | [Template assets](application-template-assets.md) | CLI asset/profile modules | Compatible D1/Node descriptors, checked hashes/paths/bytes and selected package closures |
+| SQLite starter resource lifetime | [SQLite lifetime](sqlite-starter-lifecycle.md) | Source/compiled Node host | Environment precedence, project data paths, startup/schema checks, source watching and drain |
+| Independent SQLite project gate | [SQLite project proof](sqlite-starter-testing.md) | Packed binaries and native installed hosts | Automatic/frozen install, concurrent writers, integrity, environment/watch/schema failure and D1 regression |
 | Persistent D1 project template | [D1 starter](d1-starter.md) | CLI profile selection | Explicit Workers template, editable app, local D1 and existing script delegation |
 | D1 source/asset distribution | [D1 snapshot](d1-starter-snapshot.md) | CLI build and asset reader | Actual example source, dependency closure, hashes, relative files and packed binaries |
 | Owned D1 development reloads | [D1 development](d1-starter-development.md) | Generated watcher and local host | Browser builds, failed-compile retention, serialized process replacement and signals |
@@ -227,6 +231,9 @@ flowchart TD
   CLI --> Starter[Template + built framework snapshot]
   Starter --> App[Application]
   CLI --> D1Starter[Persistent D1 template assets]
+  CLI --> SqliteStarter[Persistent Node SQLite assets]
+  SqliteStarter --> App
+  SqliteStarter --> Sqlite
   D1Starter --> D1Tasks
   D1Starter --> Starter
   App --> Core[Core: HTTP + DI + lifecycle]

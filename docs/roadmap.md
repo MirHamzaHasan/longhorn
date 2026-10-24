@@ -446,6 +446,17 @@ host restart, compilation failure/recovery, source reload and schema/config star
 denial are verified. Default API starters remain the four-runtime profile;
 cloud deployment and automatic upgrades remain separate.
 
+## Standalone Node SQLite workflow implemented
+
+[Profile selection](sqlite-starter.md), [shared assets](application-template-assets.md),
+[lifetime](sqlite-starter-lifecycle.md) and [native proof](sqlite-starter-testing.md)
+each have a guide. The actual Node task source/tests now generate independently
+through packed binaries, with relative file overrides and native persistence QA.
+Installed hosts prove concurrent writes, restart, integrity, environment precedence,
+process-local observations and source watching. Startup failures preserve retained
+state. D1 keeps its existing descriptor/output via the shared validator. Neither
+profile adds automatic publication, upgrades or production account policy.
+
 ## Subsequent framework modules
 
 | Module | Depends on | Required proof |

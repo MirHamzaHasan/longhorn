@@ -13,7 +13,7 @@ const project = await createProject({
   directory: '../my-api',
   runtime: 'node', // node | bun | deno | workers
   name: 'my-api',  // optional; inferred from the destination otherwise
-  template: 'api', // optional; d1-tasks requires runtime: workers
+  template: 'api', // optional; d1-tasks: workers, sqlite-tasks: node
 })
 console.log(project.directory, project.runtime, project.packages)
 ```
@@ -69,6 +69,10 @@ copies the actual example code and checks explicit asset hashes before staging.
 Custom frameworkDirectory inputs selecting D1 must include templates/d1-tasks
 assets. The package records longhorn.template and the API returns the chosen
 template; default API package metadata remains compatible.
+The [SQLite profile](sqlite-starter.md) reuses this same selection/staging flow
+with Node application source, local environment files and its native persistence
+test. Both persistent profiles use the [shared asset reader](application-template-assets.md)
+while retaining their own runtime, required files, scripts and dependency closure.
 
 ## Filesystem behavior
 

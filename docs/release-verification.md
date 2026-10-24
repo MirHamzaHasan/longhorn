@@ -13,7 +13,7 @@ because package builds replace their declaration directories.
 
 | Job | Required checks |
 | --- | --- |
-| Source and runtimes | Build, types, source tests, native Node/Bun/Deno/workerd, independent generic CLI starters |
+| Source and runtimes | Build, types, source tests, native Node/Bun/Deno/workerd, generic CLI starters and packed standalone Node SQLite persistence workflow |
 | D1 storage | Actual local D1/workerd, batch/replay/restart proof, plus packed standalone D1 installation, native HTTP/watch/config/schema lifetime |
 | Redis cache | Owned Redis 7+ binary, existing memory-cache gate, shared codec/protocol on four runtimes and actual Node Redis/TLS/task HTTP integration |
 | Telemetry | Pinned native Collector 0.163.2 Linux x64, real trace/metric/log JSON roundtrips on four runtimes, delivery faults and reports HTTP |
@@ -98,6 +98,13 @@ Hosted current-head execution remains a separate required release gate.
 Its [first run](https://github.com/MirHamzaHasan/longhorn/actions/runs/40048149813)
 failed all seven jobs with zero steps/no runner. The D1 annotation again names
 the Actions budget, independently of the passing local project checks.
+
+The standalone SQLite profile adds its packed/installed native persistence gate
+to source/runtime verification. Local frozen install/build/types, 509 source
+tests, four default starters and installed SQLite/D1 workflows pass. Actual Node
+processes verify concurrent file writers, schema/integrity, env precedence,
+source watching and retained-state recovery after startup denial. Hosted current-
+head execution remains independent of that local evidence.
 
 [Review artifacts](ci-review-artifacts.md) attempt to retain actual browser captures
 and the application archive/checksum after successful independent verification.

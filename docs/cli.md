@@ -24,8 +24,9 @@ a lowercase letter and contain up to 64 lowercase letters, digits, and hyphens.
 and returns the install exit code so it can be retried.
 
 `--template api` is the default. Choose `--runtime workers --template d1-tasks`
-for the [standalone persistent D1 app](d1-starter.md). Other runtime/template
-combinations reject before output. Both creation entrypoints share these options.
+for the [standalone persistent D1 app](d1-starter.md). Choose `--runtime node --template sqlite-tasks`
+for the [local SQLite task app](sqlite-starter.md). Fixed application profiles reject
+incompatible runtimes; both creation entrypoints share these options.
 
 After building, the direct entrypoints are:
 

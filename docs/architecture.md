@@ -1046,3 +1046,28 @@ Native verification covers packed creation, fresh/frozen install, real HTTP/repl
 watcher failure/recovery and retained restart through installed CLI scripts. See
 [profile](d1-starter.md), [assets](d1-starter-snapshot.md),
 [development](d1-starter-development.md) and [proof](d1-starter-testing.md).
+
+---
+
+## 39. Native SQLite Application Profiles and Shared Asset Validation
+
+sqlite-tasks adds the existing Node application to the fixed template catalog.
+Named profile wrappers share descriptor/file/hash validation while retaining their
+own runtime, required source, scripts and build approvals. D1 descriptor version 1
+and its output stay compatible. The builder copies actual application source and
+tests, excluding the separate Redis host, plus a checked adaptation of the native
+persistence gate. Generation selects the correct framework closure and relative
+overrides before atomically publishing independent editable files.
+
+The installed Node profile uses project-relative environment/data paths from source
+or compiled hosts. Startup owns SQLite schema then cache/events; shutdown drains
+HTTP and observers before releasing the file database. Tasks persist across hosts;
+activity/cache remain explicit process-local observations with TTL for external
+writes. Source watch retains the database without acquiring cloud resources.
+
+Packed installed binaries and automatic/frozen installation prove actual native
+HTTP, concurrent writers, restart, environment precedence, cache/event scope,
+schema denial and SQLite integrity. D1 and the default four-runtime starters retain
+their separate native regressions. See [profile](sqlite-starter.md),
+[assets](application-template-assets.md), [lifetime](sqlite-starter-lifecycle.md)
+and [proof](sqlite-starter-testing.md).

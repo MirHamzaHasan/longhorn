@@ -1,6 +1,6 @@
 import { cp, mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
-import { join } from 'node:path'
+import { join, basename } from 'node:path'
 import { createHash } from 'node:crypto'
 
 const root = fileURLToPath(new URL('../../', import.meta.url))
@@ -53,13 +53,28 @@ for(const[from,to]of[
 await writeFile(join(template,'serve.mjs'),host)
 const example=JSON.parse(await readFile(join(root,'examples/d1-worker/package.json'),'utf8'))
 const hashes={}
-async function record(directory,prefix=''){
+async function record(directory,prefix='',target=hashes){
   for(const entry of await readdir(directory,{withFileTypes:true})){
     const path=prefix+entry.name
-    if(entry.isDirectory())await record(join(directory,entry.name),path+'/')
-    else if(entry.isFile())hashes[path]=createHash('sha256').update(await readFile(join(directory,entry.name))).digest('hex')
+    if(entry.isDirectory())await record(join(directory,entry.name),path+'/',target)
+    else if(entry.isFile())target[path]=createHash('sha256').update(await readFile(join(directory,entry.name))).digest('hex')
     else throw new Error('D1 template assets must be regular files')
   }
 }
 await record(template)
 await writeFile(join(template,'template.json'),JSON.stringify({schemaVersion:1,dependencies:{...example.dependencies,'@longhorn/runtime':'workspace:*'},devDependencies:{...example.devDependencies,'@types/node':'^22.13.10',typescript:'^5.8.2',vitest:'^3.1.1',miniflare:'3.20250718.3'},files:hashes},null,2)+'\n')
+
+const sqlite=join(output,'templates/sqlite-tasks')
+await cp(join(root,'starters/sqlite-tasks'),sqlite,{recursive:true})
+await cp(join(root,'examples/basic/src'),join(sqlite,'src'),{recursive:true,filter:path=>!basename(path).startsWith('redis-')})
+await cp(join(root,'examples/basic/.env.example'),join(sqlite,'.env.example'))
+await cp(join(root,'LICENSE'),join(sqlite,'LICENSE'))
+let persistence=await readFile(join(root,'scripts/verify-persistence.mjs'),'utf8')
+for(const[from,to]of[["'../runtimes/node/dist/sqlite.js'","'@longhorn/node/sqlite'"],["'examples/basic/dist/index.js'","'dist/index.js'"]]){
+  if(persistence.split(from).length!==2)throw new Error('SQLite persistence gate changed; review template mapping')
+  persistence=persistence.replace(from,to)
+}
+await mkdir(join(sqlite,'tests'),{recursive:true});await writeFile(join(sqlite,'tests/persistence.mjs'),persistence)
+const basic=JSON.parse(await readFile(join(root,'examples/basic/package.json'),'utf8')),sqliteHashes={}
+await record(sqlite,'',sqliteHashes)
+await writeFile(join(sqlite,'template.json'),JSON.stringify({schemaVersion:1,dependencies:basic.dependencies,devDependencies:{...basic.devDependencies,typescript:'^5.8.2',vitest:'^3.1.1',esbuild:'^0.28.2'},files:sqliteHashes},null,2)+'\n')

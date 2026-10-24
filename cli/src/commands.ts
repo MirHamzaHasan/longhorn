@@ -16,13 +16,14 @@ type CliContext = {
 }
 const help = `LongHorn development CLI
 
-  longhorn create <directory> --runtime node|bun|deno|workers [--template api|d1-tasks] [--name <name>] [--install]
+  longhorn create <directory> --runtime node|bun|deno|workers [--template api|d1-tasks|sqlite-tasks] [--name <name>] [--install]
   longhorn dev|build|start|typecheck|test [--cwd <directory>]
   longhorn --help
   longhorn --version
 
 create-longhorn <directory> accepts the same creation options.
 The d1-tasks template requires --runtime workers and includes retained local D1 storage.
+The sqlite-tasks template requires --runtime node and includes a persistent SQLite file.
 Generation uses a bundled framework snapshot; it never overwrites existing files.
 pnpm 12.6.0 and Node.js 20.19+ are required for project development.`
 

@@ -4,6 +4,10 @@ Owner: cli/scripts/snapshot.mjs and cli/src/d1-template.ts. Connects
 [template selection](d1-starter.md), [framework snapshots](project-generation.md)
 and the existing [D1 application](d1-tasks.md).
 
+The wrapper now delegates common metadata/file/hash validation to
+[the shared asset reader](application-template-assets.md). Descriptor version 1,
+D1 required files, runtime/scripts and output behavior stay compatible.
+
 The CLI build copies current examples/d1-worker/src files into its built template
 assets. Domain code is not maintained as a second string template. Application
 dependencies/dev tooling derive from that example, with explicit runtime and local

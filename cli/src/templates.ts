@@ -1,5 +1,5 @@
 export const runtimes = ['node', 'bun', 'deno', 'workers'] as const
-export const templates = ['api', 'd1-tasks'] as const
+export const templates = ['api', 'd1-tasks', 'sqlite-tasks'] as const
 export type ProjectTemplate = typeof templates[number]
 export type ProjectRuntime = typeof runtimes[number]
 

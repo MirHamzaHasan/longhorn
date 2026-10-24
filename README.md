@@ -26,6 +26,11 @@ For an independent persistent Workers app, use
 The [D1 starter](docs/d1-starter.md) includes editable tasks/activity/replay,
 private schema deployment, retained local data and source watching.
 
+For local Node persistence, use
+`pnpm create:app ../local-tasks --runtime node --template sqlite-tasks`.
+The [SQLite starter](docs/sqlite-starter.md) includes the real task service,
+file storage, typed events, memory summary caching and native persistence tests.
+
 ## Run the command console
 
 ```sh
@@ -416,6 +421,7 @@ pnpm test:worker-storage
 pnpm test:d1
 pnpm test:d1-idempotency
 pnpm test:d1-project
+pnpm test:sqlite-project
 pnpm test:worker-queues
 pnpm test:worker-alarms
 pnpm test:transaction-publishing
