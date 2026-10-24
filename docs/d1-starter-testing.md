@@ -37,3 +37,9 @@ is macOS ARM64, Node 20.19.4, pinned Miniflare/workerd. Hosted availability and
 exact-head results remain separate; prior revisions were rejected before runner
 allocation by the Actions budget. No managed cloud deployment/failover or Windows
 execution is inferred from these local tests.
+
+[Draft PR #7](https://github.com/MirHamzaHasan/longhorn/pull/7) records review.
+Its [first hosted run](https://github.com/MirHamzaHasan/longhorn/actions/runs/40048149813)
+failed all seven jobs before runner allocation or an executed step. The D1
+annotation identifies the Actions budget restriction; local success does not
+substitute for a current-head Ubuntu run.

@@ -89,11 +89,15 @@ Its [first run](https://github.com/MirHamzaHasan/longhorn/actions/runs/400469864
 failed all seven jobs before any runner/step started. The D1 annotation again
 identifies the Actions budget; no Ubuntu replay execution is inferred.
 
-The standalone D1 template extends the existing D1 job with packed/installed CLI
+The standalone D1 template is reviewed in [draft PR #7](https://github.com/MirHamzaHasan/longhorn/pull/7),
+stacked on request replay. It extends the existing D1 job with packed/installed CLI
 creation, relocated fresh/frozen install, its shipped native storage test and
 actual compiled/development host HTTP. Local workspace build/types, 505 source
 tests, four generic starters and D1 source-watch/config/schema/restart proof pass.
 Hosted current-head execution remains a separate required release gate.
+Its [first run](https://github.com/MirHamzaHasan/longhorn/actions/runs/40048149813)
+failed all seven jobs with zero steps/no runner. The D1 annotation again names
+the Actions budget, independently of the passing local project checks.
 
 [Review artifacts](ci-review-artifacts.md) attempt to retain actual browser captures
 and the application archive/checksum after successful independent verification.
