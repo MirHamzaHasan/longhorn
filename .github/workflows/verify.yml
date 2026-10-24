@@ -101,6 +101,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
       - run: node scripts/verify-command-history.mjs
+      - run: node scripts/verify-history-filters.mjs
       - run: node scripts/verify-operator-accounts.mjs
       - run: node scripts/verify-password-changes.mjs
       - run: node scripts/verify-session-controls.mjs

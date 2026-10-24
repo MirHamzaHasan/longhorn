@@ -16,3 +16,8 @@ Connects [accounts](accounts.md), [commands](commands.md) and [recovery](recover
 [Run again](command-rerun.md) reviews saved numbers before a separate submission.
 [Viewer consistency](viewer-binding.md) prevents old views from reading/submitting
 under another tab's switched cookie, without clearing the valid other session.
+
+[Delivery status](history-filters.md) filters Commands within the current scope.
+Selection starts a fresh page; Show all retains scope. Older-page cancellation
+cannot replace or announce errors on the new selection. Controls stack on phones
+and selection resets on a full reload.

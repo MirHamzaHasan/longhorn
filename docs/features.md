@@ -112,7 +112,7 @@ downstream connections, verification, and current limits.
 | Verified deployment/runtime scope | [Support matrix](supported-runtimes.md) | Runtime and native evidence | Explicit versions, provider boundaries and revision-specific hosted availability |
 | Reuse saved command numbers | [Run again](command-rerun.md) | Existing detail/review form and protected APIs | Admitted source, explicit review, fresh request key, separate command/delivery and preserved original |
 | Displayed-account consistency | [Viewer binding](console-viewer-binding.md) | Optional PostgreSQL account middleware and console helper | Cookie-derived principal matching, stale-view 401, no handler effects and preserved other cookie |
-| Native command reuse proof | [Reuse testing](command-rerun-testing.md) | Actual Chromium/PostgreSQL/broker and restored app | Real receipts, edited/manual replay, scope, legacy data, navigation, account switch and 91 captures |
+| Native command reuse proof | [Reuse testing](command-rerun-testing.md) | Actual Chromium/PostgreSQL/broker and restored app | Real receipts, edited/manual replay, scope, legacy data, navigation, account switch and 117 captures |
 | Working web console | [Console](web-console.md) | PostgreSQL example browser client | Signup, history, commands, receipts and real API failures |
 | Console browser boundary | [Console security](console-security.md) | Fixed asset routes and client API helper | CSP, HttpOnly cookies, relative requests, session clearing |
 | Browser account settings | [Account](console-account.md) | Console Account route and host capability | Password confirmation, current-session probe, pending navigation, secret clearing and sign-in after replacement |
@@ -120,9 +120,14 @@ downstream connections, verification, and current limits.
 | Browser account native proof | [Account testing](console-account-testing.md) | Chromium and native PostgreSQL/scrypt | Live 401 distinction, peer revocation, throttling, lost/late responses and 58 captures |
 | Browser operator recovery | [Console recovery](console-recovery.md) | Console delivery/audit screens | Current allowance, deliberate retry, conflict and account attribution |
 | Console interaction design | [Design rules](console-design.md) | Browser CSS and DOM | Light/dark tokens, responsive hierarchy, honest states |
-| Native browser verification | [Console testing](console-testing.md) | Chromium, axe and owned native services | Actual receipts, dropped responses, keyboard and 91 command/recovery/reuse captures |
+| Native browser verification | [Console testing](console-testing.md) | Chromium, axe and owned native services | Actual receipts, dropped responses, keyboard and 117 command/recovery/reuse/filter captures |
 | Complete command application | [Walkthrough](command-application.md) | Existing demo and persistent host | End-to-end accounts, DI, transactions, delivery and recovery |
 | Account command history | [History API](account-command-history.md) | PostgreSQL operations router/repository | Accounts, DI, owner filters, existing command detail |
+| Delivery status history filters | [History filters](history-status-filters.md) | PostgreSQL history repository and account query | Live pending/running/succeeded/failed/unavailable membership, same owner/operator admission |
+| Filter-bound continuation | [Filter cursors](history-filter-cursors.md) | Versioned strict cursor codec | Original v1 unfiltered links, exact-status v2, copied inputs and decimal int64 positions |
+| History filter index deployment | [Filter migration](history-filter-migrations.md) | Appended owner migration and readiness | Two partial indexes, transactional rollback, valid/ready table checks and existing grants |
+| Browser history selection | [Console filters](console-history-filters.md) | Existing console kit and Commands route | Native labelled selects, fresh pages, scope retention, canceled continuation isolation |
+| Native history filter proof | [Filter testing](history-filter-testing.md) | Native PostgreSQL, Chromium and restored app | Real leases/states, index plans, rollback, cursor context, cancellation and retained archive |
 | Command history schema upgrade | [History migrations](command-history-migrations.md) | Complete operations migration profile | Retained business rows, safe legacy association, int64 indexes |
 | Context-bound history pagination | [History cursors](command-history-cursors.md) | History codec/query | Principal/scope/queue context, exact int64 seek, live traversal |
 | Live command delivery projection | [Delivery metadata](command-history-delivery.md) | Explicit SQL projection | Outbox status, independent retention, no payload/lease reads |
@@ -311,6 +316,12 @@ flowchart TD
   OutboxExample[Command to broker to receipt app] --> QueuePublisher
   OutboxExample --> AlarmClock
   OutboxExample --> Operations[Authorized delivery inspection and retry]
+  OutboxExample --> History[Account command history]
+  History --> HistoryFilters[Live delivery status filters]
+  HistoryFilters --> FilterCursor[Status-bound continuation]
+  HistoryFilters --> FilterIndexes[Owner-deployed partial indexes]
+  HistoryFilters --> HistoryConsole[Browser scope and status selection]
+  History --> Database
   Operations --> OutboxRecovery[Conditional outgoing recovery]
   OutboxRecovery --> Outbox
   OutboxRecovery --> Database

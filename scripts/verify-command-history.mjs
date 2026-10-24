@@ -53,7 +53,7 @@ try{
   assert.equal(await visibleColumn(),0);assert.equal((await end(held,'SIGKILL')).signal,'SIGKILL');assert.equal(await visibleColumn(),0)
   const migrations=[launch(),launch()];const added=[]
   for(const instance of migrations){const result=await stage(instance,'migrated');added.push(result.added);assert.equal((await end(instance)).code,0)}
-  assert.deepEqual(added.map(value=>value.length).sort(),[0,2]);assert.deepEqual(added.flat(),['postgres_account_operations/002_command_history','longhorn_postgres_auth/003_password_changes'])
+  assert.deepEqual(added.map(value=>value.length).sort(),[0,3]);assert.deepEqual(added.flat(),['postgres_account_operations/002_command_history','longhorn_postgres_auth/003_password_changes','postgres_account_operations/003_history_filters'])
   const afterHistory=(await owner.execute('SELECT id,checksum FROM longhorn_pg_example.longhorn_migrations ORDER BY position')).rows;assert.deepEqual(afterHistory.slice(0,beforeHistory.length),beforeHistory)
   const legacyRows=(await owner.execute('SELECT id,delivery_id,created_at,history_id FROM longhorn_pg_example.operator_commands ORDER BY history_id')).rows
   assert.equal(legacyRows.find(value=>value.id===a.id).delivery_id,aDelivery.id);assert.equal(Number(legacyRows.find(value=>value.id===a.id).created_at),aDelivery.createdAt)
@@ -78,7 +78,7 @@ try{
   const create=async(cookie,key,numbers=[1])=>{const response=await request('/account/commands',{cookie,body:{id:key,numbers}});assert.equal(response.status,201);return response.json()}
   assert.equal((await request('/account/commands?limit=garbage')).status,401)
   for(const query of ['?scope=all','?scope=all&after=garbage','?scope=mine&scope=all','?scope=all&scope=mine'])assert.equal((await request('/account/commands'+query,{cookie:aliceCookie})).status,403)
-  for(const query of ['?limit=101','?limit=0','?owner='+bob.id,'?queue=another','?state=failed','?after=not-json'])assert.equal((await request('/account/commands'+query,{cookie:aliceCookie})).status,400)
+  for(const query of ['?limit=101','?limit=0','?owner='+bob.id,'?queue=another','?state=invalid','?after=not-json'])assert.equal((await request('/account/commands'+query,{cookie:aliceCookie})).status,400)
   const initial=await page(aliceCookie),initialIds=new Set(initial.commands.map(value=>value.id));assert.deepEqual(initialIds,new Set([a.id,pruned.id,ambiguous.id]));assert.ok(!initialIds.has(b.id))
   assert.ok(initial.commands.every(value=>!Object.hasOwn(value,'numbers')&&!Object.hasOwn(value,'ownerId')))
   assert.equal(initial.commands.find(value=>value.id===a.id).delivery.state,'pending')

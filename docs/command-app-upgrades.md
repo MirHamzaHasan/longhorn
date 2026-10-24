@@ -39,3 +39,10 @@ login writer before enabling mutations; upgraded login-only stores also honor th
 [credential fence](password-session-fencing.md). The
 [password upgrade guide](postgres-password-changes.md) records the grants and rollback
 boundaries. Never splice the new migration into an already deployed prefix.
+
+The [history-filter revision](history-filter-migrations.md) appends two partial
+indexes after the complete password/operations profile. Its regular transactional
+index builds block writes during construction; budget time/storage in this same
+maintenance window. Updated startup/readiness requires valid/ready indexes on
+their expected tables. Existing runtime grants suffice. The native gate verifies
+pre-commit SIGKILL rollback and concurrent deployment from the exact prior profile.

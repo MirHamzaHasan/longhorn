@@ -38,3 +38,7 @@ IDs. Changing the numbers creates a new request key. Keys are kept in this page'
 memory only: reloading or leaving the form does not preserve a pending submission.
 Check command history after reloading an ambiguous submission. The existing
 [idempotency policy](idempotency.md) still bounds replay guarantees.
+
+[Delivery status selectors](console-history-filters.md) filter Commands within the
+current scope, restart pagination on selection and keep canceled older pages from
+announcing stale errors. Show all clears only status; membership is live.

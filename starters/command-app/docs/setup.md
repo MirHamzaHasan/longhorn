@@ -49,3 +49,8 @@ Do not supply deployment credentials to the browser or app shell.
 Ctrl+C drains the owned host. It does not remove PostgreSQL or receiver data.
 `pnpm dev` builds then watches the Node host; after editing browser/receiver code,
 run `pnpm build` and restart the relevant host. There is no unclaimed hot reload.
+
+The complete profile includes [history-filter indexes](history-filters.md). Their
+regular transactional builds block writes, so deploy them during stopped-writer
+maintenance before starting updated hosts. Startup/readiness checks require both
+valid/ready indexes; no new runtime privileges are needed.

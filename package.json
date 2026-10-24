@@ -30,6 +30,7 @@
     "test:command-app": "pnpm build && node scripts/verify-command-app.mjs",
     "test:console": "pnpm build && node scripts/verify-console.mjs && node scripts/verify-console-account.mjs",
     "test:console:account": "pnpm build && node scripts/verify-console-account.mjs",
+    "test:history-filters": "pnpm build && node scripts/verify-history-filters.mjs",
     "test:command-history": "pnpm build && node scripts/verify-command-history.mjs",
     "test:persistent-operations": "pnpm build && node scripts/verify-persistent-operations.mjs",
     "dev:operator-host": "pnpm --filter example-postgres... build && node examples/postgres/dist/operator-host.js",

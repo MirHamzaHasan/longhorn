@@ -646,8 +646,20 @@ navigation cancellation remain in force. The [viewer check](console-viewer-bindi
 also prevents stale tabs from using a newly switched cookie for private reads/writes,
 without logging the other account out. [Native proof](command-rerun-testing.md) covers
 actual distinct receipts, scope, malformed legacy JSON, source loading/cancellation,
-reproduced account switching, 91 command/recovery/reuse captures and the relocated
+reproduced account switching, 117 command/recovery/reuse/filter captures and the relocated
 app copying a pre-checkpoint source after restore/regrant/restart.
+
+## Delivery status history filtering implemented
+
+[API filters](history-status-filters.md) find pending, running, delivered, failed
+or unavailable commands within the existing owner/operator boundary. Compatible
+v1 and status-bound [v2 cursors](history-filter-cursors.md) support live traversal.
+Two appended [partial indexes](history-filter-migrations.md) preserve all previous
+checksums and require owner maintenance deployment. The [console](console-history-filters.md)
+resets pages on selection and isolates canceled continuations. [Native proof](history-filter-testing.md)
+covers real queue transitions, DDL interruption/concurrency, saved cursors, restricted
+grants, actual index plans, 117 command captures and filtering in the restored app.
+Exports, text search, saved filter URLs and automated polling remain separate work.
 
 ## Subsequent framework modules
 

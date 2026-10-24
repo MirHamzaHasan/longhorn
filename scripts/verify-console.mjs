@@ -156,6 +156,46 @@ try{
   const failedCommand=(await member.evaluate(()=>location.hash)).split('/').at(-1),failedDelivery=String((await owner.execute({sql:'SELECT delivery_id FROM longhorn_pg_example.operator_commands WHERE id=$1',args:[failedCommand]})).rows[0].delivery_id)
   await waitFor(async()=> (await owner.execute({sql:'SELECT state FROM longhorn_queue.jobs WHERE id=$1',args:[failedDelivery]})).rows[0].state==='failed')
   await member.getByRole('button',{name:'Refresh status'}).click();await ready(member);await capture(member,'failed-command')
+  // Filters use the live metadata projection; a removed queue record is unavailable.
+  const missingDelivery=String((await owner.execute({sql:'SELECT delivery_id FROM longhorn_pg_example.operator_commands WHERE id=$1',args:[corrupt]})).rows[0].delivery_id)
+  await owner.execute({sql:'DELETE FROM longhorn_queue.jobs WHERE queue=$1 AND id=$2',args:['outbox.command.numbers.v1',missingDelivery]})
+  await go(member,'#/commands');await member.getByLabel('Delivery status',{exact:true}).selectOption('failed');await ready(member)
+  await expect(member.getByRole('link',{name:'Command '+failedCommand.slice(0,8),exact:true})).toBeVisible();await expect(member.getByRole('link',{name:'Command '+commandId.slice(0,8),exact:true})).toHaveCount(0);await capture(member,'history-filter-failed')
+  await member.getByLabel('Delivery status',{exact:true}).selectOption('succeeded');await ready(member);await expect(member.getByRole('link',{name:'Command '+commandId.slice(0,8),exact:true})).toBeVisible();await expect(member.getByRole('link',{name:'Command '+failedCommand.slice(0,8),exact:true})).toHaveCount(0);await capture(member,'history-filter-delivered')
+  await member.getByLabel('Delivery status',{exact:true}).selectOption('unavailable');await ready(member);await expect(member.getByRole('link',{name:'Command '+corrupt.slice(0,8),exact:true})).toBeVisible();await expect(member.locator('.rows .state[data-state=unknown]')).toHaveText('Unavailable');await capture(member,'history-filter-unavailable')
+  await member.getByLabel('Delivery status',{exact:true}).selectOption('running');await ready(member);await expect(member.getByRole('heading',{name:'No matching commands',exact:true})).toBeVisible();await capture(member,'history-filter-empty')
+  await member.getByRole('button',{name:'Show all',exact:true}).click();await ready(member);await expect(member.getByLabel('Delivery status',{exact:true})).toHaveValue('all')
+  await go(operator,'#/commands');await operator.getByLabel('Show commands',{exact:true}).selectOption('all');await ready(operator);await operator.getByLabel('Delivery status',{exact:true}).selectOption('failed');await ready(operator);await expect(operator.getByRole('link',{name:'Command '+failedCommand.slice(0,8),exact:true})).toBeVisible();await capture(operator,'history-filter-operator')
+  for(const theme of ['light','dark']){
+    if(await operator.locator('html').getAttribute('data-theme')!==theme)await operator.getByRole('button',{name:theme==='dark'?'Use dark theme':'Use light theme'}).click()
+    await operator.setViewportSize({width:390,height:844});await operator.evaluate(()=>document.documentElement.style.fontSize='130%');assert.ok(await operator.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1))
+    const result=await new AxeBuilder({page:operator}).withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa']).analyze();violations.push(...result.violations.map(value=>({screen:'scaled-history-filters',theme,width:390,id:value.id})))
+    const filename=resolve(output,'scaled-history-filters-'+theme+'-phone.png');await operator.screenshot({path:filename,fullPage:true});captures.push(filename)
+  }
+  await operator.evaluate(()=>document.documentElement.style.fontSize='');await operator.setViewportSize({width:1360,height:960})
+  await operator.getByLabel('Show commands',{exact:true}).selectOption('mine');await ready(operator);await expect(operator.getByRole('heading',{name:'No matching commands',exact:true})).toBeVisible()
+  // Create enough actual successful commands to exercise filtered continuation and
+  // cancellation while the old Load older response is already completed server-side.
+  available=true
+  const seeded=await member.evaluate(async()=>{
+    const user=(await(await fetch('/account/session')).json()).user
+    return Promise.all(Array.from({length:21},async(_,index)=>{const response=await fetch('/account/commands',{method:'POST',headers:{'Content-Type':'application/json','X-LongHorn-Viewer':user.id},body:JSON.stringify({id:crypto.randomUUID(),numbers:[100+index]})});if(response.status!==201)throw new Error('Owned history seed failed');return(await response.json()).command.id}))
+  })
+  await waitFor(async()=>{const rows=await member.evaluate(async()=> (await(await fetch('/account/commands?state=succeeded&limit=100')).json()).commands);return seeded.every(id=>rows.some(row=>row.id===id))});available=false
+  await member.getByLabel('Delivery status',{exact:true}).selectOption('succeeded');await ready(member);await expect(member.getByRole('button',{name:'Load older commands',exact:true})).toBeVisible()
+  let releaseOlder,olderDone,olderArrived=false,olderAborted=false,olderError
+  const olderGate=new Promise(resolve=>{releaseOlder=resolve}),olderCompletion=new Promise(resolve=>{olderDone=resolve})
+  const olderFailure=request=>{const url=new URL(request.url());if(url.pathname==='/account/commands'&&url.searchParams.has('after')&&request.failure()?.errorText==='net::ERR_ABORTED')olderAborted=true}
+  member.on('requestfailed',olderFailure)
+  await member.route('**/account/commands?*',async route=>{
+    try{const url=new URL(route.request().url());assert.equal(url.searchParams.get('state'),'succeeded');assert.ok(url.searchParams.has('after'));const response=await route.fetch();assert.equal(response.status(),200);olderArrived=true;await olderGate;await route.fulfill({response})}
+    catch(error){olderError=error}finally{olderDone()}
+  },{times:1})
+  await member.getByRole('button',{name:'Load older commands',exact:true}).click()
+  try{await waitFor(()=>{if(olderError)throw olderError;return olderArrived});await member.getByLabel('Delivery status',{exact:true}).selectOption('failed');await ready(member)}finally{releaseOlder();await olderCompletion}
+  if(olderError){assert.ok(olderAborted,'Unexpected filtered continuation failure');assert.match(olderError.message,/Route is already handled|Request.*aborted/)}
+  member.off('requestfailed',olderFailure);await member.unroute('**/account/commands?*');await expect(member.getByRole('link',{name:'Command '+failedCommand.slice(0,8),exact:true})).toBeVisible();assert.ok((await member.locator('.rows .state').allTextContents()).every(value=>value==='Failed'));await expect(member.locator('#notice')).toBeHidden()
+  await member.getByLabel('Delivery status',{exact:true}).selectOption('all');await ready(member)
   await go(operator,'#/deliveries');await expect(operator.getByRole('link',{name:'Delivery '+failedDelivery.slice(0,8),exact:true})).toBeVisible();await capture(operator,'failed-deliveries')
   await operator.getByRole('link',{name:'Delivery '+failedDelivery.slice(0,8),exact:true}).click();await expect(operator.getByRole('button',{name:'Retry delivery',exact:true})).toBeVisible();await capture(operator,'delivery-recovery')
   const intervened=await operator.evaluate(async id=>(await fetch('/account/operations/deliveries/'+id+'/retry',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({expectedMaxAttempts:3,additionalAttempts:1,reason:'investigating'})})).status,failedDelivery);assert.equal(intervened,202)
@@ -166,13 +206,15 @@ try{
   await waitFor(async()=> (await owner.execute({sql:'SELECT state FROM longhorn_queue.jobs WHERE id=$1',args:[failedDelivery]})).rows[0].state==='succeeded')
   await go(operator,'#/audit');await expect(operator.getByText('Provider restored',{exact:true})).toBeVisible();await capture(operator,'recovery-audit')
   await go(member,'#/deliveries');await expect(member.getByRole('heading',{name:'Operator access required'})).toBeVisible();await capture(member,'operator-access-denied')
+  await go(member,'#/commands');await member.getByLabel('Delivery status',{exact:true}).selectOption('failed');await ready(member);await expect(member.getByRole('heading',{name:'No matching commands',exact:true})).toBeVisible()
+  await member.getByLabel('Delivery status',{exact:true}).selectOption('succeeded');await ready(member);await member.getByRole('button',{name:'Load older commands',exact:true}).click();await expect(member.getByRole('link',{name:'Command '+failedCommand.slice(0,8),exact:true})).toBeVisible();await capture(member,'history-filter-recovered')
   await go(member,'#/commands/'+failedCommand);await expect(member.getByText('40',{exact:true})).toBeVisible()
   // Real server-owned expiry: remove sessions and ensure the next request clears private UI.
   const userId=String((await owner.execute("SELECT id FROM longhorn_auth.users WHERE username='console.member'")).rows[0].id)
   await owner.execute({sql:'DELETE FROM longhorn_auth.sessions WHERE user_id=$1',args:[userId]});await member.getByRole('button',{name:'Refresh status'}).click();await expect(member.getByRole('heading',{name:'Sign in to LongHorn'})).toBeVisible();await capture(member,'expired-session')
   await operator.setViewportSize({width:390,height:844});await operator.evaluate(()=>document.documentElement.style.fontSize='130%');assert.ok(await operator.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));await operator.screenshot({path:resolve(output,'scaled-text-phone.png'),fullPage:true});captures.push(resolve(output,'scaled-text-phone.png'))
   assert.deepEqual(errors,[]);await writeFile(resolve(output,'accessibility.json'),JSON.stringify({violations,captures},null,2));assert.deepEqual(violations,[])
-  console.log('Console browser: actual signup/session/history, saved-command reuse, viewer-bound account switching, real broker receipts, ambiguous-response replay, member/operator policy, outage/retry/audit, expiry, keyboard focus, both themes, scaled text and mobile screenshots verified.')
+  console.log('Console browser: actual signup/session/history, saved-command reuse, delivery-status filtering/cancellation, viewer-bound account switching, real broker receipts, ambiguous-response replay, member/operator policy, outage/retry/audit, expiry, keyboard focus, both themes, scaled text and mobile screenshots verified.')
 }finally{
   try{await browser?.close()}finally{try{await app?.close()}finally{try{await broker?.dispose()}finally{try{await owner?.close()}finally{await sandbox?.stop()}}}}
 }

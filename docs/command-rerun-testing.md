@@ -31,7 +31,7 @@ Verified behavior:
 - Keyboard form order, no horizontal overflow, light/dark layouts, reduced motion,
   existing error/expiry states and theme-only browser storage are retained.
 
-The command gate now writes 91 screenshots and `accessibility.json` to ignored
+The command gate now writes 117 screenshots and `accessibility.json` to ignored
 `.artifacts/console` (`LONGHORN_QA_DIR` override). Six additional states contribute
 24 captures: changed account, rerun review, network error, unavailable source,
 invalid source and source loading. Two more review captures check 130% text in
@@ -39,6 +39,9 @@ both themes on phone width. Themes/widths and axe WCAG 2 A/AA and 2.1 A/AA
 requirements follow [console verification](console-testing.md). The separate account
 gate remains 58 captures. Physical-device assistive technology, other browser
 engines and password-manager behavior remain manual checks.
+
+The total includes 26 subsequent [delivery-filter captures](history-filter-testing.md);
+the reuse-specific states above still contribute 26 frames.
 
 Four pure number cases cover valid notation/bounds, invalid form values, independent
 numeric copies and malformed saved structures. Three middleware cases cover viewer

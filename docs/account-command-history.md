@@ -16,11 +16,12 @@ and its protected receipt route supply the detail after ownership checks.
 | scope=all | Explicit numbers-operator view across this deployment's command queue |
 | limit | Default 20, range 1–100 |
 | after | Opaque nextCursor from the previous page |
+| state | Omitted/all, pending, running, succeeded, failed or unavailable; see [delivery filters](history-status-filters.md) |
 
 Cookie/session authentication runs first. Anonymous requests get 401. Members
 requesting the all scope get 403, including duplicate scope parameters. The
 validated scope is checked again before querying. Duplicate parameters and
-unknown owner/queue/state claims are rejected; an owner filter never derives from HTTP claims.
+unknown owner/queue claims or invalid states are rejected; an owner filter never derives from HTTP claims.
 Responses retain no-store and Vary: Cookie. Roles are fresh admission snapshots;
 ordinary reads are not retroactively cancelled after concurrent revocation.
 
@@ -32,7 +33,8 @@ idempotency still returns its original saved response without another command.
 History reads live status separately from that original delivery snapshot.
 
 Pagination is latest insertion-position first, with a unique database int64 key.
-An explicit cursor carries viewer/scope/queue/version context. It is not an
+An explicit cursor carries viewer/scope/queue/version context and, for filtered
+v2 pages, the exact selected status. Unfiltered pages retain v1. It is not an
 authorization credential. Newer inserts appear on a fresh first page; continued
 pages walk older positions. This is a live listing rather than a held snapshot.
 The [cursor guide](command-history-cursors.md) details late commits and refresh.

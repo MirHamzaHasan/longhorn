@@ -20,7 +20,7 @@ stale retry conflict, member denial, logout and revoked-session clearing. Source
 tests separately verify asset/CSP boundaries. Existing native history and account
 gates retain their concurrency, migration and SQL privilege coverage.
 
-The gate writes 91 real screenshots and `accessibility.json` into
+The gate writes 117 real screenshots and `accessibility.json` into
 `.artifacts/console` by default (`LONGHORN_QA_DIR` overrides it). It captures light
 and dark themes at 1360px and 390px widths, loading/empty/error states, plus 130%
 text at phone width. Captured screens run axe WCAG 2 A/AA and 2.1 A/AA checks
@@ -37,10 +37,14 @@ test account IDs only and are ignored by source control.
 `pnpm test:console` also runs the separate [account gate](console-account-testing.md),
 with 58 additional screenshots under `.artifacts/console/account`, real password
 replacement/throttling/session revocation, dropped responses and the real browser
-deadline. The command/recovery/reuse gate now has 91 captures.
+deadline. The command/recovery/reuse/filter gate now has 117 captures.
 
 [Command reuse and viewer consistency](command-rerun-testing.md) add real source
 review, new receipts, edited/manual replay, scope/legacy failure, loading/navigation
 and switched-account rejection. Saved-source fault injection changes only an owned
 test row; its real GET supplies the malformed data. Six new states plus two
 130% review captures account for 26 additional frames.
+
+[History filtering](history-filter-testing.md) adds real status/scope changes,
+missing metadata, filtered pagination/cancellation and recovered membership.
+Its six states and two scaled phone captures contribute another 26 frames.

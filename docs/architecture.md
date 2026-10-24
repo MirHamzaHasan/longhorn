@@ -1410,3 +1410,28 @@ authorization and already-admitted-read boundaries still apply. Native tests fir
 reproduced a switched-account 201, then verify rejection, no command write and
 preserved other-account history/session. See [viewer binding](console-viewer-binding.md),
 [proof](command-rerun-testing.md) and [security](console-security.md).
+
+## 54. Live Delivery Filtering and Status-Bound History Pages
+
+The existing application history repository adds an optional status predicate to
+its fixed-queue metadata join. Owner identity remains cookie-derived and global
+scope requires explicit current operator admission. Missing metadata forms the
+virtual unavailable filter without implying a queue outcome. Returned rows remain
+metadata-only, ordered by decimal int64 insertion position with limit+1 seeking.
+Unfiltered pages keep v1 cursors; filtered v2 pages bind the exact selected status
+alongside viewer/scope/queue. Query inputs are copied before awaiting SQL.
+
+The complete owner migration profile appends two partial indexes after every
+existing operation/password migration. Regular transactional builds block writes
+during construction; startup/readiness check valid/ready indexes on the expected
+tables with unchanged runtime grants. A native rare-state query over 3,000 rows
+uses both indexes without forced planner settings. This bounds neither all query
+work nor production latency. Membership remains live across pages.
+
+The console adds native labelled selectors in the current kit, resets pagination
+on selection and prevents canceled older-page results/errors from entering a new
+filter. Native DDL interruption/concurrent deployment, actual queue transitions,
+cursor restart/int64/role checks, minimal grants, browser states/cancellation and
+independently restored assets verify the connection. See [API](history-status-filters.md),
+[cursor rules](history-filter-cursors.md), [deployment](history-filter-migrations.md),
+[browser](console-history-filters.md) and [proof](history-filter-testing.md).

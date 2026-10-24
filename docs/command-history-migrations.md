@@ -4,9 +4,10 @@ Owner: postgresCommandHistoryMigrations in examples/postgres. Connects
 [operations deployment](operator-provisioning.md), [PostgreSQL migrations](postgres-migrations.md)
 and [history API](account-command-history.md).
 
-The complete postgresOperationsMigrations profile now appends
+The complete postgresOperationsMigrations profile includes
 postgres_account_operations/002_command_history after the unchanged 001_commands
-prefix. postgresOperationsBaseMigrations exposes that exact older profile for
+prefix. Later password and [filter index migrations](history-filter-migrations.md)
+follow this complete prefix. postgresOperationsBaseMigrations exposes that exact older profile for
 upgrade verification. Deploy with pnpm migrate:account-operations using the
 existing owner role, then run the updated writer/host.
 
@@ -37,4 +38,5 @@ table lock, not an online migration protocol. Plan a maintenance window and
 restart writers on the matching version. Older writers can still insert the
 original columns but do not supply new delivery metadata. Native processes prove
 before-commit SIGKILL rollback, subsequent concurrent upgrade serialization and
-unchanged legacy migration checksums. Startup/readiness require the new columns.
+unchanged legacy migration checksums. Startup/readiness require the new columns
+and the separately appended valid/ready filter indexes.

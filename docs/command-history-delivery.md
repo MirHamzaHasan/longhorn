@@ -4,7 +4,7 @@ Owner: PostgresCommandHistory's explicit SQL projection. Connects
 [history API](account-command-history.md), [Outbox metadata](outbox-inspection.md),
 [retention](outbox-retention.md) and [persistent hosting](persistent-operator-host.md).
 
-Each history page performs one bounded query. It selects command identity/time
+Each history page performs one query with a bounded result. It selects command identity/time
 and left-joins longhorn_queue.jobs using both the recorded delivery ID and the
 fixed outbox.command.numbers.v1 queue. The projection includes only state,
 attempts, maximum attempts, availability/update times and classified failure.
@@ -33,3 +33,8 @@ Pruning does not cascade into command history, and unrelated queue IDs cannot
 attach metadata. There is no payload or receipt polling during the SQL query.
 The application/request lifecycle owns the borrowed connection and reader;
 history installs no timer, cache or background process.
+
+[Status filters](history-status-filters.md) apply to this same live projection.
+Unavailable selects missing metadata rather than inventing a queue state. The
+[new indexes](history-filter-migrations.md) support rare-state joins; they do not
+guarantee fixed database work for every filter or distribution.

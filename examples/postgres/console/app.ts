@@ -9,7 +9,7 @@ type Page<T>={nextCursor:string|null}&T
 const root=document.querySelector<HTMLElement>('#main')!,notice=document.querySelector<HTMLElement>('#notice')!
 const sidebar=document.querySelector<HTMLElement>('#sidebar')!,identity=document.querySelector<HTMLElement>('#identity')!,operatorNav=document.querySelector<HTMLElement>('#operator-nav')!
 const themeButton=document.querySelector<HTMLButtonElement>('#theme')!,logout=document.querySelector<HTMLButtonElement>('#logout')!
-let user:User|undefined,version=0,reads=new AbortController(),scope='mine',deliveryState='failed',noticeRoute=''
+let user:User|undefined,version=0,reads=new AbortController(),scope='mine',deliveryState='failed',historyState='all',noticeRoute=''
 let clearPageSecrets=()=>{},accountPending=false,pendingKind:'password'|'sessions'|undefined
 const reasons:Record<string,string>={'manual-retry':'Manual retry','provider-restored':'Provider restored','configuration-fixed':'Configuration fixed',investigating:'Investigating'}
 const stateLabels:Record<string,string>={pending:'Pending',running:'Sending',succeeded:'Delivered',failed:'Failed',unknown:'Unavailable'}
@@ -197,11 +197,20 @@ function newCommand(source?:{id:string;numbers:number[]}){
 }
 function commandRow(command:Command){const row=node('li',undefined,'row'),name=node('div');name.append(link('Command '+command.id.slice(0,8),'#/commands/'+command.id),node('div',command.id,'row-id'));row.append(name,cell('Created',time(command.createdAt)),cell('Delivery',status(command.delivery?.state??'unknown')),cell('Attempts',command.delivery?command.delivery.attempts+' / '+command.delivery.maxAttempts:'—'));return row}
 async function commandsPage(){
-  const inputScope=operator()?scope:'mine',data=await api<Page<{commands:Command[]}>>('/commands?limit=20&scope='+inputScope),value=node('div');value.append(title(inputScope==='all'?'All commands':'Your commands','Follow each command through delivery and receipt.',refresh(),link('Create command','#/new','button primary')))
-  if(operator()){const tools=node('div',undefined,'tools'),picker=select({mine:'My commands',all:'All commands'},inputScope);picker.addEventListener('change',()=>{scope=picker.value;void render()});tools.append(field('Show commands',picker));value.append(tools)}
-  if(!data.commands.length){value.append(empty('No commands yet',inputScope==='all'?'Submitted commands will appear here.':'Create a command to start your history.',link('Create command','#/new','button primary')));return value}
+  const inputScope=operator()?scope:'mine',inputState=historyState,query=new URLSearchParams({limit:'20',scope:inputScope})
+  if(inputState!=='all')query.set('state',inputState)
+  const data=await api<Page<{commands:Command[]}>>('/commands?'+query),value=node('div');value.append(title(inputScope==='all'?'All commands':'Your commands','Follow each command through delivery and receipt.',refresh(),link('Create command','#/new','button primary')))
+  const tools=node('div',undefined,'tools history-tools')
+  if(operator()){const picker=select({mine:'My commands',all:'All commands'},inputScope);picker.addEventListener('change',()=>{scope=picker.value;void render()});tools.append(field('Show commands',picker))}
+  const state=select({all:'All deliveries',pending:'Pending',running:'Sending',succeeded:'Delivered',failed:'Failed',unavailable:'Unavailable'},inputState)
+  state.addEventListener('change',()=>{historyState=state.value;void render()});tools.append(field('Delivery status',state));value.append(tools)
+  if(!data.commands.length){value.append(inputState==='all'?empty('No commands yet',inputScope==='all'?'Submitted commands will appear here.':'Create a command to start your history.',link('Create command','#/new','button primary')):empty('No matching commands','Choose another delivery status or refresh this list.',button('Show all',()=>{historyState='all';void render()})));return value}
   const rows=node('ul',undefined,'rows');rows.setAttribute('aria-label','Command history');rows.append(...data.commands.map(commandRow));value.append(rows)
-  let cursor=data.nextCursor;const more=button('Load older commands',()=>{if(!cursor)return;more.disabled=true;const current=version;void api<Page<{commands:Command[]}>>('/commands?limit=20&scope='+inputScope+'&after='+encodeURIComponent(cursor)).then(next=>{if(current!==version)return;rows.append(...next.commands.map(commandRow));cursor=next.nextCursor;more.hidden=!cursor;announce('Loaded '+next.commands.length+' older commands.')}).catch(reason=>announce((reason as Error).message,true)).finally(()=>{more.disabled=false})},'more');more.hidden=!cursor;value.append(more);return value
+  let cursor=data.nextCursor
+  const more=button('Load older commands',()=>{
+    if(!cursor)return;more.disabled=true;const current=version
+    void api<Page<{commands:Command[]}>>('/commands?'+query+'&after='+encodeURIComponent(cursor)).then(next=>{if(current!==version)return;rows.append(...next.commands.map(commandRow));cursor=next.nextCursor;more.hidden=!cursor;announce('Loaded '+next.commands.length+' older commands.')}).catch(reason=>{if(current!==version||(reason instanceof DOMException&&reason.name==='AbortError'))return;announce((reason as Error).message,true)}).finally(()=>{more.disabled=false})
+  },'more');more.hidden=!cursor;value.append(more);return value
 }
 function deliveryDetails(delivery:Delivery){return details({'Delivery ID':node('code',delivery.id),'Status':status(delivery.state),'Attempts':delivery.attempts+' of '+delivery.maxAttempts,'Updated':time(delivery.updatedAt),'Available':time(delivery.availableAt),'Last failure':delivery.lastFailure??'None'})}
 async function commandPage(id:string){

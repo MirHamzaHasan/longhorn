@@ -38,6 +38,11 @@ For upgrades and retained state use [upgrade procedure](command-app-upgrades.md)
 and [offline backup](command-app-backup.md). External infrastructure/secrets are
 explicit deployment responsibilities, with no hidden owner credentials in HTTP.
 
+[History filtering](history-filter-migrations.md) adds two owner-deployed partial
+indexes at the end of the complete profile. Budget their regular transactional
+builds in the stopped-writer maintenance window; updated startup/readiness checks
+valid/ready indexes on the expected tables. No extra runtime grants are needed.
+
 Preserve `X-LongHorn-Viewer` unchanged when proxying `/account` requests from the
 console. This optional [displayed-account check](console-viewer-binding.md) prevents stale tabs
 from silently acting under a newly switched cookie; it grants no identity or role.

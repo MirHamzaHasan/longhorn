@@ -18,6 +18,7 @@ import { PgAccounts } from './accounts.js'
 import type { configurePostgresAccounts } from './accounts.js'
 import { commandSchema, operationData, operationTopic, operatorRole } from './operation-contracts.js'
 import type { OperationData } from './operation-contracts.js'
+import { checkHistoryFilterIndexes } from './history-filter-migrations.js'
 import { PostgresCommandHistory,commandHistoryQuery,CommandHistoryCursorError } from './command-history.js'
 
 type Env = LonghornEnv & AuthEnv
@@ -36,6 +37,7 @@ export async function checkOperationTables(database: Database): Promise<void> {
   await database.execute('SELECT id FROM longhorn_outbox.recovery_audit LIMIT 0')
   const permission = (await database.execute("SELECT has_function_privilege(current_user,'longhorn_auth.lock_session_user(text)','EXECUTE') AS allowed")).rows[0]
   if (permission?.allowed !== true) throw new Error('Account operations require the transaction authentication grant')
+  await checkHistoryFilterIndexes(database)
 }
 export function configurePostgresOperations(app: Longhorn, dbToken: Token<Database>, access: AccountAccess, options: AccountOperationsOptions): void {
   app.container.register(provide(PgOperationOutbox, { deps: [dbToken], factory: db => new Outbox({ name: operationTopic,schema: operationData,store: new PostgresOutboxStore(db),retryDelayMs: 100,maxRetryDelayMs: 1000,leaseMs: 1000 }) }))

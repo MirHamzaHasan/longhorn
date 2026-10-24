@@ -21,6 +21,10 @@ owner predicate and the current operator role gate still decide access. No curso
 field supplies another owner's filter or grants global authority. Cursor values
 are not stored sessions and do not preserve a revoked role.
 
+[Delivery filters](history-filter-cursors.md) preserve this v1 format for omitted/
+all state. Filtered v2 cursors additionally bind the selected status; changing a
+filter requires a fresh page. Status membership is live across continuations.
+
 Each page sees current committed rows and delivery metadata. A newer insertion
 has a higher position and appears on a fresh first page, keeping continued older
 pages from repeating it. Identity allocation precedes transaction commit: a

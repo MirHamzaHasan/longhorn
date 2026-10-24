@@ -52,3 +52,8 @@ The restored app also opens a source created before the checkpoint, follows
 [Run again](command-rerun.md), reloads the review link and creates a distinct
 command/delivery with a real computed receipt. The original receipt remains, and
 ordinary current-browser history includes the new row before scoped sign-out.
+
+Before scoped sign-out, that same restored browser selects Delivered and sees
+all four actual commands, selects Failed and sees an empty result, then uses Show
+all to restore the complete list. This exercises the shipped [filter assets](console-history-filters.md),
+query/cursor schema and appended indexes after restore/regrant/restart.
