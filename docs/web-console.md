@@ -47,3 +47,8 @@ announcing stale errors. Show all clears only status; membership is live.
 [Export history](console-history-export.md) downloads IDs, dates and delivery status
 for the entire selected traversal, independently of loaded list rows. Large results
 use explicit continuation files; cancel/navigation/errors discard the current file.
+
+[Saved history views](history-view-links.md) put scope/status in the fragment.
+Bookmarks, reload and Back/Forward restore the selected first page. Cold links and
+expired sessions return through validated sign-in; server admission still governs
+which rows appear. Loaded pages and export continuation are not part of the URL.

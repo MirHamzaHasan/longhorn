@@ -1472,3 +1472,20 @@ proof cover limits, 10001-row scale, exact retained continuation, admission chan
 accessible captures and shipped restore. See [feature](history-export.md),
 [format](history-export-format.md), [lifetime](history-export-lifecycle.md),
 [controls](console-history-export.md) and [proof](history-export-testing.md).
+
+## 57. Canonical History Views and Validated Sign-In Return
+
+A pure Web route codec recognizes the existing console pages and a strict scope/
+status query only on command lists. The serializer omits defaults and never encodes
+actor, cursor or return-target claims. Selector changes push URL fragments and
+render immediately; legacy normalization replaces the current entry. Native Back/
+Forward and reload reconstruct a fresh first page under current API admission.
+
+A whitelisted internal view target can survive sign-in, registration or reactive
+expiry in memory. Explicit logout resets it. Member all-scope requests reach the
+existing server gate and remain denied until the user explicitly opens their own
+view. Page cleanup, export/follow cancellation, displayed-viewer consistency and
+private DOM fencing remain unchanged. Source/native browser proof covers route
+claims, live accounts, paging, download selection and restored assets. See [format](history-view-links.md),
+[navigation](console-history-navigation.md), [sign-in](history-view-sign-in.md) and
+[proof](history-view-link-testing.md).

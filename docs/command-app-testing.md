@@ -66,3 +66,8 @@ rerun must likewise show its actual receipt in the current detail before leaving
 The restored shipped console also downloads [history NDJSON](history-export.md).
 Its header/summary and four command IDs must match the retained/new rows exactly;
 no numbers, outgoing payload or lease tokens may appear in the actual file.
+
+The restored shipped browser also preserves its Delivered view in the actual
+fragment across reload and Back/Forward before exporting those four commands.
+[Saved-view proof](history-view-link-testing.md) separately exercises cold/expired
+sign-in, other accounts, operator denial and invalid route claims.

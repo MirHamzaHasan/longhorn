@@ -27,3 +27,8 @@ at phone widths and support 130% text in both themes without animation.
 The browser decides whether and where to save. Downloads contain private account
 metadata under the user's chosen selection; no file is sent to another service.
 The format and continuation bounds are described in the separate feature guides.
+
+[Saved list URLs](history-view-links.md) restore only scope/status. Reloading or
+revisiting that view creates a new export control without an old continuation;
+actual export still starts at the selected newest page unless Continue export is
+explicitly available in the current control.

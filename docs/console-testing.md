@@ -56,6 +56,11 @@ canceled reads, offline and viewer/session boundaries use built browser assets.
 The command, account and follow gates produce 201 captures, with separate reports.
 
 [History export verification](history-export-testing.md) adds 34 captures under
-`.artifacts/console/export` plus actual download/continuation assertions. The four
-browser suites together produce 235 frames in separate reports; file contents are
+`.artifacts/console/export` plus actual download/continuation assertions. The command, account, follow and export
+suites produce 235 frames in separate reports; file contents are
 checked independently of screenshots and are not hosted capture upload paths.
+
+[Saved-view verification](history-view-link-testing.md) adds 26 captures under
+`.artifacts/console/view-links`, real browser Back/Forward/reload, sign-in return,
+invalid-link denial and actual saved-selection export. The five suites together
+produce 261 captures with separate reports.

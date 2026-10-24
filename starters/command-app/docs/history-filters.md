@@ -14,7 +14,8 @@ queries fail; returned summaries contain no numbers, payload or lease token.
 
 Changing either selector restarts pagination. Show all resets only status. Load
 older keeps its page's scope/status, and canceled old pages cannot overwrite or
-announce errors on a new filter. Selection is memory-only and resets on reload.
+announce errors on a new filter. [Saved view URLs](history-view-links.md) preserve selection across reload and
+browser Back/Forward; loaded pages and export continuation remain in memory.
 Membership is live: refresh after dispatch, recovery or pruning to see changes.
 
 Unfiltered pages retain v1 cursors; filtered v2 cursors bind the exact status plus

@@ -16,10 +16,11 @@ ordinary reads, and late or aborted continuation results cannot replace the new
 page or announce an error there. The existing displayed-viewer header continues
 to fence stale cookie-switched views before private handlers.
 
-Selection lives only in browser memory and resets on a full reload. Detail and
-Run again navigation reuse the current list selection when returning to Commands;
-there is no new URL query protocol, persistence key or background poll. Refresh
-re-evaluates live membership, so delivered/retried/pruned jobs can leave a filter.
+[Saved view fragments](history-view-links.md) now retain scope/status across reload
+and browser Back/Forward. Detail and Run again navigation retain the current view
+within the document. Loaded older pages and export continuation stay in memory;
+no browser storage key or background list poll is added. Refresh re-evaluates live
+membership, so delivered/retried/pruned jobs can leave a filter.
 
 The controls use native labelled selects and the established kit. They stack at
 phone widths, including 130% text, with light/dark captures and no horizontal

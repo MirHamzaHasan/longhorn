@@ -11,6 +11,7 @@
 | [Viewer consistency](viewer-binding.md) | src/viewer-binding.ts and console API helper | Displayed public ID matches cookie principal; stale views fail without changing another account |
 | [Commands](commands.md) | src/operations.ts, operation-contracts.ts | Hono validation, DI, transaction-locked identity, scoped request replay |
 | [History export](history-export.md) | console/history-export.ts and app.ts | Selected metadata, versioned NDJSON segments, cancellation and exact continuation |
+| [Saved history views](history-view-links.md) | console/routes.ts and app.ts | Canonical filter fragments, Back/Forward, sign-in return and fresh server admission |
 | [Command history](history.md) | src/command-history.ts | Owner predicates, int64 cursors, live outgoing metadata |
 | [Delivery history filters](history-filters.md) | src/command-history.ts, history-filter-migrations.ts and console/app.ts | Live state predicates, status-bound cursors, appended indexes and isolated page cancellation |
 | [Atomic writes](transactions.md) | operations.ts, @longhorn/idempotency, @longhorn/outbox | Business command, history association, replay and outgoing record in one managed transaction |

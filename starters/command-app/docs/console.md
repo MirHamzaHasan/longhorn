@@ -29,3 +29,7 @@ offline tabs pause and navigation disposes the loop without moving keyboard focu
 [History export](history-export.md) downloads the current selection as metadata-only
 NDJSON with explicit continuation files. Cancel/navigation/filter changes stop the
 current attempt; neither export data nor cursors enter persistent browser storage.
+
+[Saved views](history-view-links.md) retain scope/status in canonical fragments.
+Reload and Back/Forward re-read the selected first page; cold/expired sign-in
+returns to the validated selection. Private data and cursors stay out of the link.

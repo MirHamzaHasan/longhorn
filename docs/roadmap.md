@@ -659,7 +659,7 @@ checksums and require owner maintenance deployment. The [console](console-histor
 resets pages on selection and isolates canceled continuations. [Native proof](history-filter-testing.md)
 covers real queue transitions, DDL interruption/concurrency, saved cursors, restricted
 grants, actual index plans, 117 command captures and filtering in the restored app.
-Text search, saved filter URLs and automated history-list refresh remain separate work.
+Text search and automated history-list refresh remain separate work.
 
 ## Command delivery and receipt following implemented
 
@@ -682,6 +682,18 @@ focus and expose continue/start over. [Native proof](history-export-testing.md)
 checks actual downloads, a 10000-row segment plus its exact remainder, no secret
 fields, authorization changes, 34 captures and the restored standalone application.
 Snapshot exports, receipts/audit export and import remain separate protocols.
+
+## Bookmarkable history views implemented
+
+[Canonical filter fragments](history-view-links.md) now preserve scope/status
+across reload and browser Back/Forward. [Navigation](console-history-navigation.md)
+re-reads current pages, retains in-document return links and cancels old work.
+[Validated sign-in return](history-view-sign-in.md) supports cold links, registration
+and reactive expiry without accepting arbitrary destinations. Members following
+operator views receive actual denial and an explicit own-scope action. [Proof](history-view-link-testing.md)
+covers real accounts, invalid claims, canceled pagination, bookmarked export,
+26 additional captures and restored shipped assets. Snapshot/scroll/cursor URLs
+and saved named-view persistence remain separate features.
 
 ## Subsequent framework modules
 

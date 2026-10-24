@@ -56,3 +56,7 @@ for local captures. The upload action's original error remains visible in logs.
 The nested [export captures](history-export-testing.md) and accessibility report
 use those same console PNG/report paths. Downloaded NDJSON and the private native
 fixture are not included by the hosted capture globs.
+
+Nested [history view link captures](history-view-link-testing.md) use the existing
+console PNG/accessibility-report upload paths. Browser history/bookmark sync and
+private pagination state are not separate uploaded artifacts.

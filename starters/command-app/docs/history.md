@@ -17,3 +17,7 @@ status as well as viewer/scope/queue. Change a filter from its first page.
 
 [Export](history-export.md) traverses the same current scope/status as explicit
 bounded NDJSON files, independently of the rows loaded in the browser list.
+
+[View links](history-view-links.md) retain selectors across reload and native
+browser navigation. Each return re-reads the first page with current permissions;
+loaded older rows and export continuation remain local to the rendered view.

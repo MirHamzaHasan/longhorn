@@ -2,6 +2,8 @@ import './app.css'
 import { CommandCopyError,copyCommandNumbers,parseNumbers } from './numbers.js'
 import { createCommandFollow } from './command-follow.js'
 import { collectHistoryExport } from './history-export.js'
+import { ConsoleRouteError,historyViewHash,parseConsoleRoute } from './routes.js'
+import type { ConsoleRoute,HistoryView } from './routes.js'
 
 type User={id:string;username:string;roles:string[]}
 type Delivery={id:string;state:'pending'|'running'|'succeeded'|'failed';attempts:number;maxAttempts:number;availableAt:number;updatedAt:number;lastFailure:string|null}
@@ -11,7 +13,7 @@ type Page<T>={nextCursor:string|null}&T
 const root=document.querySelector<HTMLElement>('#main')!,notice=document.querySelector<HTMLElement>('#notice')!
 const sidebar=document.querySelector<HTMLElement>('#sidebar')!,identity=document.querySelector<HTMLElement>('#identity')!,operatorNav=document.querySelector<HTMLElement>('#operator-nav')!
 const themeButton=document.querySelector<HTMLButtonElement>('#theme')!,logout=document.querySelector<HTMLButtonElement>('#logout')!
-let user:User|undefined,version=0,reads=new AbortController(),scope='mine',deliveryState='failed',historyState='all',noticeRoute=''
+let user:User|undefined,version=0,reads=new AbortController(),deliveryState='failed',noticeRoute='',lastCommandsRoute='#/commands',pendingHistoryRoute:string|undefined
 let clearPageSecrets=()=>{},clearPageWork=()=>{},accountPending=false,pendingKind:'password'|'sessions'|undefined
 const reasons:Record<string,string>={'manual-retry':'Manual retry','provider-restored':'Provider restored','configuration-fixed':'Configuration fixed',investigating:'Investigating'}
 const stateLabels:Record<string,string>={pending:'Pending',running:'Sending',succeeded:'Delivered',failed:'Failed',unknown:'Unavailable'}
@@ -33,6 +35,15 @@ function operator(){return user?.roles.includes('numbers-operator')??false}
 class RequestError extends Error{constructor(readonly status:number,message:string,readonly data:unknown,readonly retryAfter?:number){super(message)}}
 function viewerChanged(data:unknown):boolean{return !!data&&typeof data==='object'&&'code'in data&&data.code==='VIEWER_CHANGED'}
 function sessionMessage(data:unknown):string{return viewerChanged(data)?'Your active account changed. Sign in or reload to continue.':'Your session ended. Sign in to continue.'}
+function rememberHistoryDestination(){
+  try{const route=parseConsoleRoute(location.hash);if(route.history)lastCommandsRoute=historyViewHash(route.history)}catch{}
+  pendingHistoryRoute=lastCommandsRoute
+}
+function openHistoryView(view:HistoryView){
+  const next=historyViewHash(view)
+  if(location.hash!==next)window.history.pushState(window.history.state,'',next)
+  void render()
+}
 async function api<T>(path:string,body?:unknown,options:{preserveUnauthorized?:boolean;acrossNavigation?:boolean;expectedStatus?:number;signal?:AbortSignal}={}):Promise<T>{
   const controller=new AbortController(),parents=[body===undefined&&!options.acrossNavigation?reads.signal:undefined,options.signal].filter((signal):signal is AbortSignal=>!!signal);let expired=false
   const abort=()=>controller.abort();for(const parent of parents){parent.addEventListener('abort',abort,{once:true});if(parent.aborted)abort()}
@@ -43,7 +54,7 @@ async function api<T>(path:string,body?:unknown,options:{preserveUnauthorized?:b
     if(response.status!==204){try{data=await response.json()}catch(error){if(controller.signal.aborted)throw error;throw new RequestError(response.status,'The response could not be read. Try again.',null)}}
     if(parents.some(parent=>parent.aborted))throw new DOMException('Navigation cancelled','AbortError')
     if(!response.ok){
-      if(response.status===401&&user&&!options.preserveUnauthorized){user=undefined;syncAccount();announce(sessionMessage(data),true,'#/login');location.hash='#/login';void render()}
+      if(response.status===401&&user&&!options.preserveUnauthorized){rememberHistoryDestination();user=undefined;syncAccount();announce(sessionMessage(data),true,'#/login');location.hash='#/login';void render()}
       const message=data&&typeof data==='object'&&'error'in data&&typeof data.error==='string'?data.error.slice(0,200):'The request could not be completed.';const retry=response.headers.get('Retry-After');throw new RequestError(response.status,message,data,retry&&/^\d+$/.test(retry)&&Number(retry)<=86400?Number(retry):undefined)
     }
     if(options.expectedStatus&&response.status!==options.expectedStatus)throw new RequestError(0,'Unexpected response status',null)
@@ -51,7 +62,7 @@ async function api<T>(path:string,body?:unknown,options:{preserveUnauthorized?:b
   }catch(error){if(error instanceof RequestError)throw error;if(parents.some(parent=>parent.aborted))throw new DOMException('Navigation cancelled','AbortError');throw new RequestError(0,expired?'The request timed out. Try again.':'Could not reach LongHorn. Try again.',undefined)}
   finally{clearTimeout(timer);for(const parent of parents)parent.removeEventListener('abort',abort)}
 }
-function syncAccount(){logout.disabled=accountPending;for(const control of root.querySelectorAll<HTMLInputElement|HTMLButtonElement>('[data-account-control]'))control.disabled=accountPending;document.body.dataset.authenticated=String(!!user);sidebar.hidden=!user;logout.hidden=!user;operatorNav.hidden=!operator();identity.textContent=user?user.username+(operator()?' · Operator':' · Member'):''}
+function syncAccount(){document.querySelector<HTMLAnchorElement>('[data-nav=commands]')!.href=lastCommandsRoute;logout.disabled=accountPending;for(const control of root.querySelectorAll<HTMLInputElement|HTMLButtonElement>('[data-account-control]'))control.disabled=accountPending;document.body.dataset.authenticated=String(!!user);sidebar.hidden=!user;logout.hidden=!user;operatorNav.hidden=!operator();identity.textContent=user?user.username+(operator()?' · Operator':' · Member'):''}
 function welcome(){const value=node('section',undefined,'welcome');value.append(node('p','Command operations','eyebrow'),node('h1','Keep each command in view'),node('p','Create a command. Follow its delivery and receipt.'));const actions=node('div',undefined,'actions');actions.append(link('Sign in','#/login','button primary'),link('Create account','#/register','button'));value.append(actions,node('p','Your history stays with your account. Operators can inspect delivery failures and record recovery actions.','welcome-note'));return value}
 function authPage(register:boolean){
   const value=node('section',undefined,'panel narrow');value.append(node('h1',register?'Create your account':'Sign in to LongHorn'),node('p',register?'Keep your commands and receipts together.':'Open your saved command history.','subtle'))
@@ -63,14 +74,14 @@ function authPage(register:boolean){
   clearPageSecrets=()=>{password.value=''}
   form.append(field('Username',username,'3–64 letters, numbers, dots, dashes or underscores.'),field('Password',password,register?'Use at least 15 characters.':undefined),error,submit)
   form.addEventListener('submit',event=>{event.preventDefault();if(accountPending||submit.disabled)return;const current=version;submit.disabled=true;submit.textContent=register?'Creating account…':'Signing in…';error.hidden=true;void(async()=>{
-    try{const input={username:username.value,password:password.value};if(register)await api('/register',input);const session=await api<{user:User}>('/login',input);password.value='';if(current!==version)return;user=session.user;syncAccount();location.hash='#/commands';announce(register?'Your account is ready.':'Signed in.')}
+    try{const input={username:username.value,password:password.value};if(register)await api('/register',input);const session=await api<{user:User}>('/login',input);password.value='';if(current!==version)return;user=session.user;syncAccount();const destination=pendingHistoryRoute??'#/commands';pendingHistoryRoute=undefined;const unchanged=location.hash===destination;location.hash=destination;announce(register?'Your account is ready.':'Signed in.',false,destination);if(unchanged)void render()}
     catch(reason){if(current!==version)return;error.textContent=reason instanceof Error?reason.message:'Sign-in failed. Try again.';error.hidden=false;password.setAttribute('aria-invalid','true');password.focus()}
     finally{submit.disabled=false;submit.textContent=register?'Create account':'Sign in'}
   })()})
   const switcher=node('p',register?'Already have an account? ':'Need an account? ','form-switch');switcher.append(link(register?'Sign in':'Create account',register?'#/login':'#/register'));value.append(form,switcher);return value
 }
 function passwordSignIn(message:string,error=false){
-  user=undefined;syncAccount();announce(message,error,'#/login');location.hash='#/login';void render()
+  rememberHistoryDestination();user=undefined;syncAccount();announce(message,error,'#/login');location.hash='#/login';void render()
 }
 function accountPage(){
   const value=node('div'),panels=node('div',undefined,'account-stack');value.append(title('Your account','Signed in as '+user!.username+'.'));panels.append(passwordPanel(),sessionPanel());value.append(panels);return value
@@ -174,7 +185,7 @@ function sessionPanel(){
 async function rerunPage(id:string){
   let data:{command:{id:string;numbers:unknown}}
   try{data=await api('/commands/'+id)}catch(reason){
-    if(reason instanceof RequestError&&reason.status===404)return empty('Original command unavailable','This command could not be found or is not available to this account.',link('Your commands','#/commands','button'))
+    if(reason instanceof RequestError&&reason.status===404)return empty('Original command unavailable','This command could not be found or is not available to this account.',link('Your commands',lastCommandsRoute,'button'))
     throw reason
   }
   try{
@@ -229,15 +240,15 @@ function historyExportControls(inputScope:string,inputState:string,current:numbe
   cancel.hidden=true;startOver.hidden=true;actions.append(download,cancel,startOver);section.append(description,actions,message)
   clearPageWork=()=>{task?.abort();revoke()};return section
 }
-async function commandsPage(){
-  const current=version,route=location.hash,inputScope=operator()?scope:'mine',inputState=historyState,query=new URLSearchParams({limit:'20',scope:inputScope})
+async function commandsPage(view:HistoryView){
+  const current=version,route=location.hash,inputScope=view.scope,inputState=view.state,query=new URLSearchParams({limit:'20',scope:inputScope})
   if(inputState!=='all')query.set('state',inputState)
   const data=await api<Page<{commands:Command[]}>>('/commands?'+query),value=node('div');if(current!==version||location.hash!==route)throw new DOMException('Navigation cancelled','AbortError');value.append(title(inputScope==='all'?'All commands':'Your commands','Follow each command through delivery and receipt.',refresh(),link('Create command','#/new','button primary')))
   const tools=node('div',undefined,'tools history-tools')
-  if(operator()){const picker=select({mine:'My commands',all:'All commands'},inputScope);picker.addEventListener('change',()=>{scope=picker.value;void render()});tools.append(field('Show commands',picker))}
+  if(operator()){const picker=select({mine:'My commands',all:'All commands'},inputScope);picker.addEventListener('change',()=>openHistoryView({scope:picker.value as HistoryView['scope'],state:inputState}));tools.append(field('Show commands',picker))}
   const state=select({all:'All deliveries',pending:'Pending',running:'Sending',succeeded:'Delivered',failed:'Failed',unavailable:'Unavailable'},inputState)
-  state.addEventListener('change',()=>{historyState=state.value;void render()});tools.append(field('Delivery status',state));value.append(tools,historyExportControls(inputScope,inputState,current,route))
-  if(!data.commands.length){value.append(inputState==='all'?empty('No commands yet',inputScope==='all'?'Submitted commands will appear here.':'Create a command to start your history.',link('Create command','#/new','button primary')):empty('No matching commands','Choose another delivery status or refresh this list.',button('Show all',()=>{historyState='all';void render()})));return value}
+  state.addEventListener('change',()=>openHistoryView({scope:inputScope,state:state.value as HistoryView['state']}));tools.append(field('Delivery status',state));value.append(tools,historyExportControls(inputScope,inputState,current,route))
+  if(!data.commands.length){value.append(inputState==='all'?empty('No commands yet',inputScope==='all'?'Submitted commands will appear here.':'Create a command to start your history.',link('Create command','#/new','button primary')):empty('No matching commands','Choose another delivery status or refresh this list.',button('Show all',()=>openHistoryView({scope:inputScope,state:'all'}))));return value}
   const rows=node('ul',undefined,'rows');rows.setAttribute('aria-label','Command history');rows.append(...data.commands.map(commandRow));value.append(rows)
   let cursor=data.nextCursor
   const more=button('Load older commands',()=>{
@@ -254,7 +265,7 @@ async function readCommandReceipt(id:string,signal?:AbortSignal):Promise<Command
 }
 async function commandPage(id:string){
   const current=version,data=await api<CommandDetail>('/commands/'+id),value=node('div');let history=data.history,received=false,receiptUnavailable=false
-  value.append(link('Back to commands','#/commands','back'),title('Command '+id.slice(0,8),'Submitted '+time(history.createdAt),refresh('Refresh status'),link('Run again','#/new/'+id,'button')))
+  value.append(link('Back to commands',lastCommandsRoute,'back'),title('Command '+id.slice(0,8),'Submitted '+time(history.createdAt),refresh('Refresh status'),link('Run again','#/new/'+id,'button')))
   const layout=node('div',undefined,'detail-grid'),input=node('section',undefined,'panel');input.append(node('h2','Your numbers'),node('p',data.command.numbers.join(', '),'numbers'),details({'Command ID':node('code',id)}));layout.append(input)
   const delivery=node('section',undefined,'panel'),facts=node('div');delivery.append(node('h2','Delivery'),facts)
   const showDelivery=()=>{facts.replaceChildren(history.delivery?deliveryDetails(history.delivery):node('p',history.deliveryId?'Delivery metadata is no longer available.':'Delivery metadata could not be recovered.','subtle'))};showDelivery()
@@ -324,25 +335,36 @@ async function auditPage(id?:string){
   let cursor=data.nextCursor;const more=button('Load more actions',()=>{if(!cursor)return;more.disabled=true;const current=version;void api<Page<{records:Audit[]}>>('/operations/audit'+query+'&after='+encodeURIComponent(cursor)).then(next=>{if(current!==version)return;rows.append(...next.records.map(auditRow));cursor=next.nextCursor;more.hidden=!cursor;announce('Loaded '+next.records.length+' recovery actions.')}).catch(reason=>announce((reason as Error).message,true)).finally(()=>{more.disabled=false})},'more');more.hidden=!cursor;value.append(more);return value
 }
 async function render(){
-  const current=++version;clearPageWork();clearPageWork=()=>{};clearPageSecrets();clearPageSecrets=()=>{};reads.abort();reads=new AbortController();root.setAttribute('aria-busy','true');const [page='commands',id]=location.hash.replace(/^#\/?/,'').split('/')
-  if(noticeRoute!==location.hash)notice.hidden=true
-  for(const element of document.querySelectorAll<HTMLAnchorElement>('[data-nav]')){if(element.dataset.nav===page)element.setAttribute('aria-current','page');else element.removeAttribute('aria-current')}
-  root.replaceChildren(title('Opening '+(page==='new'?'a command':page),'Reading the latest saved state.'))
+  const current=++version;clearPageWork();clearPageWork=()=>{};clearPageSecrets();clearPageSecrets=()=>{};reads.abort();reads=new AbortController();root.setAttribute('aria-busy','true')
+  let route:ConsoleRoute|undefined
   try{
+    route=parseConsoleRoute(location.hash);const {page,id}=route
+    if(route.history){
+      lastCommandsRoute=historyViewHash(route.history)
+      if(route.explicitHistory&&location.hash!==lastCommandsRoute)window.history.replaceState(window.history.state,'',lastCommandsRoute)
+      document.querySelector<HTMLAnchorElement>('[data-nav=commands]')!.href=lastCommandsRoute
+    }
+    if(noticeRoute!==location.hash)notice.hidden=true
+    for(const element of document.querySelectorAll<HTMLAnchorElement>('[data-nav]')){if(element.dataset.nav===page)element.setAttribute('aria-current','page');else element.removeAttribute('aria-current')}
+    root.replaceChildren(title('Opening '+(page==='new'?'a command':page),'Reading the latest saved state.'))
     let content:Node
-    if(id&&!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id))content=empty('Invalid command link','Return to your command history.',link('Your commands','#/commands','button'))
-    else if(!user)content=page==='register'?authPage(true):page==='login'?authPage(false):welcome()
+    if(!user){
+      if(route.history&&route.explicitHistory){pendingHistoryRoute=lastCommandsRoute;content=authPage(false)}
+      else{if(page==='welcome')pendingHistoryRoute=undefined;content=page==='register'?authPage(true):page==='login'?authPage(false):welcome()}
+    }
     else if(page==='account')content=accountPage()
     else if(page==='new')content=id?await rerunPage(id):newCommand()
-    else if(page==='commands'||page==='login'||page==='register')content=id?await commandPage(id):await commandsPage()
-    else if((page==='deliveries'||page==='audit')&&!operator())content=empty('Operator access required','This account can create commands and read its own history.',link('Your commands','#/commands','button'))
+    else if(page==='commands'||page==='login'||page==='register')content=id?await commandPage(id):await commandsPage(route.history??{scope:'mine',state:'all'})
+    else if((page==='deliveries'||page==='audit')&&!operator())content=empty('Operator access required','This account can create commands and read its own history.',link('Your commands',lastCommandsRoute,'button'))
     else if(page==='deliveries')content=id?await deliveryPage(id):await deliveriesPage()
     else if(page==='audit')content=await auditPage(id)
-    else content=empty('Page not found','Return to your command history.',link('Your commands','#/commands','button'))
+    else content=empty('Page not found','Return to your command history.',link('Your commands',lastCommandsRoute,'button'))
     if(current!==version)return;root.replaceChildren(content)
   }catch(error){
     if(current!==version||(error instanceof DOMException&&error.name==='AbortError'))return
-    if(error instanceof RequestError&&error.status===401){user=undefined;syncAccount();root.replaceChildren(authPage(false));announce(sessionMessage(error.data),true)}
+    if(error instanceof ConsoleRouteError){notice.hidden=true;root.replaceChildren(empty(error.message,'Return to a valid command view.',link('Your commands',lastCommandsRoute,'button')))}
+    else if(error instanceof RequestError&&error.status===401){user=undefined;syncAccount();root.replaceChildren(authPage(false));announce(sessionMessage(error.data),true)}
+    else if(error instanceof RequestError&&error.status===403&&route?.history)root.replaceChildren(empty('Access unavailable','This view needs operator access. Open your own commands to continue.',link('Your commands',historyViewHash({scope:'mine',state:route.history.state}),'button')))
     else root.replaceChildren(empty(error instanceof RequestError&&error.status===403?'Access unavailable':'Could not open this page',error instanceof Error?error.message:'Refresh to try again.',refresh('Try again')))
   }finally{if(current===version){root.dataset.route=location.hash;root.setAttribute('aria-busy','false');root.focus({preventScroll:true});document.title=(user?'Command operations':'Sign in')+' · LongHorn'}}
 }
@@ -350,7 +372,7 @@ function setTheme(dark:boolean,remember=false){document.documentElement.dataset.
 let saved:string|null=null;try{saved=localStorage.getItem('longhorn-theme')}catch{}
 setTheme(saved?saved==='dark':matchMedia('(prefers-color-scheme: dark)').matches)
 themeButton.addEventListener('click',()=>setTheme(document.documentElement.dataset.theme!=='dark',true))
-logout.addEventListener('click',()=>{if(accountPending||logout.disabled)return;logout.disabled=true;void api('/logout',{}).then(()=>{user=undefined;syncAccount();announce('Signed out.');location.hash='#/welcome';void render()}).catch(reason=>announce((reason as Error).message,true)).finally(()=>{logout.disabled=false})})
+logout.addEventListener('click',()=>{if(accountPending||logout.disabled)return;logout.disabled=true;void api('/logout',{}).then(()=>{user=undefined;lastCommandsRoute='#/commands';pendingHistoryRoute=undefined;syncAccount();announce('Signed out.');location.hash='#/welcome';void render()}).catch(reason=>announce((reason as Error).message,true)).finally(()=>{logout.disabled=false})})
 addEventListener('hashchange',()=>{void render()});addEventListener('pagehide',()=>{++version;clearPageWork();reads.abort();clearPageSecrets();root.replaceChildren();sidebar.hidden=true;identity.textContent=''})
 addEventListener('pageshow',event=>{if(event.persisted)location.reload()})
 document.querySelector<HTMLAnchorElement>('.skip')!.addEventListener('click',event=>{event.preventDefault();root.focus()})

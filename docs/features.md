@@ -131,6 +131,10 @@ downstream connections, verification, and current limits.
 | Export lifetime and admission | [Export ownership](history-export-lifecycle.md) | Page cleanup, AbortSignal and fresh GET authorization | Cancel/timeout discard, scope/viewer checks and temporary Blob cleanup |
 | Browser export controls | [Export UI](console-history-export.md) | Existing Commands route and kit | Export/cancel/continue/start over, real counts and stable focus |
 | Native export proof | [Export testing](history-export-testing.md) | Native PostgreSQL, actual downloads and restored archive | 10000-row segment plus exact continuation, private-field exclusion and 34 captures |
+| Bookmarkable history selection | [View links](history-view-links.md) | Strict pure Web route codec | Canonical scope/status fragments, legacy routes and rejected unknown claims |
+| Browser history navigation | [View navigation](console-history-navigation.md) | Commands selectors and render lifetime | Reload, Back/Forward, contextual return links and fresh first pages |
+| Validated sign-in destination | [View sign-in](history-view-sign-in.md) | Existing credential forms and 401 handling | Cold/expired/registration return, enum-only target and fresh owner/operator admission |
+| Native saved-view proof | [View testing](history-view-link-testing.md) | Native accounts, Chromium and restored archive | Private-free links, role denial, canceled paging, selection export and 26 captures |
 | Account command history | [History API](account-command-history.md) | PostgreSQL operations router/repository | Accounts, DI, owner filters, existing command detail |
 | Delivery status history filters | [History filters](history-status-filters.md) | PostgreSQL history repository and account query | Live pending/running/succeeded/failed/unavailable membership, same owner/operator admission |
 | Filter-bound continuation | [Filter cursors](history-filter-cursors.md) | Versioned strict cursor codec | Original v1 unfiltered links, exact-status v2, copied inputs and decimal int64 positions |
@@ -332,6 +336,9 @@ flowchart TD
   HistoryFilters --> HistoryConsole[Browser scope and status selection]
   History --> Database
   HistoryConsole --> HistoryExport[Selected metadata export]
+  HistoryConsole --> HistoryLinks[Canonical scope and status links]
+  HistoryLinks --> ViewHistory[Browser history and fresh first pages]
+  HistoryLinks --> ViewSignIn[Validated sign-in return]
   HistoryExport --> ExportFiles[Versioned bounded NDJSON segments]
   HistoryExport --> ExportLifetime[Page-owned cancellation and admission]
   HistoryConsole --> CommandFollow[Bounded command detail updates]
