@@ -14,6 +14,11 @@ with the current Node executable. One forwarded SIGINT/SIGTERM reaches that owne
 its [launcher](auth-starter-launcher.md) retains the native child through actual
 exit. The CLI waits for the owner and preserves its result.
 
+The [command-app profile](command-project-lifecycle.md) also runs its unchanged
+`node dist/operator-host.js` start owner directly when pre/post hooks are absent.
+Its installed real app workflow verifies ordinary owner shutdown and POSIX group
+interrupt, with listener release and retained-state restart.
+
 Other profiles, customized scripts, lifecycle-hook cases, build/test/typecheck and
 installation retain the existing pnpm delegation/process-tree forwarding. This is
 a specific generated-owner contract, not automatic inference that any arbitrary

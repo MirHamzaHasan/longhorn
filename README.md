@@ -46,6 +46,11 @@ For native accounts, sessions and private notes, use
 The [auth starter](docs/auth-starter.md) also supports Bun/Deno, with actual native
 passwords/SQLite, editable app tests, retained sessions and owned source reloads.
 
+For the complete PostgreSQL console and protected receipt receiver, use
+`pnpm create:app ../my-console --runtime node --template command-app --install`.
+Build it, then follow its docs/setup.md for database roles, receiver and runtime
+configuration. See the [command project](docs/command-project.md).
+
 ## Run the command console
 
 ```sh

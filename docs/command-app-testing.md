@@ -97,3 +97,8 @@ The restored host also explicitly enables [request cleanup](request-cleanup-test
 through its private profile. Four actual expired ledger replies are removed while
 live command replay, business count and the retained named view remain intact.
 The archive must ship its new framework subpath, host helper and starter guide.
+
+[Packed command-project proof](command-project-testing.md) reuses this entire
+workflow against an actual CLI-created artifact, with installed CLI type/test/build
+and host start/stop/restart. Internal --archive and --cli inputs select that owned
+QA artifact; default invocation still packages and verifies the standalone archive.

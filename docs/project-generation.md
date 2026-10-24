@@ -155,3 +155,9 @@ native hosts with the actual auth source and seven source cases. Its
 and [owned development](auth-starter-development.md) use the same generator/descriptor
 boundary. [Packed native proof](auth-starter-testing.md) verifies independent accounts,
 sessions, private pages and retained schema/configuration behavior.
+
+The [command-app profile](command-project.md) now uses the same
+[checked template](command-project-snapshot.md) as the standalone command archive.
+Its Node app and separate receiver retain the existing feature implementations.
+[Packed proof](command-project-testing.md) executes both creation binaries and
+the complete native/browser/restore workflow through an installed relocated CLI.

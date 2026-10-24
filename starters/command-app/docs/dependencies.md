@@ -1,7 +1,11 @@
 # Locked dependencies
 
-This archive contains pnpm-lock.yaml for its resolved graph and a lock hash in
-.longhorn/distribution.json. Use pinned pnpm 12.6.0 and
+CLI-created projects resolve their dependency graph on the first `pnpm install`
+(or creation with --install). Retain/review the resulting pnpm-lock.yaml and use
+frozen resolution thereafter. Generation itself does not contact a registry.
+
+A packaged archive contains pnpm-lock.yaml for its resolved graph and a lock hash
+in .longhorn/distribution.json. Use pinned pnpm 12.6.0 and
 `pnpm install --frozen-lockfile` from the project root. First and repeat installs
 use that resolution; the lock must remain unchanged. All unpublished @longhorn
 dependencies resolve to .longhorn/framework through the local file overrides.

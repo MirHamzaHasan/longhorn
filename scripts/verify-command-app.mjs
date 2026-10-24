@@ -3,7 +3,7 @@ import { spawn } from 'node:child_process'
 import { createServer } from 'node:net'
 import { cp, lstat, mkdtemp, mkdir, readFile, readdir, rename, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
-import { join } from 'node:path'
+import { join,resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { createHash, randomBytes } from 'node:crypto'
 import { createInterface } from 'node:readline'
@@ -13,7 +13,10 @@ import { openPostgres } from '../runtimes/node/dist/postgres.js'
 import { Idempotency } from '../packages/idempotency/dist/index.js'
 import { PostgresIdempotencyStore } from '../packages/idempotency/dist/postgres.js'
 
-const root=fileURLToPath(new URL('..',import.meta.url)),temporary=await mkdtemp(join(tmpdir(),'longhorn-command-app-')),instances=new Set(),secrets=[]
+// Internal QA inputs let the packed CLI project use this same complete workflow.
+const options=new Map(),args=process.argv.slice(2)
+for(let i=0;i<args.length;i+=2){const key=args[i],value=args[i+1];if(!['--archive','--cli'].includes(key)||options.has(key)||!value||value.startsWith('--'))throw new Error('Usage: verify-command-app.mjs [--archive FILE] [--cli FILE]');options.set(key,resolve(value))}
+const root=fileURLToPath(new URL('..',import.meta.url)),temporary=await mkdtemp(join(tmpdir(),'longhorn-command-app-')),instances=new Set(),secrets=[],cli=options.get('--cli')
 let cluster,admin,browser
 function launch(binary,args,cwd,environment={}){
   const env={...process.env,...environment};for(const [name,value]of Object.entries(env))if(value===undefined)delete env[name]
@@ -22,8 +25,8 @@ function launch(binary,args,cwd,environment={}){
   child.on('error',error=>{output+=error.message})
   const instance={child,records,output:()=>output,ended:new Promise(resolve=>child.once('close',(code,signal)=>{instances.delete(instance);resolve({code,signal})}))};instances.add(instance);return instance
 }
-function signal(instance,value){if(instance.child.exitCode!==null||instance.child.signalCode!==null)return;try{if(process.platform==='win32')instance.child.kill(value);else process.kill(-instance.child.pid,value)}catch(error){if(error.code!=='ESRCH')throw error}}
-async function stop(instance){signal(instance,'SIGTERM');const timer=setTimeout(()=>signal(instance,'SIGKILL'),6000);try{return await instance.ended}finally{clearTimeout(timer)}}
+function signal(instance,value){if(instance.child.exitCode!==null||instance.child.signalCode!==null)return;try{if(process.platform==='win32'||(instance.ownerSignal&&value!=='SIGKILL'))instance.child.kill(value);else process.kill(-instance.child.pid,value)}catch(error){if(error.code!=='ESRCH')throw error}}
+async function stop(instance,interrupt=false){if(interrupt===true&&process.platform!=='win32'&&instance.child.exitCode===null&&instance.child.signalCode===null)process.kill(-instance.child.pid,'SIGINT');else signal(instance,'SIGTERM');const timer=setTimeout(()=>signal(instance,'SIGKILL'),6000);try{return await instance.ended}finally{clearTimeout(timer)}}
 function safe(output){for(const secret of secrets)output=output.replaceAll(secret,'[redacted]');return output}
 async function run(binary,args,cwd=temporary,env={}){const instance=launch(binary,args,cwd,env),timer=setTimeout(()=>signal(instance,'SIGKILL'),120000);try{const result=await instance.ended;assert.equal(result.code,0,safe(instance.output()));return instance.output()}finally{clearTimeout(timer)}}
 async function waitFor(action){const end=Date.now()+20000;while(Date.now()<end){const value=await action();if(value)return value;await new Promise(resolve=>setTimeout(resolve,40))}throw new Error('Command application gate timed out')}
@@ -32,9 +35,9 @@ async function freePort(){const server=createServer();await new Promise(resolve=
 async function scan(directory){for(const entry of await readdir(directory,{withFileTypes:true})){const file=join(directory,entry.name);if(entry.isDirectory())await scan(file);else{const value=await readFile(file,'utf8');assert.ok(!value.includes(root),'Distribution contains workspace path');assert.ok(!value.includes('workspace:*'),'Distribution contains workspace dependency')}}}
 
 try{
-  await run(process.execPath,[join(root,'scripts/package-command-app.mjs')],root)
-  const archive=join(root,'.artifacts/longhorn-command-app.tgz'),checksum=(await readFile(archive+'.sha256','utf8')).split(' ')[0];assert.equal(createHash('sha256').update(await readFile(archive)).digest('hex'),checksum)
-  await run('tar',['-xzf',join(root,'.artifacts/longhorn-command-app.tgz'),'-C',temporary])
+  if(!options.has('--archive'))await run(process.execPath,[join(root,'scripts/package-command-app.mjs')],root)
+  const archive=options.get('--archive')??join(root,'.artifacts/longhorn-command-app.tgz'),checksum=(await readFile(archive+'.sha256','utf8')).split(' ')[0];assert.equal(createHash('sha256').update(await readFile(archive)).digest('hex'),checksum)
+  await run('tar',['-xzf',archive,'-C',temporary])
   const directory=join(temporary,'relocated command application');await rename(join(temporary,'longhorn-command-app'),directory)
   await scan(directory)
   const locked=await readFile(join(directory,'pnpm-lock.yaml'),'utf8'),distribution=JSON.parse(await readFile(join(directory,'.longhorn/distribution.json'),'utf8'))
@@ -49,7 +52,7 @@ try{
     assert.equal(await readFile(join(directory,'pnpm-lock.yaml'),'utf8'),locked,'Rejected manifest drift rewrote the lockfile')
   }finally{await writeFile(manifestFile,manifestText)}
   for(const asset of ['console/bounded-export.ts','console/audit-export.ts','console/audit-export.test.ts','docs/audit-export.md','console/history-metadata.ts','console/receipt-export.ts','console/receipt-export.test.ts','docs/receipt-export.md','src/history-view-values.ts','src/history-views.ts','src/history-views-http.ts','src/history-view-migrations.ts','docs/saved-views.md','src/request-cleanup.ts','docs/request-cleanup.md'])assert.ok((await readFile(join(directory,asset),'utf8')).length>0,'Missing shipped feature asset: '+asset)
-  for(const action of ['typecheck','test','build'])await run('pnpm',[action],directory)
+  for(const action of ['typecheck','test','build'])if(cli)await run(process.execPath,[cli,action,'--cwd',directory],directory);else await run('pnpm',[action],directory)
   console.log('Command distribution: actual archive relocated, frozen-installed in CI mode with unchanged locked dependencies, manifest drift rejected, typechecked, tested and built without workspace paths or unpublished registry dependencies.')
 
   cluster=await startPostgresCluster();admin=await openPostgres({connectionString:cluster.connectionString})
@@ -70,7 +73,7 @@ try{
   // Exercise the shipped private profile loader, not only process environment.
   await writeFile(join(directory,'.operator.env'),Object.entries(hostEnv).filter(([,value])=>value!==undefined).map(([key,value])=>key+'='+value).join('\n')+'\n',{mode:0o600})
   const startReceiver=async()=>{const instance=launch(process.execPath,['scripts/serve-receiver.mjs'],directory,receiverEnv);await listening(instance);return instance}
-  const startHost=async()=>{const instance=launch(process.execPath,['dist/operator-host.js'],directory,{MIGRATION_DATABASE_URL:undefined});assert.equal(await listening(instance),origin);assert.equal(instance.records.find(row=>row.message==='HTTP server listening').fields.requestCleanupEnabled,true);return instance}
+  const startHost=async()=>{const instance=launch(process.execPath,cli?[cli,'start','--cwd',directory]:['dist/operator-host.js'],directory,{MIGRATION_DATABASE_URL:undefined});instance.ownerSignal=!!cli;assert.equal(await listening(instance),origin);assert.equal(instance.records.find(row=>row.message==='HTTP server listening').fields.requestCleanupEnabled,true);return instance}
   for(const [grant,revoke]of [
     ['ALTER ROLE starter_app BYPASSRLS','ALTER ROLE starter_app NOBYPASSRLS'],
     ['GRANT CREATE ON DATABASE starter_app TO starter_app','REVOKE CREATE ON DATABASE starter_app FROM starter_app'],
@@ -106,7 +109,7 @@ try{
   const recovered=await fetch(origin+'/account/operations/deliveries/'+failed.delivery.id+'/retry',post({expectedMaxAttempts:observed.maxAttempts,additionalAttempts:1,reason:'provider-restored'},operator));assert.equal(recovered.status,202)
   await waitFor(async()=>{const value=await receipt(failed.command.id,member);return value&&value.receipts[0].result.sum===40})
   await expect(followPage.locator('.receipt-values')).toContainText('40',{timeout:15000});await expect(followPage.locator('.follow-updates [role=status]')).toHaveText('Receipt received. Updates stopped.');await browser.close();browser=undefined
-  assert.equal((await stop(host)).code,0);assert.equal((await stop(receiver)).code,0)
+  assert.equal((await stop(host,!!cli)).code,0);assert.equal((await stop(receiver)).code,0)
   receiver=await startReceiver();host=await startHost()
   const history=await(await fetch(origin+'/account/commands',{headers})).json();assert.equal(history.commands.length,2)
   assert.equal((await receipt(first.command.id,member)).receipts[0].result.sum,27)

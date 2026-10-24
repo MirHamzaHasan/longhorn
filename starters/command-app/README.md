@@ -1,11 +1,11 @@
-# LongHorn command application
+# {{PROJECT_NAME}}
 
 A complete Node/PostgreSQL application with a browser console and a protected,
 durable receipt receiver. This distribution contains editable source and its
 unpublished framework snapshot; it has no dependency on the original workspace.
 
 ```sh
-pnpm install --frozen-lockfile
+pnpm install
 pnpm typecheck
 pnpm test
 pnpm build
@@ -13,7 +13,10 @@ pnpm build
 
 Requires Node 20.19+ and pnpm 12.6.0. PostgreSQL 18 is the verified database;
 the local receiver uses pinned Miniflare/workerd with retained disk storage.
-The archive includes its resolved dependency lock and keeps the framework local.
+CLI generation resolves dependencies on the first install; retain the resulting
+pnpm-lock.yaml and use --frozen-lockfile for repeat/deployment installs. A packaged
+archive already includes its resolved lock and supports a frozen first install.
+Both forms keep the framework local. See [generation](docs/generation.md).
 See [locked dependencies](docs/dependencies.md) for install and update policy.
 Follow [setup](docs/setup.md) to provision separate owner/runtime roles and start
 both hosts. Open http://127.0.0.1:3011/console to create an account and submit

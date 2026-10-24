@@ -12,7 +12,7 @@ beforeEach(async () => {
   temporary = await mkdtemp(join(tmpdir(), 'longhorn-generator-'))
   framework = join(temporary, 'distribution')
   const packages: Record<string, { directory: string; dependencies: Record<string, string> }> = {}
-  for (const name of ['core', 'container', 'http', 'logger', 'runtime', 'config', 'validation', 'database', 'auth', 'idempotency', 'events', 'cache', 'observability', ...runtimes]) {
+  for (const name of ['core', 'container', 'http', 'logger', 'runtime', 'config', 'validation', 'database', 'auth', 'idempotency', 'outbox', 'queue', 'scheduler', 'events', 'cache', 'observability', ...runtimes]) {
     const dependencies: Record<string, string> = name === 'core'
       ? { '@longhorn/container': '0.0.1', '@longhorn/http': '0.0.1', '@longhorn/logger': '0.0.1', '@longhorn/runtime': '0.0.1' }
       : name === 'node' ? { '@longhorn/database': '0.0.1', '@longhorn/config': '0.0.1', '@longhorn/auth':'0.0.1' } : ['bun','deno'].includes(name) ? {'@longhorn/database':'0.0.1','@longhorn/auth':'0.0.1'} : ['auth','idempotency'].includes(name) ? {'@longhorn/database':'0.0.1'} : {}
@@ -27,6 +27,57 @@ beforeEach(async () => {
 afterEach(async () => { await rm(temporary, { recursive: true, force: true }) })
 
 describe('project generation', () => {
+  async function commandAssets() {
+    const directory = join(framework, 'templates/command-app'), files: Record<string, string> = {}
+    const paths = ['README.md', 'LICENSE', 'build.mjs', 'tsconfig.json', 'console/tsconfig.json', 'receiver/tsconfig.json',
+      '.operator.env.example', 'scripts/serve-receiver.mjs', 'scripts/provision-runtime.mjs', 'scripts/state-backup.mjs',
+      'src/app.ts', 'src/operator-host.ts', 'src/operator-config.ts', 'src/operator-runtime.ts', 'src/operations.ts',
+      'src/operations-migrations.ts', 'src/runtime-grants.ts', 'src/accounts.ts', 'src/command-history.ts',
+      'src/history-views.ts', 'src/request-cleanup.ts', 'console/app.ts', 'console/app.css', 'console/routes.ts',
+      'receiver/receiver.ts', 'receiver/receipts.ts', 'receiver/contracts.ts', 'receiver/message-effect.ts',
+      'docs/features.md', 'docs/setup.md', 'docs/deployment.md', 'docs/dependencies.md', 'docs/backup.md', 'docs/generation.md']
+    for (const path of paths) {
+      const target = join(directory, path), content = path === 'README.md' ? '# {{PROJECT_NAME}}\n' : 'editable command application asset\n'
+      await mkdir(join(target, '..'), { recursive: true }); await writeFile(target, content)
+      files[path] = createHash('sha256').update(content).digest('hex')
+    }
+    const descriptor = { schemaVersion: 1, dependencies: {
+      ...Object.fromEntries(['core','container','config','database','node','auth','http','logger','validation',
+        'idempotency','outbox','queue','scheduler','observability','workers','runtime'].map(name => ['@longhorn/'+name, 'workspace:*'])),
+      hono: '^4.13.13', zod: '^4.6.7', miniflare: '3.20250718.3',
+    }, devDependencies: { vitest: '^3.1.1' }, files }
+    await writeFile(join(directory, 'template.json'), JSON.stringify(descriptor)); return { directory, descriptor }
+  }
+  it('creates the complete Node command profile with an explicit receiver and archive metadata', async () => {
+    await commandAssets(); const directory = join(temporary, 'personal console')
+    const project = await createProject({directory, name:'my-console', runtime:'node', template:'command-app', frameworkDirectory:framework})
+    const manifest = JSON.parse(await readFile(join(directory,'package.json'),'utf8'))
+    expect(manifest.longhorn).toEqual({schemaVersion:1,runtime:'node',framework:'snapshot',template:'command-app',application:'commands'})
+    expect(manifest.scripts).toMatchObject({start:'node dist/operator-host.js',receiver:'node scripts/serve-receiver.mjs',migrate:'node dist/migrate-operations.js','state:restore':'node scripts/state-backup.mjs restore'})
+    expect(manifest.dependencies.miniflare).toBe('3.20250718.3'); expect(manifest.dependencies['@longhorn/outbox']).toBe('file:./.longhorn/framework/outbox')
+    expect(project.packages).toContain('@longhorn/workers'); expect(project.packages).not.toContain('@longhorn/bun'); expect(project.packages).not.toContain('@longhorn/deno')
+    expect(JSON.parse(await readFile(join(directory,'.longhorn/distribution.json'),'utf8'))).toEqual({schemaVersion:1,application:'commands',frameworkPackages:project.packages})
+    expect(await readFile(join(directory,'README.md'),'utf8')).toBe('# my-console\n')
+    expect(await readFile(join(directory,'pnpm-workspace.yaml'),'utf8')).toContain('workerd: true')
+    expect(await readFile(join(directory,'src/runtime-grants.ts'),'utf8')).toBe('editable command application asset\n')
+  })
+  it('rejects a damaged command receiver before touching an existing empty destination', async () => {
+    const assets=await commandAssets(),directory=join(temporary,'empty-console'); await mkdir(directory)
+    await writeFile(join(assets.directory,'receiver/receiver.ts'),'damaged receiver')
+    await expect(createProject({directory,runtime:'node',template:'command-app',frameworkDirectory:framework})).rejects.toThrow('Command application template assets are unavailable or invalid')
+    expect(await readdir(directory)).toEqual([]);expect((await readdir(temporary)).some(name=>name.startsWith('.longhorn-create-'))).toBe(false)
+  })
+  it.each(['src/runtime-grants.ts','scripts/state-backup.mjs','receiver/receipts.ts','docs/setup.md'])('requires command deployment and receiver asset %s before staging', async path => {
+    const assets=await commandAssets(),directory=join(temporary,'missing-console')
+    delete assets.descriptor.files[path];await writeFile(join(assets.directory,'template.json'),JSON.stringify(assets.descriptor))
+    await expect(createProject({directory,runtime:'node',template:'command-app',frameworkDirectory:framework})).rejects.toThrow('assets are unavailable or invalid')
+    expect(await readdir(temporary)).toEqual(['distribution'])
+  })
+  it.each(['bun','deno','workers'] as const)('rejects %s command hosts before looking for assets or creating output', async runtime => {
+    await expect(createProject({directory:join(temporary,'wrong-console'),runtime,template:'command-app',frameworkDirectory:join(temporary,'absent')})).rejects.toThrow('requires --runtime node')
+    expect(await readdir(temporary)).toEqual(['distribution'])
+  })
+
   async function authAssets(runtime: 'node' | 'bun' | 'deno') {
     const directory = join(framework, 'templates', runtime + '-sqlite-auth'), files: Record<string, string> = {}
     for (const path of ['README.md', 'build.mjs', 'build.config.mjs', 'dev.mjs', 'host.mjs', 'start.mjs',

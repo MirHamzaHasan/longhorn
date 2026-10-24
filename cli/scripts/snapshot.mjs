@@ -208,3 +208,34 @@ for (const runtime of ['node', 'bun', 'deno']) {
   const hashes = {}; await record(target, '', hashes)
   await writeFile(join(target, 'template.json'), JSON.stringify({ schemaVersion: 1, dependencies, devDependencies, files: hashes }, null, 2) + '\n')
 }
+
+
+// The archive and CLI consume one checked, editable command application template.
+const command=join(output,'templates/command-app')
+await cp(join(root,'starters/command-app'),command,{recursive:true})
+await cp(join(root,'examples/postgres/src'),join(command,'src'),{recursive:true,filter:source=>!source.endsWith('.postgres.test.ts')})
+await cp(join(root,'examples/postgres/console'),join(command,'console'),{recursive:true})
+await cp(join(root,'LICENSE'),join(command,'LICENSE'))
+await cp(join(root,'examples/postgres/.operator.env.example'),join(command,'.operator.env.example'))
+await mkdir(join(command,'receiver'),{recursive:true})
+for(const name of ['receiver.ts','receipts.ts','contracts.ts','message-effect.ts'])await cp(join(root,'examples/outbox-worker/src',name),join(command,'receiver',name))
+let receiver=await readFile(join(root,'scripts/serve-message-receiver.mjs'),'utf8')
+for(const[from,to]of[
+  ["'../packages/auth/dist/bearer.js'","'@longhorn/auth/bearer'"],
+  ["'../packages/runtime/dist/index.js'","'@longhorn/runtime'"],
+  ["'../examples/outbox-worker/data/receiver'","'../data/receiver'"],
+  ["'../examples/outbox-worker/dist/receiver.js'","'../dist/receiver/receiver.js'"],
+]){
+  if(receiver.split(from).length!==2)throw new Error('Command receiver host changed; review template mapping')
+  receiver=receiver.replace(from,to)
+}
+await writeFile(join(command,'scripts/serve-receiver.mjs'),receiver)
+const compiler={target:'ES2022',module:'ESNext',moduleResolution:'Bundler',lib:['ES2022','DOM'],types:['node'],strict:true,noEmit:true,skipLibCheck:true,verbatimModuleSyntax:true,noUncheckedIndexedAccess:true,exactOptionalPropertyTypes:true}
+await writeFile(join(command,'tsconfig.json'),JSON.stringify({compilerOptions:compiler,include:['src/**/*.ts']},null,2)+'\n')
+await writeFile(join(command,'console/tsconfig.json'),JSON.stringify({extends:'../tsconfig.json',compilerOptions:{types:[],lib:['ES2022','DOM','DOM.Iterable']},include:['./**/*.ts']},null,2)+'\n')
+await writeFile(join(command,'receiver/tsconfig.json'),JSON.stringify({extends:'../tsconfig.json',compilerOptions:{types:[]},include:['./**/*.ts']},null,2)+'\n')
+await writeFile(join(command,'.gitignore'),'node_modules/\ndist/\ndata/\n.env\n.env.*\n!.env.example\n.operator.env\n.operator.env.local\n*.tsbuildinfo\n')
+const commandExample=JSON.parse(await readFile(join(root,'examples/postgres/package.json'),'utf8')),commandHashes={}
+await record(command,'',commandHashes)
+if(Object.keys(commandHashes).length>128)throw new Error('Command template exceeds the shared asset bound')
+await writeFile(join(command,'template.json'),JSON.stringify({schemaVersion:1,dependencies:{...commandExample.dependencies,'@longhorn/workers':'workspace:*','@longhorn/runtime':'workspace:*',miniflare:'3.20250718.3'},devDependencies:{'@types/node':'^22.13.10','@cloudflare/workers-types':'^5.20261022.1',esbuild:'^0.28.2',typescript:'^5.8.2',vitest:'^3.1.1'},files:commandHashes},null,2)+'\n')

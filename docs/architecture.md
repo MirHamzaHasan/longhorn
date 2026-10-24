@@ -1596,3 +1596,26 @@ claim. The independent restored archive exercises its shipped opt-in configurati
 See [worker](idempotency-cleanup.md), [lifetime](idempotency-cleanup-lifecycle.md),
 [retention](request-cleanup-retention.md), [host](request-cleanup-host.md) and
 [proof](request-cleanup-testing.md).
+
+
+## 63. One Command Application Template across CLI and Archive
+
+The command-app profile makes the complete Node/PostgreSQL workflow available to
+both CLI creation entrypoints. Its checked descriptor copies the working app,
+console, receiver, tests, migrations and guides, selecting the local framework
+closure and separate receiver dependencies. Shared reader bounds and atomic
+staging apply before publication. Incompatible runtimes fail before output.
+
+Archive creation now delegates to this same generator instead of maintaining a
+second source recipe; packaging still adds a resolved lock, hash and checksum.
+CLI generation resolves only when installation is requested. Explicit setup remains
+responsible for database owner/runtime roles and retained receiver configuration.
+
+The unchanged fixed start script selects a direct Node resource owner with one
+forwarded shutdown request. Custom scripts/hooks keep pnpm behavior. Installed
+relocated CLI packages prove both entrypoints, damaged/missing asset rejection,
+failed install retention, exact source and frozen relocation. Their real app then
+runs the complete PostgreSQL/workerd/browser/backup/restore workflow through the
+installed CLI, including custom exit codes and POSIX terminal-group interruption.
+See [profile](command-project.md), [snapshot](command-project-snapshot.md),
+[lifetime](command-project-lifecycle.md) and [proof](command-project-testing.md).

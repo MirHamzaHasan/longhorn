@@ -33,3 +33,8 @@ and proves the real browser/SQL/receiver/recovery/restore workflow. The existing
 archive checksum covers the lock and its metadata together. Checksums are integrity
 evidence, not a signature. See [pnpm install](https://pnpm.io/cli/install) for
 lockfile-only and frozen installation semantics.
+
+The [CLI command profile](command-project.md) shares the application recipe but
+resolves external dependencies only at its first install (including --install).
+Retain/review that generated lock and freeze subsequent installs. Archive packaging
+still resolves and hashes its own graph before distribution.

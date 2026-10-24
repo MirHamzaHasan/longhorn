@@ -163,7 +163,9 @@ jobs:
       - run: node scripts/prepare-postgres-clients.mjs
       - run: pnpm build
       - id: verify-application
-        run: node scripts/verify-command-app.mjs
+        run: |
+          node scripts/verify-command-app.mjs
+          node scripts/verify-command-project.mjs
       - name: Retain independently verified application
         id: application-artifact
         continue-on-error: true
@@ -173,6 +175,9 @@ jobs:
           path: |
             .artifacts/longhorn-command-app.tgz
             .artifacts/longhorn-command-app.tgz.sha256
+            .artifacts/longhorn-command-project.tgz
+            .artifacts/longhorn-command-project.tgz.sha256
+            .artifacts/command-project-proof.json
           include-hidden-files: true
           if-no-files-found: error
           compression-level: 0

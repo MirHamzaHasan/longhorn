@@ -3,7 +3,7 @@ import { join } from 'node:path'
 import { createHash } from 'node:crypto'
 type Descriptor={schemaVersion:number;dependencies:Record<string,string>;devDependencies:Record<string,string>;files:Record<string,string>}
 export type AssetProfile={
-  readonly name:'d1-tasks'|'sqlite-tasks'|'sqlite-auth';readonly label:string;readonly runtime:'workers'|'node'|'bun'|'deno'
+  readonly name:'d1-tasks'|'sqlite-tasks'|'sqlite-auth'|'command-app';readonly label:string;readonly runtime:'workers'|'node'|'bun'|'deno'
   readonly assetName?:'bun-sqlite-tasks'|'deno-sqlite-tasks'|'node-sqlite-auth'|'bun-sqlite-auth'|'deno-sqlite-auth'
   readonly requiredFiles:readonly string[];readonly requiredDependencies:readonly string[]
   readonly scripts:Readonly<Record<string,string>>;readonly allowBuilds:readonly string[]

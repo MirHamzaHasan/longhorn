@@ -2,6 +2,7 @@
 
 | Feature | Owner | Connections |
 | --- | --- | --- |
+| [Creation](generation.md) | Command app CLI profile and shared archive template | Editable actual app, checked assets, selected framework, install policy and explicit setup |
 | [Locked dependencies](dependencies.md) | pnpm-lock.yaml and .longhorn/distribution.json | Local framework overrides, fixed external resolution and explicit updates |
 | [Account access](accounts.md) | src/accounts.ts | Native scrypt, AuthService, HttpOnly session cookies, exact Origin |
 | [Session controls](session-controls.md) | AuthService, account routing and SQL session-control port | Token-owned others/all scopes, live counts, post-ownership expiry and atomic revocation |

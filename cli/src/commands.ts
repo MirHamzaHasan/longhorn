@@ -16,7 +16,7 @@ type CliContext = {
 }
 const help = `LongHorn development CLI
 
-  longhorn create <directory> --runtime node|bun|deno|workers [--template api|d1-tasks|sqlite-tasks|sqlite-auth] [--name <name>] [--install]
+  longhorn create <directory> --runtime node|bun|deno|workers [--template api|d1-tasks|sqlite-tasks|sqlite-auth|command-app] [--name <name>] [--install]
   longhorn dev|build|start|typecheck|test [--cwd <directory>]
   longhorn --help
   longhorn --version
@@ -25,6 +25,7 @@ create-longhorn <directory> accepts the same creation options.
 The d1-tasks template requires --runtime workers and includes retained local D1 storage.
 The sqlite-tasks template requires --runtime node, bun or deno and includes a persistent SQLite file.
 The sqlite-auth template requires --runtime node, bun or deno and includes native passwords, sessions and private notes.
+The command-app template requires --runtime node and includes the PostgreSQL console, receiver and deployment guides.
 Generation uses a bundled framework snapshot; it never overwrites existing files.
 pnpm 12.6.0 and Node.js 20.19+ are required for project development.`
 
@@ -56,8 +57,11 @@ async function execute(args: string[], cwd: string): Promise<number> {
     const manifest = JSON.parse(await readFile(resolve(cwd, 'package.json'), 'utf8')) as {
       longhorn?: { template?: string }; scripts?: Record<string, string>
     }
-    if (manifest.longhorn?.template === 'sqlite-auth' && manifest.scripts?.[command] === `node ${command}.mjs`
-      && !manifest.scripts[`pre${command}`] && !manifest.scripts[`post${command}`]) launcher = `${command}.mjs`
+    if (!manifest.scripts?.[`pre${command}`] && !manifest.scripts?.[`post${command}`]) {
+      if (manifest.longhorn?.template === 'sqlite-auth' && manifest.scripts?.[command] === `node ${command}.mjs`) launcher = `${command}.mjs`
+      if (manifest.longhorn?.template === 'command-app' && command === 'start'
+        && manifest.scripts?.start === 'node dist/operator-host.js') launcher = 'dist/operator-host.js'
+    }
   }
   return new Promise((resolve, reject) => {
     // Script names/arguments are fixed by this CLI, never interpolated from input.
@@ -121,7 +125,9 @@ export async function runCli(args: string[], context: CliContext = {}): Promise<
           return code
         }
       }
-      out(`Next: open ${project.directory}${options.has('--install') ? '' : ', run pnpm install'}, then pnpm dev`)
+      out(project.template === 'command-app'
+        ? `Next: open ${project.directory}${options.has('--install') ? '' : ', run pnpm install'}, run pnpm build, then follow docs/setup.md for PostgreSQL, receiver and runtime configuration`
+        : `Next: open ${project.directory}${options.has('--install') ? '' : ', run pnpm install'}, then pnpm dev`)
       return 0
     }
     if (scriptCommands.includes(command as ScriptCommand)) {

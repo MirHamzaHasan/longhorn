@@ -45,3 +45,8 @@ guides and unchanged MIT license join the source in packed CLI assets.
 Generated files become application-owned. Their original asset hashes are checked
 at creation, not used to forbid edits. Snapshot updates require deliberate review.
 See [D1 distribution](d1-starter-snapshot.md) and [native regression proof](sqlite-starter-testing.md).
+
+The [command-app wrapper](command-project-snapshot.md) uses the same descriptor v1
+and bounds. Its required roles/schema, receipt receiver and setup tools come from
+the actual application; the archive now consumes this profile too. An application
+distribution record is generated separately from descriptor-owned source assets.

@@ -28,6 +28,7 @@
     "test:redis-cache": "pnpm build && node scripts/verify-redis-cache.mjs",
     "package:command-app": "pnpm build && node scripts/package-command-app.mjs",
     "test:command-app": "pnpm build && node scripts/verify-command-app.mjs",
+    "test:command-project": "pnpm build && node scripts/verify-command-project.mjs",
     "test:console": "pnpm build && node scripts/verify-console.mjs && node scripts/verify-history-search-console.mjs && node scripts/verify-history-views-console.mjs && node scripts/verify-history-view-links.mjs && node scripts/verify-history-export.mjs && node scripts/verify-audit-export.mjs && node scripts/verify-receipt-export.mjs && node scripts/verify-command-follow.mjs && node scripts/verify-console-account.mjs",
     "test:history-views": "pnpm build && node scripts/verify-history-views.mjs && node scripts/verify-history-views-console.mjs",
     "test:history-search": "pnpm build && node scripts/verify-history-search.mjs && node scripts/verify-history-search-console.mjs",

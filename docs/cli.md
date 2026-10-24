@@ -93,3 +93,8 @@ The initial CLI supports creation and existing project scripts. Feature generato
 automatic framework upgrades, plugin installation, interactive prompts, deployment,
 and multi-process orchestration are not implemented. Native execution is verified
 on the current macOS host; Linux and Windows CI coverage remains future work.
+
+Choose `--runtime node --template command-app` for the [complete command project](command-project.md),
+including the actual PostgreSQL console, receiver, deployment and backup tools.
+Creation prints setup instructions; database and receiver configuration are explicit.
+Its [fixed start owner](command-project-lifecycle.md) preserves custom/hook pnpm behavior.

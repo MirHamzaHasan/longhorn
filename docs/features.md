@@ -9,6 +9,10 @@ downstream connections, verification, and current limits.
 
 | Feature | Guide | Implementation owner | Connects to |
 | --- | --- | --- | --- |
+| Complete command CLI profile | [Command project](command-project.md) | Existing CLI createProject and shared archive recipe | Node/PostgreSQL console, explicit receiver, editable source and setup |
+| Command template snapshot | [Checked source](command-project-snapshot.md) | CLI snapshot builder and shared descriptor reader | Actual app/tests/guides, selected local graph and atomic publication |
+| Command CLI host ownership | [Script lifetime](command-project-lifecycle.md) | Fixed start script and native host | One owner signal, custom/hook pnpm fallback and actual exit |
+| Packed command project proof | [Installed verification](command-project-testing.md) | Relocated installed CLI and shared archive workflow | Both creation binaries, real SQL/browser/restore, fixed/custom start and retained installs |
 | Owned replay cleanup | [Cleanup worker](idempotency-cleanup.md) | Optional @longhorn/idempotency/cleanup | Existing prune/clock, serial bounded batches and private aggregate snapshot |
 | Cleanup shutdown | [Cleanup lifetime](idempotency-cleanup-lifecycle.md) | Application startup resources | One owner, awaited errors, no catch-up and SQL drain before database close |
 | Replay expiry and removal | [Retention](request-cleanup-retention.md) | Existing SQL IdempotencyStore | Table-wide expired rows, active ownership, preserved business records and key reuse |
@@ -349,6 +353,9 @@ flowchart TD
   RequestCleanup[Owned expired request cleanup] --> Idempotency
   RequestCleanup --> Lifecycle
   OperatorHost --> RequestCleanup
+  CommandProject[Command app CLI profile] --> OperatorHost
+  CommandProject --> TemplateAssets[Shared checked application assets]
+  CommandProject --> Distribution[Independent application archive]
   Idempotency --> TxPublish
   IdempotentHttp[Task and report retries] --> Idempotency
   IdempotentHttp --> AtomicTasks

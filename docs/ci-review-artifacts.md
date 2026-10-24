@@ -64,3 +64,9 @@ private pagination state are not separate uploaded artifacts.
 The [ID-search captures](history-search-testing.md) and accessibility report use
 the same nested console upload paths. Native plan JSON and downloaded NDJSON are
 local proof and are not added to hosted capture globs.
+
+The independent-distribution gate also runs [packed command-project verification](command-project-testing.md).
+Its exact upload paths additionally include longhorn-command-project.tgz, its
+SHA-256 sidecar and command-project-proof.json. These are source/aggregate QA
+outputs created before native accounts/data; test environment and stores remain
+excluded. Upload follows successful execution of both complete workflows.

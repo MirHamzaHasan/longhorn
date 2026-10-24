@@ -137,3 +137,8 @@ app/source tests, selected host, framework closure and feature guides are copied
 through [checked assets](auth-starter-snapshot.md). One owned Node launcher/watcher
 applies current configuration and Deno grants; the
 [installed gate](auth-starter-testing.md) checks all three native workflows.
+
+The explicit [command-app profile](command-project.md) supplies the complete
+Node/PostgreSQL console and separate receiver, with source tests, deployment,
+backup tools and setup guides. It shares the archive recipe and
+[asset validation](command-project-snapshot.md); runtime selection is Node only.

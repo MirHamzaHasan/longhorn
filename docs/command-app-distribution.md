@@ -37,3 +37,8 @@ install globally, publish a package, provision a user's database or deploy a hos
 builds it independently and exercises real PostgreSQL, native passwords, browser
 assets, receipt effects, recovery and process restart. See
 [distribution verification](command-app-testing.md) and [deployment](command-app-deployment.md).
+
+The archive and [CLI command-app profile](command-project.md) now share one
+[checked snapshot recipe](command-project-snapshot.md) through createProject. CLI
+creation can be used directly with an explicit directory/name; the archive adds
+its existing resolved lock/hash and tar/checksum packaging.
