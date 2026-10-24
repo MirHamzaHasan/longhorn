@@ -234,7 +234,7 @@ const compiler={target:'ES2022',module:'ESNext',moduleResolution:'Bundler',lib:[
 await writeFile(join(command,'tsconfig.json'),JSON.stringify({compilerOptions:compiler,include:['src/**/*.ts']},null,2)+'\n')
 await writeFile(join(command,'console/tsconfig.json'),JSON.stringify({extends:'../tsconfig.json',compilerOptions:{types:[],lib:['ES2022','DOM','DOM.Iterable']},include:['./**/*.ts']},null,2)+'\n')
 await writeFile(join(command,'receiver/tsconfig.json'),JSON.stringify({extends:'../tsconfig.json',compilerOptions:{types:[]},include:['./**/*.ts']},null,2)+'\n')
-await writeFile(join(command,'.gitignore'),'node_modules/\ndist/\ndata/\n.env\n.env.*\n!.env.example\n.operator.env\n.operator.env.local\n*.tsbuildinfo\n')
+await writeFile(join(command,'.gitignore'),'node_modules/\ndist/\ndata/\n.env\n.env.*\n!.env.example\n.operator.env\n.operator.env.local\n.maintenance.env\n.maintenance.env.local\n*.tsbuildinfo\n')
 const commandExample=JSON.parse(await readFile(join(root,'examples/postgres/package.json'),'utf8')),commandHashes={}
 await record(command,'',commandHashes)
 if(Object.keys(commandHashes).length>128)throw new Error('Command template exceeds the shared asset bound')

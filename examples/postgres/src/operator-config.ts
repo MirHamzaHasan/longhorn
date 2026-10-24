@@ -6,6 +6,7 @@ export const operatorConfigSchema=configInputSchema.omit({WORKER_ENABLED:true,SC
   PORT:z.string().trim().regex(/^\d+$/).default('3011').transform(Number).pipe(z.number().int().min(0).max(65535)),
   AUTH_ORIGIN:z.string().default('http://127.0.0.1:3011'),
   MIGRATION_DATABASE_URL:z.never().optional(),
+  MAINTENANCE_DATABASE_URL:z.never().optional(),
   MESSAGE_SERVICE_URL:z.string().min(1),
   MESSAGE_SERVICE_TOKEN:z.string().regex(/^[A-Za-z0-9_-]{32,256}$/),
   MESSAGE_ALLOW_INSECURE_LOOPBACK:z.enum(['true','false']).default('false').transform(value=>value==='true'),

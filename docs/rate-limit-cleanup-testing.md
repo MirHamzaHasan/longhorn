@@ -49,5 +49,5 @@ real expired memory bucket is removed. Unit tests retain prior idempotency behav
 and cover server-time dispatch, observer failure, bounds and snapshots. Existing
 request-cleanup/native limiter gates remain regression checks.
 
-This is finite local native evidence, not cloud failover or a maintenance deployment
-for the command application. SQL/migration definitions and runtime grants are unchanged.
+This is finite local native evidence, not cloud failover. A separate [command application maintenance tool](command-limit-maintenance.md)
+now has its own native/installed verification. SQL/migration definitions and runtime grants are unchanged.

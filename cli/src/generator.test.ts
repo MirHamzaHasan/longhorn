@@ -30,12 +30,13 @@ describe('project generation', () => {
   async function commandAssets() {
     const directory = join(framework, 'templates/command-app'), files: Record<string, string> = {}
     const paths = ['README.md', 'LICENSE', 'build.mjs', 'build.config.mjs', 'dev.mjs', 'dev-host.mjs', 'tsconfig.json', 'console/tsconfig.json', 'receiver/tsconfig.json',
-      '.operator.env.example', 'scripts/serve-receiver.mjs', 'scripts/provision-runtime.mjs', 'scripts/state-backup.mjs',
+      '.operator.env.example', '.maintenance.env.example', 'scripts/serve-receiver.mjs', 'scripts/provision-runtime.mjs', 'scripts/state-backup.mjs',
       'src/app.ts', 'src/operator-host.ts', 'src/operator-check.ts', 'src/operator-preflight.ts', 'src/operator-environment.ts', 'src/postgres-readiness.ts', 'src/operator-config.ts', 'src/operator-runtime.ts', 'src/operations.ts',
+      'src/maintain-limits.ts', 'src/provision-limit-maintenance.ts', 'src/limit-maintenance.ts', 'src/limit-maintenance-config.ts', 'src/limit-maintenance-access.ts', 'src/limit-maintenance-grants.ts',
       'src/operations-migrations.ts', 'src/runtime-grants.ts', 'src/accounts.ts', 'src/command-history.ts',
       'src/history-views.ts', 'src/request-cleanup.ts', 'src/command-limits.ts', 'src/command-limit-migrations.ts', 'console/app.ts', 'console/app.css', 'console/routes.ts',
       'receiver/receiver.ts', 'receiver/receipts.ts', 'receiver/contracts.ts', 'receiver/message-effect.ts',
-      'docs/features.md', 'docs/setup.md', 'docs/deployment.md', 'docs/dependencies.md', 'docs/backup.md', 'docs/generation.md', 'docs/development.md', 'docs/preflight.md', 'docs/request-limits.md']
+      'docs/features.md', 'docs/setup.md', 'docs/deployment.md', 'docs/dependencies.md', 'docs/backup.md', 'docs/generation.md', 'docs/development.md', 'docs/preflight.md', 'docs/request-limits.md', 'docs/limit-maintenance.md', 'docs/limit-maintenance-role.md', 'docs/limit-maintenance-report.md']
     for (const path of paths) {
       const target = join(directory, path), content = path === 'README.md' ? '# {{PROJECT_NAME}}\n' : 'editable command application asset\n'
       await mkdir(join(target, '..'), { recursive: true }); await writeFile(target, content)
@@ -53,7 +54,7 @@ describe('project generation', () => {
     const project = await createProject({directory, name:'my-console', runtime:'node', template:'command-app', frameworkDirectory:framework})
     const manifest = JSON.parse(await readFile(join(directory,'package.json'),'utf8'))
     expect(manifest.longhorn).toEqual({schemaVersion:1,runtime:'node',framework:'snapshot',template:'command-app',application:'commands'})
-    expect(manifest.scripts).toMatchObject({check:'node dist/operator-check.js',dev:'node dev.mjs','dev:receiver':'node dev.mjs --receiver',start:'node dist/operator-host.js',receiver:'node scripts/serve-receiver.mjs',migrate:'node dist/migrate-operations.js','state:restore':'node scripts/state-backup.mjs restore'})
+    expect(manifest.scripts).toMatchObject({'maintain:limits':'node dist/maintain-limits.js','provision:limit-maintenance':'node dist/provision-limit-maintenance.js',check:'node dist/operator-check.js',dev:'node dev.mjs','dev:receiver':'node dev.mjs --receiver',start:'node dist/operator-host.js',receiver:'node scripts/serve-receiver.mjs',migrate:'node dist/migrate-operations.js','state:restore':'node scripts/state-backup.mjs restore'})
     expect(manifest.dependencies.miniflare).toBe('3.20250718.3'); expect(manifest.dependencies['@longhorn/outbox']).toBe('file:./.longhorn/framework/outbox')
     expect(project.packages).toContain('@longhorn/workers'); expect(project.packages).not.toContain('@longhorn/bun'); expect(project.packages).not.toContain('@longhorn/deno')
     expect(JSON.parse(await readFile(join(directory,'.longhorn/distribution.json'),'utf8'))).toEqual({schemaVersion:1,application:'commands',frameworkPackages:project.packages})

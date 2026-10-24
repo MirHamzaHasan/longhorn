@@ -9,6 +9,11 @@ downstream connections, verification, and current limits.
 
 | Feature | Guide | Implementation owner | Connects to |
 | --- | --- | --- | --- |
+| Command budget maintenance modes | [Native tool](command-limit-maintenance.md) | Dedicated PostgreSQL process | Typed private files, read-only check, one bounded batch or owned periodic watch |
+| Separate maintenance authority | [Role provisioning](command-limit-maintenance-role.md) | Transactional owner tool and read-only guard | Minimal bucket grants, rollback, schema/role/column checks and unchanged HTTP authority |
+| Maintenance interruption | [Lifetime](command-limit-maintenance-lifecycle.md) | Managed app work and existing cleanup | Accepted SQL drain, idle stop, observer settlement and database last |
+| Private maintenance report | [Report v1](command-limit-maintenance-report.md) | Standalone process | Aggregate counts, fixed warnings and signal/error exit status |
+| Native/installed maintenance proof | [Verification](command-limit-maintenance-testing.md) | Native PostgreSQL, shipped archive and packed CLI | Real quota/replay preservation, negative authority, locks/signals, frozen install and actual commands |
 | Owned bounded pruning | [Prune worker](prune-worker.md) | Optional @longhorn/runtime/prune-worker | Serial delayed batches, observer ownership and shared cleanup facades |
 | Request budget cleanup | [Cleanup API](rate-limit-cleanup.md) | Optional @longhorn/ratelimit/cleanup | Existing limiter/store clocks and explicit native-host lifetime |
 | Budget cleanup retention | [Expiry and authority](rate-limit-cleanup-retention.md) | Existing provider prune methods | Table-wide bounds, live preservation and separate PostgreSQL lock/delete grants |
@@ -513,8 +518,12 @@ flowchart TD
   DurableReports --> ObjectBudget[Optional shared report attempt budget]
   ObjectBudget --> ManagedLimit[Existing managed SQLite limiter]
   ManagedLimit --> DurableSql
-  LimitCleanup[Optional rate limit cleanup] --> ManagedLimit
+  LimitCleanup[Optional rate limit cleanup] --> LimitCoordinator[Portable RateLimiter.prune]
   LimitCleanup --> PruneOwner[Shared owned prune worker]
+  CommandMaintenance[Dedicated budget maintenance process] --> LimitCleanup
+  CommandMaintenance --> MaintenanceRole[Separate restricted SQL identity]
+  CommandMaintenance --> PgLimitStore[Existing PostgreSQL limiter store]
+  PgLimitStore --> Database
   LedgerCleanup[Existing idempotency cleanup] --> PruneOwner
   QueueEvents[Workers queue event adapter] --> ManagedWork
   QueueEvents --> Workers

@@ -40,3 +40,8 @@ Their full workflow enables a generous policy, verifies computed receipts, and
 checks exact bucket state through offline backup/restore. Expired records reset
 on use; maintenance is separate explicit [bounded pruning](rate-limit-sql.md).
 See [native proof](rate-limit-testing.md) and the [starter guide](../starters/command-app/docs/request-limits.md).
+
+The [separate maintenance command](command-limit-maintenance.md) now provides
+check/once/watch over expired buckets. Its [dedicated credentials](command-limit-maintenance-role.md)
+retain DELETE outside the HTTP runtime; archived and CLI-generated apps ship the
+source, scripts, private-file example and local guides.

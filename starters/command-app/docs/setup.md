@@ -63,3 +63,9 @@ valid/ready indexes; no new runtime privileges are needed.
 
 For optional bounded maintenance of expired replay rows, see
 [request cleanup](request-cleanup.md). It stays off in the example profile.
+
+Expired command budgets can be reclaimed through the separate
+[maintenance tool](limit-maintenance.md). Provision its [dedicated role](limit-maintenance-role.md),
+keep its .maintenance.env private, then use `pnpm maintain:limits check`,
+`pnpm maintain:limits once` or `pnpm maintain:limits watch`. The HTTP runtime keeps
+its existing grants and does not acquire this identity.

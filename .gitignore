@@ -17,3 +17,5 @@ examples/d1-worker/data/
 examples/queue-worker/data/
 examples/outbox-worker/data/
 .artifacts/
+.maintenance.env
+.maintenance.env.local

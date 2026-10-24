@@ -1801,3 +1801,27 @@ declarations and both cleanup facades sharing the same owner.
 See [engine](prune-worker.md), [API](rate-limit-cleanup.md),
 [retention](rate-limit-cleanup-retention.md), [lifetime](rate-limit-cleanup-lifecycle.md),
 [example](rate-limit-cleanup-example.md) and [verification](rate-limit-cleanup-testing.md).
+
+
+## 71. Maintenance Ownership outside the HTTP Runtime
+
+The command application now ships a separate native budget maintenance process.
+check verifies metadata/authority without consuming/pruning, once performs one
+bounded existing prune, and watch owns the shared cleanup loop. Typed private
+configuration selects only MAINTENANCE_DATABASE_URL; the HTTP configuration rejects
+that credential. Neither serving nor preflight gains a cleanup task or bucket DELETE.
+
+A trusted provisioning helper grants one existing restricted role in a transaction,
+then verifies its effective profile. Failure rolls back new grants instead of
+repairing privilege history. Startup checks bucket types/nullability, no RLS,
+minimal locking/deletion grants and absence of the checked administrative, delegated,
+DDL and business-data authority. Owner migration history remains separately owned.
+
+Longhorn resources acquire database, limiter and optional cleanup in that order.
+Signals stop admission/waits while actual SQL settles, then reverse close releases
+the pool. Private v1 reports contain only aggregate acknowledged observations.
+Archived and packed-CLI apps ship the editable entrypoints, scripts and local guides;
+native proof exercises those installed commands and an actual account quota/replay.
+See [tool](command-limit-maintenance.md), [role](command-limit-maintenance-role.md),
+[lifetime](command-limit-maintenance-lifecycle.md), [report](command-limit-maintenance-report.md)
+and [verification](command-limit-maintenance-testing.md).

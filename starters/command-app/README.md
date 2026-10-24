@@ -34,3 +34,9 @@ in the separate receiver shell. See [development](docs/development.md).
 
 Use `pnpm check` after build/configuration for a read-only runtime report before
 starting the app. See [preflight](docs/preflight.md).
+
+Expired command budgets can be reclaimed through the separate
+[maintenance tool](docs/limit-maintenance.md). Provision its [dedicated role](docs/limit-maintenance-role.md),
+keep its .maintenance.env private, then use `pnpm maintain:limits check`,
+`pnpm maintain:limits once` or `pnpm maintain:limits watch`. The HTTP runtime keeps
+its existing grants and does not acquire this identity.

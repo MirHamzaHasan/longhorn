@@ -30,6 +30,6 @@ trusted: DELETE authority itself can remove live rows if used outside this API.
 
 The existing account HTTP runtime still has bucket SELECT/INSERT/UPDATE and no
 DELETE; its provisioning/role checks are unchanged. This feature neither grants
-maintenance authority to it nor installs an account-host cleanup timer. Operators
-can supply a separate maintenance limiter/connection in their own native owner.
+maintenance authority to it nor installs an account-host cleanup timer. The [command maintenance tool](command-limit-maintenance.md) now supplies a
+separate native owner/connection and checked provisioning profile.
 There is no automatic grant repair, reset API, distributed leader or new migration.

@@ -616,3 +616,10 @@ uses default-off cleanup; run `pnpm dev:maintained-limits` with a private API_TO
 `pnpm test:limit-cleanup` checks native stores, locked shutdown and independently
 packed/relocated packages. Both budget and request-ledger cleanup share one
 [owned pruning loop](docs/prune-worker.md).
+
+The command application also ships [separate budget maintenance](docs/command-limit-maintenance.md):
+read-only check, one bounded batch or owned watch, with a restricted maintenance
+identity. Workspace commands use `pnpm maintain:command-limits`; generated apps
+use `pnpm maintain:limits`. [Provisioning](docs/command-limit-maintenance-role.md)
+keeps bucket DELETE outside the HTTP runtime. Run
+`pnpm test:command-limit-maintenance` for native and independently installed proof.

@@ -144,6 +144,16 @@ jobs:
       - run: node scripts/verify-history-views.mjs
       - run: node scripts/verify-request-cleanup.mjs
       - run: node scripts/verify-limit-cleanup.mjs
+      - run: node scripts/verify-command-limit-maintenance.mjs
+      - name: Retain command budget maintenance proof
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: command-limit-maintenance-proof
+          path: .artifacts/command-limit-maintenance-proof.json
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 14
       - name: Retain native budget cleanup proof
         if: always()
         uses: actions/upload-artifact@v7

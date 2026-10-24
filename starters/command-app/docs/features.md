@@ -44,3 +44,8 @@ Optional [command attempt limits](request-limits.md) add bucket/access checks wh
 Preflight reports commandLimitsEnabled without consuming a bucket. Owner deployment
 appends longhorn_rate_limit/001_buckets after the prior complete operations profile;
 runtime grants add schema USAGE and table SELECT/INSERT/UPDATE, with no DELETE.
+
+A separate [budget maintenance tool](limit-maintenance.md) supplies read-only check,
+one bounded batch or owned watch. [Restricted role provisioning](limit-maintenance-role.md)
+keeps DELETE out of the HTTP runtime. [Reports/signals](limit-maintenance-report.md)
+record actual drain and private aggregate output.

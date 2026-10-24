@@ -45,3 +45,9 @@ from silently acting under a newly switched cookie; it grants no identity or rol
 
 [Expired replay cleanup](request-cleanup.md) is optional and uses existing runtime
 ledger privileges. Enable it explicitly per host; it adds no schema migration.
+
+Expired command budgets can be reclaimed through the separate
+[maintenance tool](limit-maintenance.md). Provision its [dedicated role](limit-maintenance-role.md),
+keep its .maintenance.env private, then use `pnpm maintain:limits check`,
+`pnpm maintain:limits once` or `pnpm maintain:limits watch`. The HTTP runtime keeps
+its existing grants and does not acquire this identity.

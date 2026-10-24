@@ -25,7 +25,9 @@ explicit. Each batch waits before the next, including after a full result or err
 Closing cleanup keeps the limiter/store/database open. Shut down HTTP, cleanup,
 limiter, then database. There is no public reset endpoint, automatic refund, new
 schema or default-on framework task. The SQLite example makes the option concrete;
-the account command host's separate runtime authority remains unchanged.
+the account command host's separate runtime authority remains unchanged. A
+[dedicated maintenance process](command-limit-maintenance.md) now ships with that
+application instead of borrowing its HTTP pool.
 
 This timer owner is for native long-lived hosts. A finite workerd invocation proves
 portable coordination, not a persistent edge timer service. Workers/D1/Object

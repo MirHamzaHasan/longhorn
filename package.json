@@ -116,7 +116,10 @@
     "test:d1-rate-limits": "pnpm build && node scripts/verify-d1-rate-limits.mjs",
     "test:object-rate-limits": "pnpm build && node scripts/verify-object-rate-limits.mjs",
     "dev:maintained-limits": "pnpm --filter example-maintained-limits... build && node examples/maintained-limits/dist/index.js",
-    "test:limit-cleanup": "pnpm build && node scripts/verify-limit-cleanup.mjs && node scripts/verify-prune-packages.mjs"
+    "test:limit-cleanup": "pnpm build && node scripts/verify-limit-cleanup.mjs && node scripts/verify-prune-packages.mjs",
+    "maintain:command-limits": "pnpm --filter example-postgres... build && node examples/postgres/dist/maintain-limits.js",
+    "test:command-limit-maintenance": "pnpm build && node scripts/verify-command-limit-maintenance.mjs",
+    "provision:command-limit-maintenance": "pnpm --filter example-postgres... build && node examples/postgres/dist/provision-limit-maintenance.js"
   },
   "packageManager": "pnpm@12.6.0"
 }
