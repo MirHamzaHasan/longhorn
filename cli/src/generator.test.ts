@@ -27,6 +27,48 @@ beforeEach(async () => {
 afterEach(async () => { await rm(temporary, { recursive: true, force: true }) })
 
 describe('project generation', () => {
+  async function authAssets(runtime: 'node' | 'bun' | 'deno') {
+    const directory = join(framework, 'templates', runtime + '-sqlite-auth'), files: Record<string, string> = {}
+    for (const path of ['README.md', 'build.mjs', 'build.config.mjs', 'dev.mjs', 'host.mjs', 'start.mjs',
+      'src/index.ts', 'src/app.ts', 'src/config.ts', 'src/notes.ts', 'src/app.test.ts', 'tests/persistence.mjs',
+      ...['features', 'accounts', 'passwords', 'sessions', 'http', 'notes', 'configuration', 'lifecycle', 'migrations', 'testing'].map(name => 'docs/' + name + '.md'),
+      ...(runtime === 'deno' ? ['build-tests.mjs', 'tests/runner.ts', 'tests/permissions.mjs'] : [])]) {
+      const target = join(directory, path), content = path === 'README.md' ? '# {{PROJECT_NAME}}\n' : 'editable auth asset\n'
+      await mkdir(join(target, '..'), { recursive: true }); await writeFile(target, content)
+      files[path] = createHash('sha256').update(content).digest('hex')
+    }
+    const descriptor = { schemaVersion: 1, dependencies: Object.fromEntries(
+      ['auth', 'core', 'container', 'config', 'database', runtime, 'logger', 'validation'].map(name => ['@longhorn/' + name, 'workspace:*'])),
+      devDependencies: runtime === 'node' ? { vitest: '^3.1.1' } : { [runtime + '-runtime']: 'npm:' + runtime + '@' + (runtime === 'bun' ? '1.4.4' : '2.9.6') }, files }
+    await writeFile(join(directory, 'template.json'), JSON.stringify(descriptor)); return { directory, descriptor }
+  }
+  it.each(['node', 'bun', 'deno'] as const)('generates selected %s native auth with its framework graph and source/native scripts', async runtime => {
+    await authAssets(runtime); const directory = join(temporary, runtime + '-accounts')
+    const project = await createProject({ directory, runtime, template: 'sqlite-auth', frameworkDirectory: framework })
+    expect(project.packages).toContain('@longhorn/auth'); expect(project.packages).toContain('@longhorn/' + runtime)
+    for (const other of runtimes.filter(value => value !== runtime)) expect(project.packages).not.toContain('@longhorn/' + other)
+    expect(project.packages).not.toContain('@longhorn/cache')
+    const manifest = JSON.parse(await readFile(join(directory, 'package.json'), 'utf8'))
+    expect(manifest.longhorn).toMatchObject({ runtime, template: 'sqlite-auth' })
+    expect(manifest.scripts).toMatchObject({ dev: 'node dev.mjs', start: 'node start.mjs', 'test:persistence': 'pnpm build && node tests/persistence.mjs' })
+    expect(manifest.scripts.test).toContain(runtime === 'node' ? 'vitest' : runtime === 'bun' ? 'bun test' : 'deno test')
+    expect(await readFile(join(directory, 'README.md'), 'utf8')).toBe('# ' + runtime + '-accounts\n')
+    expect(await readFile(join(directory, 'pnpm-workspace.yaml'), 'utf8')).toContain('file:./.longhorn/framework/auth')
+  })
+  it.each(['node', 'bun', 'deno'] as const)('rejects corrupted %s auth launch assets before staging a destination', async runtime => {
+    const assets = await authAssets(runtime), directory = join(temporary, 'corrupt-auth')
+    await writeFile(join(assets.directory, 'host.mjs'), 'corrupted native launch policy')
+    await expect(createProject({ directory, runtime, template: 'sqlite-auth', frameworkDirectory: framework })).rejects.toThrow('SQLite auth template assets are unavailable or invalid')
+    expect(await readdir(temporary)).toEqual(['distribution'])
+  })
+  it('rejects incomplete auth source and incompatible Workers selection without publishing', async () => {
+    const assets = await authAssets('deno'), directory = join(temporary, 'incomplete-auth')
+    delete assets.descriptor.files['src/app.test.ts']
+    await writeFile(join(assets.directory, 'template.json'), JSON.stringify(assets.descriptor))
+    await expect(createProject({ directory, runtime: 'deno', template: 'sqlite-auth', frameworkDirectory: framework })).rejects.toThrow('assets are unavailable or invalid')
+    await expect(createProject({ directory, runtime: 'workers', template: 'sqlite-auth', frameworkDirectory: framework })).rejects.toThrow('requires --runtime node, bun or deno')
+    expect(await readdir(temporary)).toEqual(['distribution'])
+  })
   async function d1Assets(){
     const directory=join(framework,'templates/d1-tasks'),files:Record<string,string>={}
     for(const path of ['README.md','build.mjs','build.config.mjs','serve.mjs','dev.mjs','src/index.ts','src/app.ts','src/deploy.ts','src/schema.ts','src/config.ts','src/tasks.ts','tests/storage.mjs','docs/features.md']){

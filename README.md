@@ -41,6 +41,11 @@ For the native Deno version, use
 The [Deno SQLite project](docs/deno-sqlite-starter.md) includes editable source,
 native tests, scoped launch permissions and retained development reloads.
 
+For native accounts, sessions and private notes, use
+`pnpm create:app ../accounts-api --runtime node --template sqlite-auth --install`.
+The [auth starter](docs/auth-starter.md) also supports Bun/Deno, with actual native
+passwords/SQLite, editable app tests, retained sessions and owned source reloads.
+
 ## Run the command console
 
 ```sh

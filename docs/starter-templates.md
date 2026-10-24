@@ -130,3 +130,10 @@ its configured file/environment/network grants, Node source supervisor and nativ
 test/persistence tools. Its behavior is documented independently of the generic
 api runtime policies above; [installed verification](deno-sqlite-starter-testing.md)
 checks relocation, retained data, permission denial and source recovery.
+
+The separate [sqlite-auth profile](auth-starter.md) supports Node/Bun/Deno local
+accounts and private notes through actual native crypto and SQLite. Its shared
+app/source tests, selected host, framework closure and feature guides are copied
+through [checked assets](auth-starter-snapshot.md). One owned Node launcher/watcher
+applies current configuration and Deno grants; the
+[installed gate](auth-starter-testing.md) checks all three native workflows.

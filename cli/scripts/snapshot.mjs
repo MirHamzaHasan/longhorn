@@ -167,3 +167,44 @@ await writeFile(join(denoSqlite,'tests/persistence.mjs'),denoPersistence)
 const denoExample=JSON.parse(await readFile(join(root,'examples/deno-sqlite/package.json'),'utf8')),denoHashes={}
 await record(denoSqlite,'',denoHashes)
 await writeFile(join(denoSqlite,'template.json'),JSON.stringify({schemaVersion:1,dependencies:denoExample.dependencies,devDependencies:{'@types/deno':'2.7.0','@types/node':'^22.13.10','deno-runtime':'npm:deno@2.9.6',expect:'30.5.2','jest-mock':'30.5.2',typescript:'^5.8.2',esbuild:'^0.28.2'},files:denoHashes},null,2)+'\n')
+
+// Auth is the same real application on each native runtime, with an explicit host selection.
+const authExample = JSON.parse(await readFile(join(root, 'examples/auth/package.json'), 'utf8'))
+for (const runtime of ['node', 'bun', 'deno']) {
+  const target = join(output, 'templates', runtime + '-sqlite-auth')
+  await cp(join(root, 'starters/sqlite-auth'), target, { recursive: true })
+  await mkdir(join(target, 'src'), { recursive: true })
+  for (const name of ['app.ts', 'config.ts', 'notes.ts', 'app.test.ts']) {
+    let source = await readFile(join(root, 'examples/auth/src', name), 'utf8')
+    if (name === 'app.test.ts' && runtime !== 'node') {
+      if (source.split("from 'vitest'").length !== 2 || source.split("'@longhorn/node/sqlite'").length !== 2) throw new Error('Auth test source changed; review native mapping')
+      source = source.replace("from 'vitest'", runtime === 'bun' ? "from 'bun:test'" : "from '../tests/runner.js'")
+        .replace("'@longhorn/node/sqlite'", "'@longhorn/" + runtime + "/sqlite'")
+    }
+    if (runtime !== 'node' && (source.includes('@longhorn/node') || source.includes("from 'vitest'"))) throw new Error('Unexpected Node-only import in native auth source')
+    await writeFile(join(target, 'src', name), source)
+  }
+  const entry = runtime === 'node' ? 'index.ts' : runtime + '.ts'
+  const host = await readFile(join(root, 'examples/auth/src', entry), 'utf8')
+  if (!host.includes("'@longhorn/" + runtime + "/passwords'") || !host.includes("'@longhorn/" + runtime + "/sqlite'")) throw new Error('Auth native host changed; review mapping')
+  await writeFile(join(target, 'src/index.ts'), host)
+  await cp(join(root, 'examples/auth/.env.example'), join(target, '.env.example'))
+  await cp(join(root, 'LICENSE'), join(target, 'LICENSE'))
+  const types = runtime === 'node' ? ['node'] : ['node', runtime]
+  const tsconfig = JSON.parse(await readFile(join(root, 'starters/sqlite-tasks/tsconfig.json'), 'utf8'))
+  tsconfig.compilerOptions.types = types; tsconfig.include.push('tests/**/*.ts')
+  await writeFile(join(target, 'tsconfig.json'), JSON.stringify(tsconfig, null, 2) + '\n')
+  const devDependencies = { '@types/node': '^22.13.10', typescript: '^5.8.2', esbuild: '^0.28.2',
+    ...(runtime === 'node' ? { vitest: '^3.1.1' } : runtime === 'bun'
+      ? { '@types/bun': '1.4.4', 'bun-runtime': 'npm:bun@1.4.4' }
+      : { '@types/deno': '2.7.0', 'deno-runtime': 'npm:deno@2.9.6', expect: '30.5.2', 'jest-mock': '30.5.2' }) }
+  if (runtime === 'deno') {
+    await cp(join(root, 'starters/deno-sqlite-tasks/build-tests.mjs'), join(target, 'build-tests.mjs'))
+    await cp(join(root, 'starters/deno-sqlite-tasks/tests/runner.ts'), join(target, 'tests/runner.ts'))
+    await cp(join(root, 'starters/deno-sqlite-tasks/tests/permissions.mjs'), join(target, 'tests/permissions.mjs'))
+  }
+  const dependencies = Object.fromEntries(Object.entries(authExample.dependencies).filter(([name]) =>
+    !['@longhorn/node', '@longhorn/bun', '@longhorn/deno'].includes(name) || name === '@longhorn/' + runtime))
+  const hashes = {}; await record(target, '', hashes)
+  await writeFile(join(target, 'template.json'), JSON.stringify({ schemaVersion: 1, dependencies, devDependencies, files: hashes }, null, 2) + '\n')
+}

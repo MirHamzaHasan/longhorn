@@ -16,7 +16,7 @@ type CliContext = {
 }
 const help = `LongHorn development CLI
 
-  longhorn create <directory> --runtime node|bun|deno|workers [--template api|d1-tasks|sqlite-tasks] [--name <name>] [--install]
+  longhorn create <directory> --runtime node|bun|deno|workers [--template api|d1-tasks|sqlite-tasks|sqlite-auth] [--name <name>] [--install]
   longhorn dev|build|start|typecheck|test [--cwd <directory>]
   longhorn --help
   longhorn --version
@@ -24,6 +24,7 @@ const help = `LongHorn development CLI
 create-longhorn <directory> accepts the same creation options.
 The d1-tasks template requires --runtime workers and includes retained local D1 storage.
 The sqlite-tasks template requires --runtime node, bun or deno and includes a persistent SQLite file.
+The sqlite-auth template requires --runtime node, bun or deno and includes native passwords, sessions and private notes.
 Generation uses a bundled framework snapshot; it never overwrites existing files.
 pnpm 12.6.0 and Node.js 20.19+ are required for project development.`
 
@@ -47,15 +48,28 @@ function parse(args: string[], values: string[], booleans: string[] = []) {
 }
 
 async function execute(args: string[], cwd: string): Promise<number> {
+  // Generated auth launchers own native children and watchers. Signal the owner
+  // once; a descendant walk races graceful drain with a second native signal.
+  let launcher: string | undefined
+  const command = args[0] === 'run' ? args[1] : undefined
+  if (command === 'dev' || command === 'start') {
+    const manifest = JSON.parse(await readFile(resolve(cwd, 'package.json'), 'utf8')) as {
+      longhorn?: { template?: string }; scripts?: Record<string, string>
+    }
+    if (manifest.longhorn?.template === 'sqlite-auth' && manifest.scripts?.[command] === `node ${command}.mjs`
+      && !manifest.scripts[`pre${command}`] && !manifest.scripts[`post${command}`]) launcher = `${command}.mjs`
+  }
   return new Promise((resolve, reject) => {
     // Script names/arguments are fixed by this CLI, never interpolated from input.
-    const child = spawn('pnpm', args, { cwd, stdio: 'inherit', shell: process.platform === 'win32' })
+    const child = spawn(launcher ? process.execPath : 'pnpm', launcher ? [launcher] : args,
+      { cwd, stdio: 'inherit', shell: !launcher && process.platform === 'win32' })
     let stopping = false
     let forwarding: Promise<void> = Promise.resolve()
     const forward = (signal: 'SIGINT' | 'SIGTERM') => {
       if (stopping || !child.pid) return
       stopping = true
-      forwarding = signalProcessTree(child.pid, signal).catch(() => { child.kill(signal) })
+      forwarding = launcher ? Promise.resolve().then(() => { child.kill(signal) })
+        : signalProcessTree(child.pid, signal).catch(() => { child.kill(signal) })
     }
     const interrupt = () => { forward('SIGINT') }
     const terminate = () => { forward('SIGTERM') }

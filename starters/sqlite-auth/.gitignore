@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.test-dist/
+data/
+.env
+.env.local
+.longhorn-permissions-*.json

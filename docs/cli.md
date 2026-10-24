@@ -29,6 +29,12 @@ for the [local Node SQLite task app](sqlite-starter.md), or `--runtime bun --tem
 for [native Bun SQLite](bun-sqlite-starter.md). Fixed application profiles reject
 incompatible runtimes; both creation entrypoints share these options.
 
+Choose `--runtime node|bun|deno --template sqlite-auth` for the
+[native auth project](auth-starter.md). It ships editable account/session/private-note
+source, native passwords/SQLite, source tests, persistence checks and owned reloads.
+Its unchanged launch scripts use [single-owner signal forwarding](cli-owned-scripts.md);
+custom scripts retain the generic pnpm path.
+
 After building, the direct entrypoints are:
 
 ```sh

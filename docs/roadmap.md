@@ -576,8 +576,21 @@ on the previous unbounded list.
 The [native gate](native-password-testing.md) proves independent raw crypto and
 legacy/peer hashes, live event loops, real SIGTERM during accepted registration,
 mixed three-host sessions/roles/revocation and more than 1000 owner-scoped notes.
-Workerd still uses explicit test-only password drivers. Native auth CLI generation,
-account recovery/reset and additional runtime/OS evidence remain separate work.
+Workerd still uses explicit test-only password drivers. Independent auth CLI
+generation is implemented below; account recovery/reset and additional runtime/OS
+evidence remain separate work.
+
+## Independent native auth workflow implemented
+
+The [sqlite-auth profile](auth-starter.md) generates Node, Bun or Deno projects
+with actual editable auth source, native crypto/storage, five copied app cases
+and per-feature guides. [Checked assets](auth-starter-snapshot.md) retain descriptor
+v1 and selected dependency closure. The [launcher](auth-starter-launcher.md) applies
+the shared schema/environment policy and literal Deno grants; [development](auth-starter-development.md)
+keeps service on compile errors and serially drains native replacements.
+The [packed gate](auth-starter-testing.md) verifies relocated frozen installs,
+native persistence, independent hashes, retained account/session policy and bounded
+private notes, configured denial, source reload and schema restoration.
 
 ## Subsequent framework modules
 

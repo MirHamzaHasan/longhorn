@@ -13,7 +13,8 @@ pnpm dev:auth:deno  # build, then native Deno with scoped permissions
 ```
 
 The native Bun/Deno commands start the compiled host; edit and rerun to rebuild.
-They do not add a native auth CLI starter or source-reload supervisor.
+The independent [auth starter](auth-starter.md) now copies these actual sources
+and supplies its own configured launcher and source-reload supervisor.
 The default address is `http://127.0.0.1:3001` and the default database is
 `examples/auth/data/auth.sqlite`, resolved relative to the example, not the shell.
 No seed account is created. See the [auth example](auth-example.md) for HTTP usage.

@@ -1288,3 +1288,27 @@ promise a cross-request snapshot. Actual native vectors, signal drain and mixed
 retained HTTP tests cover the integration. See [policy](scrypt-password-policy.md),
 [Bun](bun-passwords.md), [Deno](deno-passwords.md), [hosts](native-auth-example.md),
 [notes](auth-note-pages.md) and [proof](native-password-testing.md).
+
+---
+
+## 48. Independent Native Auth Generation and Owned Development
+
+The explicit sqlite-auth profile selects Node/Bun/Deno through the existing
+generator and trusted descriptor v1. The builder copies actual shared auth source,
+selects the native host and retains all five app cases with checked runner/SQLite
+mapping. Only the selected framework dependency closure is installed through local
+relative file overrides. Each generated feature has a Markdown connection guide.
+
+One Node launcher validates the actual compiled schema, resolves project-relative
+configuration and owns actual native exit. Deno receives literal named data-path
+grants, selected environment/network access and policy-file cleanup. Node/Bun stay
+native without a claimed permission sandbox. The shared watcher preserves service
+on compile errors and serially drains old hosts before configured replacement.
+
+Installed packed projects prove exact editable assets, unchanged frozen locks,
+native app/persistence checks, independently rederived hashes, retained account
+roles/sessions and more than 1000 owner notes. Configuration and original-schema
+denial, restored retained state, owned reloads and actual Deno permission boundaries
+are verified independently of the workspace. See [profile](auth-starter.md),
+[assets](auth-starter-snapshot.md), [launching](auth-starter-launcher.md),
+[development](auth-starter-development.md) and [proof](auth-starter-testing.md).

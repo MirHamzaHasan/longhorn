@@ -29,6 +29,7 @@ it.each([
   ['create','app','--runtime','workers','--template'], ['create','app','--runtime','workers','--template','unknown'],
   ['create','app','--runtime','node','--template','d1-tasks'], ['create','app','--runtime','workers','--template','api','--template','d1-tasks'],
   ['create','app','--runtime','workers','--template','sqlite-tasks'],
+  ['create','app','--runtime','workers','--template','sqlite-auth'],
   ['build', '--cwd'], ['build', '--cwd', '.', '--unsafe'], ['build', 'extra'], ['publish'],
 ])('rejects invalid arguments %j without executing a process', async (...args) => {
   let executed = false

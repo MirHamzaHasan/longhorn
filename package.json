@@ -70,6 +70,7 @@
     "test:auth": "pnpm build && node scripts/verify-auth.mjs",
     "test:password-runtimes": "pnpm build && node scripts/verify-password-runtimes.mjs",
     "test:native-auth": "pnpm build && node scripts/verify-password-runtimes.mjs && node scripts/verify-auth.mjs bun",
+    "test:auth-project": "pnpm build && node scripts/verify-auth-project.mjs",
     "test:events": "pnpm build && node scripts/verify-events.mjs",
     "test:cache": "pnpm build && node scripts/verify-cache.mjs",
     "dev:jobs": "pnpm --filter example-jobs^... build && pnpm --filter example-jobs dev",

@@ -9,6 +9,12 @@ downstream connections, verification, and current limits.
 
 | Feature | Guide | Implementation owner | Connects to |
 | --- | --- | --- | --- |
+| CLI forwarding to owned scripts | [Script owners](cli-owned-scripts.md) | CLI execute and fixed auth dev/start scripts | One parent signal, native drain, generic fallback and POSIX terminal-group proof |
+| Independent native auth projects | [Auth starter](auth-starter.md) | CLI sqlite-auth profile | Selected Node/Bun/Deno, real editable app, native crypto/SQLite and connected guides |
+| Checked auth source/test snapshot | [Auth assets](auth-starter-snapshot.md) | CLI snapshot builder and descriptor v1 | Exact shared source, checked native test mapping, selected package closure and independent archives |
+| Configured auth native launching | [Auth launcher](auth-starter-launcher.md) | Generated Node host owner | Shared config schema, environment precedence, literal Deno grants and actual-exit cleanup |
+| Owned auth source development | [Auth development](auth-starter-development.md) | Generated esbuild watcher | Compile-error retention, serial native drain, current configuration and retained sessions |
+| Packed native auth workflow proof | [Auth project testing](auth-starter-testing.md) | Installed CLI and native hosts | Frozen relocation, source/persistence cases, raw crypto, 1006-note pages, grants, reload and schema recovery |
 | Shared fixed scrypt policy | [Password policy](scrypt-password-policy.md) | Optional @longhorn/auth/scrypt | Existing Node wire format, trusted native drivers, dummy work and actual-settlement admission |
 | Native Bun password hashing | [Bun passwords](bun-passwords.md) | Optional @longhorn/bun/passwords | Native async crypto, shared policy and PasswordHasher contract |
 | Native Deno password hashing | [Deno passwords](deno-passwords.md) | Optional @longhorn/deno/passwords | Native async crypto, shared policy and legacy/peer hashes |

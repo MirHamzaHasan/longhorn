@@ -13,7 +13,7 @@ const project = await createProject({
   directory: '../my-api',
   runtime: 'node', // node | bun | deno | workers
   name: 'my-api',  // optional; inferred from the destination otherwise
-  template: 'api', // optional; d1-tasks: workers, sqlite-tasks: node/bun/deno
+  template: 'api', // optional; d1-tasks: workers, sqlite-tasks/sqlite-auth: node/bun/deno
 })
 console.log(project.directory, project.runtime, project.packages)
 ```
@@ -148,3 +148,10 @@ and supplies [configured native launching](deno-sqlite-starter-permissions.md)
 and [owned source reloads](deno-sqlite-starter-development.md). The
 [packed installed gate](deno-sqlite-starter-testing.md) verifies its complete
 native workflow outside this checkout.
+
+The explicit [sqlite-auth profile](auth-starter.md) now selects Node/Bun/Deno
+native hosts with the actual auth source and five source cases. Its
+[checked assets](auth-starter-snapshot.md), [launch permissions](auth-starter-launcher.md)
+and [owned development](auth-starter-development.md) use the same generator/descriptor
+boundary. [Packed native proof](auth-starter-testing.md) verifies independent accounts,
+sessions, private pages and retained schema/configuration behavior.
