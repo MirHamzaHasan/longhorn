@@ -42,3 +42,8 @@ Runtime user/audit mutation and migration-history reads remain denied after rest
 All owned processes, clusters and gate state are cleaned up; the packaged archive
 remains in .artifacts. Hosted CI, TLS and real-device assistive technology require
 their own execution evidence.
+
+After restore/regrant, Chromium signs in through the shipped console and uses
+[Account settings](console-account.md) to replace the password. The gate checks the
+actual 204/cookie clear, sign-in notice, old-session revocation, preserved peer and
+command history, new-password login and retained restart.

@@ -117,7 +117,9 @@ jobs:
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm build
       - id: verify-console
-        run: node scripts/verify-console.mjs
+        run: |
+          node scripts/verify-console.mjs
+          node scripts/verify-console-account.mjs
       - name: Retain console review captures
         id: console-artifact
         if: always()
@@ -126,8 +128,8 @@ jobs:
         with:
           name: longhorn-console-${{ github.run_id }}
           path: |
-            .artifacts/console/*.png
-            .artifacts/console/accessibility.json
+            .artifacts/console/**/*.png
+            .artifacts/console/**/accessibility.json
           include-hidden-files: true
           if-no-files-found: warn
           retention-days: 14

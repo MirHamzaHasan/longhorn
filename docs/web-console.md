@@ -12,7 +12,9 @@ cursor; Refresh starts at the newest page. Times use the browser locale.
 
 The same built assets are included in `pnpm dev:operator-host` at `/console`.
 That host retains data in separately provisioned PostgreSQL and receipt storage;
-the demo removes its temporary state on exit. No schema or role administration
+the demo removes its temporary state on exit. Account opens the [password settings](console-account.md), including sign-in after
+a successful change and honest guidance after an unconfirmed response.
+No schema or role administration
 is exposed through the browser. The API root remains at `/`.
 
 Hash navigation keeps all browser routes under `/console`. Route changes cancel

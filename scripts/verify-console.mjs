@@ -47,7 +47,7 @@ try{
     queueProducers:{MESSAGES:'console-commands'},queueConsumers:{'console-commands':{maxBatchSize:10,maxBatchTimeout:0,maxRetries:2}},durableObjects:{COMMANDS:{className:'CommandStore',useSQLite:true},RECEIPTS:{className:'ReceiptStore',useSQLite:true}}})
   await broker.ready;const publisher=createQueuePublisher(await broker.getQueueProducer('MESSAGES')),selected=await port(),origin='http://127.0.0.1:'+selected
   app=createPostgresApp({console:await loadConsoleAssets(),openDatabase:()=>openPostgres({connectionString:sandbox.appUrl}),workerEnabled:false,schedulerEnabled:false,
-    accounts:{origin,secure:false,sessionTtlMs:28800000,passwords:createScryptPasswordHasher()},operations:{publisher:{async publish(message,context){if(!available)throw new Error('Owned publisher unavailable');await publisher.publish(message,context)}},readReceipt:id=>broker.dispatchFetch('http://receipts/receipts/'+id)}})
+    accounts:{origin,secure:false,sessionTtlMs:28800000,passwords:createScryptPasswordHasher(),passwordChanges:true},operations:{publisher:{async publish(message,context){if(!available)throw new Error('Owned publisher unavailable');await publisher.publish(message,context)}},readReceipt:id=>broker.dispatchFetch('http://receipts/receipts/'+id)}})
   const server=await app.listen(nodeRuntime,{hostname:'127.0.0.1',port:selected}),url=server.url+'/console'
   const shell=await fetch(url);assert.equal(shell.status,200);assert.match(shell.headers.get('content-security-policy'),/script-src 'self'/);assert.equal(shell.headers.get('x-content-type-options'),'nosniff');assert.equal(shell.headers.get('cache-control'),'no-store')
   browser=await chromium.launch({headless:true})

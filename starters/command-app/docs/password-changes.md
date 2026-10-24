@@ -1,8 +1,8 @@
 # Authenticated password changes
 
 Owner: POST `/account/password` in the account API, AuthService and its PostgreSQL
-password capability. The operator host enables the route. The console currently
-has no password-settings screen; this is the guarded HTTP API.
+password capability. The operator host enables the route. The console
+[Account page](account.md) supplies confirmation and the guarded browser flow.
 
 Send strict JSON `{ "currentPassword": "...", "nextPassword": "..." }` with the
 session cookie and exact configured Origin. The replacement follows registration

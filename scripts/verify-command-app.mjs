@@ -7,7 +7,7 @@ import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { createHash, randomBytes } from 'node:crypto'
 import { createInterface } from 'node:readline'
-import { chromium } from '@playwright/test'
+import { chromium,expect } from '@playwright/test'
 import { startPostgresCluster } from './postgres-cluster.mjs'
 import { openPostgres } from '../runtimes/node/dist/postgres.js'
 
@@ -141,8 +141,14 @@ try{
   try{await assert.rejects(runtime.execute("UPDATE longhorn_auth.users SET roles='[]'::jsonb"));await assert.rejects(runtime.execute("UPDATE longhorn_auth.users SET password_hash='forged'"));await assert.rejects(runtime.execute("UPDATE longhorn_outbox.recovery_audit SET reason='manual-retry'"));await assert.rejects(runtime.execute('SELECT * FROM longhorn_pg_example.longhorn_migrations'))}finally{await runtime.close()}
   console.log('Offline restore: checksum rejection, complete schema/history/identity, sessions/roles, replay, receipts and audit restored into a new database/storage path; PUBLIC auth execution revoked, minimal grants reapplied and a new computed command verified.')
   const extra=await login('starter.member')
-  const changed=await fetch(origin+'/account/password',post({currentPassword:password,nextPassword},member))
-  assert.equal(changed.status,204);assert.ok(changed.headers.get('set-cookie').includes('Max-Age=0'))
+  browser=await chromium.launch();const accountPage=await browser.newPage()
+  await accountPage.goto(origin+'/console#/login');await accountPage.getByLabel('Username',{exact:true}).fill('starter.member');await accountPage.getByLabel('Password',{exact:true}).fill(password);await accountPage.getByRole('button',{name:'Sign in',exact:true}).click();await accountPage.getByRole('heading',{name:'Your commands',exact:true}).waitFor()
+  await accountPage.getByRole('link',{name:'Account',exact:true}).click();await accountPage.getByLabel('Current password',{exact:true}).fill(password);await accountPage.getByLabel('New password',{exact:true}).fill(nextPassword);await accountPage.getByLabel('Confirm new password',{exact:true}).fill(nextPassword)
+  const passwordResponse=accountPage.waitForResponse(value=>value.url()===origin+'/account/password'&&value.request().method()==='POST')
+  await accountPage.getByRole('button',{name:'Change password',exact:true}).click();const changed=await passwordResponse
+  assert.equal(changed.status(),204);assert.ok((await changed.headerValue('set-cookie'))?.includes('Max-Age=0'))
+  await expect(accountPage.getByRole('status')).toContainText('Password changed.');await expect(accountPage.getByRole('heading',{name:'Sign in to LongHorn'})).toBeVisible();assert.ok(!(await accountPage.context().cookies()).some(cookie=>cookie.name==='longhorn_dev'))
+  await browser.close();browser=undefined
   for(const cookie of[member,extra])assert.equal((await fetch(origin+'/account/session',{headers:{Cookie:cookie}})).status,401)
   assert.equal((await fetch(origin+'/account/session',{headers:{Cookie:operator}})).status,200)
   assert.equal((await fetch(origin+'/account/login',post({username:'starter.member',password}))).status,401)
@@ -152,7 +158,7 @@ try{
   assert.equal((await stop(host)).code,0);host=await startHost()
   assert.equal((await fetch(origin+'/account/session',{headers:{Cookie:fresh}})).status,200)
   for(const secret of secrets)assert.ok(!host.output().includes(secret),'Restored host logged a credential')
-  console.log('Restored password capability: explicit function regrant permits native replacement and all-session revocation without direct password UPDATE; current history/peer session survive a host restart.')
+  console.log('Restored password capability: shipped browser Account form and explicit function regrant permit native replacement and all-session revocation without direct password UPDATE; current history/peer session survive a host restart.')
 }finally{
   await browser?.close();await Promise.all([...instances].map(stop));await admin?.close();await cluster?.stop();await rm(temporary,{recursive:true,force:true})
 }

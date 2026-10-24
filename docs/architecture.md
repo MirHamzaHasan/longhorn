@@ -1339,3 +1339,26 @@ old login hosts before enabling mutations. See [policy](password-changes.md),
 [issuance](password-session-fencing.md), [SQLite](sqlite-password-changes.md),
 [PostgreSQL](postgres-password-changes.md), [HTTP](password-change-http.md) and
 [proof](password-change-testing.md).
+
+## 50. Browser Account Settings and Reauthentication Outcomes
+
+The existing command console adds an authenticated Account route using the same
+DOM helpers, design tokens and cookie API. Its public shell advertises only the
+host's configured password capability; a disabled host renders no mutation form.
+The browser validates confirmation and preserved Unicode input, then delegates
+all verification and atomic replacement to the established service/SQL capability.
+
+Password reauthentication 401 is distinguished from expiry through a fresh
+same-subject session read. Ordinary protected 401 handling stays in force. One
+in-flight mutation blocks another password submission and login/logout across
+navigation. Success clears private UI and requests sign-in; lost, timed-out or
+unexpected responses remain explicitly unconfirmed and are never replayed.
+Sensitive controls are cleared on submission/navigation/pagehide, private cached
+DOM is removed and a restored page reloads its session.
+
+Native Chromium/PostgreSQL/scrypt proof covers both 401 outcomes, real revocation
+and throttling, pending/reentered forms, late results, the actual request deadline,
+keyboard and accessible screenshots. The independently packed/restored app also
+uses its shipped form. See [account](console-account.md),
+[proof](console-account-testing.md), [security](console-security.md) and
+[password HTTP](password-change-http.md).

@@ -11,3 +11,9 @@ input,select,textarea{border-color:#788078}
 :root[data-theme=dark] input,:root[data-theme=dark] select,:root[data-theme=dark] textarea{border-color:#87968c}
 @media(max-width:640px){body[data-authenticated=true] .account-tools{width:100%;justify-content:space-between}body[data-authenticated=true] .account-tools #identity{display:block;flex:1;min-width:0;max-width:none;font-size:.75rem}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+.account-panel{max-width:560px}.account-panel .subtle{font-size:.9rem}.account-panel [role=status]{margin:0;font-size:.9rem}
+
+.account-panel input,.account-panel button{min-height:48px}
+
+.account-panel input[aria-invalid=true]{border-color:var(--danger)}

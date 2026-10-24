@@ -7,7 +7,9 @@ The browser job attempts to retain its actual PNG captures and accessibility.jso
 `longhorn-console-RUN_ID`. The upload runs even if the browser gate fails, preserving
 captures already made; no-files is a warning so the original gate result remains
 visible. Successful captures cover the existing light/dark desktop/phone and
-failure-state workflow, not fabricated preview data.
+failure-state workflow using real application data. Nested
+[account captures](console-account-testing.md) and their accessibility report are
+also included under the same artifact; paths do not broaden to database state.
 
 The independent-distribution job attempts `longhorn-command-app-RUN_ID` only after
 the relocated frozen install, app workflow and offline restore gate succeeds.

@@ -606,7 +606,21 @@ after the complete operations history without granting direct password UPDATE.
 [Native proof](password-change-testing.md) covers stale/concurrent work, real lock
 wait expiry, SQL rollback, four backend SIGKILL checkpoints, active KDF drain and
 retained HTTP/generated projects. Every old login writer must be upgraded before
-enabling mutations. Recovery/reset, MFA and a password-settings UI remain separate.
+enabling mutations. Recovery/reset and MFA remain separate. The browser integration is recorded below.
+
+## Browser account settings implemented
+
+The [Account page](console-account.md) connects the existing password API to the
+console and shipped application. Host capability, Unicode confirmation, live
+reauthentication/session distinction, one pending mutation across navigation and
+secret clearing are implemented. Success requires sign-in; uncertain responses
+are explained and never replayed. The [browser proof](console-account-testing.md)
+covers native revocation/throttling, dropped and late responses, the real deadline,
+keyboard, both themes, phone widths and 42 additional captures. The relocated
+archive changes credentials through its shipped form after restore/regrant.
+
+Recovery/reset, MFA, additional browser engines and physical-device assistive
+technology checks remain future work.
 
 ## Subsequent framework modules
 

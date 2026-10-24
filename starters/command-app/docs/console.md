@@ -3,7 +3,9 @@
 Owner: console/app.ts, app.css and src/console.ts. Fixed public assets use a strict
 same-origin CSP with no inline/eval scripts. Private data arrives through guarded
 relative API requests; text uses textContent. Only the theme is saved in browser
-storage. Route changes cancel old reads; 401 clears private content and shows sign-in.
+storage. Route changes cancel old reads; ordinary protected 401 clears private content and shows sign-in.
+[Account settings](account.md) use a fresh session probe to distinguish a wrong
+current password from expiry, and never replay an unconfirmed password change.
 
 History, create/detail/receipt and operator delivery/audit screens use actual APIs.
 Light/dark layouts adapt to narrow widths. Labels, keyboard focus, skip navigation,

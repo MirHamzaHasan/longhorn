@@ -102,6 +102,6 @@ export function createPostgresApp(resources: { openDatabase: () => Promise<Datab
     const access = configurePostgresAccounts(app,PgDatabase,resources.accounts)
     if (resources.operations) configurePostgresOperations(app,PgDatabase,access,resources.operations)
   }
-  if(resources.console)configureConsole(app,resources.console)
+  if(resources.console)configureConsole(app,resources.console,{passwordChanges:resources.accounts?.passwordChanges??false})
   return app
 }

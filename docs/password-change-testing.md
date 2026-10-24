@@ -48,3 +48,8 @@ normal data, cloud reset service or Worker native KDF is involved. The
 claims. See [policy](password-changes.md), [issuance](password-session-fencing.md),
 [SQLite](sqlite-password-changes.md), [PostgreSQL](postgres-password-changes.md)
 and [HTTP](password-change-http.md) for the boundaries.
+
+The [browser account gate](console-account-testing.md) adds real UI reauthentication,
+expiry, durable throttling, navigation, lost/late-response handling and accessibility
+evidence. The [independent archive gate](command-app-testing.md) exercises its shipped
+Account form after actual restore/regrant.

@@ -24,7 +24,8 @@ Other users, roles and private notes remain. Sign in with the new password.
 Invalid input is 400; invalid current credentials or stale/revoked session are 401;
 durable account throttling is 429 with Retry-After; native queue capacity is 503.
 A wrong current password leaves a still-valid session intact. Storage failures
-remain server failures and never return password/hash material. The current browser
-console has no password-settings screen; this feature supplies the actual API.
+remain server failures and never return password/hash material. The browser
+[Account page](console-account.md) uses this API with confirmation, an explicit
+session probe for reauthentication 401, and sign-in after success/uncertainty.
 See [service policy](password-changes.md), [SQLite](sqlite-password-changes.md),
 [PostgreSQL](postgres-password-changes.md) and [testing](password-change-testing.md).
