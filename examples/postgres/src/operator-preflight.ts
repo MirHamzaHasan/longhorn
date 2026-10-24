@@ -11,7 +11,7 @@ export type OperatorPreflightReport = {
   readonly ready: boolean
   readonly cancelled: boolean
   readonly checks: readonly OperatorCheckResult[]
-  readonly capabilities?: { readonly dispatchEnabled: boolean; readonly requestCleanupEnabled: boolean }
+  readonly capabilities?: { readonly dispatchEnabled: boolean; readonly requestCleanupEnabled: boolean; readonly commandLimitsEnabled: boolean }
 }
 type Outcome<T> = {ok:true;value:T}|{ok:false}
 const hints: Record<OperatorCheckId,string> = {
@@ -50,7 +50,7 @@ export async function checkOperatorApplication(options: {
     const configuration=await probe('configuration',options.loadConfiguration)
     if(configuration.ok){
       const config=configuration.value
-      capabilities={dispatchEnabled:config.dispatchEnabled,requestCleanupEnabled:!!config.requestCleanup}
+      capabilities={dispatchEnabled:config.dispatchEnabled,requestCleanupEnabled:!!config.requestCleanup,commandLimitsEnabled:!!config.commandLimits}
       await probe('console-assets',options.loadAssets)
       const connection=await probe('database',async()=>{
         database=await options.openDatabase(config)
@@ -59,7 +59,7 @@ export async function checkOperatorApplication(options: {
         await database.execute('SELECT 1')
       })
       if(connection.ok){
-        const schema=await probe('schema',()=>checkPostgresTables(database!,{passwordChanges:true,sessionControls:true},config.requestCleanup?{requestCleanup:config.requestCleanup}:{}))
+        const schema=await probe('schema',()=>checkPostgresTables(database!,{passwordChanges:true,sessionControls:true},{...(config.requestCleanup?{requestCleanup:config.requestCleanup}:{}),...(config.commandLimits?{commandLimits:config.commandLimits}:{})}))
         if(schema.ok)await probe('runtime-role',()=>checkOperatorRuntimeRole(database!));else skipped('runtime-role')
       }else{skipped('schema');skipped('runtime-role')}
       await probe('receiver',async()=>{if(await createOperationTransport(config).checkHealth!(signal)!==true)throw new Error('Receiver health failed')})

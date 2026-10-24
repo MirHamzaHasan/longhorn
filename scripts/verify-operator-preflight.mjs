@@ -52,8 +52,9 @@ export async function verifyOperatorPreflight({directory,cli,origin,ownerUrl,app
       (SELECT count(*) FROM longhorn_queue.jobs) AS jobs,
       (SELECT count(*) FROM longhorn_idempotency.requests) AS replays,
       (SELECT count(*) FROM longhorn_outbox.recovery_audit) AS audit,
-      (SELECT count(*) FROM longhorn_pg_example.history_views) AS views`)).rows[0]
-    const before=await snapshot(),good=await run();assert.equal(good.ready,true);assert.equal(good.cancelled,false);assert.ok(good.checks.every(row=>row.status==='passed'));assert.equal(good.capabilities.requestCleanupEnabled,true);observations.push('ready')
+      (SELECT count(*) FROM longhorn_pg_example.history_views) AS views,
+      (SELECT count(*) FROM longhorn_rate_limit.buckets) AS limits`)).rows[0]
+    const before=await snapshot(),good=await run();assert.equal(good.ready,true);assert.equal(good.cancelled,false);assert.ok(good.checks.every(row=>row.status==='passed'));assert.equal(good.capabilities.requestCleanupEnabled,true);assert.equal(good.capabilities.commandLimitsEnabled,true);observations.push('ready')
     for(const overrides of[{PORT:'invalid'},{MIGRATION_DATABASE_URL:ownerUrl}]){const report=await run(overrides,1);assert.equal(status(report,'configuration'),'failed');assert.equal(status(report,'database'),'skipped');observations.push('configuration')}
     const asset=join(directory,'dist/console/app.css');await rename(asset,asset+'.held')
     try{const report=await run({},1);assert.equal(status(report,'console-assets'),'failed');assert.equal(status(report,'database-close'),'passed');assert.equal(status(report,'receiver'),'passed');observations.push('assets')}finally{await rename(asset+'.held',asset)}
@@ -69,6 +70,15 @@ export async function verifyOperatorPreflight({directory,cli,origin,ownerUrl,app
       report=await run({},1);assert.equal(status(report,'schema'),'failed')
       report=await run({REQUEST_CLEANUP_ENABLED:'false'});assert.equal(report.ready,true);assert.equal(report.capabilities.requestCleanupEnabled,false);observations.push('cleanup-opt-in')
     }finally{await owner.execute('GRANT DELETE ON longhorn_idempotency.requests TO starter_app')}
+    await owner.execute('REVOKE UPDATE ON longhorn_rate_limit.buckets FROM starter_app')
+    try{
+      report=await run({},1);assert.equal(status(report,'schema'),'failed')
+      report=await run({COMMAND_LIMIT_ENABLED:'false'});assert.equal(report.ready,true);assert.equal(report.capabilities.commandLimitsEnabled,false);observations.push('command-limit-opt-in')
+    }finally{await owner.execute('GRANT UPDATE ON longhorn_rate_limit.buckets TO starter_app')}
+    for(const [grant,revoke]of[
+      ['GRANT DELETE ON longhorn_rate_limit.buckets TO starter_app','REVOKE DELETE ON longhorn_rate_limit.buckets FROM starter_app'],
+      ['GRANT CREATE ON SCHEMA longhorn_rate_limit TO starter_app','REVOKE CREATE ON SCHEMA longhorn_rate_limit FROM starter_app'],
+    ]){await owner.execute(grant);try{report=await run({},1);assert.equal(status(report,'runtime-role'),'failed');observations.push('limit-maintenance-denied')}finally{await owner.execute(revoke)}}
     const badToken=randomBytes(32).toString('hex');secrets.push(badToken);report=await run({MESSAGE_SERVICE_TOKEN:badToken},1);assert.equal(status(report,'receiver'),'failed');observations.push('credential')
     let mode='malformed',seen=0,authorized=false;const responseSecret='private-health-'+randomBytes(16).toString('hex');secrets.push(responseSecret)
     server=createServer((request,response)=>{seen++;authorized=request.headers.authorization==='Bearer '+receiverEnvironment.RECEIVER_TOKEN;if(mode==='malformed'){response.writeHead(200,{'Content-Type':'application/json'});response.end(JSON.stringify({ready:true,extra:responseSecret}))}})

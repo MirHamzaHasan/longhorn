@@ -19,7 +19,7 @@ function fixture(){
 beforeEach(()=>{vi.resetAllMocks();probes.health.mockResolvedValue(true)})
 it('returns only frozen versioned observations while reusing the enabled profile checks',async()=>{
   const f=fixture(),report=await checkOperatorApplication(f)
-  expect(report).toEqual({schemaVersion:1,ready:true,cancelled:false,checks:['configuration','console-assets','database','schema','runtime-role','receiver','database-close'].map(id=>({id,status:'passed'})),capabilities:{dispatchEnabled:false,requestCleanupEnabled:false}})
+  expect(report).toEqual({schemaVersion:1,ready:true,cancelled:false,checks:['configuration','console-assets','database','schema','runtime-role','receiver','database-close'].map(id=>({id,status:'passed'})),capabilities:{dispatchEnabled:false,requestCleanupEnabled:false,commandLimitsEnabled:false}})
   expect(checkPostgresTables).toHaveBeenCalledWith(f.database,{passwordChanges:true,sessionControls:true},{})
   expect(f.execute).toHaveBeenCalledExactlyOnceWith('SELECT 1');expect(f.close).toHaveBeenCalledTimes(1)
   expect(Object.isFrozen(report)&&Object.isFrozen(report.checks)&&report.checks.every(Object.isFrozen)).toBe(true)

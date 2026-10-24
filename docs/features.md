@@ -9,6 +9,13 @@ downstream connections, verification, and current limits.
 
 | Feature | Guide | Implementation owner | Connects to |
 | --- | --- | --- | --- |
+| Portable request attempt limits | [Limiter](request-limits.md) | @longhorn/ratelimit | Scoped hashed identity, fixed windows, policy mismatch and explicit drain |
+| Bounded memory request limits | [Memory store](rate-limit-memory.md) | Map and indexed expiry heap | Capacity fail-closed, live bucket preservation and bounded pruning |
+| Managed SQL request limits | [SQL stores](rate-limit-sql.md) | SQLite/PostgreSQL provider subpaths | Post-ownership clock, committed counters, owner migrations and separate maintenance |
+| Request limit HTTP adapter | [Hono middleware](rate-limit-http.md) | Explicit trusted identity resolver | 429 Retry-After, private 503 and awaited error observer |
+| Request limiter lifetime | [Owned drain](rate-limit-lifecycle.md) | Core admission and optional DI provider | Accepted hashing/native work before borrowed database close |
+| Account command attempt budget | [Command wiring](command-request-limits.md) | Default-off operations capability | Shared sessions/hosts, guards, readiness/preflight and retained backups |
+| Native request limit proof | [Verification](rate-limit-testing.md) | Actual runtimes, SQL, HTTP and archived apps | Contention, migration races, SIGKILL, no blocked effects and restore |
 | Operator runtime preflight | [Preflight](operator-preflight.md) | App-local coordinator and native check entry | Shared config/readiness, assets, restricted role, receiver and close |
 | Versioned diagnostic observations | [Report v1](operator-preflight-report.md) | Fixed IDs/statuses/hints | Private values omitted, dependency skips and explicit interrupted state |
 | Shared PostgreSQL readiness | [Schema checks](postgres-application-readiness.md) | Startup, live readiness and preflight | One runtime-visible probe helper and existing optional capabilities |
@@ -623,6 +630,20 @@ The optional account operations profile shares that database with Idempotency an
 Outbox, rechecks session/user ownership for mutations, and drains its dispatcher
 before the Outbox and pool. Its protected receipt reader is host-supplied. See
 [account operations](account-operations.md) and [the runnable demo](operator-accounts-demo.md).
+
+## Request attempt budget connection
+
+```mermaid
+flowchart LR
+  Auth[Origin / body / account guards] --> Quota[RateLimiter]
+  Quota --> Store[Memory or managed SQL]
+  Quota -->|allowed| Replay[Command replay transaction]
+  Replay --> History[History + outgoing delivery]
+  Quota -->|denied| Retry[429 + Retry-After]
+```
+
+The opt-in budget commits independently before command validation/business SQL.
+See [route semantics](command-request-limits.md) and [store lifetime](rate-limit-lifecycle.md).
 
 ## Planned
 

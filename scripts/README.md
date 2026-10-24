@@ -250,3 +250,8 @@ Object fixtures prove prior-history upgrade, retry/event/alarm rollback, one
 broker effect, scoped history/retention and credential/actor rotation. The launcher
 checks actor binding and authenticated TCP reads/writes without secret output.
 Owned fixture resources are always disposed. See [native audit proof](../docs/outbox-audit-testing.md).
+
+[Request attempt limits](../docs/request-limits.md) connect bounded memory and managed SQL to Hono.
+The command application has a default-off authenticated account budget, checked by
+startup/readiness/preflight and preserved by backup. Run pnpm test:rate-limits for
+actual runtime, SQL contention/crash, upgrade and HTTP verification.

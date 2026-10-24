@@ -8,7 +8,7 @@ const output = fileURLToPath(new URL('../dist/framework/', import.meta.url))
 const directories = [
   'packages/container', 'packages/runtime', 'packages/http', 'packages/logger', 'packages/events', 'packages/cache',
   'packages/validation', 'packages/config', 'packages/database', 'packages/auth', 'packages/core', 'packages/queue', 'packages/scheduler', 'packages/observability', 'packages/idempotency',
-  'packages/outbox', 'runtimes/node', 'runtimes/bun', 'runtimes/deno', 'runtimes/workers',
+  'packages/ratelimit', 'packages/outbox', 'runtimes/node', 'runtimes/bun', 'runtimes/deno', 'runtimes/workers',
 ]
 const entries = await Promise.all(directories.map(async (directory) => ({
   directory, package: JSON.parse(await readFile(join(root, directory, 'package.json'), 'utf8')),

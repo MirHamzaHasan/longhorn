@@ -24,3 +24,8 @@ transactional index builds in maintenance before updated hosts; startup/readines
 checks require valid/ready indexes, with the same runtime grants.
 
 [Apply appended 005_history_views and rerun runtime provisioning for named preferences.](saved-views.md)
+
+Optional [command attempt limits](request-limits.md) add bucket/access checks when enabled.
+Preflight reports commandLimitsEnabled without consuming a bucket. Owner deployment
+appends longhorn_rate_limit/001_buckets after the prior complete operations profile;
+runtime grants add schema USAGE and table SELECT/INSERT/UPDATE, with no DELETE.

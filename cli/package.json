@@ -24,6 +24,7 @@
   },
   "devDependencies": {
     "@longhorn/outbox": "workspace:*",
+    "@longhorn/ratelimit": "workspace:*",
     "@longhorn/idempotency": "workspace:*",
     "@types/node": "^22.13.10",
     "@longhorn/container": "workspace:*",

@@ -1,3 +1,4 @@
+import { postgresCommandLimitMigrations } from './command-limit-migrations.js'
 import type { Migration } from '@longhorn/database'
 import { postgresOutboxMigrations, postgresOutboxRecoveryMigrations, postgresOutboxAuditMigrations } from '@longhorn/outbox/postgres'
 import { postgresExampleMigrations } from './migrations.js'
@@ -18,4 +19,4 @@ export const postgresOperationsBaseMigrations: readonly Migration[] = [
     'CREATE INDEX operator_commands_owner ON longhorn_pg_example.operator_commands(owner_id,id)',
   ] },
 ]
-export const postgresOperationsMigrations: readonly Migration[]=[...postgresOperationsBaseMigrations,...postgresCommandHistoryMigrations,...postgresPasswordMigrations,...postgresHistoryFilterMigrations,...postgresHistorySearchMigrations,...postgresHistoryViewMigrations]
+export const postgresOperationsMigrations: readonly Migration[]=[...postgresOperationsBaseMigrations,...postgresCommandHistoryMigrations,...postgresPasswordMigrations,...postgresHistoryFilterMigrations,...postgresHistorySearchMigrations,...postgresHistoryViewMigrations,...postgresCommandLimitMigrations]

@@ -34,3 +34,8 @@ A pass describes observations at that time. Normal host startup and readiness
 check again. This is not an owner-only migration checksum audit, proof of every
 mutation grant, certificate/ingress verification or a promise of future availability.
 Configuration, deployment and repairs remain explicit operator actions.
+
+Optional [command attempt limits](command-request-limits.md) add bucket/access checks when enabled.
+Preflight reports commandLimitsEnabled without consuming a bucket. Owner deployment
+appends longhorn_rate_limit/001_buckets after the prior complete operations profile;
+runtime grants add schema USAGE and table SELECT/INSERT/UPDATE, with no DELETE.

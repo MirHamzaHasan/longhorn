@@ -5,6 +5,11 @@ import { configDefaults, defineConfig } from 'vitest/config'
 export default defineConfig({
   resolve: {
     alias: Object.entries({
+      '@longhorn/ratelimit/hono': './packages/ratelimit/src/hono.ts',
+      '@longhorn/ratelimit/memory': './packages/ratelimit/src/memory.ts',
+      '@longhorn/ratelimit/sqlite': './packages/ratelimit/src/sqlite.ts',
+      '@longhorn/ratelimit/postgres': './packages/ratelimit/src/postgres.ts',
+      '@longhorn/ratelimit': './packages/ratelimit/src/index.ts',
       '@longhorn/http/client': './packages/http/src/client.ts',
       '@longhorn/auth/sqlite-session-controls': './packages/auth/src/sqlite-session-controls.ts',
       '@longhorn/auth/postgres-session-controls': './packages/auth/src/postgres-session-controls.ts',

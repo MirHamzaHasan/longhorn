@@ -1668,3 +1668,28 @@ workflow rechecks after restore and retains its source-development proof. See
 [feature](operator-preflight.md), [format](operator-preflight-report.md),
 [readiness](postgres-application-readiness.md), [lifetime](operator-preflight-lifecycle.md)
 and [native proof](operator-preflight-testing.md).
+
+
+## 66. Explicit Request Budgets over Owned Store Reservations
+
+The independent @longhorn/ratelimit package exposes fixed per-subject windows,
+scoped SHA-256 keys and copied policy bounds. Memory keeps a bounded indexed
+expiry heap and never evicts a live limit. Managed SQLite/PostgreSQL stores acquire
+native write ownership before sampling time, reject active policy conflicts and
+publish only committed counters. Explicit bounded expiry pruning remains separate
+from request admission and from runtime authority.
+
+Hono resolves a caller-selected trusted identity and returns 429 with Retry-After
+or a private 503. Downstream and identity errors keep normal Hono handling. Accepted
+hash/store work registers before callbacks, so close drains actual work while the
+host retains its borrowed database. No timer, provider acquisition or migration
+starts implicitly.
+
+The opt-in command budget keys the authenticated account after global body/origin/
+auth guards and before command validation/replay. All sessions/hosts share attempts;
+denials create no business/outbox/replay effect. An appended package schema and
+minimal runtime grants connect readiness, preflight and retained backup state.
+Native proof covers all four runtimes, real SQL contention/commit death, killed and
+competing owner upgrades, two HTTP hosts and independently restored artifacts.
+See [contract](request-limits.md), [providers](rate-limit-sql.md),
+[application](command-request-limits.md) and [proof](rate-limit-testing.md).

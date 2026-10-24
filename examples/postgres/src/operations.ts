@@ -1,3 +1,5 @@
+import { configureCommandLimits,checkCommandLimitAccess } from './command-limits.js'
+import type { CommandLimitOptions } from './command-limits.js'
 import { IdempotencyCleanup } from '@longhorn/idempotency/cleanup'
 import type { IdempotencyCleanupOptions } from '@longhorn/idempotency/cleanup'
 import { checkRequestCleanupAccess } from './request-cleanup.js'
@@ -30,6 +32,7 @@ import { PostgresCommandHistory,commandHistoryQuery,CommandHistoryCursorError } 
 type Env = LonghornEnv & AuthEnv
 type AccountAccess = ReturnType<typeof configurePostgresAccounts>
 export type AccountOperationsOptions = {
+  readonly commandLimits?: CommandLimitOptions
   readonly requestCleanup?: IdempotencyCleanupOptions
   readonly publisher?: MessagePublisher<OperationData>
   readonly readReceipt?: (id: string,signal: AbortSignal) => Promise<Response>
@@ -40,7 +43,7 @@ export const PgOperationOutbox = token<Outbox<OperationData>>('account command o
 const Requests = token<Idempotency>('account command request replay')
 export const PgCommandHistory=token<PostgresCommandHistory>('account command history')
 const params = z.object({ id: z.uuid() })
-export async function checkOperationTables(database: Database,requestCleanup=false): Promise<void> {
+export async function checkOperationTables(database: Database,requestCleanup=false,commandLimits=false): Promise<void> {
   await database.execute('SELECT id,history_id,created_at,delivery_id FROM longhorn_pg_example.operator_commands LIMIT 0')
   await database.execute('SELECT id FROM longhorn_outbox.recovery_audit LIMIT 0')
   const permission = (await database.execute("SELECT has_function_privilege(current_user,'longhorn_auth.lock_session_user(text)','EXECUTE') AS allowed")).rows[0]
@@ -49,6 +52,7 @@ export async function checkOperationTables(database: Database,requestCleanup=fal
   await checkHistorySearchIndexes(database)
   await checkHistoryViewTable(database)
   if(requestCleanup)await checkRequestCleanupAccess(database)
+  if(commandLimits)await checkCommandLimitAccess(database)
 }
 export function configurePostgresOperations(app: Longhorn, dbToken: Token<Database>, access: AccountAccess, options: AccountOperationsOptions): void {
   app.container.register(provide(PgOperationOutbox, { deps: [dbToken], factory: db => new Outbox({ name: operationTopic,schema: operationData,store: new PostgresOutboxStore(db),retryDelayMs: 100,maxRetryDelayMs: 1000,leaseMs: 1000 }) }))
@@ -78,6 +82,7 @@ export function configurePostgresOperations(app: Longhorn, dbToken: Token<Databa
       return { actor: 'user:'+current.user.id }
     }, location: id => '/account/operations/deliveries/'+id,
   }))
+  const commandBudget=configureCommandLimits(app,dbToken,options.commandLimits)
   const commands = new Hono<Env>()
   commands.use('*',access.requireUser)
   commands.get('/',async(c,next)=>{
@@ -91,7 +96,7 @@ export function configurePostgresOperations(app: Longhorn, dbToken: Token<Databa
     try{return c.json(await c.get('container').resolve(PgCommandHistory).list(actor.id,input))}
     catch(error){if(error instanceof CommandHistoryCursorError)return c.json({error:error.message},400);throw error}
   })
-  commands.post('/',validate('json',commandSchema),async c => {
+  commands.post('/',commandBudget,validate('json',commandSchema),async c => {
     const input = c.req.valid('json'), actor = principal(c)!, container = c.get('container')
     try {
       const outcome = await container.resolve(Requests).run({ scope: 'user:'+actor.id+':numbers-command:v1',key: input.id,input },async tx => {

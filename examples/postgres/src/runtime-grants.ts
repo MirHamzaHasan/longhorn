@@ -16,6 +16,8 @@ export async function grantOperatorRuntime(database: Database, role: string): Pr
       'GRANT SELECT,INSERT ON TABLE longhorn_pg_example.task_reports,longhorn_auth.users,longhorn_pg_example.operator_commands,longhorn_outbox.recovery_audit',
       'GRANT SELECT,INSERT,DELETE ON TABLE longhorn_auth.sessions,longhorn_pg_example.private_notes',
       'GRANT SELECT,INSERT,UPDATE,DELETE ON TABLE longhorn_auth.attempts,longhorn_idempotency.requests',
+      'GRANT USAGE ON SCHEMA longhorn_rate_limit',
+      'GRANT SELECT,INSERT,UPDATE ON TABLE longhorn_rate_limit.buckets',
       'GRANT EXECUTE ON FUNCTION longhorn_auth.lock_session_user(text)',
       ...postgresPasswordFunctions.map(signature=>'GRANT EXECUTE ON FUNCTION '+signature),
     ]) await tx.execute(statement + ' TO ' + target)

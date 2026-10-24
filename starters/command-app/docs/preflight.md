@@ -37,3 +37,8 @@ owner deployment and [delivery](delivery.md) for receiver settings. A passing re
 describes those observations at that moment; the host checks again at startup.
 It does not prove future availability, deployment TLS/ingress, every mutation grant
 or owner-only migration checksum history. No repair or provisioning runs implicitly.
+
+Optional [command attempt limits](request-limits.md) add bucket/access checks when enabled.
+Preflight reports commandLimitsEnabled without consuming a bucket. Owner deployment
+appends longhorn_rate_limit/001_buckets after the prior complete operations profile;
+runtime grants add schema USAGE and table SELECT/INSERT/UPDATE, with no DELETE.

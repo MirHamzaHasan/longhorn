@@ -580,3 +580,8 @@ dependencies and required verification.
 
 The API is an early foundation. See [the architecture](docs/architecture.md) for package
 boundaries and [the example](examples/basic/src/app.ts) for the complete application.
+
+[Request attempt limits](docs/request-limits.md) connect bounded memory and managed SQL to Hono.
+The command application has a default-off authenticated account budget, checked by
+startup/readiness/preflight and preserved by backup. Run pnpm test:rate-limits for
+actual runtime, SQL contention/crash, upgrade and HTTP verification.

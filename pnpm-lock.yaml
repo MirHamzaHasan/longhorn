@@ -244,6 +244,9 @@ importers:
       '@longhorn/queue':
         specifier: workspace:*
         version: link:../packages/queue
+      '@longhorn/ratelimit':
+        specifier: workspace:*
+        version: link:../packages/ratelimit
       '@longhorn/runtime':
         specifier: workspace:*
         version: link:../packages/runtime
@@ -719,6 +722,9 @@ importers:
       '@longhorn/queue':
         specifier: workspace:*
         version: link:../../packages/queue
+      '@longhorn/ratelimit':
+        specifier: workspace:*
+        version: link:../../packages/ratelimit
       '@longhorn/scheduler':
         specifier: workspace:*
         version: link:../../packages/scheduler
@@ -905,6 +911,15 @@ importers:
       '@longhorn/validation':
         specifier: workspace:*
         version: link:../validation
+
+  packages/ratelimit:
+    dependencies:
+      '@longhorn/database':
+        specifier: workspace:*
+        version: link:../database
+      hono:
+        specifier: ^4.13.13
+        version: 4.13.13
 
   packages/runtime: {}
 

@@ -12,7 +12,7 @@ beforeEach(async () => {
   temporary = await mkdtemp(join(tmpdir(), 'longhorn-generator-'))
   framework = join(temporary, 'distribution')
   const packages: Record<string, { directory: string; dependencies: Record<string, string> }> = {}
-  for (const name of ['core', 'container', 'http', 'logger', 'runtime', 'config', 'validation', 'database', 'auth', 'idempotency', 'outbox', 'queue', 'scheduler', 'events', 'cache', 'observability', ...runtimes]) {
+  for (const name of ['core', 'container', 'http', 'logger', 'runtime', 'config', 'validation', 'database', 'auth', 'idempotency', 'ratelimit', 'outbox', 'queue', 'scheduler', 'events', 'cache', 'observability', ...runtimes]) {
     const dependencies: Record<string, string> = name === 'core'
       ? { '@longhorn/container': '0.0.1', '@longhorn/http': '0.0.1', '@longhorn/logger': '0.0.1', '@longhorn/runtime': '0.0.1' }
       : name === 'node' ? { '@longhorn/database': '0.0.1', '@longhorn/config': '0.0.1', '@longhorn/auth':'0.0.1' } : ['bun','deno'].includes(name) ? {'@longhorn/database':'0.0.1','@longhorn/auth':'0.0.1'} : ['auth','idempotency'].includes(name) ? {'@longhorn/database':'0.0.1'} : {}
@@ -33,9 +33,9 @@ describe('project generation', () => {
       '.operator.env.example', 'scripts/serve-receiver.mjs', 'scripts/provision-runtime.mjs', 'scripts/state-backup.mjs',
       'src/app.ts', 'src/operator-host.ts', 'src/operator-check.ts', 'src/operator-preflight.ts', 'src/operator-environment.ts', 'src/postgres-readiness.ts', 'src/operator-config.ts', 'src/operator-runtime.ts', 'src/operations.ts',
       'src/operations-migrations.ts', 'src/runtime-grants.ts', 'src/accounts.ts', 'src/command-history.ts',
-      'src/history-views.ts', 'src/request-cleanup.ts', 'console/app.ts', 'console/app.css', 'console/routes.ts',
+      'src/history-views.ts', 'src/request-cleanup.ts', 'src/command-limits.ts', 'src/command-limit-migrations.ts', 'console/app.ts', 'console/app.css', 'console/routes.ts',
       'receiver/receiver.ts', 'receiver/receipts.ts', 'receiver/contracts.ts', 'receiver/message-effect.ts',
-      'docs/features.md', 'docs/setup.md', 'docs/deployment.md', 'docs/dependencies.md', 'docs/backup.md', 'docs/generation.md', 'docs/development.md', 'docs/preflight.md']
+      'docs/features.md', 'docs/setup.md', 'docs/deployment.md', 'docs/dependencies.md', 'docs/backup.md', 'docs/generation.md', 'docs/development.md', 'docs/preflight.md', 'docs/request-limits.md']
     for (const path of paths) {
       const target = join(directory, path), content = path === 'README.md' ? '# {{PROJECT_NAME}}\n' : 'editable command application asset\n'
       await mkdir(join(target, '..'), { recursive: true }); await writeFile(target, content)
@@ -43,7 +43,7 @@ describe('project generation', () => {
     }
     const descriptor = { schemaVersion: 1, dependencies: {
       ...Object.fromEntries(['core','container','config','database','node','auth','http','logger','validation',
-        'idempotency','outbox','queue','scheduler','observability','workers','runtime'].map(name => ['@longhorn/'+name, 'workspace:*'])),
+        'idempotency','ratelimit','outbox','queue','scheduler','observability','workers','runtime'].map(name => ['@longhorn/'+name, 'workspace:*'])),
       hono: '^4.13.13', zod: '^4.6.7', miniflare: '3.20250718.3',
     }, devDependencies: { vitest: '^3.1.1' }, files }
     await writeFile(join(directory, 'template.json'), JSON.stringify(descriptor)); return { directory, descriptor }

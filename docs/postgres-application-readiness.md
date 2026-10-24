@@ -24,3 +24,8 @@ migration history. A successful probe therefore does not certify that ledger's
 checksums or exercise every business mutation grant. It neither acquires durable
 authorization nor creates an isolation snapshot against concurrent deployment.
 Operators deploy the complete immutable profile before starting updated hosts.
+
+Optional [command attempt limits](command-request-limits.md) add bucket/access checks when enabled.
+Preflight reports commandLimitsEnabled without consuming a bucket. Owner deployment
+appends longhorn_rate_limit/001_buckets after the prior complete operations profile;
+runtime grants add schema USAGE and table SELECT/INSERT/UPDATE, with no DELETE.

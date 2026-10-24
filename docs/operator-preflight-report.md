@@ -5,8 +5,8 @@ Connects [command](operator-preflight.md), [lifetime](operator-preflight-lifecyc
 and [verification](operator-preflight-testing.md).
 
 The single native stdout record has schemaVersion=1, ready, cancelled and checks.
-After valid configuration, capabilities contains only dispatchEnabled and
-requestCleanupEnabled booleans. It contains no URL, user/database name, token,
+After valid configuration, capabilities contains dispatchEnabled,
+requestCleanupEnabled and commandLimitsEnabled booleans. It contains no URL, user/database name, token,
 exception, SQL text, provider row, file contents or stack. The report and its rows
 are frozen copies. Normal runtime configuration errors follow this same envelope.
 Direct executable loading still requires an installed, built application.

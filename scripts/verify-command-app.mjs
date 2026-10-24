@@ -53,7 +53,7 @@ try{
     const drift=launch('pnpm',['install','--frozen-lockfile','--offline','--reporter=append-only'],directory,{CI:'true'});assert.equal((await drift.ended).code,1);assert.ok(drift.output().includes('OUTDATED_LOCKFILE'),safe(drift.output()))
     assert.equal(await readFile(join(directory,'pnpm-lock.yaml'),'utf8'),locked,'Rejected manifest drift rewrote the lockfile')
   }finally{await writeFile(manifestFile,manifestText)}
-  for(const asset of ['console/bounded-export.ts','console/audit-export.ts','console/audit-export.test.ts','docs/audit-export.md','console/history-metadata.ts','console/receipt-export.ts','console/receipt-export.test.ts','docs/receipt-export.md','src/history-view-values.ts','src/history-views.ts','src/history-views-http.ts','src/history-view-migrations.ts','docs/saved-views.md','src/request-cleanup.ts','docs/request-cleanup.md'])assert.ok((await readFile(join(directory,asset),'utf8')).length>0,'Missing shipped feature asset: '+asset)
+  for(const asset of ['console/bounded-export.ts','console/audit-export.ts','console/audit-export.test.ts','docs/audit-export.md','console/history-metadata.ts','console/receipt-export.ts','console/receipt-export.test.ts','docs/receipt-export.md','src/history-view-values.ts','src/history-views.ts','src/history-views-http.ts','src/history-view-migrations.ts','docs/saved-views.md','src/request-cleanup.ts','docs/request-cleanup.md','src/command-limits.ts','src/command-limit-migrations.ts','docs/request-limits.md'])assert.ok((await readFile(join(directory,asset),'utf8')).length>0,'Missing shipped feature asset: '+asset)
   for(const action of ['typecheck','test','build'])if(cli)await run(process.execPath,[cli,action,'--cwd',directory],directory);else await run('pnpm',[action],directory)
   console.log('Command distribution: actual archive relocated, frozen-installed in CI mode with unchanged locked dependencies, manifest drift rejected, typechecked, tested and built without workspace paths or unpublished registry dependencies.')
 
@@ -71,11 +71,11 @@ try{
   const serviceToken=randomBytes(32).toString('hex');secrets.push(serviceToken)
   const receiverPort=await freePort(),hostPort=await freePort(),origin='http://127.0.0.1:'+hostPort,receiverPath=join(temporary,'retained-receiver')
   const receiverEnv={HOST:'127.0.0.1',PORT:String(receiverPort),RECEIVER_TOKEN:serviceToken,RECEIVER_DATA_PATH:receiverPath,MIGRATION_DATABASE_URL:undefined}
-  const hostEnv={DATABASE_URL:appUrl,HOST:'127.0.0.1',PORT:String(hostPort),AUTH_ORIGIN:origin,AUTH_COOKIE_SECURE:'false',MESSAGE_SERVICE_URL:'http://127.0.0.1:'+receiverPort+'/',MESSAGE_SERVICE_TOKEN:serviceToken,MESSAGE_ALLOW_INSECURE_LOOPBACK:'true',REQUEST_CLEANUP_ENABLED:'true',REQUEST_CLEANUP_INTERVAL_MS:'1000',REQUEST_CLEANUP_LIMIT:'2',MIGRATION_DATABASE_URL:undefined}
+  const hostEnv={DATABASE_URL:appUrl,HOST:'127.0.0.1',PORT:String(hostPort),AUTH_ORIGIN:origin,AUTH_COOKIE_SECURE:'false',MESSAGE_SERVICE_URL:'http://127.0.0.1:'+receiverPort+'/',MESSAGE_SERVICE_TOKEN:serviceToken,MESSAGE_ALLOW_INSECURE_LOOPBACK:'true',COMMAND_LIMIT_ENABLED:'true',COMMAND_LIMIT_REQUESTS:'1000',COMMAND_LIMIT_WINDOW_MS:'60000',REQUEST_CLEANUP_ENABLED:'true',REQUEST_CLEANUP_INTERVAL_MS:'1000',REQUEST_CLEANUP_LIMIT:'2',MIGRATION_DATABASE_URL:undefined}
   // Exercise the shipped private profile loader, not only process environment.
   await writeFile(join(directory,'.operator.env'),Object.entries(hostEnv).filter(([,value])=>value!==undefined).map(([key,value])=>key+'='+value).join('\n')+'\n',{mode:0o600})
   const startReceiver=async()=>{const instance=launch(process.execPath,['scripts/serve-receiver.mjs'],directory,receiverEnv);await listening(instance);return instance}
-  const startHost=async()=>{const instance=launch(process.execPath,cli?[cli,'start','--cwd',directory]:['dist/operator-host.js'],directory,{MIGRATION_DATABASE_URL:undefined});instance.ownerSignal=!!cli;assert.equal(await listening(instance),origin);assert.equal(instance.records.find(row=>row.message==='HTTP server listening').fields.requestCleanupEnabled,true);return instance}
+  const startHost=async()=>{const instance=launch(process.execPath,cli?[cli,'start','--cwd',directory]:['dist/operator-host.js'],directory,{MIGRATION_DATABASE_URL:undefined});instance.ownerSignal=!!cli;assert.equal(await listening(instance),origin);assert.equal(instance.records.find(row=>row.message==='HTTP server listening').fields.requestCleanupEnabled,true);assert.equal(instance.records.find(row=>row.message==='HTTP server listening').fields.commandLimitsEnabled,true);return instance}
   for(const [grant,revoke]of [
     ['ALTER ROLE starter_app BYPASSRLS','ALTER ROLE starter_app NOBYPASSRLS'],
     ['GRANT CREATE ON DATABASE starter_app TO starter_app','REVOKE CREATE ON DATABASE starter_app FROM starter_app'],
@@ -122,6 +122,8 @@ try{
   for(const instance of [host,receiver]){for(const secret of secrets)assert.ok(!instance.output().includes(secret),'Host logged a credential');assert.equal((await stop(instance)).code,0)}
   console.log('Command distribution: shipped schema/grants and separate credential shells, actual browser assets, native sessions, scoped replay/history, protected receipts, denial checks, outage/retry/audit, shipped automatic receipt updates without manual refresh and both-process persistence verified.')
 
+  const checkpointDatabase=await openPostgres({connectionString:ownerUrl});let checkpointLimits
+  try{checkpointLimits=(await checkpointDatabase.execute('SELECT scope,subject_hash,policy_limit,window_ms,attempts,expires_at FROM longhorn_rate_limit.buckets ORDER BY scope,subject_hash')).rows;assert.ok(checkpointLimits.length>0)}finally{await checkpointDatabase.close()}
   const clients=process.env.LONGHORN_PG_CLIENT_BIN??JSON.parse(await readFile(join(root,'.artifacts/postgres-clients.json'),'utf8')).directory
   const backup=join(temporary,'checkpoint'),backupEnvironment={...deploy,RECEIVER_DATA_PATH:receiverPath,LONGHORN_PG_CLIENT_BIN:clients}
   for(const args of [['state:backup',backup],['state:backup',join(receiverPath,'nested-backup'),'--offline']]){const rejected=launch('pnpm',args,directory,backupEnvironment);assert.equal((await rejected.ended).code,1)}
@@ -141,6 +143,7 @@ try{
   try{
     const publicExecution=await restoredOwner.execute("SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace CROSS JOIN LATERAL aclexplode(coalesce(p.proacl,acldefault('f',p.proowner))) a WHERE n.nspname='longhorn_auth' AND a.grantee=0 AND a.privilege_type='EXECUTE'")
     assert.equal(publicExecution.rows.length,0)
+    assert.deepEqual((await restoredOwner.execute('SELECT scope,subject_hash,policy_limit,window_ms,attempts,expires_at FROM longhorn_rate_limit.buckets ORDER BY scope,subject_hash')).rows,checkpointLimits)
   }finally{await restoredOwner.close()}
   await run('pnpm',['migrate'],directory,restoreEnvironment);await run('pnpm',['provision:runtime','starter_app'],directory,restoreEnvironment)
   await writeFile(join(directory,'.operator.env'),Object.entries({...hostEnv,DATABASE_URL:restoredAppUrl.href}).filter(([,value])=>value!==undefined).map(([key,value])=>key+'='+value).join('\n')+'\n',{mode:0o600})
@@ -155,7 +158,7 @@ try{
   const next=await fetch(origin+'/account/commands',post({id:'after-restore',numbers:[7,9]},member));assert.equal(next.status,201);const newCommand=await next.json();await waitFor(async()=>{const value=await receipt(newCommand.command.id,member);return value&&value.receipts[0].result.sum===16})
   const runtime=await openPostgres({connectionString:restoredAppUrl.href})
   try{
-    await assert.rejects(runtime.execute("UPDATE longhorn_auth.users SET roles='[]'::jsonb"));await assert.rejects(runtime.execute("UPDATE longhorn_auth.users SET password_hash='forged'"));await assert.rejects(runtime.execute("UPDATE longhorn_outbox.recovery_audit SET reason='manual-retry'"));await assert.rejects(runtime.execute('SELECT * FROM longhorn_pg_example.longhorn_migrations'))
+    await assert.rejects(runtime.execute('DELETE FROM longhorn_rate_limit.buckets'));await assert.rejects(runtime.execute("UPDATE longhorn_auth.users SET roles='[]'::jsonb"));await assert.rejects(runtime.execute("UPDATE longhorn_auth.users SET password_hash='forged'"));await assert.rejects(runtime.execute("UPDATE longhorn_outbox.recovery_audit SET reason='manual-retry'"));await assert.rejects(runtime.execute('SELECT * FROM longhorn_pg_example.longhorn_migrations'))
     // Real ledger entries use the existing port; the relocated host owns cleanup.
     const expired=new Idempotency({store:new PostgresIdempotencyStore(runtime),retentionMs:1,now:()=>0})
     for(let i=0;i<4;i++)await expired.run({scope:'archive:cleanup',key:'expired-'+i,input:i},async()=>({fixture:true}))

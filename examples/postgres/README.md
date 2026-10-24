@@ -37,3 +37,8 @@ original committed task/job result for 24 hours. The response includes
 `Idempotency-Replayed` and `Idempotency-Expires-At`; a changed normalized title
 with the same unexpired key returns 409. See [HTTP idempotency](../../docs/idempotency-http.md)
 for scope/retention and [role setup](../../docs/postgres-roles.md) for the new ledger grants.
+
+[Request attempt limits](../../docs/command-request-limits.md) connect bounded memory and managed SQL to Hono.
+The command application has a default-off authenticated account budget, checked by
+startup/readiness/preflight and preserved by backup. Run pnpm test:rate-limits for
+actual runtime, SQL contention/crash, upgrade and HTTP verification.

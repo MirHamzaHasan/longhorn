@@ -105,6 +105,8 @@ jobs:
       - run: node scripts/verify-history-search.mjs
       - run: node scripts/verify-history-views.mjs
       - run: node scripts/verify-request-cleanup.mjs
+      - run: node scripts/verify-rate-limits.mjs
+      - run: node scripts/verify-command-limits.mjs
       - run: node scripts/verify-operator-accounts.mjs
       - run: node scripts/verify-password-changes.mjs
       - run: node scripts/verify-session-controls.mjs
@@ -181,6 +183,8 @@ jobs:
             .artifacts/command-development-proof.json
             .artifacts/operator-preflight-proof-archive.json
             .artifacts/operator-preflight-proof-cli.json
+            .artifacts/rate-limit-proof.json
+            .artifacts/command-limit-proof.json
           include-hidden-files: true
           if-no-files-found: error
           compression-level: 0

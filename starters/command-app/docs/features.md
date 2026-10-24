@@ -39,3 +39,8 @@ Replace the versioned numbers contract, business repository and receipt effect
 together when adapting the example. Preserve atomic enqueue, scoped identities,
 consumer dedupe, bounded retries and audit policy. See [setup](setup.md),
 [recovery](recovery.md) and [deployment](deployment.md).
+
+Optional [command attempt limits](request-limits.md) add bucket/access checks when enabled.
+Preflight reports commandLimitsEnabled without consuming a bucket. Owner deployment
+appends longhorn_rate_limit/001_buckets after the prior complete operations profile;
+runtime grants add schema USAGE and table SELECT/INSERT/UPDATE, with no DELETE.
