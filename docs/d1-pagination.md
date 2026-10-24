@@ -7,6 +7,8 @@ keyset queries in [tasks.ts](../examples/d1-worker/src/tasks.ts). Connects
 
 Tasks and activity each have an INTEGER PRIMARY KEY AUTOINCREMENT position.
 Queries compare `position > ?`, order by position and fetch limit plus one.
+ORDER BY qualifies the table's integer column. Ordering by the CAST text alias
+would sort lexically (10 before 9) and break keyset traversal.
 Responses contain tasks/activity and nextCursor, a decimal string when another
 page exists or null at the end. The cursor is the last returned position, not
 the lookahead row. Global and per-task activity use the same bounded protocol;
@@ -25,7 +27,8 @@ nextCursor: "9007199254740993"
 GET /tasks?limit=1&after=9007199254740993
 ```
 
-The native gate inserts actual positions beyond 2^53 and verifies successive task
+The native gate traverses the 9/10 boundary and inserts actual positions beyond
+2^53, then verifies successive task
 and activity pages through two workers. Ordinary paging also checks no duplicates
 across a retained dataset. Pages are live keyset reads, not a frozen multi-request
 snapshot: later writes/deletions can change subsequent pages. Cursors are not

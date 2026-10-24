@@ -4,6 +4,7 @@ compatibility_date = "2025-07-18"
 
 [vars]
 D1_MAX_PENDING = "6"
+D1_REQUEST_RETENTION_MS = "86400000"
 
 [[d1_databases]]
 binding = "DB"

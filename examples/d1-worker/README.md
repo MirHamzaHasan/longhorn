@@ -36,7 +36,22 @@ curl http://127.0.0.1:3016/activity
 Stale revisions return 409/currentRevision. Pagination cursors are decimal strings
 and remain exact beyond JavaScript's safe integer range. Activity survives deletion.
 This example is public and has no per-user authorization. A lost reply can follow
-a committed write; automatic request idempotency is not supplied.
+a committed write; without a key, retrying creation can create another task.
+
+For replayable creation, repeat the same key and normalized title:
+
+```sh
+curl -i http://127.0.0.1:3016/tasks \
+  -H 'Content-Type: application/json' -H 'Idempotency-Key: d1-task-123' \
+  -d '{"title":"Create this task once within retention"}'
+```
+
+Creation/replay return 201 with the original body/Location. Idempotency-Replayed
+distinguishes them; changed input under the same eligible key returns 409.
+D1_REQUEST_RETENTION_MS defaults to 24 hours (1 ms–30 days). Replay keeps the
+original snapshot even after edits/deletion. See [request replay](../../docs/d1-idempotency-http.md),
+[upgrade](../../docs/d1-idempotency-upgrades.md) and [native proof](../../docs/d1-idempotency-testing.md).
+`pnpm test:d1-idempotency` runs that gate.
 
 The [binding config](wrangler.example.toml) is an explicit application template.
 It creates no cloud resources. Only dist/index.js is the public app; deploy.ts

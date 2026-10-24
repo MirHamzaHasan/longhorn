@@ -44,8 +44,9 @@ mutation UUID links an update to its activity INSERT SELECT, avoiding phantom
 events from a losing writer. [Activity](d1-task-activity.md) commits atomically
 with changes; [pagination](d1-pagination.md) preserves exact integer cursors.
 
-This is optimistic concurrency, not request idempotency. Retrying a lost create
-reply can create another UUID; a committed update with a lost reply may later
+POST /tasks accepts an optional [Idempotency-Key](d1-idempotency-http.md) to replay
+the original response through a retained batch record. Without a key, retrying a
+lost create reply can create another UUID; a committed update with a lost reply may later
 conflict. Read current state before deciding how to recover. Native tests exercise
 the real deployment helper, cross-worker edits, failed activity rollback, HTTP
 validation and retained storage; see [proof](d1-testing.md).

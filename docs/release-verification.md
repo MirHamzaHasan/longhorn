@@ -14,7 +14,7 @@ because package builds replace their declaration directories.
 | Job | Required checks |
 | --- | --- |
 | Source and runtimes | Build, types, source tests, native Node/Bun/Deno/workerd, independent generic CLI starters |
-| D1 storage | Actual local D1/workerd, batch/migration rollback, cross-worker revision/activity atomicity, exact int64 pages, retained process restart and local host cleanup |
+| D1 storage | Actual local D1/workerd, batch/migration rollback, revision/activity atomicity, numeric/int64 pages, request replay after dropped HTTP replies, retained restart and local host cleanup |
 | Redis cache | Owned Redis 7+ binary, existing memory-cache gate, shared codec/protocol on four runtimes and actual Node Redis/TLS/task HTTP integration |
 | Telemetry | Pinned native Collector 0.163.2 Linux x64, real trace/metric/log JSON roundtrips on four runtimes, delivery faults and reports HTTP |
 | Account operations | Native history upgrade/concurrency, transaction/account locks, persistent HTTP receiver/recovery |
@@ -76,6 +76,14 @@ Its [first hosted attempt](https://github.com/MirHamzaHasan/longhorn/actions/run
 failed all seven jobs before runner allocation or any executed step. The D1 check
 annotation identifies the same Actions budget restriction. Hosted current-head
 execution remains required independently of local evidence.
+
+D1 request replay extends that job with verify-d1-idempotency.mjs. Local frozen
+install/build/types, 497 source tests, both native D1 gates, existing SQLite/
+PostgreSQL/Object idempotency gates and all four independent starters pass.
+The native HTTP gateway loses a committed reply before the client receives it;
+same-key retry/restart recovers one task/activity and the original response.
+The expanded base gate also verifies numeric keyset order through 9/10 and int64
+positions. Configured hosted checks remain separate from this local evidence.
 
 [Review artifacts](ci-review-artifacts.md) attempt to retain actual browser captures
 and the application archive/checksum after successful independent verification.

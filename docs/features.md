@@ -9,6 +9,11 @@ downstream connections, verification, and current limits.
 
 | Feature | Guide | Implementation owner | Connects to |
 | --- | --- | --- | --- |
+| Predeclared batch request replay | [Batch idempotency](batch-idempotency.md) | `@longhorn/idempotency/batch-sqlite` | Atomic result/business plans, JSON snapshots and positive commit recovery |
+| Batch replay ownership and cleanup | [Batch records](batch-idempotency-storage.md) | Separate SQLite request ledger | Unique generations, admission-time expiry, rollback restoration and bounded pruning |
+| Replayable D1 task creation | [D1 request HTTP](d1-idempotency-http.md) | TaskRequests DI and POST /tasks | Optional key, original 201/body/Location, normalized conflicts and atomic activity |
+| Retained D1 request-ledger upgrade | [D1 upgrade](d1-idempotency-upgrades.md) | Complete manifest and private helper | Unchanged legacy checksums, appended ledger and read-only startup recovery |
+| Native D1 replay verification | [D1 replay proof](d1-idempotency-testing.md) | Real D1/workerd and owned HTTP gateway | Lost committed reply, races, expiry replacement, pruning and retained restart |
 | Atomic batch database capability | [Batch database](batch-database.md) | `@longhorn/database` | Ordered predeclared SQL, native atomicity, separate from callback transactions |
 | Guarded batch schema history | [Batch migrations](batch-migrations.md) | `@longhorn/database/batch` | Immutable checksums, prefix fencing, whole-suffix commit and read-only verification |
 | Native Workers D1 provider | [D1 storage](workers-d1.md) | `@longhorn/workers/d1` | Binding/session borrowing, SQL/scalar boundaries, bounded admission and actual drain |
@@ -279,6 +284,9 @@ flowchart TD
   D1[Workers D1 provider] --> BatchDatabase[Atomic batch SQL capability]
   D1 --> NativeD1[Platform D1 binding or session]
   D1Tasks[Persistent D1 task app] --> D1
+  D1Tasks --> BatchRequests[Predeclared request replay]
+  BatchRequests --> BatchDatabase
+  BatchRequests --> RequestLedger[Atomic JSON response ledger]
   D1Tasks --> Core
   D1Tasks --> D1Activity[Atomic task activity and exact cursor pages]
   D1Activity --> BatchDatabase
@@ -409,6 +417,10 @@ registers TaskDatabase and resolves Tasks through DI. Its public request startup
 does no schema writes. Conditional revisions and task/activity SQL commit in one
 batch. The local host removes its private schema worker before reporting readiness;
 retained D1 data survives workerd restart. See [D1 deployment](d1-deployment.md).
+Optional TaskRequests stages response, task and activity together. Duplicate keys
+roll back before business SQL and read the original response; positive recovery
+also handles lost acknowledgements. See [plans](batch-idempotency.md) and
+[HTTP](d1-idempotency-http.md).
 
 The PostgreSQL app separately deploys its owner migration history, then opens a
 restricted pool, starts dependency checks, and acquires report queue/scheduler and

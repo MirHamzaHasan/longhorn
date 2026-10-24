@@ -367,6 +367,9 @@ importers:
       '@longhorn/database':
         specifier: workspace:*
         version: link:../../packages/database
+      '@longhorn/idempotency':
+        specifier: workspace:*
+        version: link:../../packages/idempotency
       '@longhorn/validation':
         specifier: workspace:*
         version: link:../../packages/validation

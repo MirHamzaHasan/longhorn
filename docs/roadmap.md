@@ -420,8 +420,20 @@ transactions. Read-only application startup follows a trusted schema phase. The
 runnable retained local host verifies shared D1 task edits across workers, atomic
 activity, wide integer cursors and restart. Decoder errors after commit remain
 explicitly ambiguous; existing callback-based stores are not ported by this work.
-Managed cloud deployment, replication/failover and new D1-specific queue/auth/
-idempotency protocols remain later integrations.
+Managed cloud deployment, replication/failover and D1-specific queue/auth protocols
+remain later integrations. Predeclared request replay is implemented below.
+
+## D1 batch request replay implemented
+
+[Plans](batch-idempotency.md), [records/retention](batch-idempotency-storage.md),
+[task HTTP](d1-idempotency-http.md), [upgrade](d1-idempotency-upgrades.md) and
+[native proof](d1-idempotency-testing.md) each have a guide. Response, task and
+activity commit in one native batch. Duplicate keys fail before business SQL and
+read saved results. Positive evidence also recovers lost binding acknowledgements
+and post-commit decoding failure without write replay. Actual HTTP socket loss,
+cross-worker requests, expiry races, cleanup and retained restart are verified.
+Existing callback APIs keep separate semantics. Task/activity pages now order by
+qualified integer positions across decimal digit boundaries.
 
 ## Subsequent framework modules
 

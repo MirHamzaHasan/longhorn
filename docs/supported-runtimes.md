@@ -17,7 +17,7 @@ account and browser jobs passed there. Package engines allow Node
 | Native Redis task cache | Node 20.19.4, Redis 8.0.0, @redis/client 6.3.0 | Actual authenticated standalone server, TLS proxy, expiry/ACL/restart, native deadline destruction and HTTP outage fallback |
 | Persistent command console host | Node 20.19.4, PostgreSQL 18.4 | Native pg pool, scrypt, complete schema, fixed built assets and restricted role |
 | Local durable receiver | Miniflare 3.20250718.3, workerd 1.20250718.0, compatibility date 2025-07-18 | Retained single-host Object SQLite directory; no managed cloud failover evidence |
-| D1 provider and persistent tasks | Same pinned Miniflare/workerd, each worker at compatibility date 2025-07-18 | Actual local D1 batches, guarded DDL/history, cross-worker revision/activity atomicity, exact int64 pages and retained restart; no cloud replication/failover evidence |
+| D1 provider and persistent tasks | Same pinned Miniflare/workerd, each worker at compatibility date 2025-07-18 | Actual local batches, guarded schema, revision/activity atomicity, numeric/int64 pages, replay after dropped HTTP reply and retained restart; no cloud replication/failover evidence |
 | Browser console | Playwright 1.64.1 Chromium, axe 4.14.0 | Both themes, desktop/phone widths, keyboard/scaled text; other engines and real-device AT remain manual |
 | Offline restore | PostgreSQL 18.4 pg_dump/pg_restore and retained local workerd storage | Stopped writers, fresh database/storage, explicit grants; not online/PITR replication |
 | Hosted CI baseline | Ubuntu 24.04, Node/pnpm pinned as above | Four v0.1 paths executed, including restore; artifact quota limits downloads |

@@ -996,3 +996,30 @@ managed cloud deployment/replication need their own proof. See
 [capability](batch-database.md), [schema](batch-migrations.md),
 [provider](workers-d1.md), [deployment](d1-deployment.md), [tasks](d1-tasks.md),
 [activity](d1-task-activity.md), [pages](d1-pagination.md) and [proof](d1-testing.md).
+
+---
+
+## 37. Predeclared Request Replay and Positive Commit Recovery
+
+The optional idempotency /batch-sqlite entrypoint accepts a complete business
+SQL plan and known strict JSON response. All inputs are snapshotted before hashing.
+One native batch removes this key's expired generation, inserts its complete
+response record and executes business SQL. Unique ownership rejects duplicate
+plans before business statements; native rollback restores old generations and
+business state together on failure.
+
+After an error, one read checks committed evidence. Matching eligible input
+replays JSON; changed input conflicts. Its own generation claim can establish
+success after acknowledgement loss or post-commit decoding failure. Unavailable
+evidence leaves a storage error; no business batch is automatically retried.
+Retention uses captured admission time; callback services retain their completion
+clock policy. Explicit bounded cleanup deletes only expired request records.
+
+TaskDatabase, TaskRequests and Tasks connect through DI. Optional HTTP keys preserve
+the original 201/body/Location after live edits/deletion. The manifest appends its
+ledger without changing task/activity SQL. Actual workerd proves legacy upgrade,
+cross-worker ownership, client socket loss and retained process restart. Numeric
+keyset queries qualify integer ORDER BY while projecting text cursors, preserving
+9/10 and int64 order. See [API](batch-idempotency.md),
+[records](batch-idempotency-storage.md), [HTTP](d1-idempotency-http.md),
+[upgrade](d1-idempotency-upgrades.md) and [proof](d1-idempotency-testing.md).

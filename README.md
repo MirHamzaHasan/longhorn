@@ -47,6 +47,8 @@ http://127.0.0.1:3016/health. The [D1 example](examples/d1-worker/README.md)
 adds revision-checked tasks, atomic activity and exact cursor pages using native
 D1 batches. Its local host retains data and privately applies schema before
 readiness; see [the provider](docs/workers-d1.md) and [deployment](docs/d1-deployment.md).
+Optional [request keys](docs/d1-idempotency-http.md) replay creation after a lost
+reply; task, activity and response writes commit together.
 
 ## Run the basic example
 
@@ -407,6 +409,7 @@ pnpm test:runtimes
 pnpm test:worker-scheduled
 pnpm test:worker-storage
 pnpm test:d1
+pnpm test:d1-idempotency
 pnpm test:worker-queues
 pnpm test:worker-alarms
 pnpm test:transaction-publishing
@@ -477,7 +480,8 @@ complete HTTP workflow. Typechecking uses built workspace declarations, so build
   protected persistent receivers, conflicting-effect detection and a restricted
   persistent account operations host with restart/outage recovery, native D1
   atomic batches, guarded schema deployment and retained revision-checked Worker
-  tasks/activity with exact integer pagination.
+  tasks/activity with exact integer pagination, optional replayable D1 creation
+  and positive committed-result recovery after acknowledgement loss.
 - Planned integrations include additional database providers, telemetry protocols/
   signals and platform triggers; their guarantees need native verification.
 

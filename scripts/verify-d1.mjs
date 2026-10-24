@@ -43,7 +43,7 @@ try{
   assert.equal((await first.fetch('http://tasks/health')).status,503)
   const sql=async(statement,args=[],database='tasks')=>(await json(fixture,'/sql',post({sql:statement,args,database}))).results
   assert.equal((await sql("SELECT name FROM sqlite_master WHERE name='longhorn_batch_migrations'")).length,0)
-  assert.deepEqual((await json(schema,'/deploy',post({}))).applied,['d1-tasks/001','d1-tasks/002'])
+  assert.deepEqual((await json(schema,'/deploy',post({}))).applied,['d1-tasks/001','d1-tasks/002','longhorn_batch_idempotency/001_requests'])
   assert.deepEqual((await json(schema,'/deploy',post({}))).applied,[])
   assert.equal((await json(first,'/health')).storage,'d1')
   const hiddenDeploy=await first.fetch('http://tasks/deploy',post({}));assert.equal(hiddenDeploy.status,404,await hiddenDeploy.text())
@@ -62,10 +62,12 @@ try{
   await sql("CREATE TRIGGER reject_activity BEFORE INSERT ON d1_task_activity WHEN NEW.kind='created' BEGIN SELECT RAISE(ABORT,'private activity failure'); END")
   response=await first.fetch('http://tasks/tasks',post({title:'must roll back with activity'}));assert.equal(response.status,503);assert.ok(!(await response.text()).includes('private'))
   assert.equal((await sql("SELECT COUNT(*) AS total FROM d1_tasks WHERE title='must roll back with activity'"))[0].total,0);await sql('DROP TRIGGER reject_activity')
-  const more=await Promise.all(Array.from({length:5},(_,index)=>json(index%2?first:second,'/tasks',post({title:'page '+index}))))
+  const more=[]
+  for(let index=0;index<12;index++)more.push(await json(index%2?first:second,'/tasks',post({title:'page '+index})))
   let after='0';const listed=[]
   do{const page=await json(first,'/tasks?limit=2&after='+after);listed.push(...page.tasks);after=page.nextCursor}while(after)
-  assert.equal(listed.length,6);assert.equal(new Set(listed.map(task=>task.id)).size,6)
+  assert.equal(listed.length,13);assert.equal(new Set(listed.map(task=>task.id)).size,13)
+  assert.deepEqual(listed.slice(1).map(task=>task.id),more.map(value=>value.task.id))
   response=await second.fetch('http://tasks/tasks/'+created.id,{...post({revision:2}),method:'DELETE'});assert.equal(response.status,204)
   assert.equal((await first.fetch('http://tasks/tasks/'+created.id)).status,404)
   assert.deepEqual((await json(first,'/tasks/'+created.id+'/activity')).activity.map(item=>item.kind),['created','updated','deleted'])
@@ -91,6 +93,7 @@ try{
   const throughHost=await fetch(url+'/tasks',post({title:'native host task'}));assert.equal(throughHost.status,201);const hostTask=(await throughHost.json()).task
   await stop(host);host=launch(join(temporary,'retained'));url=await listening(host);assert.equal((await(await fetch(url+'/tasks/'+hostTask.id)).json()).task.title,'native host task');await stop(host)
   const invalidDirectory=join(temporary,'invalid-config'),invalid=launch(invalidDirectory,{D1_MAX_PENDING:'0'});assert.equal((await invalid.ended).code,1);await assert.rejects(access(invalidDirectory))
+  const invalidRetentionDirectory=join(temporary,'invalid-retention'),invalidRetention=launch(invalidRetentionDirectory,{D1_REQUEST_RETENTION_MS:'0'});assert.equal((await invalidRetention.ended).code,1);await assert.rejects(access(invalidRetentionDirectory))
   const interruptedHost=launch(join(temporary,'interrupted'))
   await waitFor(()=>interruptedHost.records.some(row=>row.message==='D1 development host starting'));await stop(interruptedHost);assert.ok(!interruptedHost.records.some(row=>row.message==='HTTP server listening'))
   console.log('D1 development host: trusted schema worker removed before readiness, real retained HTTP tasks across restart, early configuration rejection and signal-driven startup cleanup verified.')

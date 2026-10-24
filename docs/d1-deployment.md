@@ -10,6 +10,9 @@ configuration, DI and lifecycle without a public migration route.
 chooses an available port. D1_MAX_PENDING defaults to 6 and accepts 1–64. Invalid
 configuration fails before creating retained storage. D1_DATA_PATH selects a
 directory, defaulting to examples/d1-worker/data/d1 (gitignored).
+D1_REQUEST_RETENTION_MS defaults to 86400000 (1–2592000000), supplying the
+[request replay](d1-idempotency-http.md) deadline policy. The host forwards its
+validated value as a binding, without adding a public maintenance route.
 
 The host loads the same compiled config schema as the Worker. Two initial workers
 share a retained D1 database: the public app and a private schema worker. The host
@@ -25,6 +28,8 @@ cleanup. Concurrent requests share startup per binding identity. Failed startup
 closes that handle and clears the failed cache entry, allowing a later request
 to recover after trusted deployment. Readiness reports the successful startup
 check; /health is not a fresh database probe on every request.
+The [ledger upgrade](d1-idempotency-upgrades.md) appends schema after the existing
+task/activity migrations and participates in this same read-only startup check.
 
 The [Wrangler example](../examples/d1-worker/wrangler.example.toml) names only
 dist/index.js and an explicit DB binding placeholder. Creating cloud resources,

@@ -109,3 +109,7 @@ Snapshots also include optional `@longhorn/database/batch` and
 `@longhorn/workers/d1`. Generic starters still add no persistent database or
 schema deployment. The [D1 task example](d1-tasks.md) shows that explicit binding,
 batch repository and trusted deployment profile.
+Snapshots retain optional `@longhorn/idempotency/batch-sqlite` when idempotency is
+selected through the graph. Generic starters enable no persistence/request keys;
+the [D1 replay profile](d1-idempotency-http.md) supplies explicit DI, deployment
+and response retention policy.

@@ -74,6 +74,8 @@ and [task integration](d1-tasks.md). A D1 handle is not a Database and cannot be
 passed to existing callback-based SQLite/PostgreSQL stores. Native batch errors
 roll back SQL; result conversion failures can occur after commit. Provider-specific
 precision and lifetime policies remain explicit in [the guide](workers-d1.md).
+The optional [batch idempotency helper](batch-idempotency.md) separately stages
+known JSON responses with business SQL without introducing a callback transaction.
 
 Workers can borrow a SQLite-backed Durable Object through
 `createDurableSqlite` from `@longhorn/workers/durable-sqlite`. The same migration,

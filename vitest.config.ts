@@ -14,6 +14,7 @@ export default defineConfig({
       '@longhorn/outbox': './packages/outbox/src/index.ts',
       '@longhorn/workers/outbox': './runtimes/workers/src/outbox.ts',
       '@longhorn/idempotency/sqlite': './packages/idempotency/src/sqlite.ts',
+      '@longhorn/idempotency/batch-sqlite': './packages/idempotency/src/batch-sqlite.ts',
       '@longhorn/idempotency/postgres': './packages/idempotency/src/postgres.ts',
       '@longhorn/idempotency': './packages/idempotency/src/index.ts',
       '@longhorn/observability/hono': './packages/observability/src/hono.ts',

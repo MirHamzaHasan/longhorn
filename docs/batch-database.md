@@ -26,6 +26,8 @@ transaction. Encode conditional changes and dependent writes in SQL, as the
 [task repository](d1-tasks.md) does. Reading first and submitting a later batch
 does not lock the earlier observation; use a conditional write or an explicit
 guard inside the batch.
+The separate [batch idempotency API](batch-idempotency.md) accepts a complete
+business plan and known JSON response, preserving this same boundary.
 
 The existing callback-based SQLite/PostgreSQL migrations, queue, scheduler, auth,
 idempotency and outbox stores still require their existing providers. D1 cannot

@@ -1,4 +1,5 @@
 import type { Migration } from '@longhorn/database'
+import{batchIdempotencyMigrations}from'@longhorn/idempotency/batch-sqlite'
 export const migrations:readonly Migration[]=[
   {id:'d1-tasks/001',statements:[`CREATE TABLE d1_tasks(
     position INTEGER PRIMARY KEY AUTOINCREMENT,id TEXT NOT NULL UNIQUE,title TEXT NOT NULL CHECK(length(trim(title)) BETWEEN 1 AND 200),
@@ -9,4 +10,5 @@ export const migrations:readonly Migration[]=[
     position INTEGER PRIMARY KEY AUTOINCREMENT,task_id TEXT NOT NULL,revision INTEGER NOT NULL CHECK(revision BETWEEN 1 AND 2147483648),
     kind TEXT NOT NULL CHECK(kind IN('created','updated','deleted')),at TEXT NOT NULL,mutation TEXT NOT NULL UNIQUE,UNIQUE(task_id,revision)
   )`,'CREATE INDEX d1_task_activity_task_position ON d1_task_activity(task_id,position)']},
+  ...batchIdempotencyMigrations,
 ]

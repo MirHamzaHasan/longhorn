@@ -15,8 +15,10 @@ Built browser bundles run on actual workerd 1.20250718.0 through pinned Miniflar
 The gate owns temporary D1 persistence, workers and child processes; it uses no
 cloud credentials or shared application data. The local evidence is macOS ARM64
 with Node 20.19.4. The configured Ubuntu d1-storage job is a separate hosted gate.
-The complete source suite passes 491 tests in 83 files; workspace types, existing
+The complete source suite passes 497 tests in 84 files; workspace types, existing
 Durable Object SQL, native runtime and independent generated-starter gates pass too.
+The separate [replay gate](d1-idempotency-testing.md) now covers retained request
+results, legacy upgrade and actual dropped HTTP acknowledgements.
 
 Provider checks exercise native values/blob snapshots, metadata, atomic batch
 constraint rollback, unsafe integer rejection, exact int64 text, trigger bodies,

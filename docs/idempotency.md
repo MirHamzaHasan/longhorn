@@ -4,6 +4,10 @@ Owner: `@longhorn/idempotency`. Connects [transactions](database.md),
 [validated job publishing](transaction-publishing.md), [JSON fingerprints](idempotency-json.md),
 [SQL records/retention](idempotency-storage.md) and [HTTP retries](idempotency-http.md).
 
+The optional [batch-sqlite API](batch-idempotency.md) separately supports SQLite
+BatchDatabase providers such as D1 using predeclared SQL and a known JSON result.
+It does not implement this callback contract or change its retention policy.
+
 ```ts
 import { Idempotency } from '@longhorn/idempotency'
 import { SqliteIdempotencyStore } from '@longhorn/idempotency/sqlite'
