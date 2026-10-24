@@ -9,6 +9,10 @@ downstream connections, verification, and current limits.
 
 | Feature | Guide | Implementation owner | Connects to |
 | --- | --- | --- | --- |
+| Persistent D1 project template | [D1 starter](d1-starter.md) | CLI profile selection | Explicit Workers template, editable app, local D1 and existing script delegation |
+| D1 source/asset distribution | [D1 snapshot](d1-starter-snapshot.md) | CLI build and asset reader | Actual example source, dependency closure, hashes, relative files and packed binaries |
+| Owned D1 development reloads | [D1 development](d1-starter-development.md) | Generated watcher and local host | Browser builds, failed-compile retention, serialized process replacement and signals |
+| Independent D1 starter gate | [D1 project proof](d1-starter-testing.md) | Packed/installed CLI and generated app | Relocation, frozen install, shipped native tests, actual host/watch/failure/restart |
 | Predeclared batch request replay | [Batch idempotency](batch-idempotency.md) | `@longhorn/idempotency/batch-sqlite` | Atomic result/business plans, JSON snapshots and positive commit recovery |
 | Batch replay ownership and cleanup | [Batch records](batch-idempotency-storage.md) | Separate SQLite request ledger | Unique generations, admission-time expiry, rollback restoration and bounded pruning |
 | Replayable D1 task creation | [D1 request HTTP](d1-idempotency-http.md) | TaskRequests DI and POST /tasks | Optional key, original 201/body/Location, normalized conflicts and atomic activity |
@@ -222,6 +226,9 @@ flowchart TD
   Creator[create-longhorn] --> CLI[Development CLI]
   CLI --> Starter[Template + built framework snapshot]
   Starter --> App[Application]
+  CLI --> D1Starter[Persistent D1 template assets]
+  D1Starter --> D1Tasks
+  D1Starter --> Starter
   App --> Core[Core: HTTP + DI + lifecycle]
   App --> Idempotency[Durable request idempotency]
   Idempotency --> Database

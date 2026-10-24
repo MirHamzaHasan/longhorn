@@ -5,7 +5,7 @@ Templates preserve the existing architecture: Hono routes stay in the app, servi
 use application DI, lifecycle owns resources, and host-specific APIs stay in the
 entrypoint. No runtime-specific imports enter the shared app.
 
-Each starter includes src/diagnostics.ts with DI-owned readiness, bounded request
+The default api starter includes src/diagnostics.ts with DI-owned readiness, bounded request
 metrics and explicit-context tracing. /livez, /readyz, /metrics and /traces run through
 the same host. Separate generated guides describe health, metrics and tracing.
 Readiness checks app state until real dependencies are added; traces/metrics are
@@ -18,7 +18,7 @@ the generated `docs/worker-scheduled.md` explains the local trigger and limits.
 
 ## Included behavior
 
-Each starter includes `src/app.ts`, a host entrypoint, a meaningful Fetch test,
+Each api starter includes `src/app.ts`, a host entrypoint, a meaningful Fetch test,
 build/typecheck/test/dev/start scripts, structured logs, typed events, typed caching, and separate Markdown guides
 for its implemented features. `/health` reads lifecycle-ready state from DI. `/`
 returns a greeting, using a binding when supplied. `POST /echo` uses Standard Schema
@@ -88,11 +88,16 @@ The workerd gate dispatches a real local scheduled event and verifies the starte
 exact metadata/counter response and consumer span. This observation resets on
 reload/restart and adds no durable queue/schedule state or deployment configuration.
 
-The starter is a small runnable application, without persistence or authentication.
+The default api starter is a small runnable application, without persistence or authentication.
 The persistent [tasks example](tasks-example.md) remains the integration reference
 for adding database contracts, migrations, and lifecycle-owned SQLite on Node.
 Choose provider implementations appropriate to the selected runtime. Feature
-selection and additional templates can build on this generator later.
+selection and further templates can build on this generator later. Explicit
+`--template d1-tasks --runtime workers` now generates the [persistent D1 profile](d1-starter.md)
+with actual task/replay source, private schema phase, local data and an owned
+development watcher. It has its own [asset](d1-starter-snapshot.md),
+[lifetime](d1-starter-development.md) and [verification](d1-starter-testing.md) guides;
+it has a separate route set from the generic greeting/diagnostics profile above.
 
 Snapshots now include the optional `@longhorn/cache/json`, `@longhorn/cache/redis`
 and Node-only `@longhorn/node/redis` exports. Starters continue to select memory;

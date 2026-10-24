@@ -21,6 +21,11 @@ works outside this monorepo. Add `--install` to install after creation. See the
 [CLI](docs/cli.md), [project generator](docs/project-generation.md), and
 [starter templates](docs/starter-templates.md). These packages are not published yet.
 
+For an independent persistent Workers app, use
+`pnpm create:app ../my-d1-api --runtime workers --template d1-tasks`.
+The [D1 starter](docs/d1-starter.md) includes editable tasks/activity/replay,
+private schema deployment, retained local data and source watching.
+
 ## Run the command console
 
 ```sh
@@ -410,6 +415,7 @@ pnpm test:worker-scheduled
 pnpm test:worker-storage
 pnpm test:d1
 pnpm test:d1-idempotency
+pnpm test:d1-project
 pnpm test:worker-queues
 pnpm test:worker-alarms
 pnpm test:transaction-publishing

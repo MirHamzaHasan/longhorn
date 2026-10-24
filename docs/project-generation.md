@@ -13,6 +13,7 @@ const project = await createProject({
   directory: '../my-api',
   runtime: 'node', // node | bun | deno | workers
   name: 'my-api',  // optional; inferred from the destination otherwise
+  template: 'api', // optional; d1-tasks requires runtime: workers
 })
 console.log(project.directory, project.runtime, project.packages)
 ```
@@ -61,6 +62,13 @@ Keep `.longhorn/` and `pnpm-workspace.yaml` in version control. The generated pr
 can be moved before installation and does not require the original LongHorn checkout.
 Framework updates require deliberate snapshot replacement; there is no automatic
 updater or public release pipeline yet. Generated sources remain application-owned.
+
+The [D1 task template](d1-starter.md) selects a separate application dependency
+graph and editable source assets. Its [build snapshot](d1-starter-snapshot.md)
+copies the actual example code and checks explicit asset hashes before staging.
+Custom frameworkDirectory inputs selecting D1 must include templates/d1-tasks
+assets. The package records longhorn.template and the API returns the chosen
+template; default API package metadata remains compatible.
 
 ## Filesystem behavior
 

@@ -4,7 +4,7 @@ import { resolve } from 'node:path'
 import { createProject } from './generator.js'
 import { runtimes } from './templates.js'
 import { signalProcessTree } from './processes.js'
-import type { ProjectRuntime } from './templates.js'
+import type { ProjectRuntime, ProjectTemplate } from './templates.js'
 
 const scriptCommands = ['dev', 'build', 'start', 'typecheck', 'test'] as const
 type ScriptCommand = typeof scriptCommands[number]
@@ -16,12 +16,13 @@ type CliContext = {
 }
 const help = `LongHorn development CLI
 
-  longhorn create <directory> --runtime node|bun|deno|workers [--name <name>] [--install]
+  longhorn create <directory> --runtime node|bun|deno|workers [--template api|d1-tasks] [--name <name>] [--install]
   longhorn dev|build|start|typecheck|test [--cwd <directory>]
   longhorn --help
   longhorn --version
 
 create-longhorn <directory> accepts the same creation options.
+The d1-tasks template requires --runtime workers and includes retained local D1 storage.
 Generation uses a bundled framework snapshot; it never overwrites existing files.
 pnpm 12.6.0 and Node.js 20.19+ are required for project development.`
 
@@ -86,14 +87,16 @@ export async function runCli(args: string[], context: CliContext = {}): Promise<
     }
     const [command, ...rest] = args
     if (command === 'create') {
-      const { options, positional } = parse(rest, ['--runtime', '--name'], ['--install'])
+      const { options, positional } = parse(rest, ['--runtime', '--template', '--name'], ['--install'])
       if (positional.length !== 1) throw new Error('Usage: longhorn create <directory> --runtime node|bun|deno|workers')
       const runtime = options.get('--runtime')
       if (!runtimes.includes(runtime as ProjectRuntime)) throw new Error('Select --runtime node, bun, deno, or workers')
       const name = options.get('--name') as string | undefined
+      const template = options.get('--template') as ProjectTemplate | undefined
       const project = await createProject({
         directory: resolve(cwd, positional[0]!), runtime: runtime as ProjectRuntime,
         ...(name === undefined ? {} : { name }),
+        ...(template === undefined ? {} : { template }),
       })
       out(`Created ${project.name} for ${project.runtime} at ${project.directory}`)
       if (options.has('--install')) {

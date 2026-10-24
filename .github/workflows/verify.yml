@@ -20,6 +20,7 @@ jobs:
       - run: pnpm build
       - run: node scripts/verify-d1.mjs
       - run: node scripts/verify-d1-idempotency.mjs
+      - run: node scripts/verify-d1-project.mjs
   telemetry:
     runs-on: ubuntu-24.04
     timeout-minutes: 20

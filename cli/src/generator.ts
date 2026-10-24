@@ -1,19 +1,21 @@
 import { cp, lstat, mkdir, mkdtemp, readFile, readdir, rename, rm, writeFile } from 'node:fs/promises'
 import { basename, dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { projectFiles, runtimes } from './templates.js'
-import type { ProjectRuntime } from './templates.js'
+import { projectFiles, runtimes, templates } from './templates.js'
+import type { ProjectRuntime, ProjectTemplate } from './templates.js'
+import { readD1Template } from './d1-template.js'
 
 type FrameworkPackage = { directory: string; dependencies: Record<string, string> }
 type FrameworkManifest = { packages: Record<string, FrameworkPackage> }
 export type CreateProjectOptions = {
   directory: string
   runtime: ProjectRuntime
+  template?: ProjectTemplate
   name?: string
   /** A built distribution, primarily useful for integration tests and custom distributions. */
   frameworkDirectory?: string
 }
-export type CreatedProject = { directory: string; name: string; runtime: ProjectRuntime; packages: readonly string[] }
+export type CreatedProject = { directory: string; name: string; runtime: ProjectRuntime; template: ProjectTemplate; packages: readonly string[] }
 
 async function checkDestination(directory: string): Promise<void> {
   try {
@@ -27,6 +29,9 @@ async function checkDestination(directory: string): Promise<void> {
 
 export async function createProject(options: CreateProjectOptions): Promise<CreatedProject> {
   if (!runtimes.includes(options.runtime)) throw new Error(`Unknown runtime: ${options.runtime}`)
+  const template = options.template ?? 'api'
+  if (!templates.includes(template)) throw new Error(`Unknown template: ${template}`)
+  if (template === 'd1-tasks' && options.runtime !== 'workers') throw new Error('The d1-tasks template requires --runtime workers')
   if (!options.directory.trim()) throw new Error('A destination directory is required')
   const directory = resolve(options.directory)
   const name = options.name ?? basename(directory).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
@@ -50,14 +55,17 @@ export async function createProject(options: CreateProjectOptions): Promise<Crea
       if (dependency.startsWith('@longhorn/')) include(dependency)
     }
   }
-  const direct = ['@longhorn/core', '@longhorn/container', '@longhorn/logger', '@longhorn/validation', '@longhorn/events', '@longhorn/cache', '@longhorn/observability', `@longhorn/${options.runtime}`]
-  if (options.runtime !== 'workers') direct.push('@longhorn/config')
-  else direct.push('@longhorn/runtime')
+  const d1 = template === 'd1-tasks' ? await readD1Template(framework) : undefined
+  const direct = d1 ? Object.keys(d1.dependencies).filter(name => name.startsWith('@longhorn/')) : ['@longhorn/core', '@longhorn/container', '@longhorn/logger', '@longhorn/validation', '@longhorn/events', '@longhorn/cache', '@longhorn/observability', `@longhorn/${options.runtime}`]
+  if (!d1) {
+    if (options.runtime !== 'workers') direct.push('@longhorn/config')
+    else direct.push('@longhorn/runtime')
+  }
   for (const name of direct) include(name)
   const packageNames = [...selected].sort()
   const locations = Object.fromEntries(packageNames.map((name) => [name, `file:./.longhorn/framework/${manifest.packages[name]!.directory}`]))
   const dependencies = Object.fromEntries(direct.map((name) => [name, locations[name]!]))
-  const files = projectFiles(name, options.runtime, dependencies, locations)
+  const files = d1 ? d1.projectFiles(name, dependencies, locations) : projectFiles(name, options.runtime, dependencies, locations)
 
   await mkdir(dirname(directory), { recursive: true })
   const staging = await mkdtemp(join(dirname(directory), '.longhorn-create-'))
@@ -79,5 +87,5 @@ export async function createProject(options: CreateProjectOptions): Promise<Crea
     await rename(staging, directory)
   } finally { await rm(staging, { recursive: true, force: true }) }
 
-  return { directory, name, runtime: options.runtime, packages: packageNames }
+  return { directory, name, runtime: options.runtime, template, packages: packageNames }
 }

@@ -435,6 +435,17 @@ cross-worker requests, expiry races, cleanup and retained restart are verified.
 Existing callback APIs keep separate semantics. Task/activity pages now order by
 qualified integer positions across decimal digit boundaries.
 
+## Standalone D1 developer workflow implemented
+
+[Template selection](d1-starter.md), [asset/source distribution](d1-starter-snapshot.md),
+[owned development](d1-starter-development.md) and [native project proof](d1-starter-testing.md)
+each have a guide. CLI builds bundle the existing D1 source and checked assets
+with selected framework exports. Packed binaries generate an editable retained app
+outside the checkout. Fresh/frozen installation, shipped native tests, actual CLI
+host restart, compilation failure/recovery, source reload and schema/config startup
+denial are verified. Default API starters remain the four-runtime profile;
+cloud deployment and automatic upgrades remain separate.
+
 ## Subsequent framework modules
 
 | Module | Depends on | Required proof |

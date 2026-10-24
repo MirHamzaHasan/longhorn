@@ -14,7 +14,7 @@ because package builds replace their declaration directories.
 | Job | Required checks |
 | --- | --- |
 | Source and runtimes | Build, types, source tests, native Node/Bun/Deno/workerd, independent generic CLI starters |
-| D1 storage | Actual local D1/workerd, batch/migration rollback, revision/activity atomicity, numeric/int64 pages, request replay after dropped HTTP replies, retained restart and local host cleanup |
+| D1 storage | Actual local D1/workerd, batch/replay/restart proof, plus packed standalone D1 installation, native HTTP/watch/config/schema lifetime |
 | Redis cache | Owned Redis 7+ binary, existing memory-cache gate, shared codec/protocol on four runtimes and actual Node Redis/TLS/task HTTP integration |
 | Telemetry | Pinned native Collector 0.163.2 Linux x64, real trace/metric/log JSON roundtrips on four runtimes, delivery faults and reports HTTP |
 | Account operations | Native history upgrade/concurrency, transaction/account locks, persistent HTTP receiver/recovery |
@@ -88,6 +88,12 @@ positions. Configured hosted checks remain separate from this local evidence.
 Its [first run](https://github.com/MirHamzaHasan/longhorn/actions/runs/40046986448)
 failed all seven jobs before any runner/step started. The D1 annotation again
 identifies the Actions budget; no Ubuntu replay execution is inferred.
+
+The standalone D1 template extends the existing D1 job with packed/installed CLI
+creation, relocated fresh/frozen install, its shipped native storage test and
+actual compiled/development host HTTP. Local workspace build/types, 505 source
+tests, four generic starters and D1 source-watch/config/schema/restart proof pass.
+Hosted current-head execution remains a separate required release gate.
 
 [Review artifacts](ci-review-artifacts.md) attempt to retain actual browser captures
 and the application archive/checksum after successful independent verification.

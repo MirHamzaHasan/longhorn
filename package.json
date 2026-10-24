@@ -15,6 +15,7 @@
     "vitest": "^3.1.1"
   },
   "scripts": {
+    "test:d1-project": "pnpm build && node scripts/verify-d1-project.mjs",
     "test:d1-idempotency": "pnpm build && node scripts/verify-d1-idempotency.mjs",
     "dev:d1": "pnpm --filter example-d1-worker... build && node scripts/serve-d1-worker.mjs",
     "test:d1": "pnpm build && node scripts/verify-d1.mjs",

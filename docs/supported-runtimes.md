@@ -11,6 +11,7 @@ account and browser jobs passed there. Package engines allow Node
 | --- | --- | --- |
 | Shared Fetch/core/DI/validation/config/logging | Node 20.19.4, Bun 1.4.4, Deno 2.9.6, workerd 1.20250718.0 | Shared packages and native/generic starter gates; runtime-specific entries remain explicit |
 | Generic CLI starters | All four runtime profiles above | Generated/relocated install, types/tests/build, native start/watch/shutdown |
+| D1 CLI starter | Node 20.19.4 tooling, pinned Miniflare/workerd above | Packed CLI, relocated fresh/frozen install, real retained task/replay HTTP, source-watch failure/recovery, schema/config denial and shutdown |
 | OTLP trace, metric and log HTTP | All four runtime profiles above, native Collector 0.163.2 on macOS ARM64 | Actual collector JSON normalization, Fetch retries/deadlines, buffered log overload and native peer closure; Worker flush stays in the request lifetime |
 | HTTP service client/publisher | All four runtime profiles above | Real TCP to protected receipt receiver; does not imply PostgreSQL on all runtimes |
 | Redis codec/provider protocol | All four runtime profiles above | Built exports with a fake command client, including real workerd; no non-Node Redis TCP claim |

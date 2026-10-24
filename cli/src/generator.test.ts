@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { mkdtemp, mkdir, readFile, readdir, rm, symlink, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
+import { createHash } from 'node:crypto'
 import { createProject } from './generator.js'
 import { runtimes } from './templates.js'
 
@@ -11,10 +12,10 @@ beforeEach(async () => {
   temporary = await mkdtemp(join(tmpdir(), 'longhorn-generator-'))
   framework = join(temporary, 'distribution')
   const packages: Record<string, { directory: string; dependencies: Record<string, string> }> = {}
-  for (const name of ['core', 'container', 'http', 'logger', 'runtime', 'config', 'validation', 'database', 'events', 'cache', 'observability', ...runtimes]) {
+  for (const name of ['core', 'container', 'http', 'logger', 'runtime', 'config', 'validation', 'database', 'idempotency', 'events', 'cache', 'observability', ...runtimes]) {
     const dependencies: Record<string, string> = name === 'core'
       ? { '@longhorn/container': '0.0.1', '@longhorn/http': '0.0.1', '@longhorn/logger': '0.0.1', '@longhorn/runtime': '0.0.1' }
-      : name === 'node' ? { '@longhorn/database': '0.0.1', '@longhorn/config': '0.0.1' } : {}
+      : name === 'node' ? { '@longhorn/database': '0.0.1', '@longhorn/config': '0.0.1' } : name === 'idempotency' ? {'@longhorn/database':'0.0.1'} : {}
     const directory = join(framework, name)
     await mkdir(join(directory, 'dist'), { recursive: true })
     await writeFile(join(directory, 'dist/index.js'), `export const runtime = ${JSON.stringify(name)}\n`)
@@ -26,6 +27,44 @@ beforeEach(async () => {
 afterEach(async () => { await rm(temporary, { recursive: true, force: true }) })
 
 describe('project generation', () => {
+  async function d1Assets(){
+    const directory=join(framework,'templates/d1-tasks'),files:Record<string,string>={}
+    for(const path of ['README.md','build.mjs','build.config.mjs','serve.mjs','dev.mjs','src/index.ts','src/app.ts','src/deploy.ts','src/schema.ts','src/config.ts','src/tasks.ts','tests/storage.mjs','docs/features.md']){
+      const target=join(directory,path),content=path==='README.md'?'# {{PROJECT_NAME}}\n':'editable application asset\n'
+      await mkdir(join(target,'..'),{recursive:true});await writeFile(target,content);files[path]=createHash('sha256').update(content).digest('hex')
+    }
+    const descriptor={schemaVersion:1,dependencies:Object.fromEntries(['core','container','config','database','idempotency','validation','workers','runtime'].map(name=>['@longhorn/'+name,'workspace:*'])),devDependencies:{miniflare:'3.20250718.3'},files}
+    await writeFile(join(directory,'template.json'),JSON.stringify(descriptor));return {directory,descriptor}
+  }
+  it('selects the explicit D1 application graph and relocatable editable assets',async()=>{
+    await d1Assets();const directory=join(temporary,'persistent')
+    const project=await createProject({directory,name:'persistent-api',runtime:'workers',template:'d1-tasks',frameworkDirectory:framework})
+    expect(project.template).toBe('d1-tasks');expect(project.packages).toContain('@longhorn/idempotency');expect(project.packages).not.toContain('@longhorn/cache')
+    expect(await readFile(join(directory,'README.md'),'utf8')).toBe('# persistent-api\n')
+    const manifest=JSON.parse(await readFile(join(directory,'package.json'),'utf8'))
+    expect(manifest.longhorn.template).toBe('d1-tasks');expect(manifest.dependencies['@longhorn/runtime']).toBe('file:./.longhorn/framework/runtime')
+    expect(manifest.scripts['test:storage']).toContain('tests/storage.mjs')
+  })
+  it('rejects corrupt D1 assets before publishing or modifying an empty destination',async()=>{
+    const assets=await d1Assets(),directory=join(temporary,'empty-d1');await mkdir(directory)
+    await writeFile(join(assets.directory,'src/app.ts'),'corrupt copied source')
+    await expect(createProject({directory,runtime:'workers',template:'d1-tasks',frameworkDirectory:framework})).rejects.toThrow('assets are unavailable or invalid')
+    expect(await readdir(directory)).toEqual([]);expect((await readdir(temporary)).some(name=>name.startsWith('.longhorn-create-'))).toBe(false)
+  })
+  it('rejects malformed dependency metadata before publishing an unusable project',async()=>{
+    const assets=await d1Assets(),directory=join(temporary,'bad-metadata')
+    await writeFile(join(assets.directory,'template.json'),JSON.stringify({...assets.descriptor,devDependencies:'invalid'}))
+    await expect(createProject({directory,runtime:'workers',template:'d1-tasks',frameworkDirectory:framework})).rejects.toThrow('assets are unavailable or invalid')
+    expect(await readdir(temporary)).toEqual(['distribution'])
+  })
+  it('rejects escaping template paths and incompatible profiles before filesystem output',async()=>{
+    const assets=await d1Assets(),directory=join(temporary,'refused')
+    assets.descriptor.files['../outside']='a'.repeat(64);await writeFile(join(assets.directory,'template.json'),JSON.stringify(assets.descriptor))
+    await expect(createProject({directory,runtime:'workers',template:'d1-tasks',frameworkDirectory:framework})).rejects.toThrow('assets are unavailable or invalid')
+    await expect(createProject({directory,runtime:'node',template:'d1-tasks',frameworkDirectory:framework})).rejects.toThrow('requires --runtime workers')
+    await expect(createProject({directory,runtime:'workers',template:'other' as 'api',frameworkDirectory:framework})).rejects.toThrow('Unknown template')
+    expect(await readdir(temporary)).toEqual(['distribution'])
+  })
   it.each(runtimes)('generates an independent %s snapshot and its transitive dependencies', async (runtime) => {
     const directory = join(temporary, 'My Project')
     const project = await createProject({ directory, runtime, frameworkDirectory: framework })

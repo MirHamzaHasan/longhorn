@@ -1023,3 +1023,26 @@ keyset queries qualify integer ORDER BY while projecting text cursors, preservin
 9/10 and int64 order. See [API](batch-idempotency.md),
 [records](batch-idempotency-storage.md), [HTTP](d1-idempotency-http.md),
 [upgrade](d1-idempotency-upgrades.md) and [proof](d1-idempotency-testing.md).
+
+---
+
+## 38. Persistent Application Templates and Owned Development
+
+The generator now selects an application profile alongside runtime. api remains
+the four-runtime default; d1-tasks requires Workers. The CLI build copies actual
+D1 source and supporting scripts/guides into its distribution. A versioned asset
+descriptor records dependency sets and hashes; generation checks required files,
+paths, UTF-8 and byte bounds before staging. Only the selected framework dependency
+closure enters the generated project.
+
+Installed packed binaries create the same editable independent D1 application.
+Relative overrides/browser builds survive relocation. The watcher serializes native
+host replacement on successful builds, retains the old host on compilation errors
+and awaits owned shutdown. Retained schema/data/replay use the existing private
+deployment protocol. Startup configuration/schema failure closes development.
+
+The installed app ships its own actual D1/restart test and individual guides.
+Native verification covers packed creation, fresh/frozen install, real HTTP/replay,
+watcher failure/recovery and retained restart through installed CLI scripts. See
+[profile](d1-starter.md), [assets](d1-starter-snapshot.md),
+[development](d1-starter-development.md) and [proof](d1-starter-testing.md).
