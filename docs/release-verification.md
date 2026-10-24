@@ -13,6 +13,7 @@ because package builds replace their declaration directories.
 
 | Job | Required checks |
 | --- | --- |
+| Native Rust reports | Rust 1.97.1, locked Cargo formatting/tests/build, actual authenticated HTTP, four-runtime client, persisted jobs outage/recovery, owned demo and native launcher |
 | Source and runtimes | Build, types, source tests, native Node/Bun/Deno/workerd, generic CLI starters and packed standalone Node SQLite persistence workflow |
 | D1 storage | Actual local D1/workerd, batch/replay/restart proof, plus packed standalone D1 installation, native HTTP/watch/config/schema lifetime |
 | Redis cache | Owned Redis 7+ binary, existing memory-cache gate, shared codec/protocol on four runtimes and actual Node Redis/TLS/task HTTP integration |

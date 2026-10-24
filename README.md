@@ -239,6 +239,13 @@ SQLite job. Pending work and results survive restart. See [the jobs example](doc
 [queue contracts](docs/queues.md), [workers](docs/queue-workers.md), and
 [SQLite provider](docs/queue-sqlite.md) for retries, leases, and at-least-once effects.
 
+`pnpm demo:rust-reports` runs the [optional native workflow](docs/rust-reports-demo.md)
+with Rust 1.97.1: a protected Rust service computes a report, the existing worker
+persists it, and Ctrl+C drains both processes and removes temporary data.
+See [protocol](docs/rust-reports.md), [typed client](docs/native-report-client.md)
+and [jobs configuration](docs/jobs-native-reports.md). Ordinary apps keep local
+computation unless the native backend is explicitly configured.
+
 The same app accepts one-time, fixed-interval and UTC-cron definitions at
 `POST /report-schedules`. Schedule state survives restart; SQLite inserts each
 occurrence and advances its cursor atomically across local processes. Read/cancel

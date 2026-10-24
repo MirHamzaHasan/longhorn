@@ -502,6 +502,19 @@ The actual persistence gate traverses 1029 tasks, verifies both filters/counts a
 handles a deleted cursor boundary. Live pages are not snapshot isolation, and
 cross-host summary consistency still follows the selected cache TTL.
 
+## Optional native Rust service implemented
+
+[Native reports](rust-reports.md), [portable client](native-report-client.md),
+[jobs selection](jobs-native-reports.md), [owned demo](rust-reports-demo.md) and
+[native proof](rust-reports-testing.md) each have a guide. The native workspace now
+builds a real authenticated loopback service from a locked Cargo graph. Report
+computation remains pure and versioned; existing queue/SQL ownership stays in the
+application. A typed Web Fetch client validates results and drains actual calls on
+all four JavaScript runtimes. Jobs select it through DI, expose dependency readiness
+and recover durable work after a native outage. A one-command demo computes and
+persists a new report. Native process/plugin orchestration, native durable effects
+and production ingress remain subsequent integrations.
+
 ## Subsequent framework modules
 
 | Module | Depends on | Required proof |

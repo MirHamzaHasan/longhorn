@@ -1,3 +1,4 @@
+import { localReportTestEnvironment } from './local-report-test-environment.mjs'
 import assert from 'node:assert/strict'
 import { spawn } from 'node:child_process'
 import { createServer } from 'node:http'
@@ -19,7 +20,7 @@ const check=()=>{if(interrupted)throw new Error('Log gate interrupted')}
 for(const signal of ['SIGINT','SIGTERM'])process.on(signal,()=>{interrupted=true;controller.abort();for(const instance of instances)instance.child.kill('SIGTERM');gateway?.closeAllConnections()})
 const waitFor=async action=>{const end=Date.now()+12000;while(Date.now()<end){check();const value=await action();if(value)return value;await new Promise(resolve=>setTimeout(resolve,20))}throw new Error('Log gate condition timed out')}
 function launch(binary,args,env={}){
-  check();const child=spawn(binary,args,{cwd:root,env:{...process.env,...env},stdio:['ignore','pipe','pipe']});let output='';const records=[]
+  check();const child=spawn(binary,args,{cwd:root,env:{...process.env,...localReportTestEnvironment,...env},stdio:['ignore','pipe','pipe']});let output='';const records=[]
   for(const stream of [child.stdout,child.stderr])createInterface({input:stream}).on('line',line=>{output+=line+'\n';try{records.push(JSON.parse(line))}catch{}})
   child.on('error',()=>{output+='Owned process failed'})
   const instance={child,records,output:()=>output,ended:new Promise(resolve=>child.once('close',(code,signal)=>{instances.delete(instance);resolve({code,signal})}))};instances.add(instance);return instance

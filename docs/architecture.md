@@ -36,7 +36,7 @@ longhorn/
 │   └── workers/           # Cloudflare Workers / Edge adapter (@longhorn/workers)
 │
 ├── native/                # Optional native services space
-│   └── rust/              # Future native Rust integrations (not a JS runtime adapter)
+│   └── rust/              # Optional Rust report service (not a JS runtime adapter)
 │
 ├── cli/                   # @longhorn/cli command-line interface
 ├── create-longhorn/       # Project generation entrypoint (local, unpublished)
@@ -76,7 +76,7 @@ Longhorn enforces strict unidirectional dependency flow:
 1. **Runtime Isolation**: Framework packages in `packages/*` (especially `@longhorn/core` and `@longhorn/http`) MUST NOT directly depend on Node.js-specific modules (e.g. `node:fs`, `node:net`, `node:buffer`). All environment-specific interactions must be mediated via runtime adapters in `runtimes/*`.
 2. **Web Standards First**: All HTTP primitives should be built on standard `Request`, `Response`, `Headers`, and `Fetch API` implementations.
 3. **Hono Boundary**: Hono is our HTTP foundation. Longhorn builds higher-level framework functionality around Hono without rewriting or duplicating Hono.
-4. **Rust / Native Boundary**: Future native components live under `native/rust/`. Native components are optional and not JS runtime adapters.
+4. **Rust / Native Boundary**: Optional native services live under `native/rust/`. They connect through explicit portable protocols and are not JS runtime adapters.
 
 ---
 
@@ -1151,3 +1151,27 @@ uses 1029 tasks to verify real HTTP traversal, filters, aggregate totals and liv
 insertion/deletion. Node/Bun generated projects and cache/event integrations keep
 their own native regressions. See [pages](sqlite-task-pages.md),
 [counts](sqlite-task-counts.md) and [read proof](sqlite-task-read-upgrades.md).
+
+---
+
+## 43. Optional Rust Computation Behind a Portable Service Contract
+
+The reserved native workspace now contains a locked, independently built Rust
+report service. It owns authenticated loopback HTTP, strict bounded JSON, a
+versioned pure computation and handler admission/deadline/signal drain. Ordinary
+TypeScript builds and generated application profiles do not compile Rust.
+
+The jobs application composes the existing Web Fetch JSON transport with report
+schema/result checks and accepted-call ownership. No process/native binding enters
+shared packages. ReportCompute selects local or configured native computation through
+DI. The handler awaits the result and rechecks cancellation before its stable-ID
+database insert. Queue retries can repeat pure computation after transport failure;
+native selection adds no implicit fallback or exactly-once remote effect claim.
+
+Native health participates in readiness. Cleanup joins readiness/workers before
+client close, then releases storage. The demo owns random service credentials,
+actual native/jobs children and temporary SQLite. Native verification runs the
+built client on Node/Bun/Deno/workerd, forces real body/capacity/deadline boundaries,
+recovers jobs after service outage/restart and proves native/demo/launcher drain.
+See [service](rust-reports.md), [client](native-report-client.md),
+[jobs](jobs-native-reports.md), [demo](rust-reports-demo.md) and [proof](rust-reports-testing.md).

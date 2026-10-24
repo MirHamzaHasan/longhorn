@@ -484,6 +484,9 @@ importers:
       '@longhorn/database':
         specifier: workspace:*
         version: link:../../packages/database
+      '@longhorn/http':
+        specifier: workspace:*
+        version: link:../../packages/http
       '@longhorn/idempotency':
         specifier: workspace:*
         version: link:../../packages/idempotency

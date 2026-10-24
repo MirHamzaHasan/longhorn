@@ -1,3 +1,4 @@
+import { localReportTestEnvironment } from './local-report-test-environment.mjs'
 import assert from 'node:assert/strict'
 import { spawn } from 'node:child_process'
 import { mkdtemp, rm } from 'node:fs/promises'
@@ -14,7 +15,7 @@ const deno = join(dirname(require.resolve('deno-runtime/package.json')), process
 const temporary = await mkdtemp(join(tmpdir(), 'longhorn-observability-')), instances = []
 function launch(binary, args, environment = {}) {
   const child = spawn(binary, args, { cwd: root, stdio: ['ignore', 'pipe', 'pipe'], env: {
-    ...process.env, HOST: '127.0.0.1', PORT: '0', LOG_LEVEL: 'info', SHUTDOWN_GRACE_MS: '500',
+    ...process.env,...localReportTestEnvironment, HOST: '127.0.0.1', PORT: '0', LOG_LEVEL: 'info', SHUTDOWN_GRACE_MS: '500',
     OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: '',OTEL_EXPORTER_OTLP_TRACES_HEADERS: '',OTEL_EXPORTER_OTLP_TRACES_TIMEOUT: '10000',OTEL_SERVICE_NAME: 'longhorn-test',OTEL_SERVICE_VERSION: '',...environment,
   } })
   let output = ''; const records = []

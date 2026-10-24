@@ -5,6 +5,10 @@ Owner: `examples/jobs`. Connects [HTTP](http.md), [validation](validation.md),
 [queues](queues.md), [workers](queue-workers.md), and [SQLite queue storage](queue-sqlite.md).
 This public loopback demo has a separate database from tasks/auth.
 
+Local computation is the default. Optional [Rust computation](jobs-native-reports.md)
+uses the same queue/result schema through ReportCompute DI. Run
+`pnpm demo:rust-reports` for the [complete native workflow](rust-reports-demo.md).
+
 ```sh
 pnpm dev:jobs
 curl -i http://127.0.0.1:3002/reports \

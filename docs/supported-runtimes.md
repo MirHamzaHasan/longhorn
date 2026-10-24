@@ -17,6 +17,8 @@ account and browser jobs passed there. Package engines allow Node
 | D1 CLI starter | Node 20.19.4 tooling, pinned Miniflare/workerd above | Packed CLI, relocated fresh/frozen install, real retained task/replay HTTP, source-watch failure/recovery, schema/config denial and shutdown |
 | OTLP trace, metric and log HTTP | All four runtime profiles above, native Collector 0.163.2 on macOS ARM64 | Actual collector JSON normalization, Fetch retries/deadlines, buffered log overload and native peer closure; Worker flush stays in the request lifetime |
 | HTTP service client/publisher | All four runtime profiles above | Real TCP to protected receipt receiver; does not imply PostgreSQL on all runtimes |
+| Native Rust report service | Rust 1.97.1/Axum 0.8.9/Tokio 1.51.0 on macOS ARM64 | Locked native binary, bounded authenticated loopback HTTP and signal drain; [proof](rust-reports-testing.md) |
+| Typed native report client | All four JavaScript runtime profiles above | Actual Node/Bun/Deno/workerd Fetch to Rust; jobs integration remains its Node SQLite host |
 | Redis codec/provider protocol | All four runtime profiles above | Built exports with a fake command client, including real workerd; no non-Node Redis TCP claim |
 | Native Redis task cache | Node 20.19.4, Redis 8.0.0, @redis/client 6.3.0 | Actual authenticated standalone server, TLS proxy, expiry/ACL/restart, native deadline destruction and HTTP outage fallback |
 | Persistent command console host | Node 20.19.4, PostgreSQL 18.4 | Native pg pool, scrypt, complete schema, fixed built assets and restricted role |
@@ -26,7 +28,7 @@ account and browser jobs passed there. Package engines allow Node
 | Offline restore | PostgreSQL 18.4 pg_dump/pg_restore and retained local workerd storage | Stopped writers, fresh database/storage, explicit grants; not online/PITR replication |
 | Hosted CI baseline | Ubuntu 24.04, Node/pnpm pinned as above | Four v0.1 paths executed, including restore; artifact quota limits downloads |
 | Hosted CI Redis revision | Five jobs configured on Ubuntu 24.04 | Actions budget rejected every job before runner allocation; no Ubuntu execution evidence for this revision; current PR checks/logs govern exact-head results |
-| Hosted verification configuration | Seven jobs including D1 storage and native telemetry, pinned Linux x64 Collector 0.163.2 | Linux archive checksum is pinned; an available runner and successful exact-head execution are still required |
+| Hosted verification configuration | Eight jobs including native Rust, D1 storage and native telemetry, pinned Linux x64 Collector 0.163.2 | Rust/tool versions and archive checksum are pinned; an available runner and successful exact-head execution are still required |
 | Hosted D1 revision | Seven jobs configured on Ubuntu 24.04 | First run rejected before any runner/step by the Actions budget; no Ubuntu D1 execution evidence; current PR checks govern the current head |
 
 The command application distribution is deliberately the Node/PostgreSQL profile.

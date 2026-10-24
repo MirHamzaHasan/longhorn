@@ -12,8 +12,9 @@ import { schedulerMigrations, SqliteSchedulerStore } from '@longhorn/scheduler/s
 import { validate } from '@longhorn/validation/hono'
 import { bodyLimit } from 'hono/body-limit'
 import type { AppConfig } from './config.js'
-import { reportHandler, reportMigrations, reportQueueName, reportSchema } from './reports.js'
-import type { ReportInput } from './reports.js'
+import { localReportComputer, reportHandler, reportMigrations, reportQueueName, reportSchema } from './reports.js'
+import type { ReportComputer, ReportInput } from './reports.js'
+import { createNativeReportComputer } from './native-reports.js'
 import { reportScheduleSchema } from './schedules.js'
 import { configureDiagnostics } from './diagnostics.js'
 import { createJobsLogging } from './logging.js'
@@ -23,11 +24,14 @@ export const ReportQueue = token<Queue<ReportInput>>('report queue')
 export const ReportWorker = token<QueueWorker<ReportInput>>('report worker')
 export const ReportScheduler = token<Scheduler>('report scheduler')
 export const ReportScheduleRunner = token<SchedulerRunner>('report schedule runner')
+export const ReportCompute = token<ReportComputer>('report computation')
 
-export function createJobsApp(config: AppConfig, resources: { openDatabase: () => Promise<Database>; logger?: Logger; now?: () => number; exporter?: SpanExporter; metricExporter?: MetricExporter; logs?: BufferedLogProcessor }): Longhorn {
+export function createJobsApp(config: AppConfig, resources: { openDatabase: () => Promise<Database>; logger?: Logger; now?: () => number; exporter?: SpanExporter; metricExporter?: MetricExporter; logs?: BufferedLogProcessor; reportComputer?: ReportComputer }): Longhorn {
   const selected = !resources.logger && !resources.logs && config.otlpLogs ? createJobsLogging(config) : undefined
   const logger = resources.logger ?? selected?.logger, logs = resources.logs ?? selected?.processor
   const app = new Longhorn(logger ? { logger } : {})
+  const native = !resources.reportComputer && config.nativeReports ? createNativeReportComputer(config.nativeReports) : undefined
+  app.container.register(provide(ReportCompute, { factory: () => resources.reportComputer ?? native?.compute ?? localReportComputer }))
   // Registered first so final log drain runs after diagnostics and all other stop hooks.
   if (logs) app.onStop(() => logs.close())
   const diagnostics = configureDiagnostics(app, config, {
@@ -35,6 +39,7 @@ export function createJobsApp(config: AppConfig, resources: { openDatabase: () =
     scheduler: () => app.container.resolve(ReportScheduleRunner).snapshot(), ...(resources.exporter ? { exporter: resources.exporter } : {}),
     ...(resources.metricExporter ? { metricExporter: resources.metricExporter } : {}),
     ...(logs ? { logs } : {}),
+    ...(native ? { nativeHealthy: (signal: AbortSignal) => native.healthy(signal) } : {}),
   })
   app.container.register(provide(ReportQueue, { deps: [ReportDatabase], factory: (database) => new Queue({
     name: reportQueueName, schema: reportSchema, store: new SqliteQueueStore(database),
@@ -49,8 +54,8 @@ export function createJobsApp(config: AppConfig, resources: { openDatabase: () =
       operation: error instanceof SchedulerStoreError ? error.operation : 'runner',
     }) },
   }) }))
-  app.container.register(provide(ReportWorker, { deps: [ReportQueue, ReportDatabase] as const, factory: (queue, database) => new QueueWorker(
-    queue, diagnostics.handler(reportHandler(database)), { concurrency: 2, pollIntervalMs: 100,
+  app.container.register(provide(ReportWorker, { deps: [ReportQueue, ReportDatabase, ReportCompute] as const, factory: (queue, database, compute) => new QueueWorker(
+    queue, diagnostics.handler(reportHandler(database, compute)), { concurrency: 2, pollIntervalMs: 100,
       onError: (error) => { diagnostics.backgroundError('worker'); app.logger.error('Report worker operation failed', {
         operation: error instanceof QueueStoreError ? error.operation : 'worker',
       }) },
@@ -70,6 +75,7 @@ export function createJobsApp(config: AppConfig, resources: { openDatabase: () =
       throw error
     }
   })
+  app.onStart(() => native ? () => native.close() : undefined)
   app.onStart(() => {
     const queue = app.container.resolve(ReportQueue)
     return () => queue.close()

@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { parseOtlpHeaders } from '@longhorn/observability/otlp'
+import { serviceBaseUrl } from '@longhorn/http/client'
 
 const otlpEndpoint=z.string().refine(value => { try { const url=new URL(value);return ['http:','https:'].includes(url.protocol) && !!url.hostname && !url.username && !url.password && !url.search && !url.hash } catch { return false } },'Expected an HTTP(S) OTLP signal endpoint without credentials/query/hash')
 const otlpHeaders=z.string().default('').transform((value,context) => {
@@ -15,6 +16,10 @@ export const configSchema = z.object({
   WORKER_ENABLED: z.enum(['true', 'false']).default('true').transform((value) => value === 'true'),
   SCHEDULER_ENABLED: z.enum(['true', 'false']).default('true').transform((value) => value === 'true'),
   SHUTDOWN_GRACE_MS: z.string().trim().regex(/^\d+$/).default('0').transform(Number).pipe(z.number().int().min(0).max(10_000)),
+  REPORTS_NATIVE_URL: z.preprocess(emptyToUndefined, z.string().optional()),
+  REPORTS_NATIVE_TOKEN: z.preprocess(emptyToUndefined, z.string().regex(/^[A-Za-z0-9_-]{32,256}$/).optional()),
+  REPORTS_NATIVE_ALLOW_INSECURE_LOOPBACK: z.enum(['true', 'false']).default('false').transform(value => value === 'true'),
+  REPORTS_NATIVE_TIMEOUT_MS: z.string().regex(/^\d+$/).default('2000').transform(Number).pipe(z.number().int().min(1).max(60000)),
   OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: z.preprocess(emptyToUndefined,otlpEndpoint.optional()),
   OTEL_EXPORTER_OTLP_TRACES_HEADERS: otlpHeaders,
   OTEL_EXPORTER_OTLP_TRACES_TIMEOUT: z.preprocess(emptyToUndefined,z.string().regex(/^\d+$/).default('10000').transform(Number).pipe(z.number().int().min(1).max(60000))),
@@ -28,7 +33,12 @@ export const configSchema = z.object({
   OTEL_SERVICE_INSTANCE_ID: z.preprocess(emptyToUndefined,z.string().min(1).max(256).regex(/^[^\x00-\x1f\x7f]+$/).optional()),
   OTEL_SERVICE_NAME: z.preprocess(emptyToUndefined,z.string().trim().min(1).max(256).regex(/^[^\x00-\x1f\x7f]+$/).default('longhorn-jobs')),
   OTEL_SERVICE_VERSION: z.preprocess(emptyToUndefined,z.string().min(1).max(256).regex(/^[^\x00-\x1f\x7f]+$/).optional()),
+}).superRefine((value, context) => {
+  if (!!value.REPORTS_NATIVE_URL !== !!value.REPORTS_NATIVE_TOKEN) context.addIssue({ code: 'custom', path: ['REPORTS_NATIVE_URL'], message: 'Native report URL and token must be configured together' })
+  if (value.REPORTS_NATIVE_URL) try { serviceBaseUrl(value.REPORTS_NATIVE_URL, value.REPORTS_NATIVE_ALLOW_INSECURE_LOOPBACK) }
+  catch { context.addIssue({ code: 'custom', path: ['REPORTS_NATIVE_URL'], message: 'Invalid native report service URL' }) }
 }).transform(({ HOST, PORT, LOG_LEVEL, DATABASE_PATH, WORKER_ENABLED, SCHEDULER_ENABLED, SHUTDOWN_GRACE_MS,
+  REPORTS_NATIVE_URL, REPORTS_NATIVE_TOKEN, REPORTS_NATIVE_ALLOW_INSECURE_LOOPBACK, REPORTS_NATIVE_TIMEOUT_MS,
   OTEL_EXPORTER_OTLP_TRACES_ENDPOINT,OTEL_EXPORTER_OTLP_TRACES_HEADERS,OTEL_EXPORTER_OTLP_TRACES_TIMEOUT,OTEL_SERVICE_NAME,OTEL_SERVICE_VERSION,
   OTEL_EXPORTER_OTLP_METRICS_ENDPOINT,OTEL_EXPORTER_OTLP_METRICS_HEADERS,OTEL_EXPORTER_OTLP_METRICS_TIMEOUT,OTEL_METRIC_EXPORT_INTERVAL,OTEL_SERVICE_INSTANCE_ID,
   OTEL_EXPORTER_OTLP_LOGS_ENDPOINT,OTEL_EXPORTER_OTLP_LOGS_HEADERS,OTEL_EXPORTER_OTLP_LOGS_TIMEOUT }) => {
@@ -37,6 +47,8 @@ export const configSchema = z.object({
   hostname: HOST, port: PORT, logLevel: LOG_LEVEL, databasePath: DATABASE_PATH, workerEnabled: WORKER_ENABLED,
   schedulerEnabled: SCHEDULER_ENABLED,
   shutdownGraceMs: SHUTDOWN_GRACE_MS,
+  ...(REPORTS_NATIVE_URL && REPORTS_NATIVE_TOKEN ? { nativeReports: { baseUrl: REPORTS_NATIVE_URL, token: REPORTS_NATIVE_TOKEN,
+    allowInsecureLoopback: REPORTS_NATIVE_ALLOW_INSECURE_LOOPBACK, timeoutMs: REPORTS_NATIVE_TIMEOUT_MS } } : {}),
   ...(OTEL_EXPORTER_OTLP_TRACES_ENDPOINT ? { otlp: { endpoint: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT,headers: OTEL_EXPORTER_OTLP_TRACES_HEADERS,
     timeoutMs: OTEL_EXPORTER_OTLP_TRACES_TIMEOUT,serviceName: OTEL_SERVICE_NAME,resourceAttributes,...(OTEL_SERVICE_VERSION===undefined ? {} : { serviceVersion: OTEL_SERVICE_VERSION }) } } : {}),
   ...(OTEL_EXPORTER_OTLP_METRICS_ENDPOINT ? { metricExportIntervalMs: OTEL_METRIC_EXPORT_INTERVAL,otlpMetrics: {

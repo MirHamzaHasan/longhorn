@@ -80,7 +80,12 @@
     "demo:postgres": "pnpm build && node scripts/demo-postgres.mjs",
     "test:bun-sqlite": "pnpm build && node scripts/verify-bun-sqlite.mjs",
     "dev:bun-sqlite": "pnpm --filter example-bun-sqlite... build && bun examples/bun-sqlite/dist/index.js",
-    "test:bun-sqlite-project": "pnpm build && node scripts/verify-sqlite-project.mjs bun"
+    "test:bun-sqlite-project": "pnpm build && node scripts/verify-sqlite-project.mjs bun",
+    "build:rust-reports": "node scripts/build-rust-reports.mjs build",
+    "test:rust-service": "node scripts/build-rust-reports.mjs fmt && node scripts/build-rust-reports.mjs test",
+    "test:rust-reports": "pnpm build && pnpm build:rust-reports && node scripts/verify-rust-reports.mjs",
+    "dev:rust-reports": "node scripts/serve-rust-reports.mjs",
+    "demo:rust-reports": "pnpm build && pnpm build:rust-reports && node scripts/demo-rust-reports.mjs"
   },
   "packageManager": "pnpm@12.6.0"
 }

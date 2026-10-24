@@ -9,6 +9,11 @@ downstream connections, verification, and current limits.
 
 | Feature | Guide | Implementation owner | Connects to |
 | --- | --- | --- | --- |
+| Optional Rust compute service | [Native reports](rust-reports.md) | Native Cargo workspace | Authenticated pure report protocol, bounded handler ownership and graceful signals |
+| Portable typed native client | [Report client](native-report-client.md) | Jobs application module over shared JSON client | Input snapshots, protocol/result validation, four-runtime Fetch and real call drain |
+| Native report job backend | [Jobs/Rust](jobs-native-reports.md) | ReportCompute DI and existing queue | Explicit configuration, readiness, cancellation, retry/recovery and retained SQLite results |
+| One-command native workflow | [Rust demo](rust-reports-demo.md) | Owned native/jobs processes | Random service credentials, actual computed report and ordered temporary cleanup |
+| Native Rust interoperability gate | [Rust proof](rust-reports-testing.md) | Locked build and actual processes | Admission/body timeout, Node/Bun/Deno/workerd, outage/restart, demo and launcher |
 | Bounded Node/Bun task reads | [SQLite task pages](sqlite-task-pages.md) | Shared task schema/service/repository | Typed cursor/filter pages, exact int64 boundaries and bounded SQL lookahead |
 | Whole-collection SQL summaries | [Task counts](sqlite-task-counts.md) | TasksStore.counts and existing cache | One-row aggregates, safe counts, unchanged TTL/invalidation/fallback and Redis profile |
 | Retained read/index upgrade | [Task read proof](sqlite-task-read-upgrades.md) | Task manifest and native/installed gates | Unchanged original checksum, appended filtered index and 1029-task HTTP traversal |

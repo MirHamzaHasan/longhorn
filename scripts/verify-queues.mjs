@@ -1,3 +1,4 @@
+import { localReportTestEnvironment } from './local-report-test-environment.mjs'
 import assert from 'node:assert/strict'
 import { spawn } from 'node:child_process'
 import { mkdtemp, rm } from 'node:fs/promises'
@@ -17,7 +18,7 @@ const temporary = await mkdtemp(join(tmpdir(), 'longhorn-queues-'))
 const instances = []
 function launch(binary, args, environment = {}) {
   const child = spawn(binary, args, { cwd: root, stdio: ['ignore', 'pipe', 'pipe'], env: {
-    ...process.env, HOST: '127.0.0.1', PORT: '0', LOG_LEVEL: 'info',
+    ...process.env,...localReportTestEnvironment, HOST: '127.0.0.1', PORT: '0', LOG_LEVEL: 'info',
     OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: '',OTEL_EXPORTER_OTLP_TRACES_HEADERS: '',OTEL_EXPORTER_OTLP_TRACES_TIMEOUT: '10000',OTEL_SERVICE_NAME: 'longhorn-test',OTEL_SERVICE_VERSION: '',...environment,
   } })
   let output = ''

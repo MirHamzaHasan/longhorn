@@ -1,3 +1,4 @@
+import { localReportTestEnvironment } from './local-report-test-environment.mjs'
 import assert from 'node:assert/strict'
 import { spawn } from 'node:child_process'
 import { createRequire } from 'node:module'
@@ -15,7 +16,7 @@ const root=fileURLToPath(new URL('..',import.meta.url)),require=createRequire(im
 const temporary=await mkdtemp(join(tmpdir(),'longhorn-otlp-')),authorization='Bearer owned-native-test-only',first=new Set()
 let collector,gateway,rejectExports=false
 function launch(binary,args,environment={}) {
-  const child=spawn(binary,args,{ cwd: root,stdio: ['ignore','pipe','pipe'],env: { ...process.env,...environment } })
+  const child=spawn(binary,args,{ cwd: root,stdio: ['ignore','pipe','pipe'],env: { ...process.env,...localReportTestEnvironment,...environment } })
   let output='';const records=[]
   createInterface({ input: child.stdout }).on('line',line => { output+=line+'\n';try { records.push(JSON.parse(line)) } catch {} })
   child.stderr.on('data',chunk => { output+=chunk });child.on('error',error => { output+=String(error) })

@@ -16,12 +16,13 @@ type RunnerStatus = { state: string; active: boolean; errors: number; dispatched
 export const JobsDiagnostics = token<ReturnType<typeof configureDiagnostics>>('jobs diagnostics')
 
 export function configureDiagnostics(app: Longhorn, config: AppConfig, resources: {
-  database: () => Database; worker: () => WorkerStatus; scheduler: () => RunnerStatus; exporter?: SpanExporter; metricExporter?: MetricExporter; logs?: BufferedLogProcessor
+  database: () => Database; worker: () => WorkerStatus; scheduler: () => RunnerStatus; exporter?: SpanExporter; metricExporter?: MetricExporter; logs?: BufferedLogProcessor; nativeHealthy?: (signal: AbortSignal) => Promise<boolean>
 }) {
   const meter = new MetricRegistry(), exporter = resources.exporter ?? (config.otlp ? new OtlpHttpSpanExporter(config.otlp) : new MemorySpanExporter({ capacity: 128 }))
   const tracer = new Tracer({ exporter, onError: () => app.logger.warn('Trace export failed', { component: 'tracing' }) })
   const readiness = new Readiness({ timeoutMs: 500 })
   readiness.add('database', async ({ signal }) => { if (signal.aborted) return false; await resources.database().execute('SELECT 1'); return true })
+  if (resources.nativeHealthy) readiness.add('native-reports', ({ signal }) => resources.nativeHealthy!(signal))
   if (config.workerEnabled) readiness.add('worker', () => resources.worker().state === 'running')
   if (config.schedulerEnabled) readiness.add('scheduler', () => resources.scheduler().state === 'running')
   const http = httpTelemetry({ meter, tracer, excludePaths: ['/metrics', '/traces', '/diagnostics'],
