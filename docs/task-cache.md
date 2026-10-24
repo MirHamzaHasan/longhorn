@@ -22,7 +22,7 @@ no-store`, so browser/proxy caching does not obscure the application's cache beh
 | `CACHE_TTL_MS` | Validated startup setting | Defaults to 5000 ms; accepts 0–3600000 |
 | `TaskSummaryStore` | DI token for `CacheStore<TaskSummary>` | Memory by default (16 entries); an optional resource factory selects Redis |
 | `TaskSummaryCache` | DI token for `Cache<TaskSummary>` | Selected store plus validated TTL, one value schema |
-| `TasksService.summary` | Cached derived read | Shared load from `TasksStore.list`, public counts/timestamp |
+| `TasksService.summary` | Cached derived read | Shared load from `TasksStore.counts`, public counts/timestamp |
 | Successful service mutations | Direct invalidation | Delete summary key before event observations/HTTP success |
 | `configureTaskCache` | Lifetime | Acquire after database and before event ownership |
 | `/summary` | HTTP view | Returns the derived snapshot; normal tasks remain uncached |
@@ -44,6 +44,10 @@ uncached source behavior. The default memory profile has no cross-process
 invalidation. The separate [Redis profile](redis-tasks-example.md) shares stored
 summaries with explicit TTL and consistency limits. The generated timestamp makes the snapshot's computation time
 visible, and the TTL defines the normal retention window.
+
+Counts now use [one SQL aggregate row](sqlite-task-counts.md), independently of
+[cursor pages](sqlite-task-pages.md). A bounded list is never counted as the whole
+collection. Cache value shape and consistency remain the same.
 
 ## Failure and lifecycle policy
 

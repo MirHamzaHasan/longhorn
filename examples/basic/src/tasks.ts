@@ -17,9 +17,13 @@ export type TaskSummary = {
   readonly pending: number
   readonly generatedAt: string
 }
+export type TaskCounts = Pick<TaskSummary, 'total' | 'completed' | 'pending'>
+export type TaskListQuery = { readonly limit: number; readonly after?: string; readonly completed?: boolean }
+export type TaskPage = { readonly tasks: readonly Task[]; readonly nextCursor: string | null }
 
 export interface TasksStore {
-  list(): Promise<Task[]>
+  list(query: TaskListQuery): Promise<TaskPage>
+  counts(): Promise<TaskCounts>
   get(id: string): Promise<Task | undefined>
   create(title: string): Promise<Task>
   update(id: string, completed: boolean): Promise<Task | undefined>
@@ -33,7 +37,7 @@ export class TasksService {
   private cacheEnabled = true
   constructor(private readonly store: TasksStore, private readonly events: EventBus, private readonly logger: Logger,
     private readonly summaryCache: Cache<TaskSummary>) {}
-  list(): Promise<Task[]> { return this.store.list() }
+  list(query: TaskListQuery): Promise<TaskPage> { return this.store.list(query) }
   get(id: string): Promise<Task | undefined> { return this.store.get(id) }
   async summary(): Promise<TaskSummary> {
     if (!this.cacheEnabled) return this.loadSummary()
@@ -61,10 +65,9 @@ export class TasksService {
     return deleted
   }
   private async loadSummary(): Promise<TaskSummary> {
-    const tasks = await this.store.list()
-    const completed = tasks.filter((task) => task.completed).length
-    this.logger.info('Task summary computed', { total: tasks.length, completed })
-    return Object.freeze({ total: tasks.length, completed, pending: tasks.length - completed, generatedAt: new Date().toISOString() })
+    const counts = await this.store.counts()
+    this.logger.info('Task summary computed', { total: counts.total, completed: counts.completed })
+    return Object.freeze({ ...counts, generatedAt: new Date().toISOString() })
   }
   private async invalidateSummary(): Promise<void> {
     if (!this.cacheEnabled) return

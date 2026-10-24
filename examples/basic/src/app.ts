@@ -4,7 +4,7 @@ import { validate } from '@longhorn/validation/hono'
 import { AppSettings, defaultConfig } from './config.js'
 import type { AppConfig } from './config.js'
 import type { Logger } from '@longhorn/logger'
-import { createTaskSchema, updateTaskSchema } from './schemas.js'
+import { createTaskSchema, updateTaskSchema, taskListQuery } from './schemas.js'
 import { TasksService, TasksStoreToken } from './tasks.js'
 import type { TasksStore } from './tasks.js'
 import { registerTaskEvents, TaskActivity, TaskEvents } from './task-events.js'
@@ -35,8 +35,12 @@ export function createApp(config: AppConfig = defaultConfig, logger?: Logger, st
     return c.json({ summary: await c.get('container').resolve(Tasks).summary() })
   })
 
-  app.http.get('/tasks', async (c) => {
-    return c.json({ tasks: await c.get('container').resolve(Tasks).list() })
+  app.http.get('/tasks', async (c, next) => {
+    if (Object.values(c.req.queries()).some(values => values.length !== 1)) return c.json({ error: 'Invalid task query' }, 400)
+    await next()
+  }, validate('query', taskListQuery), async (c) => {
+    c.header('Cache-Control', 'no-store')
+    return c.json(await c.get('container').resolve(Tasks).list(c.req.valid('query')))
   })
 
   app.http.post('/tasks', validate('json', createTaskSchema), async (c) => {

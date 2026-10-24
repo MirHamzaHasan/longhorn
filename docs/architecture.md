@@ -1125,3 +1125,29 @@ retained restart and failed-compile recovery. Schema drift rejects readiness and
 restored source reopens retained state. See [profile](bun-sqlite-starter.md),
 [development](bun-sqlite-starter-development.md), [proof](bun-sqlite-starter-testing.md)
 and [shared assets](application-template-assets.md).
+
+---
+
+## 42. Bounded Task Reads and Whole-Collection SQL Counts
+
+The existing Node/Bun task application now separates list(query) → TaskPage from
+counts() → TaskCounts inside its application store contract. The HTTP list validates
+canonical limits/cursors and literal completion filters, rejects duplicate/unknown
+parameters and returns tasks with nextCursor. The repository snapshots typed input,
+binds predicates and fetches limit + 1 numeric-ID rows. Response pages are bounded
+independently of collection size; exact int64 IDs survive JSON as decimal strings.
+
+Summary loaders use one count/sum statement with safe count decoding. Existing
+memory/Redis cache envelopes, shared loads, invalidation fences and provider/source
+failure boundaries remain unchanged. Pages stay uncached, and summary counts cover
+the full collection independently of page filters. Native result limits therefore
+do not turn a large task collection into an oversized list or incorrect page total.
+
+Schema history retains the original task table checksum and appends a completed/id
+index. Startup upgrades legacy state without rewriting records; old source rejects
+the newer manifest prefix. The source and adapted Bun tests prove retained upgrade,
+digit-boundary order, wide cursors and deleted cursor rows. The shipped native gate
+uses 1029 tasks to verify real HTTP traversal, filters, aggregate totals and live
+insertion/deletion. Node/Bun generated projects and cache/event integrations keep
+their own native regressions. See [pages](sqlite-task-pages.md),
+[counts](sqlite-task-counts.md) and [read proof](sqlite-task-read-upgrades.md).

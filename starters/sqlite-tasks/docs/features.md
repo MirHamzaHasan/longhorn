@@ -18,3 +18,6 @@ SQLite repository to the task service; events/cache remain separate observations
 | Summary cache | [Cache](cache.md) | LRU/TTL loads, invalidation and direct source fallback |
 | Runtime/development | [Runtime](runtime.md) | Node listener, source watch and native signals |
 | Verification | [Testing](testing.md) | Source tests, real HTTP, process restart/concurrency/integrity |
+| Task cursor pages | [Pagination](pagination.md) | Bounded SQL lookahead, exact IDs and live filters |
+| Whole-collection counts | [Task counts](task-counts.md) | Aggregate reads and existing summary cache |
+| Retained read upgrade | [Upgrades](upgrades.md) | Original checksum, appended index and native large-data proof |

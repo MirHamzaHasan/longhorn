@@ -46,8 +46,9 @@ No Node dotenv policy is inferred.
 application tests; `pnpm test:persistence` runs real separate Bun hosts against
 temporary files. See the [independent project proof](bun-sqlite-starter-testing.md).
 
-Native SQL remains synchronous. The basic task list/summary is unpaginated and
-subject to the provider's default 1000-row limit. Activity/cache reset per host,
+Native SQL remains synchronous. [Task pages](sqlite-task-pages.md) fetch at most
+101 rows and [summaries](sqlite-task-counts.md) use one aggregate row, keeping large
+collections within the provider's result limits. Activity/cache reset per host,
 and another host's writes reach cached summaries after TTL. This public example
 does not add account isolation, revision checks, request-key replay, deployment,
 automatic framework updates or automatic schema upgrades.

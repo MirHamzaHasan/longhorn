@@ -96,7 +96,7 @@ try {
   assert.equal(new Set(created.map(task => task.id)).size, 24)
   await request(second, '/tasks/' + created[0].id, 'DELETE', undefined, 204)
   await finish(second, 'SIGTERM'); await finish(third, 'SIGINT')
-  const fourth = await start(), tasks = (await request(fourth, '/tasks')).tasks
+  const fourth = await start(), tasks = (await request(fourth, '/tasks?limit=100')).tasks
   assert.equal(tasks.length, 24)
   assert.equal(tasks.find(task => task.id === original.id).completed, true)
   assert.ok(!tasks.some(task => task.id === created[0].id))

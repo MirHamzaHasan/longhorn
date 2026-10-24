@@ -41,7 +41,7 @@ requests, the event bus, and cache loaders before releasing the database. See [S
 | --- | --- | --- |
 | GET | `/` | Framework, configured application name, and endpoint information |
 | GET | `/health` | `{ "status": "ok" }` |
-| GET | `/tasks` | List stored tasks |
+| GET | `/tasks` | Bounded cursor page with optional completion filter |
 | GET | `/activity` | Current process event counters and latest event/request metadata |
 | GET | `/summary` | Cached counts and timestamp, with local write invalidation and TTL for external writes |
 | POST | `/tasks` | Validate and trim a title, create task, return 201 and Location |
@@ -52,6 +52,11 @@ requests, the event bus, and cache loaders before releasing the database. See [S
 JSON writes require the appropriate Content-Type. Invalid schema input returns field
 issues with status 400. Malformed JSON uses the framework's JSON error response.
 All core requests get a response ID; enabled request logs use that same ID.
+
+Lists return `{ tasks, nextCursor }`, default to 20 rows and accept limit (1–100),
+after (positive int64 ID) and completed (literal true/false). Follow nextCursor
+until null to enumerate all tasks. See [task pages](sqlite-task-pages.md),
+[aggregate summaries](sqlite-task-counts.md) and [retained upgrades](sqlite-task-read-upgrades.md).
 
 The example is persistent but is not yet authenticated. SQLite generates IDs;
 committed creates, updates, deletions, and ID allocation survive restarts.

@@ -8,7 +8,7 @@ it('runs the tasks workflow through LongHorn and a real Node server', async () =
   try {
     const request = (path: string, init?: RequestInit) => fetch(`${server.url}${path}`, init)
     expect(await (await request('/health')).json()).toEqual({ status: 'ok' })
-    expect(await (await request('/tasks')).json()).toEqual({ tasks: [] })
+    expect(await (await request('/tasks')).json()).toEqual({ tasks: [], nextCursor: null })
 
     const created = await request('/tasks', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -19,7 +19,7 @@ it('runs the tasks workflow through LongHorn and a real Node server', async () =
     const task = { id: '1', title: 'Build with LongHorn', completed: false }
     expect(await created.json()).toEqual({ task })
     expect(await (await request('/tasks/1')).json()).toEqual({ task })
-    expect(await (await request('/tasks')).json()).toEqual({ tasks: [task] })
+    expect(await (await request('/tasks')).json()).toEqual({ tasks: [task], nextCursor: null })
 
     const updated = await request('/tasks/1', {
       method: 'PATCH', headers: { 'Content-Type': 'application/json' },
@@ -32,7 +32,7 @@ it('runs the tasks workflow through LongHorn and a real Node server', async () =
     expect(removed.status).toBe(204)
     expect(await removed.text()).toBe('')
     expect((await request('/tasks/1')).status).toBe(404)
-    expect(await (await request('/tasks')).json()).toEqual({ tasks: [] })
+    expect(await (await request('/tasks')).json()).toEqual({ tasks: [], nextCursor: null })
   } finally {
     await app.close()
   }
@@ -53,7 +53,7 @@ it.each([
   })
   expect(response.status).toBe(400)
   expect(await response.json()).toHaveProperty('error')
-  expect(await (await app.http.request('/tasks')).json()).toEqual({ tasks: [] })
+  expect(await (await app.http.request('/tasks')).json()).toEqual({ tasks: [], nextCursor: null })
 })
 
 it('rejects invalid updates without changing the stored task', async () => {
@@ -88,4 +88,20 @@ it('uses the framework JSON fallback for unknown paths', async () => {
   const response = await createApp().http.request('/missing')
   expect(response.status).toBe(404)
   expect(await response.json()).toEqual({ error: 'Not Found' })
+})
+
+it('rejects malformed, duplicate and unknown list parameters', async () => {
+  const app = createApp()
+  try {
+    for (const query of ['limit=0', 'limit=101', 'limit=01', 'limit=1e2', 'limit=', 'after=0', 'after=-1', 'after=01',
+      'after=9223372036854775808', 'after=1%20OR%201=1', 'completed=1', 'completed=True', 'unknown=1',
+      'limit=1&limit=2', 'after=1&after=2', 'completed=true&completed=false']) {
+      const response = await app.fetch(new Request('http://localhost/tasks?' + query))
+      expect(response.status).toBe(400)
+    }
+    const response = await app.fetch(new Request('http://localhost/tasks?limit=100&after=9223372036854775807&completed=false'))
+    expect(response.status).toBe(200)
+    expect(response.headers.get('Cache-Control')).toBe('no-store')
+    expect(await response.json()).toEqual({ tasks: [], nextCursor: null })
+  } finally { await app.close() }
 })

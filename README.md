@@ -113,13 +113,18 @@ curl -i -X DELETE "http://127.0.0.1:3000/tasks/$TASK_ID"
 | --- | --- | --- |
 | GET | `/` | Application information |
 | GET | `/health` | Health response |
-| GET | `/tasks` | List tasks |
+| GET | `/tasks` | Cursor page; limit (1–100), after and completed filters |
 | GET | `/activity` | Process-local task event counts and latest request correlation |
 | GET | `/summary` | Cached public task counts and computation timestamp |
 | POST | `/tasks` | Create a task with a trimmed title of 1–200 characters |
 | GET | `/tasks/:id` | Read a task |
 | PATCH | `/tasks/:id` | Set `completed` to a boolean |
 | DELETE | `/tasks/:id` | Delete a task; return 204 |
+
+Lists return `{ tasks, nextCursor }` with 20 rows by default. Follow the cursor
+until null to read the collection. [SQLite task pages](docs/sqlite-task-pages.md)
+and [aggregate summaries](docs/sqlite-task-counts.md) stay bounded on Node/Bun;
+[retained upgrades](docs/sqlite-task-read-upgrades.md) preserve existing tasks.
 
 Task writes publish awaited [typed events](docs/events.md). `/activity` shows this
 process's observations; counters reset on restart while tasks persist. See

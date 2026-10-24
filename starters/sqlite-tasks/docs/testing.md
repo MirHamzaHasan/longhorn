@@ -9,3 +9,8 @@ files/hosts. It verifies separate-process restart, concurrent writers, updates/
 deletion, nonreused IDs, migration history and PRAGMA integrity_check. It never
 modifies this project's normal data directory. See [SQLite](sqlite.md),
 [migrations](migrations.md), [events](events.md) and [cache](cache.md).
+
+The shipped persistence gate also traverses a 1029-task collection with bounded
+pages, both completion filters, aggregate totals and a deleted cursor boundary.
+Source tests pin the original migration checksum and verify legacy upgrades and
+wide int64 cursors. See [upgrades](upgrades.md).

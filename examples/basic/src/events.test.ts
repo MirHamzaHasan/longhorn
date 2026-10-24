@@ -65,7 +65,7 @@ it('retains successful writes when observers fail and logs delivery metadata wit
 
 it('emits nothing for a failed store mutation and isolates activity between apps', async () => {
   const app = createApp(defaultConfig, undefined, {
-    list: async () => [], get: async () => undefined,
+    list: async () => ({ tasks: [], nextCursor: null }), counts: async () => ({ total: 0, completed: 0, pending: 0 }), get: async () => undefined,
     create: async () => { throw new Error('write failed') },
     update: async () => undefined, delete: async () => false,
   })

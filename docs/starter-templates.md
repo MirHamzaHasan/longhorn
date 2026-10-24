@@ -19,7 +19,7 @@ the generated `docs/worker-scheduled.md` explains the local trigger and limits.
 ## Included behavior
 
 This section describes the default api profile. Persistent [D1](d1-starter.md)
-and [Node SQLite](sqlite-starter.md) profiles supply their existing task application
+and [Node](sqlite-starter.md)/[Bun SQLite](bun-sqlite-starter.md) profiles supply their task application
 sources and separate route/lifetime policies. Their asset validation shares the
 [trusted template reader](application-template-assets.md), not application behavior.
 

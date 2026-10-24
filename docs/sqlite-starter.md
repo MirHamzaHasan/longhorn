@@ -29,11 +29,15 @@ resolve the same data/env location even from another cwd. .env/.env.local supply
 settings with process values winning; :memory: is explicit. Schema history is
 checked/applied before listening and native shutdown drains resources.
 
-This is the existing Node task API: public CRUD, decimal IDs, complete task lists,
+This is the existing Node task API: public CRUD, decimal IDs, bounded cursor pages,
 process-local /activity and derived /summary. Activity/cache do not persist or
 automatically observe other hosts. It has no account isolation, revision conflicts
 or request-key replay. D1's separate protocol is documented in [its profile](d1-starter.md).
 See [task integration](tasks-example.md), [events](task-events.md) and [cache](task-cache.md).
+
+List clients follow nextCursor; summaries use whole-collection aggregate counts.
+The retained [read upgrade](sqlite-task-read-upgrades.md) appends an index while
+preserving the original table history. See [pages](sqlite-task-pages.md).
 
 Generated sources remain editable, and .longhorn/ plus relative file overrides
 keep the project independent of the checkout. First installation creates its own

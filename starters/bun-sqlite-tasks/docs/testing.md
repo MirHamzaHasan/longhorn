@@ -15,3 +15,8 @@ For manual review, create a task, restart pnpm start and read it again. During
 pnpm dev, break syntax to keep the old host, then correct it and observe a drained
 replacement with retained tasks. Activity/caches intentionally reset per host.
 See [runtime](runtime.md), [configuration](configuration.md) and [SQLite](sqlite.md).
+
+The shipped persistence gate also traverses a 1029-task collection with bounded
+pages, both completion filters, aggregate totals and a deleted cursor boundary.
+Source tests pin the original migration checksum and verify legacy upgrades and
+wide int64 cursors. See [upgrades](upgrades.md).

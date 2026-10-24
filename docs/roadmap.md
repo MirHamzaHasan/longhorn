@@ -489,6 +489,19 @@ Packed binaries, relocation/frozen install, native source/persistence tests and
 actual HTTP/watch/schema failure gates establish an editable independent app.
 Production account policy, deployment and automatic upgrades remain separate.
 
+## Bounded SQLite task reads and aggregate summaries implemented
+
+[Cursor pages](sqlite-task-pages.md), [whole-collection counts](sqlite-task-counts.md)
+and [retained read upgrades](sqlite-task-read-upgrades.md) each have a guide. The
+shared Node/Bun/Redis task application now returns bounded keyset pages with exact
+int64 cursors and optional completion filters. Summary loaders read one aggregate
+row rather than materializing the entire collection. The original table migration
+stays byte-identical; a new completed/id index is appended to the checked history.
+Both independent SQLite variants ship the source, guides and adapted native tests.
+The actual persistence gate traverses 1029 tasks, verifies both filters/counts and
+handles a deleted cursor boundary. Live pages are not snapshot isolation, and
+cross-host summary consistency still follows the selected cache TTL.
+
 ## Subsequent framework modules
 
 | Module | Depends on | Required proof |

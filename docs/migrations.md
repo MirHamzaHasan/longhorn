@@ -47,7 +47,7 @@ before registering ready repositories and before the HTTP listener binds.
 Verification: [SQLite migration tests](../runtimes/node/src/sqlite.test.ts) cover
 repeat/concurrent application, checksum and ordering rejection, and atomic rollback.
 The [process verification](../scripts/verify-persistence.mjs) restarts the executable
-and checks that its migration is recorded exactly once.
+and checks that each migration is recorded exactly once.
 
 The same coordinator also runs on [Durable Object SQLite](workers-durable-sqlite.md).
 Its complete schema history is private to one Object ID and remains distinct from

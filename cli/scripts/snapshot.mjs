@@ -90,10 +90,10 @@ for(const entry of await readdir(join(root,'examples/basic/src'),{withFileTypes:
   if(entry.name.endsWith('.test.ts')){
     if(source.split("from 'vitest'").length!==2)throw new Error('Basic test runner changed; review Bun template mapping')
     source=source.replace("from 'vitest'","from 'bun:test'")
-    source=source.replaceAll("'@longhorn/node'","'@longhorn/bun'").replaceAll('nodeRuntime','bunRuntime').replaceAll('real Node server','real Bun server')
+    source=source.replaceAll("'@longhorn/node/sqlite'","'@longhorn/bun/sqlite'").replaceAll("'@longhorn/node'","'@longhorn/bun'").replaceAll('nodeRuntime','bunRuntime').replaceAll('real Node server','real Bun server')
     if(entry.name==='cache.test.ts'){
-      if(source.split('vi.mocked(store.list)').length!==4)throw new Error('Cache test mocks changed; review Bun template mapping')
-      source="import type { Mock } from 'bun:test'\n"+source.replaceAll('vi.mocked(store.list)','mockedList(store)')+"\nfunction mockedList(store:TasksStore):Mock<TasksStore['list']>{return store.list as Mock<TasksStore['list']>}\n"
+      if(source.split('vi.mocked(store.counts)').length!==4)throw new Error('Cache test mocks changed; review Bun template mapping')
+      source="import type { Mock } from 'bun:test'\n"+source.replaceAll('vi.mocked(store.counts)','mockedCounts(store)')+"\nfunction mockedCounts(store:TasksStore):Mock<TasksStore['counts']>{return store.counts as Mock<TasksStore['counts']>}\n"
     }
   }
   if(source.includes('@longhorn/node')||source.includes("from 'vitest'"))throw new Error('Unexpected Node-only import in Bun task source')

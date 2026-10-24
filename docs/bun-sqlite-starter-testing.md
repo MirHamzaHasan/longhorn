@@ -39,7 +39,7 @@ production account policy or every optional database store.
 
 ## Local evidence
 
-On macOS ARM64, frozen installation, the full build/type checks and 511 source
+At the initial Bun starter milestone on macOS ARM64, frozen installation, the full build/type checks and 511 source
 tests across 84 files passed. The relocated generated Bun app passed 44 native
 tests across six files (187 assertions), followed by the shipped persistence gate
 and installed HTTP/development/failure checks. The existing 13-test Bun provider
@@ -47,3 +47,6 @@ gate, Node SQLite/D1 packed projects and all four default runtime projects passe
 Validation checked 300 source Markdown files and 2617 local links; the original
 LICENSE blob was preserved. Hosted Actions results remain separate from this
 local evidence and the account's existing runner-budget restriction.
+
+Current bounded-read, aggregate and retained-index verification is recorded in
+[task read upgrades](sqlite-task-read-upgrades.md).

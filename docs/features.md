@@ -9,6 +9,9 @@ downstream connections, verification, and current limits.
 
 | Feature | Guide | Implementation owner | Connects to |
 | --- | --- | --- | --- |
+| Bounded Node/Bun task reads | [SQLite task pages](sqlite-task-pages.md) | Shared task schema/service/repository | Typed cursor/filter pages, exact int64 boundaries and bounded SQL lookahead |
+| Whole-collection SQL summaries | [Task counts](sqlite-task-counts.md) | TasksStore.counts and existing cache | One-row aggregates, safe counts, unchanged TTL/invalidation/fallback and Redis profile |
+| Retained read/index upgrade | [Task read proof](sqlite-task-read-upgrades.md) | Task manifest and native/installed gates | Unchanged original checksum, appended filtered index and 1029-task HTTP traversal |
 | Independent Bun SQLite project | [Bun starter](bun-sqlite-starter.md) | CLI runtime/profile selection | Existing public SQLite template, native source/tests and selected package closure |
 | Drained Bun development reloads | [Bun development](bun-sqlite-starter-development.md) | Generated Node/esbuild supervisor | Failed-compile retention, serial native replacement and owned signal cleanup |
 | Installed Bun project gate | [Bun project proof](bun-sqlite-starter-testing.md) | Packed CLI and actual Bun hosts | Relocation/frozen install, source/native tests, env/watch/schema failure and retained restart |

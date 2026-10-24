@@ -112,7 +112,7 @@ try {
   const second = launch(process.execPath, [join(root, 'examples/basic/dist/index.js')])
   const reopened = await listening(second)
   assert.deepEqual(await (await fetch(`${reopened}/activity`)).json(), { activity: { created: 0, updated: 0, deleted: 0 } })
-  assert.deepEqual(await (await fetch(`${reopened}/tasks`)).json(), { tasks: [saved] })
+  assert.deepEqual(await (await fetch(`${reopened}/tasks`)).json(), { tasks: [saved], nextCursor: null })
   await stop(second)
   for (const instance of [first, second]) assert.ok(!instance.output().includes(title), 'Task payload entered process logs')
   console.log('Tasks: committed CRUD emits awaited observations, correlates request IDs, skips failed/missing writes, drains on shutdown, and resets process-local activity on restart while tasks persist.')

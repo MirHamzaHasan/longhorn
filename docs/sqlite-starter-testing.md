@@ -37,10 +37,13 @@ existing source/runtime job; runner availability/current-head hosted results rem
 separate. No Windows/native network-filesystem durability or production deployment
 is inferred from these checks.
 
-The complete source suite passes 509 tests in 84 files. Frozen workspace install,
+The initial SQLite starter milestone passed 509 tests in 84 files. Frozen workspace install,
 build/types, all four default starter gates and the installed D1 regression pass.
 
 [Draft PR #8](https://github.com/MirHamzaHasan/longhorn/pull/8) records review.
 Its [first hosted run](https://github.com/MirHamzaHasan/longhorn/actions/runs/40049074639)
 failed all seven jobs with zero steps and no runner allocation. The source/runtime
 annotation identifies the Actions budget restriction, independently of local success.
+
+Current bounded-read, aggregate and retained-index verification is recorded in
+[task read upgrades](sqlite-task-read-upgrades.md).

@@ -33,8 +33,8 @@ IDs are decimal strings. Validation, request IDs and structured logs use the sam
 application middleware. Tasks persist in the SQLite file across restarts and hosts.
 Activity is a process-local observer, and summaries are process-local cached
 derivations; another host's writes become visible after TTL or with CACHE_TTL_MS=0.
-They are not durable audit history. The basic list/summary route has no pagination;
-the provider's default 1000-row output limit remains explicit.
+They are not durable audit history. [Task reads](sqlite-task-pages.md) use bounded
+cursor pages; [summary aggregates](sqlite-task-counts.md) read one result row.
 
 This example does not add revision/idempotency headers to task CRUD, production
 account policy or cloud deployment. For an independent generated copy with owned

@@ -19,7 +19,7 @@ errors from turning later writes into autocommit. Do not retain expired executor
 Defaults bound accepted root work to 64 operations and output to 1000 rows/1 MiB.
 Native output is materialized first; an autocommitted write can persist even when
 result decoding rejects. Do not blindly retry writes. SQL itself must be trusted;
-statement checks are not an arbitrary-SQL sandbox. The basic task list/summary is
-unpaginated and subject to those result limits. Local files, WAL sidecars and
+statement checks are not an arbitrary-SQL sandbox. Task pages fetch at most 101
+rows and summaries use one aggregate row. Local files, WAL sidecars and
 SQLite locking stay application-owned. Close drains accepted work without deleting
 retained state. See [migrations](migrations.md), [tasks](tasks.md) and [testing](testing.md).
