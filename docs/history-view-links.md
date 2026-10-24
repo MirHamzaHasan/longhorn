@@ -11,10 +11,12 @@ The command list takes its scope and delivery status from the URL fragment:
 | #/commands | Own commands, every delivery state |
 | #/commands?state=failed | Own failed commands |
 | #/commands?scope=all&state=pending | Explicit operator view of pending commands |
+| #/commands?q=abcd1234 | Own commands whose ID begins with the entered prefix |
 
-The only supported query keys are scope (mine/all) and state
-(all/pending/running/succeeded/failed/unavailable). Defaults are mine and all;
-canonical links omit them and use fixed scope-then-state order. Valid legacy
+Supported query keys are scope (mine/all), state
+(all/pending/running/succeeded/failed/unavailable) and optional [ID prefix q](console-history-search.md).
+Defaults are mine/all with no search; canonical links omit defaults and use
+scope-then-state-then-q order. Valid legacy
 #commands and trailing-slash list links normalize with replaceState, preserving
 the current browser-history entry. Empty fragments retain the original welcome/
 default-list behavior. Existing UUID detail, reuse, delivery and audit routes work
@@ -27,8 +29,9 @@ are rejected; their values are never forwarded into a private list query. The
 initial shell may still check the current session before interpreting a link.
 
 A bookmark restores the first page of that selection. Loaded older pages, scroll,
-pagination/export cursors, command numbers and user IDs are not encoded. The API's
-existing v1/v2 cursor protocol is unchanged. Each recipient reads under their own
+pagination/export cursors, command numbers and owner/credential fields are not
+encoded. Submitted ID prefixes are retained in the address/history/bookmarks.
+The API keeps v1/v2 for unsearched views and uses [v3 for search](history-search-cursors.md). Each recipient reads under their own
 fresh cookie/viewer and owner/operator policy. A member opening scope=all receives
 the server's access denial and an explicit action to open their own matching view.
 The application does not silently reinterpret the requested scope.

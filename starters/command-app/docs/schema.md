@@ -17,3 +17,8 @@ postgres_account_operations/003_history_filters after the complete existing
 profile. Two partial indexes support fixed-queue state joins. Regular transactional
 index builds block writes; use the maintenance window. Updated startup/readiness
 requires valid/ready indexes on the expected tables. Existing grants suffice.
+
+[ID search](history-search.md) appends 004_history_search with global and owner
+lower-ID pattern indexes after the complete filter profile. Budget regular
+transactional index builds in maintenance before updated hosts; startup/readiness
+checks require valid/ready indexes, with the same runtime grants.

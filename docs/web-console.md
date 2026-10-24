@@ -52,3 +52,7 @@ use explicit continuation files; cancel/navigation/errors discard the current fi
 Bookmarks, reload and Back/Forward restore the selected first page. Cold links and
 expired sessions return through validated sign-in; server admission still governs
 which rows appear. Loaded pages and export continuation are not part of the URL.
+
+[Command-ID search](console-history-search.md) accepts an explicitly submitted UUID
+prefix and combines it with scope/status. Its entered prefix is part of the saved
+view link; paging uses v3 context and searched downloads identify q with v2 headers.

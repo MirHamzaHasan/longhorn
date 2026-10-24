@@ -60,3 +60,10 @@ it('fails the entire segment after a later authorization or network error withou
   const read=vi.fn().mockResolvedValueOnce({commands:[command('one')],nextCursor:'next'}).mockRejectedValueOnce(new Error('Denied'))
   await expect(collectHistoryExport({...base(),pageSize:1,read})).rejects.toThrow('Denied');expect(read).toHaveBeenCalledTimes(2)
 })
+
+it('uses a v2 header for searched selection while preserving unsearched v1 files',async()=>{
+  const selection={scope:'mine',state:'all',q:' ABCD '},result=await collectHistoryExport({...base(),selection,read:async()=>{selection.q='abce';return{commands:[command('abcd-one')],nextCursor:null}}})
+  expect(lines(result)[0]).toMatchObject({version:2,selection:{scope:'mine',state:'all',q:'abcd'}})
+  expect(lines(await collectHistoryExport({...base(),read:async()=>({commands:[],nextCursor:null})}))[0].version).toBe(1)
+  await expect(collectHistoryExport({...base(),selection:{scope:'mine',state:'all',q:'abcd%'},read:vi.fn()})).rejects.toThrow('Refresh and try again')
+})

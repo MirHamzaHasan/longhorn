@@ -46,3 +46,8 @@ valid/ready indexes on the expected tables. No extra runtime grants are needed.
 Preserve `X-LongHorn-Viewer` unchanged when proxying `/account` requests from the
 console. This optional [displayed-account check](console-viewer-binding.md) prevents stale tabs
 from silently acting under a newly switched cookie; it grants no identity or role.
+
+[Command-ID search](history-search-migrations.md) requires the complete appended
+owner profile before updated hosts start. Its two expression index builds belong
+in stopped-writer maintenance and need storage/build time; no new runtime grant
+or automatic schema repair is introduced.

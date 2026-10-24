@@ -4,8 +4,8 @@ Owner: console/routes.ts and app.ts. Connects [history](history.md),
 [filters](history-filters.md), [export](history-export.md), [accounts](accounts.md)
 and [console](console.md).
 
-The list URL carries only scope=mine/all and state=all/pending/running/succeeded/
-failed/unavailable. Examples: #/commands, #/commands?state=failed and
+The list URL carries scope=mine/all, state=all/pending/running/succeeded/
+failed/unavailable and an optional [validated ID prefix q](history-search.md). Examples: #/commands, #/commands?state=failed and
 #/commands?scope=all&state=pending. Defaults are omitted and order is canonical.
 Legacy short/trailing-slash list links remain usable. Unknown/duplicate query
 keys, malformed paths and oversized fragments show an invalid-link state; owner,
@@ -26,4 +26,4 @@ explicit own-scope action with the same status. No permission comes from the URL
 Existing page cleanup cancels reads/export/follow work and fences late results.
 The browser stores no additional local/session data, and no HTTP endpoint, schema,
 grant or dependency is added. Normal browser history/bookmarks retain the filter
-fragment; actual command/private data is not encoded in the link.
+fragment; entered ID prefixes are retained in the link; payloads, credentials and owner fields are excluded.

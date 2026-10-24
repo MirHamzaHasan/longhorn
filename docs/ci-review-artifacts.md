@@ -60,3 +60,7 @@ fixture are not included by the hosted capture globs.
 Nested [history view link captures](history-view-link-testing.md) use the existing
 console PNG/accessibility-report upload paths. Browser history/bookmark sync and
 private pagination state are not separate uploaded artifacts.
+
+The [ID-search captures](history-search-testing.md) and accessibility report use
+the same nested console upload paths. Native plan JSON and downloaded NDJSON are
+local proof and are not added to hosted capture globs.

@@ -35,3 +35,7 @@ and late commits retain the [existing cursor limitations](command-history-cursor
 The export is neither a held snapshot nor a total-count guarantee. Failure or
 cancellation discards the entire current segment; previously saved files remain
 independent. No endpoint, schema, grant, dependency or mutation is added.
+
+[ID search](history-search-export.md) carries its applied q on every export page and
+uses a v2 header to identify the narrowed selection. Unsearched v1 files and all
+existing limits/lifetime rules stay unchanged.

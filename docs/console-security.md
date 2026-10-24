@@ -61,9 +61,9 @@ keeps segment text/cursors in memory and discards the current file after any fai
 admission. Route/version/subject checks precede download. Temporary Blob URLs are
 revoked; export adds no persistent browser data or external transmission.
 
-[View links](history-view-links.md) accept only scope/status on the list route.
+[View links](history-view-links.md) accept only scope/status and a validated UUID prefix on the list route.
 Unknown/duplicate claims and arbitrary return destinations are rejected. The
 [sign-in target](history-view-sign-in.md) is always an internal serialized view;
 links supply no actor, user ID, cursor or permission. Explicit all scope still
 reaches the server gate for a member and produces denial rather than silent
-own-scope reinterpretation. Normal browser history retains only filter choices.
+own-scope reinterpretation. Normal browser history retains filter choices, including an explicitly submitted ID prefix.

@@ -62,5 +62,10 @@ checked independently of screenshots and are not hosted capture upload paths.
 
 [Saved-view verification](history-view-link-testing.md) adds 26 captures under
 `.artifacts/console/view-links`, real browser Back/Forward/reload, sign-in return,
-invalid-link denial and actual saved-selection export. The five suites together
+invalid-link denial and actual saved-selection export. The command, view-link, export, follow and account suites
 produce 261 captures with separate reports.
+
+[ID search verification](history-search-testing.md) adds 26 captures under
+`.artifacts/console/search`, actual prefix/status paging, cancellation, saved links,
+operator admission and v2 downloads. The six browser suites produce 287 captures
+in separate reports. Native migration/query-plan proof is a separate account gate.

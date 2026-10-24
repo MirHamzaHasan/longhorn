@@ -33,3 +33,7 @@ current attempt; neither export data nor cursors enter persistent browser storag
 [Saved views](history-view-links.md) retain scope/status in canonical fragments.
 Reload and Back/Forward re-read the selected first page; cold/expired sign-in
 returns to the validated selection. Private data and cursors stay out of the link.
+
+[ID search](history-search.md) submits a normalized UUID prefix, retains it across
+status/scope changes and saved-view navigation, and uses inline validation.
+Clear search preserves the other filters; searched export uses an explicit v2 header.

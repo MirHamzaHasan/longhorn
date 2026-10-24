@@ -71,3 +71,9 @@ The restored shipped browser also preserves its Delivered view in the actual
 fragment across reload and Back/Forward before exporting those four commands.
 [Saved-view proof](history-view-link-testing.md) separately exercises cold/expired
 sign-in, other accounts, operator denial and invalid route claims.
+
+After restore, the shipped browser searches a retained Delivered UUID, verifies
+its canonical query across reload and exports exactly that command as [v2 NDJSON](history-search-export.md).
+Clearing only search returns to all four delivered commands before existing
+account/session regressions continue. Native [search proof](history-search-testing.md)
+separately covers migration interruption, index plans and combined cursor context.

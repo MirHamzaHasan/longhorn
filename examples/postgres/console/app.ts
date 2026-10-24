@@ -2,6 +2,7 @@ import './app.css'
 import { CommandCopyError,copyCommandNumbers,parseNumbers } from './numbers.js'
 import { createCommandFollow } from './command-follow.js'
 import { collectHistoryExport } from './history-export.js'
+import { normalizeHistorySearch } from './history-search.js'
 import { ConsoleRouteError,historyViewHash,parseConsoleRoute } from './routes.js'
 import type { ConsoleRoute,HistoryView } from './routes.js'
 
@@ -210,7 +211,7 @@ function newCommand(source?:{id:string;numbers:number[]}){
   });panel.append(form);value.append(panel);return value
 }
 function commandRow(command:Command){const row=node('li',undefined,'row'),name=node('div');name.append(link('Command '+command.id.slice(0,8),'#/commands/'+command.id),node('div',command.id,'row-id'));row.append(name,cell('Created',time(command.createdAt)),cell('Delivery',status(command.delivery?.state??'unknown')),cell('Attempts',command.delivery?command.delivery.attempts+' / '+command.delivery.maxAttempts:'—'));return row}
-function historyExportControls(inputScope:string,inputState:string,current:number,route:string){
+function historyExportControls(inputScope:string,inputState:string,current:number,route:string,inputSearch?:string){
   const section=node('section',undefined,'history-export'),actions=node('div',undefined,'actions'),message=node('p',undefined,'subtle')
   section.setAttribute('aria-label','Command history export');message.setAttribute('role','status');message.setAttribute('aria-atomic','true')
   const description=node('p','Download IDs, dates, and delivery status.','subtle');let task:AbortController|undefined,continuation:string|null=null,objectUrl:string|undefined,revokeTimer:ReturnType<typeof setTimeout>|undefined
@@ -223,8 +224,8 @@ function historyExportControls(inputScope:string,inputState:string,current:numbe
     const controller=new AbortController();task=controller;update(true);message.textContent='Preparing command history export…'
     void(async()=>{
       try{
-        const result=await collectHistoryExport({selection:{scope:inputScope,state:inputState},...(continuation?{after:continuation}:{}),signal:controller.signal,
-          read:input=>{const query=new URLSearchParams({scope:inputScope,limit:String(input.limit)});if(inputState!=='all')query.set('state',inputState);if(input.after)query.set('after',input.after);return api('/commands?'+query,undefined,{signal:input.signal})},
+        const result=await collectHistoryExport({selection:{scope:inputScope,state:inputState,...(inputSearch?{q:inputSearch}:{})},...(continuation?{after:continuation}:{}),signal:controller.signal,
+          read:input=>{const query=new URLSearchParams({scope:inputScope,limit:String(input.limit)});if(inputState!=='all')query.set('state',inputState);if(inputSearch)query.set('q',inputSearch);if(input.after)query.set('after',input.after);return api('/commands?'+query,undefined,{signal:input.signal})},
           progress:(count,pages)=>{if(present()&&(pages===1||pages%10===0))message.textContent='Preparing export: '+count.toLocaleString()+' commands.'},
         })
         if(controller.signal.aborted||!present())return
@@ -241,14 +242,23 @@ function historyExportControls(inputScope:string,inputState:string,current:numbe
   clearPageWork=()=>{task?.abort();revoke()};return section
 }
 async function commandsPage(view:HistoryView){
-  const current=version,route=location.hash,inputScope=view.scope,inputState=view.state,query=new URLSearchParams({limit:'20',scope:inputScope})
+  const current=version,route=location.hash,inputScope=view.scope,inputState=view.state,inputSearch=view.q,query=new URLSearchParams({limit:'20',scope:inputScope})
   if(inputState!=='all')query.set('state',inputState)
+  if(inputSearch)query.set('q',inputSearch)
   const data=await api<Page<{commands:Command[]}>>('/commands?'+query),value=node('div');if(current!==version||location.hash!==route)throw new DOMException('Navigation cancelled','AbortError');value.append(title(inputScope==='all'?'All commands':'Your commands','Follow each command through delivery and receipt.',refresh(),link('Create command','#/new','button primary')))
   const tools=node('div',undefined,'tools history-tools')
-  if(operator()){const picker=select({mine:'My commands',all:'All commands'},inputScope);picker.addEventListener('change',()=>openHistoryView({scope:picker.value as HistoryView['scope'],state:inputState}));tools.append(field('Show commands',picker))}
+  if(operator()){const picker=select({mine:'My commands',all:'All commands'},inputScope);picker.addEventListener('change',()=>openHistoryView({...view,scope:picker.value as HistoryView['scope']}));tools.append(field('Show commands',picker))}
   const state=select({all:'All deliveries',pending:'Pending',running:'Sending',succeeded:'Delivered',failed:'Failed',unavailable:'Unavailable'},inputState)
-  state.addEventListener('change',()=>openHistoryView({scope:inputScope,state:state.value as HistoryView['state']}));tools.append(field('Delivery status',state));value.append(tools,historyExportControls(inputScope,inputState,current,route))
-  if(!data.commands.length){value.append(inputState==='all'?empty('No commands yet',inputScope==='all'?'Submitted commands will appear here.':'Create a command to start your history.',link('Create command','#/new','button primary')):empty('No matching commands','Choose another delivery status or refresh this list.',button('Show all',()=>openHistoryView({scope:inputScope,state:'all'}))));return value}
+  state.addEventListener('change',()=>openHistoryView({...view,state:state.value as HistoryView['state']}));tools.append(field('Delivery status',state));value.append(tools)
+  const search=node('form',undefined,'history-search'),term=node('input'),searchError=node('p',undefined,'form-error'),searchActions=node('div',undefined,'actions'),submit=node('button','Search')
+  term.type='search';term.name='q';term.maxLength=128;term.value=inputSearch??'';term.spellcheck=false;term.autocapitalize='none';submit.type='submit'
+  searchError.id='history-search-error';searchError.setAttribute('role','alert');searchError.hidden=true
+  term.addEventListener('input',()=>{term.removeAttribute('aria-invalid');term.removeAttribute('aria-errormessage');searchError.hidden=true})
+  searchActions.append(submit);if(inputSearch)searchActions.append(button('Clear search',()=>openHistoryView({scope:inputScope,state:inputState})))
+  search.append(field('Command ID starts with',term,'Use at least 4 characters. Search is kept in this view link.'),searchActions,searchError)
+  search.addEventListener('submit',event=>{event.preventDefault();try{const q=normalizeHistorySearch(term.value);openHistoryView({scope:inputScope,state:inputState,...(q?{q}:{})})}catch(error){searchError.textContent=error instanceof Error?error.message:'Enter a command ID prefix.';searchError.hidden=false;term.setAttribute('aria-invalid','true');term.setAttribute('aria-errormessage',searchError.id);term.focus()}})
+  value.append(search,historyExportControls(inputScope,inputState,current,route,inputSearch))
+  if(!data.commands.length){value.append(inputState==='all'&&!inputSearch?empty('No commands yet',inputScope==='all'?'Submitted commands will appear here.':'Create a command to start your history.',link('Create command','#/new','button primary')):empty('No matching commands',inputSearch?'Change the command ID or delivery status and try again.':'Choose another delivery status or refresh this list.',inputState==='all'?undefined:button('Show all',()=>openHistoryView({...view,state:'all'}))));return value}
   const rows=node('ul',undefined,'rows');rows.setAttribute('aria-label','Command history');rows.append(...data.commands.map(commandRow));value.append(rows)
   let cursor=data.nextCursor
   const more=button('Load older commands',()=>{
@@ -364,7 +374,7 @@ async function render(){
     if(current!==version||(error instanceof DOMException&&error.name==='AbortError'))return
     if(error instanceof ConsoleRouteError){notice.hidden=true;root.replaceChildren(empty(error.message,'Return to a valid command view.',link('Your commands',lastCommandsRoute,'button')))}
     else if(error instanceof RequestError&&error.status===401){user=undefined;syncAccount();root.replaceChildren(authPage(false));announce(sessionMessage(error.data),true)}
-    else if(error instanceof RequestError&&error.status===403&&route?.history)root.replaceChildren(empty('Access unavailable','This view needs operator access. Open your own commands to continue.',link('Your commands',historyViewHash({scope:'mine',state:route.history.state}),'button')))
+    else if(error instanceof RequestError&&error.status===403&&route?.history)root.replaceChildren(empty('Access unavailable','This view needs operator access. Open your own commands to continue.',link('Your commands',historyViewHash({...route.history,scope:'mine'}),'button')))
     else root.replaceChildren(empty(error instanceof RequestError&&error.status===403?'Access unavailable':'Could not open this page',error instanceof Error?error.message:'Refresh to try again.',refresh('Try again')))
   }finally{if(current===version){root.dataset.route=location.hash;root.setAttribute('aria-busy','false');root.focus({preventScroll:true});document.title=(user?'Command operations':'Sign in')+' · LongHorn'}}
 }

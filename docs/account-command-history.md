@@ -17,6 +17,7 @@ and its protected receipt route supply the detail after ownership checks.
 | limit | Default 20, range 1–100 |
 | after | Opaque nextCursor from the previous page |
 | state | Omitted/all, pending, running, succeeded, failed or unavailable; see [delivery filters](history-status-filters.md) |
+| q | Optional case-folded command UUID prefix, 4–36 normalized characters; see [ID search](history-id-search.md) |
 
 Cookie/session authentication runs first. Anonymous requests get 401. Members
 requesting the all scope get 403, including duplicate scope parameters. The
@@ -34,7 +35,8 @@ History reads live status separately from that original delivery snapshot.
 
 Pagination is latest insertion-position first, with a unique database int64 key.
 An explicit cursor carries viewer/scope/queue/version context and, for filtered
-v2 pages, the exact selected status. Unfiltered pages retain v1. It is not an
+v2 pages, the exact selected status. Searched v3 pages also bind q; unsearched
+all-state pages retain v1. It is not an
 authorization credential. Newer inserts appear on a fresh first page; continued
 pages walk older positions. This is a live listing rather than a held snapshot.
 The [cursor guide](command-history-cursors.md) details late commits and refresh.

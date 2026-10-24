@@ -659,7 +659,7 @@ checksums and require owner maintenance deployment. The [console](console-histor
 resets pages on selection and isolates canceled continuations. [Native proof](history-filter-testing.md)
 covers real queue transitions, DDL interruption/concurrency, saved cursors, restricted
 grants, actual index plans, 117 command captures and filtering in the restored app.
-Text search and automated history-list refresh remain separate work.
+Arbitrary text/payload search and automated history-list refresh remain separate work.
 
 ## Command delivery and receipt following implemented
 
@@ -694,6 +694,19 @@ operator views receive actual denial and an explicit own-scope action. [Proof](h
 covers real accounts, invalid claims, canceled pagination, bookmarked export,
 26 additional captures and restored shipped assets. Snapshot/scroll/cursor URLs
 and saved named-view persistence remain separate features.
+
+## Command-ID prefix search implemented
+
+[ID search](history-id-search.md) now combines case-folded UUID prefixes with
+existing status/owner/operator history. [v3 cursors](history-search-cursors.md)
+bind exact search context while preserving unsearched v1/v2. Two appended
+[expression indexes](history-search-migrations.md) retain the complete previous
+profile and runtime grants. The [console](console-history-search.md) supports
+submit/clear, saved query links and canceled paging; [searched export v2](history-search-export.md)
+identifies the narrowed selection. [Native proof](history-search-testing.md)
+covers actual queue states, upgrade death/concurrency, restricted projection,
+6000-row owner/global plans, 26 captures and restored standalone search/export.
+Request-key, substring, arbitrary text/number and payload search remain separate work.
 
 ## Subsequent framework modules
 

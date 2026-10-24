@@ -6,7 +6,7 @@ and [verification](history-filter-testing.md).
 
 Unfiltered requests, including explicit state=all, continue to emit and accept
 the original strict v1 cursor. Existing unfiltered bookmarks remain usable.
-Filtered requests emit strict v2 cursors containing the selected status alongside
+Status-only requests emit strict v2 cursors containing the selected status alongside
 viewer, scope, fixed queue and decimal before position. A v1 cursor cannot enter
 a filtered query; a v2 cursor cannot enter another filter or an unfiltered query.
 Changing viewer, scope, queue, version or shape also fails with 400. Page size may
@@ -28,3 +28,6 @@ Status membership is evaluated afresh for each page. A command that changes stat
 above an already-consumed boundary will require refresh to appear in that filter.
 Lower-position late commits, deletion and pruning retain the existing live-list
 limitations. No transaction or snapshot is held between requests.
+
+[ID search](history-search-cursors.md) uses strict v3 with both state and canonical q.
+Unsearched v1/v2 continuations remain unchanged.

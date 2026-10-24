@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "tsup src/index.ts src/migrate.ts src/tasks.ts src/reports.ts src/migrations.ts src/app.ts src/operations.ts src/operations-migrations.ts src/operator-role.ts src/migrate-operations.ts src/operator-host.ts src/operator-config.ts src/operator-runtime.ts src/operation-transport.ts src/command-history.ts src/operation-contracts.ts src/command-history-migrations.ts src/history-filter-migrations.ts src/console-assets.ts src/runtime-grants.ts --format esm --clean && node build-console.mjs",
+    "build": "tsup src/index.ts src/migrate.ts src/tasks.ts src/reports.ts src/migrations.ts src/app.ts src/operations.ts src/operations-migrations.ts src/operator-role.ts src/migrate-operations.ts src/operator-host.ts src/operator-config.ts src/operator-runtime.ts src/operation-transport.ts src/command-history.ts src/operation-contracts.ts src/command-history-migrations.ts src/history-filter-migrations.ts src/history-search-migrations.ts src/console-assets.ts src/runtime-grants.ts --format esm --clean && node build-console.mjs",
     "typecheck": "tsc --noEmit && tsc -p console/tsconfig.json --noEmit",
     "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",

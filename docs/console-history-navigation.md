@@ -4,7 +4,7 @@ Owner: openHistoryView, commandsPage and the history navigation links in app.ts.
 Connects [URL grammar](history-view-links.md), [history paging](command-history-cursors.md),
 [export](console-history-export.md) and [proof](history-view-link-testing.md).
 
-Changing scope or status pushes a canonical fragment and immediately renders the
+Changing scope, status or submitted ID prefix pushes a canonical fragment and immediately renders the
 new first page. Show all clears status and retains scope. Browser Back and Forward
 restore the selected URL and re-read the first page under current authorization;
 they do not restore cached private DOM or a database snapshot. Refresh reuses the
@@ -27,5 +27,5 @@ rules; export continuation is reset when the route is re-created.
 
 The controls and kit remain unchanged. Invalid history links have a static heading
 and an action to the last valid view. A forbidden operator view offers an explicit
-own-scope link with the same status. Native labels, target sizes, light/dark contrast,
+own-scope link with the same status and ID prefix. Native labels, target sizes, light/dark contrast,
 focus-on-navigation and reduced-motion behavior remain in force.

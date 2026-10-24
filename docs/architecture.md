@@ -1489,3 +1489,22 @@ private DOM fencing remain unchanged. Source/native browser proof covers route
 claims, live accounts, paging, download selection and restored assets. See [format](history-view-links.md),
 [navigation](console-history-navigation.md), [sign-in](history-view-sign-in.md) and
 [proof](history-view-link-testing.md).
+
+## 58. Indexed ID Search and Context-Specific Export
+
+History adds a bounded normalized UUID-prefix q predicate on lower(command ID),
+parameterized alongside principal-derived ownership and existing status/position
+filters. Explicit metadata projection stays unchanged. Search emits strict v3
+continuations binding q/state/viewer/scope/queue; unsearched v1/v2 stay compatible.
+Query inputs are copied before awaiting SQL. The complete owner profile appends
+global and owner/lower-ID pattern indexes with transactional deployment/readiness;
+no prior SQL, schema field or runtime grant is rewritten.
+
+The native form submits or clears explicitly. Saved views and validated sign-in
+retain q; changed views cancel old paging/export work. Searched NDJSON uses a v2
+header to distinguish its narrowed selection, while ordinary files remain v1.
+Native DDL death/concurrency, actual queue states, role isolation, int64 restart,
+metadata-only privileges, measured plans and restored assets verify the connection.
+See [API](history-id-search.md), [cursor](history-search-cursors.md),
+[migration](history-search-migrations.md), [console](console-history-search.md),
+[files](history-search-export.md) and [proof](history-search-testing.md).

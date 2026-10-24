@@ -27,3 +27,7 @@ segment without a download. Earlier saved files remain independent. Preparation
 uses memory only, and temporary Blob URLs are revoked. A browser may still ask
 where to save; Export ready confirms preparation/download initiation, not disk
 completion. No export data or continuation is stored in browser storage or URLs.
+
+[ID search](history-search.md) uses version=2 and selection={scope,state,q}; ordinary
+unsearched files remain v1. Records/end summaries and all segment/cancellation
+bounds are unchanged. Readers must recognize the header version and search context.

@@ -135,6 +135,12 @@ downstream connections, verification, and current limits.
 | Browser history navigation | [View navigation](console-history-navigation.md) | Commands selectors and render lifetime | Reload, Back/Forward, contextual return links and fresh first pages |
 | Validated sign-in destination | [View sign-in](history-view-sign-in.md) | Existing credential forms and 401 handling | Cold/expired/registration return, enum-only target and fresh owner/operator admission |
 | Native saved-view proof | [View testing](history-view-link-testing.md) | Native accounts, Chromium and restored archive | Private-free links, role denial, canceled paging, selection export and 26 captures |
+| Command-ID prefix search | [ID search](history-id-search.md) | PostgreSQL history query/repository | Case-folded UUID prefix, parameterized predicates and unchanged owner/role policy |
+| Search-bound continuation | [Search cursors](history-search-cursors.md) | Strict v3 cursor codec | Exact q/state/viewer context, int64 positions and original v1/v2 compatibility |
+| Search expression index deployment | [Search migrations](history-search-migrations.md) | Appended owner profile/readiness | Global/owner lower-ID pattern indexes, atomic ledger/DDL and existing grants |
+| Browser ID search | [Search controls](console-history-search.md) | Native form, saved view router and paging | Explicit submit/clear, inline errors, query-aware links/cancellation and status composition |
+| Searched export format | [Search files](history-search-export.md) | Existing bounded metadata collector | v2 q selection, original v1 files, exact search continuation and no secret fields |
+| Native ID search proof | [Search testing](history-search-testing.md) | Real PostgreSQL, Chromium and restored archive | Upgrade interruption, live queue states, 6000-row plans, query context and 26 captures |
 | Account command history | [History API](account-command-history.md) | PostgreSQL operations router/repository | Accounts, DI, owner filters, existing command detail |
 | Delivery status history filters | [History filters](history-status-filters.md) | PostgreSQL history repository and account query | Live pending/running/succeeded/failed/unavailable membership, same owner/operator admission |
 | Filter-bound continuation | [Filter cursors](history-filter-cursors.md) | Versioned strict cursor codec | Original v1 unfiltered links, exact-status v2, copied inputs and decimal int64 positions |
@@ -337,6 +343,10 @@ flowchart TD
   History --> Database
   HistoryConsole --> HistoryExport[Selected metadata export]
   HistoryConsole --> HistoryLinks[Canonical scope and status links]
+  HistoryConsole --> HistorySearch[Command ID prefix search]
+  HistorySearch --> SearchCursor[Search-bound v3 pages]
+  HistorySearch --> SearchIndexes[Owner/global lower-ID indexes]
+  HistorySearch --> HistoryExport
   HistoryLinks --> ViewHistory[Browser history and fresh first pages]
   HistoryLinks --> ViewSignIn[Validated sign-in return]
   HistoryExport --> ExportFiles[Versioned bounded NDJSON segments]

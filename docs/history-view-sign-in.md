@@ -19,7 +19,7 @@ secret-clearing behavior. Explicit Sign out clears the pending target and rememb
 view, so ordinary subsequent sign-in starts at the default command list.
 
 The pending target exists only in memory and is always built from the strict
-scope/state serializer. No returnTo URL, owner ID, token, cursor or arbitrary path
+scope/state/search-prefix serializer. No returnTo URL, owner ID, token, cursor or arbitrary path
 is accepted from a link. Navigating to welcome clears the pending target. A full
 reload of /login has no saved destination unless a valid view fragment is opened
 again. A bookmarked command-list fragment remains independently reusable.
@@ -27,5 +27,5 @@ again. A bookmarked command-list fragment remains independently reusable.
 All requests still use the actual cookie, displayed-viewer claim and server gates.
 A scope=all link cannot supply a role: a member remains denied after sign-in and
 must explicitly choose the own-scope action. Existing switched-cookie handling
-preserves the valid other-account cookie. No password or form data is added to
+preserves the valid other-account cookie. No password, command numbers or credential form data is added to
 the destination, browser storage or browser history.

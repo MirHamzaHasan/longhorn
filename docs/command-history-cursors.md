@@ -37,3 +37,6 @@ The native gate checks concurrent producers, new inserts during traversal, a
 lower-position late commit, exact large positions, changed users/scopes and actual
 application restart with a saved cursor. Read-only pagination does not take
 authorization row locks across requests or keep database transactions open.
+
+[ID search](history-search-cursors.md) adds strict v3 context for canonical q plus
+state, preserving unsearched v1/v2 formats and the same principal/int64/live-list rules.

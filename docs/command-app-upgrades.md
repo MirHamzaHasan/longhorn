@@ -46,3 +46,9 @@ index builds block writes during construction; budget time/storage in this same
 maintenance window. Updated startup/readiness requires valid/ready indexes on
 their expected tables. Existing runtime grants suffice. The native gate verifies
 pre-commit SIGKILL rollback and concurrent deployment from the exact prior profile.
+
+The [ID-search revision](history-search-migrations.md) appends global and owner
+lower-ID pattern indexes after the complete filter profile. Regular transactional
+builds block writes; budget maintenance time/storage before updated hosts start.
+Matching browser/API versions understand v3 search cursors and v2 searched files.
+Existing unsearched cursor/file contracts and runtime grants remain unchanged.

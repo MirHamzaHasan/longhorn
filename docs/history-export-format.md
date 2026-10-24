@@ -1,4 +1,4 @@
-# History export NDJSON v1
+# History export NDJSON v1 and v2
 
 Owner: collectHistoryExport in console/history-export.ts. Connects [feature](history-export.md),
 [cursor rules](history-filter-cursors.md) and [verification](history-export-testing.md).
@@ -7,7 +7,8 @@ Each UTF-8 .ndjson file contains one JSON object per line and ends with a newlin
 
 | Line | Fields |
 | --- | --- |
-| Header | type=longhorn-command-history, version=1, exportedAt (UTC ISO string), selection={scope,state} |
+| Unsearched header | type=longhorn-command-history, version=1, exportedAt (UTC ISO string), selection={scope,state} |
+| Searched header | type=longhorn-command-history, version=2, exportedAt, selection={scope,state,q} |
 | Each command | type=command, command={id,createdAt,deliveryId,delivery} |
 | Final summary | type=end, count, complete, reason, nextCursor |
 
@@ -22,7 +23,7 @@ browser's Sending and Delivered labels.
 The summary count describes only this file. complete=true requires nextCursor=null
 and reason=complete. Otherwise reason is row-limit, page-limit or byte-limit and
 nextCursor is the last accepted page's cursor. Pass it unchanged with the same
-authenticated viewer/scope/state to continue through the existing history API.
+authenticated viewer/scope/state/search to continue through the existing history API.
 It remains an unsigned position encoding, never an authorization credential.
 
 The browser copies only named fields, validates nullable summaries, bounded strings,
@@ -35,3 +36,7 @@ The filename uses only fixed scope/state names and a generated timestamp. The Bl
 uses application/x-ndjson;charset=utf-8 and is downloaded locally through a temporary
 object URL. No import endpoint or round-trip compatibility with a database dump is
 implied. Future incompatible format changes require a new version.
+
+[Search export](history-search-export.md) uses v2 to identify its narrowed selection.
+Consumers must recognize the header version before treating a traversal as complete.
+Unsearched v1 files retain their original shape.

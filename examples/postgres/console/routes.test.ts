@@ -26,3 +26,11 @@ it('bounds hashes and rejects invalid constructor choices before constructing an
   expect(()=>historyViewHash({scope:'https://example.com' as 'mine',state:'all'})).toThrow(ConsoleRouteError)
   expect(()=>historyViewHash({scope:'mine',state:'arbitrary' as 'all'})).toThrow(ConsoleRouteError)
 })
+
+it('retains canonical search through saved views without accepting wildcards or queries on detail routes',()=>{
+  const route=parseConsoleRoute('#/commands?q=ABCD1234-AB&state=failed&scope=all')
+  expect(route.history).toEqual({scope:'all',state:'failed',q:'abcd1234-ab'})
+  expect(historyViewHash(route.history!)).toBe('#/commands?scope=all&state=failed&q=abcd1234-ab')
+  expect(historyViewHash(parseConsoleRoute('#/commands?q=%20%20').history!)).toBe('#/commands')
+  for(const query of ['q=abc','q=abcd%25','q=abcd&q=abce'])expect(()=>parseConsoleRoute('#/commands?'+query)).toThrow('Invalid history link')
+})

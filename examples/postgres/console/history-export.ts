@@ -1,4 +1,5 @@
-export type HistoryExportSelection={readonly scope:string;readonly state:string}
+import { normalizeHistorySearch } from './history-search.js'
+export type HistoryExportSelection={readonly scope:string;readonly state:string;readonly q?:string}
 type ExportReason='complete'|'row-limit'|'page-limit'|'byte-limit'
 export interface HistoryExportOptions {
   readonly selection:HistoryExportSelection
@@ -31,7 +32,8 @@ function command(value:unknown){
 }
 /** Collect a bounded segment; no partial file escapes after a failed or canceled read. */
 export async function collectHistoryExport(options:HistoryExportOptions){
-  const selection={scope:options.selection.scope,state:options.selection.state},initial=options.after
+  let search:string|undefined;try{search=normalizeHistorySearch(options.selection.q)}catch{throw invalid()}
+  const selection={scope:options.selection.scope,state:options.selection.state,...(search?{q:search}:{})},initial=options.after
   if(!['mine','all'].includes(selection.scope)||!['all','pending','running','succeeded','failed','unavailable'].includes(selection.state))throw invalid()
   if(initial!==undefined)cursor(initial)
   const maxRows=options.maxRows??10000,maxPages=options.maxPages??100,maxBytes=options.maxBytes??8*1024*1024,pageSize=options.pageSize??100,budget=options.budgetMs??120000
@@ -40,7 +42,7 @@ export async function collectHistoryExport(options:HistoryExportOptions){
   options.signal.addEventListener('abort',abort,{once:true});if(options.signal.aborted)abort()
   const timer=setTimeout(()=>{expired=true;controller.abort()},budget),encoder=new TextEncoder(),exportedAt=new Date().toISOString()
   const active=()=>{if(expired)throw new HistoryExportError('The export timed out. Try again.');if(controller.signal.aborted)throw new DOMException('Export canceled','AbortError')}
-  const chunks=[JSON.stringify({type:'longhorn-command-history',version:1,exportedAt,selection})+'\n'],seen=new Set<string>(initial?[initial]:[]),ids=new Set<string>()
+  const chunks=[JSON.stringify({type:'longhorn-command-history',version:search?2:1,exportedAt,selection})+'\n'],seen=new Set<string>(initial?[initial]:[]),ids=new Set<string>()
   let bytes=encoder.encode(chunks[0]).byteLength,count=0,pages=0,after=initial,nextCursor:string|null=initial??null,reason:ExportReason='complete'
   try{
     for(;;){

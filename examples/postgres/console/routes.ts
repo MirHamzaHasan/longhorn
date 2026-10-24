@@ -1,5 +1,6 @@
+import { normalizeHistorySearch } from './history-search.js'
 export const historyViewStates=['all','pending','running','succeeded','failed','unavailable'] as const
-export type HistoryView={readonly scope:'mine'|'all';readonly state:typeof historyViewStates[number]}
+export type HistoryView={readonly scope:'mine'|'all';readonly state:typeof historyViewStates[number];readonly q?:string}
 export type ConsoleRoute={readonly page:string;readonly id?:string;readonly history?:HistoryView;readonly explicitHistory:boolean}
 export class ConsoleRouteError extends Error {
   constructor(readonly kind:'history'|'command'|'page'){super(kind==='history'?'Invalid history link':kind==='command'?'Invalid command link':'Invalid page link');this.name='ConsoleRouteError'}
@@ -8,9 +9,11 @@ const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 /** Only selector choices enter a saved view; cursors, principals and arbitrary destinations never do. */
 export function historyViewHash(view:HistoryView):string {
   if(!['mine','all'].includes(view.scope)||!historyViewStates.includes(view.state))throw new ConsoleRouteError('history')
+  let search:string|undefined;try{search=normalizeHistorySearch(view.q)}catch{throw new ConsoleRouteError('history')}
   const query=new URLSearchParams()
   if(view.scope!=='mine')query.set('scope',view.scope)
   if(view.state!=='all')query.set('state',view.state)
+  if(search)query.set('q',search)
   return '#/commands'+(query.size?'?'+query:'')
 }
 export function parseConsoleRoute(hash:string):ConsoleRoute {
@@ -20,8 +23,9 @@ export function parseConsoleRoute(hash:string):ConsoleRoute {
   if(parts.length>2||parts.some(part=>!part)||id&&(!['commands','new','deliveries','audit'].includes(page)||!uuid.test(id)))throw new ConsoleRouteError('command')
   if(!isHistory){if(question!==-1)throw new ConsoleRouteError(id?'command':'page');return{page,...(id?{id}:{}),explicitHistory:false}}
   const query=new URLSearchParams(question===-1?'':raw.slice(question+1)),seen=new Set<string>()
-  for(const[key]of query){if(!['scope','state'].includes(key)||seen.has(key))throw new ConsoleRouteError('history');seen.add(key)}
+  for(const[key]of query){if(!['scope','state','q'].includes(key)||seen.has(key))throw new ConsoleRouteError('history');seen.add(key)}
   const scope=query.get('scope')??'mine',state=query.get('state')??'all'
   if(!['mine','all'].includes(scope)||!historyViewStates.includes(state as HistoryView['state']))throw new ConsoleRouteError('history')
-  return{page,history:{scope:scope as HistoryView['scope'],state:state as HistoryView['state']},explicitHistory:path==='commands'}
+  let search:string|undefined;try{search=normalizeHistorySearch(query.get('q')??undefined)}catch{throw new ConsoleRouteError('history')}
+  return{page,history:{scope:scope as HistoryView['scope'],state:state as HistoryView['state'],...(search?{q:search}:{})},explicitHistory:path==='commands'}
 }

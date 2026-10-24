@@ -4,6 +4,7 @@ import { postgresExampleMigrations } from './migrations.js'
 import { postgresAuthTransactionMigrations } from '@longhorn/auth/postgres'
 import { postgresCommandHistoryMigrations } from './command-history-migrations.js'
 import { postgresHistoryFilterMigrations } from './history-filter-migrations.js'
+import { postgresHistorySearchMigrations } from './history-search-migrations.js'
 import { postgresPasswordMigrations } from '@longhorn/auth/postgres-passwords'
 /** Explicit operations deployment profile; preserve the normal example's complete deployed history first. */
 export const postgresOperationsBaseMigrations: readonly Migration[] = [
@@ -16,4 +17,4 @@ export const postgresOperationsBaseMigrations: readonly Migration[] = [
     'CREATE INDEX operator_commands_owner ON longhorn_pg_example.operator_commands(owner_id,id)',
   ] },
 ]
-export const postgresOperationsMigrations: readonly Migration[]=[...postgresOperationsBaseMigrations,...postgresCommandHistoryMigrations,...postgresPasswordMigrations,...postgresHistoryFilterMigrations]
+export const postgresOperationsMigrations: readonly Migration[]=[...postgresOperationsBaseMigrations,...postgresCommandHistoryMigrations,...postgresPasswordMigrations,...postgresHistoryFilterMigrations,...postgresHistorySearchMigrations]
