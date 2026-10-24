@@ -353,6 +353,40 @@ importers:
         specifier: ^4.20.0
         version: 4.23.15
 
+  examples/d1-worker:
+    dependencies:
+      '@longhorn/config':
+        specifier: workspace:*
+        version: link:../../packages/config
+      '@longhorn/container':
+        specifier: workspace:*
+        version: link:../../packages/container
+      '@longhorn/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@longhorn/database':
+        specifier: workspace:*
+        version: link:../../packages/database
+      '@longhorn/validation':
+        specifier: workspace:*
+        version: link:../../packages/validation
+      '@longhorn/workers':
+        specifier: workspace:*
+        version: link:../../runtimes/workers
+      hono:
+        specifier: ^4.13.13
+        version: 4.13.13
+      zod:
+        specifier: ^4.6.7
+        version: 4.6.7
+    devDependencies:
+      '@cloudflare/workers-types':
+        specifier: ^5.20261022.1
+        version: 5.20261022.1
+      esbuild:
+        specifier: ^0.28.2
+        version: 0.28.2
+
   examples/durable-worker:
     dependencies:
       '@longhorn/container':

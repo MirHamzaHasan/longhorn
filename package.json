@@ -15,6 +15,8 @@
     "vitest": "^3.1.1"
   },
   "scripts": {
+    "dev:d1": "pnpm --filter example-d1-worker... build && node scripts/serve-d1-worker.mjs",
+    "test:d1": "pnpm build && node scripts/verify-d1.mjs",
     "test:otlp-logs": "pnpm build && node scripts/verify-otlp-logs.mjs",
     "demo:logs": "pnpm build && node scripts/demo-logs.mjs",
     "test:otlp-metrics": "pnpm build && node scripts/verify-otlp-metrics.mjs",

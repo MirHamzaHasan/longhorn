@@ -40,6 +40,14 @@ the framework snapshot, receiver and setup/backup guides. See
 [independent distribution](docs/command-app-distribution.md),
 [upgrade procedure](docs/command-app-upgrades.md) and [verified runtime scope](docs/supported-runtimes.md).
 
+## Run the D1 Worker example
+
+For persistent Workers storage, run `pnpm dev:d1` and open
+http://127.0.0.1:3016/health. The [D1 example](examples/d1-worker/README.md)
+adds revision-checked tasks, atomic activity and exact cursor pages using native
+D1 batches. Its local host retains data and privately applies schema before
+readiness; see [the provider](docs/workers-d1.md) and [deployment](docs/d1-deployment.md).
+
 ## Run the basic example
 
 Requires Node.js 20.19.0+ and pnpm 12.6.0 (the version pinned in `package.json`).
@@ -398,6 +406,7 @@ pnpm test:persistence
 pnpm test:runtimes
 pnpm test:worker-scheduled
 pnpm test:worker-storage
+pnpm test:d1
 pnpm test:worker-queues
 pnpm test:worker-alarms
 pnpm test:transaction-publishing
@@ -466,7 +475,9 @@ complete HTTP workflow. Typechecking uses built workspace declarations, so build
   operations routes and account-owned commands with verified user audit identities,
   bounded authenticated JSON clients, strict HTTP delivery acknowledgements,
   protected persistent receivers, conflicting-effect detection and a restricted
-  persistent account operations host with restart/outage recovery.
+  persistent account operations host with restart/outage recovery, native D1
+  atomic batches, guarded schema deployment and retained revision-checked Worker
+  tasks/activity with exact integer pagination.
 - Planned integrations include additional database providers, telemetry protocols/
   signals and platform triggers; their guarantees need native verification.
 

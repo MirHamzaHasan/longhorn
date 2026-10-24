@@ -20,5 +20,11 @@ export interface Database extends SqlExecutor {
   close(): Promise<void>
 }
 
+/** One ordered atomic native batch; no JavaScript callback executes between statements. */
+export interface BatchDatabase extends SqlExecutor {
+  batch(statements: readonly SqlStatement[]): Promise<readonly QueryResult[]>
+  close(): Promise<void>
+}
+
 export { migrate } from './migrations.js'
 export type { Migration } from './migrations.js'

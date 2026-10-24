@@ -216,7 +216,8 @@ rollback and rejects unsafe integer conversion. Existing SQLite stores retain
 their claims/fencing and occurrence/cursor protocol; input gates prevent event
 interleaving. Native workerd proves SQL/DDL rollback, concurrent clients, actual
 Object-abort recovery, persisted work/results across host restart and the local
-scheduled launcher. D1 needs its own batch-oriented boundary and is not implemented.
+scheduled launcher. D1's separate batch capability is now implemented below;
+it does not expose the Object provider's callback transaction contract.
 
 ## Workers queue events implemented
 
@@ -407,6 +408,20 @@ metadata projection and correlation to real spans. Native collector proofs cover
 four runtimes, typed values, cancellation, ambiguous acknowledgement, overload and
 business work through collector outage. Delivery remains best effort; durable
 spooling and a complete OpenTelemetry SDK remain separate integrations.
+
+## Workers D1 storage implemented
+
+[Batch capability](batch-database.md), [guarded migrations](batch-migrations.md),
+[native provider](workers-d1.md), [deployment ownership](d1-deployment.md),
+[task API](d1-tasks.md), [atomic activity](d1-task-activity.md),
+[exact cursor pages](d1-pagination.md) and [native proof](d1-testing.md) each have
+a guide. Predeclared native batches preserve rollback without emulating callback
+transactions. Read-only application startup follows a trusted schema phase. The
+runnable retained local host verifies shared D1 task edits across workers, atomic
+activity, wide integer cursors and restart. Decoder errors after commit remain
+explicitly ambiguous; existing callback-based stores are not ported by this work.
+Managed cloud deployment, replication/failover and new D1-specific queue/auth/
+idempotency protocols remain later integrations.
 
 ## Subsequent framework modules
 

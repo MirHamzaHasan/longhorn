@@ -105,3 +105,7 @@ selection without adding collector credentials or a background reader to starter
 Snapshots retain the optional log processor, sink helpers and `/otlp-logs` export
 as well. Default starters keep local logging; [the reports profile](jobs-logs-export.md)
 shows explicit remote configuration and final processor ownership.
+Snapshots also include optional `@longhorn/database/batch` and
+`@longhorn/workers/d1`. Generic starters still add no persistent database or
+schema deployment. The [D1 task example](d1-tasks.md) shows that explicit binding,
+batch repository and trusted deployment profile.

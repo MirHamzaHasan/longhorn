@@ -13,6 +13,7 @@ dist/
 *.sqlite-shm
 *.sqlite-journal
 examples/durable-worker/data/
+examples/d1-worker/data/
 examples/queue-worker/data/
 examples/outbox-worker/data/
 .artifacts/

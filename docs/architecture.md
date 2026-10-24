@@ -966,3 +966,33 @@ collector proofs cover four runtimes, overload and real report work through an
 outage. See [sinks](logger-sinks.md), [processor](log-processing.md),
 [transport](otlp-logs.md), [mapping](otlp-logs-json.md),
 [host](jobs-logs-export.md) and [proof](otlp-logs-testing.md).
+
+---
+
+## 36. Predeclared D1 Batches and Persistent Worker Tasks
+
+The portable database package now has a separate BatchDatabase capability using
+its existing SQL statements/results. A complete statement plan executes atomically;
+no JavaScript callback transaction is inferred. The optional Workers /d1 provider
+borrows a native database/session, validates/copies complete inputs, rejects manual
+transaction controls and bounds accepted work until the real binding settles.
+Close drains the handle without deleting platform data. Result decoding follows
+native commit; unsafe numbers and oversized output can reject after a write.
+
+The separate batch migration entrypoint snapshots/checksums manifests, validates
+an exact history prefix and commits one guarded complete suffix. Concurrent stale
+plans cannot both apply an upgrade. Application startup verifies history/columns
+read-only; a trusted deployment worker owns schema changes. The local host privately
+invokes and removes that worker before reporting readiness, retaining storage and
+explicit per-worker compatibility settings through reload.
+
+The task repository uses conditional revision SQL and unique mutation identities
+to commit each task change and activity entry together. Decimal-string keyset
+cursors with CAST text preserve positions beyond JavaScript's safe integer range.
+Actual local D1 proves rollback, schema races, one-winner cross-worker edits,
+activity failure atomicity and retained state across a workerd process restart.
+Existing callback-based queue/auth/idempotency/outbox stores remain separate;
+managed cloud deployment/replication need their own proof. See
+[capability](batch-database.md), [schema](batch-migrations.md),
+[provider](workers-d1.md), [deployment](d1-deployment.md), [tasks](d1-tasks.md),
+[activity](d1-task-activity.md), [pages](d1-pagination.md) and [proof](d1-testing.md).

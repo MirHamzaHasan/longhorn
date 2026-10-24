@@ -14,6 +14,7 @@ because package builds replace their declaration directories.
 | Job | Required checks |
 | --- | --- |
 | Source and runtimes | Build, types, source tests, native Node/Bun/Deno/workerd, independent generic CLI starters |
+| D1 storage | Actual local D1/workerd, batch/migration rollback, cross-worker revision/activity atomicity, exact int64 pages, retained process restart and local host cleanup |
 | Redis cache | Owned Redis 7+ binary, existing memory-cache gate, shared codec/protocol on four runtimes and actual Node Redis/TLS/task HTTP integration |
 | Telemetry | Pinned native Collector 0.163.2 Linux x64, real trace/metric/log JSON roundtrips on four runtimes, delivery faults and reports HTTP |
 | Account operations | Native history upgrade/concurrency, transaction/account locks, persistent HTTP receiver/recovery |
@@ -64,6 +65,13 @@ failed all six jobs before any runner/step started. The telemetry check annotati
 again identifies the Actions budget. Local frozen install/build/types, 480 tests,
 native trace/metric/log collector gates, independent starters, archive/restore and
 the log demo passed. Hosted validation remains a distinct required release gate.
+
+D1 storage adds the seventh job, using actual local D1 bindings without cloud
+credentials. Local frozen install/build/types, 491 tests in 83 files, the native
+D1 deployment/task/restart gate, Durable Object SQL regression, native runtimes
+and all four independent generic starters pass. The D1 provider is an optional
+batch capability; existing callback transaction stores keep their own gates.
+Hosted current-head execution remains required independently of local evidence.
 
 [Review artifacts](ci-review-artifacts.md) attempt to retain actual browser captures
 and the application archive/checksum after successful independent verification.

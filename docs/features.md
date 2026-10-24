@@ -9,6 +9,14 @@ downstream connections, verification, and current limits.
 
 | Feature | Guide | Implementation owner | Connects to |
 | --- | --- | --- | --- |
+| Atomic batch database capability | [Batch database](batch-database.md) | `@longhorn/database` | Ordered predeclared SQL, native atomicity, separate from callback transactions |
+| Guarded batch schema history | [Batch migrations](batch-migrations.md) | `@longhorn/database/batch` | Immutable checksums, prefix fencing, whole-suffix commit and read-only verification |
+| Native Workers D1 provider | [D1 storage](workers-d1.md) | `@longhorn/workers/d1` | Binding/session borrowing, SQL/scalar boundaries, bounded admission and actual drain |
+| D1 deployment/startup ownership | [D1 deployment](d1-deployment.md) | Trusted schema worker and local host | Retained storage, private schema invocation, read-only application startup and config |
+| Persistent revision-checked D1 tasks | [D1 tasks](d1-tasks.md) | `examples/d1-worker` | Hono validation, DI/lifecycle, conditional SQL edits and atomic activity |
+| Atomic retained D1 task activity | [D1 activity](d1-task-activity.md) | D1 task repository/schema | Mutation tokens, stale-write exclusion, rollback and history after deletion |
+| Exact D1 keyset cursors | [D1 pages](d1-pagination.md) | Task/activity queries and page schema | int64 decimal strings, CAST text, bounded SQL lookahead and cross-worker reads |
+| Native D1 verification | [D1 testing](d1-testing.md) | Actual D1/workerd and owned hosts | Rollback, upgrade races, revision conflicts, wide cursors, retained restart and signals |
 | Explicit synchronous sink fanout | [Log sinks](logger-sinks.md) | `@longhorn/logger` | Existing normalization/console routing, ordered destinations and exception isolation |
 | Buffered async log delivery | [Log processing](log-processing.md) | `@longhorn/observability` | Synchronous sink, count/byte admission including active work, serial export and final drain |
 | Remote log transport | [OTLP logs](otlp-logs.md) | `@longhorn/observability/otlp-logs` | Shared Fetch delivery, log-specific acknowledgements, bounded batches and sanitized errors |
@@ -268,6 +276,14 @@ flowchart TD
   ScheduledAudit --> TraceBuffer
   ScheduledAudit --> AuditKV[Worker AUDIT KV effects]
   DurableSql[Workers Durable Object SQLite] --> Database
+  D1[Workers D1 provider] --> BatchDatabase[Atomic batch SQL capability]
+  D1 --> NativeD1[Platform D1 binding or session]
+  D1Tasks[Persistent D1 task app] --> D1
+  D1Tasks --> Core
+  D1Tasks --> D1Activity[Atomic task activity and exact cursor pages]
+  D1Activity --> BatchDatabase
+  D1Deploy[Trusted D1 schema deployment] --> BatchMigrations[Guarded batch migrations]
+  BatchMigrations --> BatchDatabase
   DurableSql --> ObjectStorage[Platform Object storage + input gate]
   DurableReports[Durable Worker reports] --> DurableSql
   DurableReports --> QueueSqlite
@@ -364,6 +380,9 @@ Database executors expose an optional dialect marker. The adapters keep SQL and
 parameter syntax native; a shared interface does not port SQLite-specific stores
 to PostgreSQL. The PostgreSQL example deploys migrations with an owner role before
 starting an HTTP process with a restricted runtime role.
+The optional D1 provider instead implements BatchDatabase, not Database.transaction.
+Its schema runner and repositories predeclare native atomic batches; existing
+callback-based queue/auth/idempotency/outbox stores do not become D1-compatible.
 
 ## Current startup and request flow
 
@@ -384,6 +403,12 @@ The separate jobs app acquires SQLite -> queue -> scheduler -> worker -> timing 
 -> readiness. It drains HTTP -> readiness -> runner -> worker -> scheduler -> queue
 -> SQLite, then flushes/closes tracing and metrics in final stop hooks. A durable claim is a different boundary from an in-process
 event observation. Business effects must be idempotent across job retries.
+
+The D1 task app separately verifies its trusted deployment history and columns,
+registers TaskDatabase and resolves Tasks through DI. Its public request startup
+does no schema writes. Conditional revisions and task/activity SQL commit in one
+batch. The local host removes its private schema worker before reporting readiness;
+retained D1 data survives workerd restart. See [D1 deployment](d1-deployment.md).
 
 The PostgreSQL app separately deploys its owner migration history, then opens a
 restricted pool, starts dependency checks, and acquires report queue/scheduler and

@@ -1,0 +1,11 @@
+name = "longhorn-d1-tasks"
+main = "dist/index.js"
+compatibility_date = "2025-07-18"
+
+[vars]
+D1_MAX_PENDING = "6"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "your-owned-task-database"
+database_id = "replace-with-your-provisioned-database-id"

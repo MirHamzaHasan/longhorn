@@ -4,6 +4,9 @@ Owner: `@longhorn/database`. Connects [runtime adapters](runtimes.md) to applica
 repositories without importing native drivers, filesystem APIs, or a schema vendor.
 Concrete implementations are [Node SQLite](sqlite.md), [Node PostgreSQL](postgres.md)
 and [Durable Object SQLite](workers-durable-sqlite.md).
+The optional [D1 provider](workers-d1.md) implements the separate
+[BatchDatabase capability](batch-database.md), using the same statements/results
+without promising callback transactions.
 
 ## API
 
@@ -65,6 +68,12 @@ integer 1/0. PostgreSQL has its own schema-history runner and an example migrati
 CLI. [PostgreSQL queues](queue-postgres.md) and [schedule dispatch](scheduler-postgres.md)
 now use that transaction boundary too, as does [PostgreSQL auth](auth-postgres.md).
 Query builders and additional providers remain future work. See provider guides for result/session behavior.
+
+D1's predeclared native batches now have their own [schema runner](batch-migrations.md)
+and [task integration](d1-tasks.md). A D1 handle is not a Database and cannot be
+passed to existing callback-based SQLite/PostgreSQL stores. Native batch errors
+roll back SQL; result conversion failures can occur after commit. Provider-specific
+precision and lifetime policies remain explicit in [the guide](workers-d1.md).
 
 Workers can borrow a SQLite-backed Durable Object through
 `createDurableSqlite` from `@longhorn/workers/durable-sqlite`. The same migration,
