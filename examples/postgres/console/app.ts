@@ -1,4 +1,5 @@
 import './app.css'
+import { CommandCopyError,copyCommandNumbers,parseNumbers } from './numbers.js'
 
 type User={id:string;username:string;roles:string[]}
 type Delivery={id:string;state:'pending'|'running'|'succeeded'|'failed';attempts:number;maxAttempts:number;availableAt:number;updatedAt:number;lastFailure:string|null}
@@ -28,16 +29,18 @@ function empty(heading:string,message:string,action?:Node){const value=node('sec
 function refresh(label='Refresh'){return button(label,()=>{void render()})}
 function operator(){return user?.roles.includes('numbers-operator')??false}
 class RequestError extends Error{constructor(readonly status:number,message:string,readonly data:unknown,readonly retryAfter?:number){super(message)}}
+function viewerChanged(data:unknown):boolean{return !!data&&typeof data==='object'&&'code'in data&&data.code==='VIEWER_CHANGED'}
+function sessionMessage(data:unknown):string{return viewerChanged(data)?'Your active account changed. Sign in or reload to continue.':'Your session ended. Sign in to continue.'}
 async function api<T>(path:string,body?:unknown,options:{preserveUnauthorized?:boolean;acrossNavigation?:boolean;expectedStatus?:number}={}):Promise<T>{
   const controller=new AbortController(),parent=body===undefined&&!options.acrossNavigation?reads.signal:undefined;let expired=false
   const abort=()=>controller.abort();parent?.addEventListener('abort',abort,{once:true});if(parent?.aborted)abort()
   const timer=setTimeout(()=>{expired=true;controller.abort()},15000)
   try{
-    const response=await fetch('/account'+path,{method:body===undefined?'GET':'POST',credentials:'same-origin',cache:'no-store',headers:body===undefined?{}:{'Content-Type':'application/json'},signal:controller.signal,...(body===undefined?{}:{body:JSON.stringify(body)})})
+    const response=await fetch('/account'+path,{method:body===undefined?'GET':'POST',credentials:'same-origin',cache:'no-store',headers:{...(body===undefined?{}:{'Content-Type':'application/json'}),...(user?{'X-LongHorn-Viewer':user.id}:{})},signal:controller.signal,...(body===undefined?{}:{body:JSON.stringify(body)})})
     let data:unknown=null
     if(response.status!==204){try{data=await response.json()}catch(error){if(controller.signal.aborted)throw error;throw new RequestError(response.status,'The response could not be read. Try again.',null)}}
     if(!response.ok){
-      if(response.status===401&&user&&!options.preserveUnauthorized){user=undefined;syncAccount();announce('Your session ended. Sign in to continue.',true,'#/login');location.hash='#/login';void render()}
+      if(response.status===401&&user&&!options.preserveUnauthorized){user=undefined;syncAccount();announce(sessionMessage(data),true,'#/login');location.hash='#/login';void render()}
       const message=data&&typeof data==='object'&&'error'in data&&typeof data.error==='string'?data.error.slice(0,200):'The request could not be completed.';const retry=response.headers.get('Retry-After');throw new RequestError(response.status,message,data,retry&&/^\d+$/.test(retry)&&Number(retry)<=86400?Number(retry):undefined)
     }
     if(options.expectedStatus&&response.status!==options.expectedStatus)throw new RequestError(0,'Unexpected response status',null)
@@ -108,7 +111,8 @@ function passwordPanel(){
         await request
         finish=()=>passwordSignIn('Password changed. Sign in with your new password. All your previous sessions have ended.')
       }catch(reason){
-        if(reason instanceof RequestError&&reason.status===401){
+        if(reason instanceof RequestError&&reason.status===401&&viewerChanged(reason.data))finish=()=>passwordSignIn(sessionMessage(reason.data),true)
+        else if(reason instanceof RequestError&&reason.status===401){
           // Reauthentication failure and session expiry share HTTP 401. Only a
           // successful, fresh session read allows this account to stay visible.
           try{
@@ -150,7 +154,7 @@ function sessionPanel(){
           else message=result.revokedSessions===0?'No other active sessions to end.':'Ended '+result.revokedSessions+' other '+(result.revokedSessions===1?'session.':'sessions.')
         }catch(reason){
           failed=true
-          if(reason instanceof RequestError&&reason.status===401)finish=()=>passwordSignIn('Your session ended. Sign in to continue.',true)
+          if(reason instanceof RequestError&&reason.status===401)finish=()=>passwordSignIn(sessionMessage(reason.data),true)
           else if(reason instanceof RequestError&&(reason.status===400||reason.status===403))message='Session change was refused. Reload this page before trying again.'
           else finish=()=>passwordSignIn('Could not confirm the session change. Sign in to check your account.',true)
         }finally{
@@ -164,11 +168,25 @@ function sessionPanel(){
   }
   panel.append(actions,progress);return panel
 }
-function parseNumbers(text:string){const parts=text.trim().split(/[\s,]+/);if(!text.trim()||parts.length>100||parts.some(value=>!(/^[+-]?(?:\d+\.?\d*|\.\d+)(?:e[+-]?\d+)?$/i.test(value))||!Number.isFinite(Number(value))||Math.abs(Number(value))>1e12))throw new Error('Enter 1–100 numbers between −1 trillion and 1 trillion.');return parts.map(Number)}
-function newCommand(){
-  const value=node('div');value.append(title('Create a command','Compute a receipt from the numbers you enter.'))
+async function rerunPage(id:string){
+  let data:{command:{id:string;numbers:unknown}}
+  try{data=await api('/commands/'+id)}catch(reason){
+    if(reason instanceof RequestError&&reason.status===404)return empty('Original command unavailable','This command could not be found or is not available to this account.',link('Your commands','#/commands','button'))
+    throw reason
+  }
+  try{
+    if(data?.command?.id!==id)throw new CommandCopyError()
+    return newCommand({id,numbers:copyCommandNumbers(data.command.numbers)})
+  }catch(reason){
+    if(!(reason instanceof CommandCopyError))throw reason
+    return empty('Cannot copy this command',reason.message,link('Create command','#/new','button'))
+  }
+}
+function newCommand(source?:{id:string;numbers:number[]}){
+  const value=node('div');value.append(title(source?'Run command again':'Create a command',source?'Review the numbers, then create a separate command.':'Compute a receipt from the numbers you enter.'))
   const panel=node('section',undefined,'panel'),form=node('form',undefined,'form-stack'),numbers=node('textarea'),error=node('p',undefined,'form-error'),submit=node('button','Create command','primary')
   let key=crypto.randomUUID(),lastInput=''
+  if(source){const context=node('p','Copied from ','command-source');context.append(link('Command '+source.id.slice(0,8),'#/commands/'+source.id));panel.append(context);numbers.value=source.numbers.join(', ')}
   numbers.name='numbers';numbers.required=true;numbers.placeholder='For example: 4, 8, 15';numbers.setAttribute('inputmode','decimal');submit.type='submit';error.setAttribute('role','alert');error.hidden=true
   form.append(field('Numbers',numbers,'Separate up to 100 numbers with commas or spaces.'),error,submit)
   form.addEventListener('submit',event=>{event.preventDefault();let parsed:number[];try{parsed=parseNumbers(numbers.value)}catch(reason){error.textContent=(reason as Error).message;error.hidden=false;numbers.setAttribute('aria-invalid','true');numbers.focus();return}
@@ -187,7 +205,7 @@ async function commandsPage(){
 }
 function deliveryDetails(delivery:Delivery){return details({'Delivery ID':node('code',delivery.id),'Status':status(delivery.state),'Attempts':delivery.attempts+' of '+delivery.maxAttempts,'Updated':time(delivery.updatedAt),'Available':time(delivery.availableAt),'Last failure':delivery.lastFailure??'None'})}
 async function commandPage(id:string){
-  const data=await api<{command:{id:string;numbers:number[]};history:Command}>('/commands/'+id),value=node('div');value.append(link('Back to commands','#/commands','back'),title('Command '+id.slice(0,8),'Submitted '+time(data.history.createdAt),refresh('Refresh status')))
+  const data=await api<{command:{id:string;numbers:number[]};history:Command}>('/commands/'+id),value=node('div');value.append(link('Back to commands','#/commands','back'),title('Command '+id.slice(0,8),'Submitted '+time(data.history.createdAt),refresh('Refresh status'),link('Run again','#/new/'+id,'button')))
   const layout=node('div',undefined,'detail-grid'),input=node('section',undefined,'panel');input.append(node('h2','Your numbers'),node('p',data.command.numbers.join(', '),'numbers'),details({'Command ID':node('code',id)}));layout.append(input)
   const delivery=node('section',undefined,'panel');delivery.append(node('h2','Delivery'))
   if(data.history.delivery)delivery.append(deliveryDetails(data.history.delivery));else delivery.append(node('p',data.history.deliveryId?'Delivery metadata is no longer available.':'Delivery metadata could not be recovered.','subtle'))
@@ -237,7 +255,7 @@ async function render(){
     if(id&&!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id))content=empty('Invalid command link','Return to your command history.',link('Your commands','#/commands','button'))
     else if(!user)content=page==='register'?authPage(true):page==='login'?authPage(false):welcome()
     else if(page==='account')content=accountPage()
-    else if(page==='new')content=newCommand()
+    else if(page==='new')content=id?await rerunPage(id):newCommand()
     else if(page==='commands'||page==='login'||page==='register')content=id?await commandPage(id):await commandsPage()
     else if((page==='deliveries'||page==='audit')&&!operator())content=empty('Operator access required','This account can create commands and read its own history.',link('Your commands','#/commands','button'))
     else if(page==='deliveries')content=id?await deliveryPage(id):await deliveriesPage()
@@ -246,7 +264,7 @@ async function render(){
     if(current!==version)return;root.replaceChildren(content)
   }catch(error){
     if(current!==version||(error instanceof DOMException&&error.name==='AbortError'))return
-    if(error instanceof RequestError&&error.status===401){user=undefined;syncAccount();root.replaceChildren(authPage(false));announce('Your session ended. Sign in to continue.',true)}
+    if(error instanceof RequestError&&error.status===401){user=undefined;syncAccount();root.replaceChildren(authPage(false));announce(sessionMessage(error.data),true)}
     else root.replaceChildren(empty(error instanceof RequestError&&error.status===403?'Access unavailable':'Could not open this page',error instanceof Error?error.message:'Refresh to try again.',refresh('Try again')))
   }finally{if(current===version){root.dataset.route=location.hash;root.setAttribute('aria-busy','false');root.focus({preventScroll:true});document.title=(user?'Command operations':'Sign in')+' · LongHorn'}}
 }

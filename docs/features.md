@@ -110,6 +110,9 @@ downstream connections, verification, and current limits.
 | Application schema/config upgrades | [Upgrade procedure](command-app-upgrades.md) | Deployment process | Retained artifact, maintenance checkpoint, immutable history and smoke checks |
 | Repeatable CI configuration | [Release verification](release-verification.md) | GitHub workflow | Source/types, native operations, Chromium and independent restore |
 | Verified deployment/runtime scope | [Support matrix](supported-runtimes.md) | Runtime and native evidence | Explicit versions, provider boundaries and revision-specific hosted availability |
+| Reuse saved command numbers | [Run again](command-rerun.md) | Existing detail/review form and protected APIs | Admitted source, explicit review, fresh request key, separate command/delivery and preserved original |
+| Displayed-account consistency | [Viewer binding](console-viewer-binding.md) | Optional PostgreSQL account middleware and console helper | Cookie-derived principal matching, stale-view 401, no handler effects and preserved other cookie |
+| Native command reuse proof | [Reuse testing](command-rerun-testing.md) | Actual Chromium/PostgreSQL/broker and restored app | Real receipts, edited/manual replay, scope, legacy data, navigation, account switch and 91 captures |
 | Working web console | [Console](web-console.md) | PostgreSQL example browser client | Signup, history, commands, receipts and real API failures |
 | Console browser boundary | [Console security](console-security.md) | Fixed asset routes and client API helper | CSP, HttpOnly cookies, relative requests, session clearing |
 | Browser account settings | [Account](console-account.md) | Console Account route and host capability | Password confirmation, current-session probe, pending navigation, secret clearing and sign-in after replacement |
@@ -117,7 +120,7 @@ downstream connections, verification, and current limits.
 | Browser account native proof | [Account testing](console-account-testing.md) | Chromium and native PostgreSQL/scrypt | Live 401 distinction, peer revocation, throttling, lost/late responses and 58 captures |
 | Browser operator recovery | [Console recovery](console-recovery.md) | Console delivery/audit screens | Current allowance, deliberate retry, conflict and account attribution |
 | Console interaction design | [Design rules](console-design.md) | Browser CSS and DOM | Light/dark tokens, responsive hierarchy, honest states |
-| Native browser verification | [Console testing](console-testing.md) | Chromium, axe and owned native services | Actual receipts, dropped responses, keyboard and 65 command/recovery captures |
+| Native browser verification | [Console testing](console-testing.md) | Chromium, axe and owned native services | Actual receipts, dropped responses, keyboard and 91 command/recovery/reuse captures |
 | Complete command application | [Walkthrough](command-application.md) | Existing demo and persistent host | End-to-end accounts, DI, transactions, delivery and recovery |
 | Account command history | [History API](account-command-history.md) | PostgreSQL operations router/repository | Accounts, DI, owner filters, existing command detail |
 | Command history schema upgrade | [History migrations](command-history-migrations.md) | Complete operations migration profile | Retained business rows, safe legacy association, int64 indexes |

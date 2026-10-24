@@ -37,3 +37,7 @@ it does not install certificates or claim managed cloud deployment/failover.
 For upgrades and retained state use [upgrade procedure](command-app-upgrades.md)
 and [offline backup](command-app-backup.md). External infrastructure/secrets are
 explicit deployment responsibilities, with no hidden owner credentials in HTTP.
+
+Preserve `X-LongHorn-Viewer` unchanged when proxying `/account` requests from the
+console. This optional [displayed-account check](console-viewer-binding.md) prevents stale tabs
+from silently acting under a newly switched cookie; it grants no identity or role.

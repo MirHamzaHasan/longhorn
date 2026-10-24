@@ -637,6 +637,18 @@ concurrency/ordering, expiry, rollback, four pre-commit kills, mixed-host cookie
 
 Per-device inventory/metadata, recovery/reset and MFA remain separate future work.
 
+## Saved command reuse and displayed-account consistency implemented
+
+[Run again](command-rerun.md) loads an admitted saved command into a review form,
+then creates a distinct command/delivery on explicit submission. Source data stays
+unchanged; current number limits, fresh request keys, edited/manual replay and
+navigation cancellation remain in force. The [viewer check](console-viewer-binding.md)
+also prevents stale tabs from using a newly switched cookie for private reads/writes,
+without logging the other account out. [Native proof](command-rerun-testing.md) covers
+actual distinct receipts, scope, malformed legacy JSON, source loading/cancellation,
+reproduced account switching, 91 command/recovery/reuse captures and the relocated
+app copying a pre-checkpoint source after restore/regrant/restart.
+
 ## Subsequent framework modules
 
 | Module | Depends on | Required proof |

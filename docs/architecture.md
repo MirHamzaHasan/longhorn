@@ -1385,3 +1385,28 @@ verify the integration. See [service](session-controls.md),
 [SQLite](sqlite-session-controls.md), [PostgreSQL](postgres-session-controls.md),
 [HTTP](session-controls-http.md), [browser](console-session-controls.md) and
 [proof](session-controls-testing.md).
+
+## 52. Saved Command Review and Fresh Submission
+
+The browser detail action opens a UUID-only review route, reusing protected detail
+reads. A pure numbers helper checks current policy and refuses malformed saved
+JSON without coercion. Source numbers prefill an editable form; only explicit
+submission creates a separate command/delivery with a new request key under the
+current actor. No new clone endpoint or persisted lineage is introduced. The
+original row/receipt remains unchanged, and manual ambiguous retries keep the
+review form's key until normalized input changes. Native receipts, scope, malformed
+legacy data, source cancellation and independently restored assets verify the flow.
+See [reuse](command-rerun.md) and [proof](command-rerun-testing.md).
+
+## 53. Displayed Account Admission Consistency
+
+The per-application account adapter can check the optional X-LongHorn-Viewer header
+after real cookie authentication and before private handlers. The console supplies
+its displayed public user ID. A mismatch cannot select an owner or role, does not
+clear the valid other cookie, and returns static VIEWER_CHANGED/401 guidance.
+Omitted claims keep ordinary API semantics. This prevents old tab forms/history
+requests from silently switching actors when shared cookies change; request/transaction
+authorization and already-admitted-read boundaries still apply. Native tests first
+reproduced a switched-account 201, then verify rejection, no command write and
+preserved other-account history/session. See [viewer binding](console-viewer-binding.md),
+[proof](command-rerun-testing.md) and [security](console-security.md).

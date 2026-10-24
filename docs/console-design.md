@@ -6,7 +6,8 @@ result and deliberate recovery using the actual persisted account data.
 
 The first screen explains that workflow and offers sign-in or account creation.
 An authenticated member creates a command, browses owned history and opens detail
-and computed receipts. A numbers-operator additionally inspects outgoing records,
+and computed receipts. [Run again](command-rerun.md) opens an explicit source-linked
+review before creating a separate command. A numbers-operator additionally inspects outgoing records,
 adds a bounded retry allowance and reads the attributed audit. The [Account page](console-account.md) lets either role change its password,
 then explains the required sign-in. User credentials
 and roles remain owned by the existing server APIs; the browser never supplies

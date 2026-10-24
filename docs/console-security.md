@@ -42,3 +42,10 @@ and a restored back/forward-cache page reloads to revalidate its session. See
 and strict token-owned API. Only the server selects the subject. Live count results
 contain no session digest or other-account metadata. The browser never replays an
 unconfirmed deletion.
+
+The [viewer consistency check](console-viewer-binding.md) binds admitted console
+requests to the displayed public user ID. Cookies still authenticate; the header
+never selects an owner or grants a role. Switched-cookie views fail before private
+handlers and preserve the valid other-account cookie.
+[Saved command reviews](command-rerun.md) keep copied numbers/request keys in memory
+only and use the normal owner-scoped read plus transaction-authenticated write.

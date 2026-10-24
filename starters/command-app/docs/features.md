@@ -7,6 +7,8 @@
 | [Session controls](session-controls.md) | AuthService, account routing and SQL session-control port | Token-owned others/all scopes, live counts, post-ownership expiry and atomic revocation |
 | [Password changes](password-changes.md) | src/accounts.ts and auth password capability | Current-password verification, fenced login, explicit functions and atomic session revocation |
 | [Browser account](account.md) | console/app.ts, app.css and src/console.ts | Host capability, password confirmation, live session probe, pending navigation and uncertain outcomes |
+| [Run again](command-rerun.md) | console/app.ts and console/numbers.ts | Protected source read, explicit review, separate command/receipt and fresh request key |
+| [Viewer consistency](viewer-binding.md) | src/viewer-binding.ts and console API helper | Displayed public ID matches cookie principal; stale views fail without changing another account |
 | [Commands](commands.md) | src/operations.ts, operation-contracts.ts | Hono validation, DI, transaction-locked identity, scoped request replay |
 | [Command history](history.md) | src/command-history.ts | Owner predicates, int64 cursors, live outgoing metadata |
 | [Atomic writes](transactions.md) | operations.ts, @longhorn/idempotency, @longhorn/outbox | Business command, history association, replay and outgoing record in one managed transaction |

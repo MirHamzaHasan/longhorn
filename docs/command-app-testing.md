@@ -47,3 +47,8 @@ After restore/regrant, Chromium signs in through the shipped console and uses
 [Account settings](console-account.md) to replace the password. The gate checks the
 actual 204/cookie clear, sign-in notice, old-session revocation, preserved peer and
 command history, new-password login and retained restart.
+
+The restored app also opens a source created before the checkpoint, follows
+[Run again](command-rerun.md), reloads the review link and creates a distinct
+command/delivery with a real computed receipt. The original receipt remains, and
+ordinary current-browser history includes the new row before scoped sign-out.

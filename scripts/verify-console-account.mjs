@@ -159,6 +159,17 @@ try{
   await fill(member,finalPassword,timeoutPassword);await submit(member)
   try{await bounded(lateArrival);await expect(member.getByRole('status')).toContainText('Could not confirm the password change.',{timeout:20000})}finally{releaseLate()}
   await bounded(lateDelivery);assert.equal(requests,beforeTimeout+1);await expect(member.getByRole('heading',{name:'Sign in to LongHorn'})).toBeVisible();await expect(member.getByLabel('Password',{exact:true})).toHaveValue('');await capture(member,'change-timed-out');await member.unroute('**/account/password');await signIn(member,'account.member',timeoutPassword)
+  // Password/session handlers must retain viewer-change guidance and leave the
+  // valid other-account cookie alone, including the password-specific 401 path.
+  const activeCookies=await member.context().cookies(),otherCookies=await stranger.context().cookies()
+  await go(member,'#/account');await fill(member,timeoutPassword,replacement);await member.context().addCookies(otherCookies)
+  await submit(member);await expect(member.locator('#notice')).toContainText('active account changed');await expect(member.getByRole('heading',{name:'Sign in to LongHorn'})).toBeVisible()
+  assert.ok((await member.context().cookies()).find(value=>value.name==='longhorn_dev')?.value===otherCookies.find(value=>value.name==='longhorn_dev')?.value,'Password viewer failure changed another account cookie')
+  assert.equal(await stranger.evaluate(async()=>(await fetch('/account/session')).status),200)
+  await member.context().addCookies(activeCookies);await member.reload();await ready(member);await go(member,'#/account');await member.context().addCookies(otherCookies)
+  await member.getByRole('button',{name:'End other sessions',exact:true}).click();await expect(member.locator('#notice')).toContainText('active account changed');await expect(member.getByRole('heading',{name:'Sign in to LongHorn'})).toBeVisible()
+  assert.equal(await stranger.evaluate(async()=>(await fetch('/account/session')).status),200)
+  await member.context().addCookies(activeCookies);await member.reload();await ready(member)
   await writeFile(resolve(output,'accessibility.json'),JSON.stringify({violations,captures},null,2));assert.deepEqual(errors,[]);assert.deepEqual(violations,[])
   console.log('Console account: actual scrypt/PostgreSQL, scoped session revocation, shared account mutation exclusion, Unicode validation, live 401 session distinction, native revocation, pending navigation, single submission, real throttling, dropped committed response, actual deadline/late success, capability flag, secret clearing, keyboard and '+captures.length+' accessible browser captures verified.')
 }finally{

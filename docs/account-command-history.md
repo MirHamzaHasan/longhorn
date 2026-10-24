@@ -20,7 +20,7 @@ and its protected receipt route supply the detail after ownership checks.
 Cookie/session authentication runs first. Anonymous requests get 401. Members
 requesting the all scope get 403, including duplicate scope parameters. The
 validated scope is checked again before querying. Duplicate parameters and
-unknown owner/queue/state claims are rejected; an owner ID never comes from HTTP.
+unknown owner/queue/state claims are rejected; an owner filter never derives from HTTP claims.
 Responses retain no-store and Vary: Cookie. Roles are fresh admission snapshots;
 ordinary reads are not retroactively cancelled after concurrent revocation.
 
@@ -40,3 +40,8 @@ The [cursor guide](command-history-cursors.md) details late commits and refresh.
 The normal PostgreSQL executable stays independent; this route is available when
 account operations are enabled, including the temporary demo and persistent host.
 Apply the complete operations migration profile before starting the updated host.
+
+The console can [reuse an admitted source](command-rerun.md) through its existing
+detail GET and ordinary new submission. The source remains unchanged and supplies
+no target owner or lineage metadata. [Viewer consistency](console-viewer-binding.md)
+is an optional pre-handler claim check; owner predicates still use the cookie principal.

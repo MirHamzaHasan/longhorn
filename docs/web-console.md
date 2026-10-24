@@ -8,7 +8,8 @@ Run `pnpm demo:operator-accounts`, then open http://127.0.0.1:3010/console.
 Create an account, enter numbers such as `4, 8, 15`, open the saved command and
 refresh its status to read the computed receipt. Commands lists owned history;
 operators can explicitly select all commands. Load older uses the bounded server
-cursor; Refresh starts at the newest page. Times use the browser locale.
+cursor; Refresh starts at the newest page. Open a saved command and choose
+[Run again](command-rerun.md) to review its numbers and create a separate command. Times use the browser locale.
 
 The same built assets are included in `pnpm dev:operator-host` at `/console`.
 That host retains data in separately provisioned PostgreSQL and receipt storage;

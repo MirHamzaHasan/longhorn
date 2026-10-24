@@ -12,3 +12,7 @@ Light/dark layouts adapt to narrow widths. Labels, keyboard focus, skip navigati
 larger text and automated accessibility checks were verified in Chromium. Real-device
 assistive technology and other browser engines remain manual verification.
 Connects [accounts](accounts.md), [commands](commands.md) and [recovery](recovery.md).
+
+[Run again](command-rerun.md) reviews saved numbers before a separate submission.
+[Viewer consistency](viewer-binding.md) prevents old views from reading/submitting
+under another tab's switched cookie, without clearing the valid other session.

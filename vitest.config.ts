@@ -84,6 +84,6 @@ export default defineConfig({
   },
   test: {
     exclude: [...configDefaults.exclude, '**/*.postgres.test.ts', '**/*.pg.test.ts'],
-    include: ['packages/*/src/**/*.test.ts', 'runtimes/*/src/**/*.test.ts', 'examples/*/src/**/*.test.ts', 'cli/src/**/*.test.ts'],
+    include: ['packages/*/src/**/*.test.ts', 'runtimes/*/src/**/*.test.ts', 'examples/*/src/**/*.test.ts', 'examples/*/console/**/*.test.ts', 'cli/src/**/*.test.ts'],
   },
 })

@@ -11,6 +11,7 @@ import type { Token } from '@longhorn/container'
 import type { Database } from '@longhorn/database'
 import { validate } from '@longhorn/validation/hono'
 import { Hono } from 'hono'
+import { bindAccountViewer } from './viewer-binding.js'
 import type { Context } from 'hono'
 import { z } from 'zod'
 import { PostgresPrivateNotes,privateNoteParams,privateNoteQuery,privateNoteSchema } from './private-notes.js'
@@ -47,6 +48,7 @@ export function configurePostgresAccounts(app: Longhorn,databaseToken: Token<Dat
   const routes=new Hono<Env>()
   const auth=cookieAuth<Env>({ origin: options.origin,secure: options.secure,resolve: c => c.get('container').resolve(PgAccounts) })
   routes.use('*',auth.middleware)
+  routes.use('*',bindAccountViewer<Env>())
   routes.post('/register',validate('json',registration),async c => {
     const body=c.req.valid('json')
     try { return c.json({ user: await c.get('container').resolve(PgAccounts).register(body.username,body.password) },201) }
