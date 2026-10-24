@@ -681,7 +681,8 @@ errors, timeout and fresh admission; [controls](console-history-export.md) keep
 focus and expose continue/start over. [Native proof](history-export-testing.md)
 checks actual downloads, a 10000-row segment plus its exact remainder, no secret
 fields, authorization changes, 34 captures and the restored standalone application.
-Snapshot exports, receipt export and import remain separate protocols.
+Snapshot exports and import remain separate protocols.
+[Computed receipt export](receipt-export.md) is now implemented separately.
 [Recovery audit exports](recovery-audit-export.md) are now implemented separately.
 
 ## Bookmarkable history views implemented
@@ -718,8 +719,21 @@ preserves attributed retry snapshots, including all four outcomes and pruned
 sources. A [shared bounded collector](bounded-page-export.md) and [page controls](console-audit-export.md)
 reuse limits, exact continuation and cancellation with command exports. [Native proof](recovery-audit-export-testing.md)
 covers 105 actual recovery requests, real files, role/session/viewer changes,
-34 new captures and the independently restored application. Receipt downloads,
-snapshot exports and import/restore remain separate protocols.
+34 new captures and the independently restored application. [Computed receipt downloads](receipt-export.md) are now implemented separately.
+Snapshot exports and import/restore remain separate protocols.
+
+
+## Selected computed receipt export implemented
+
+[Computed receipt downloads](receipt-export.md) now cover selected owner/operator/
+status/search history and one fresh protected command. Their [v1 format](receipt-export-format.md)
+preserves actual results and explicit not-found observations without raw inputs.
+[Serial enrichment](receipt-export-lifecycle.md) keeps fresh admission, smaller
+1000-command/ten-page bounds and whole-page continuation. [Controls](console-receipt-export.md)
+cancel on changed contents and share page disposal with follow. [Native proof](receipt-export-testing.md)
+covers actual broker effects, 1002 HTTP writes, exact retained continuation,
+46 captures and restored standalone downloads. Snapshot export, import/restore
+and further provider integrations remain separate work.
 
 ## Subsequent framework modules
 

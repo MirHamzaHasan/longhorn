@@ -1527,3 +1527,25 @@ live traversal does not become a snapshot. Native API recovery, actual downloads
 standalone assets verify the connection. See [engine](bounded-page-export.md),
 [feature](recovery-audit-export.md), [format](recovery-audit-export-format.md),
 [controls](console-audit-export.md) and [proof](recovery-audit-export-testing.md).
+
+## 60. Selected Computed Receipts with Serial Protected Enrichment
+
+Receipt export composes current history pages with existing protected per-command
+receipt reads. A shared closed metadata projector preserves ordinary history file
+fields, while receipt v1 adds bounded real computed results or an explicit protected
+not-found observation. Owner/operator/status/search selection is copied, and direct
+command files require exactly the selected fresh command. Delivery state never
+substitutes for an actual receipt read.
+
+The app-local collector now awaits serial asynchronous line enrichment after page
+metadata/ID/cursor validation, with cancellation/deadline checks around each call.
+Receipt files use smaller 1000-command/ten-page bounds and the existing byte/time
+policy. Whole enriched pages share one accepted continuation boundary. Every nested
+request independently checks current admission; failed attempts yield no file.
+Native export-choice generations fence old work, and composed page disposal stops
+both detail follow and export. No server endpoint, schema, grant or framework module
+is added. Actual broker results, 1002 HTTP writes, retained receipts, 46 captures,
+existing export regressions and restored archive files verify the connection. See
+[feature](receipt-export.md), [format](receipt-export-format.md), [lifetime](receipt-export-lifecycle.md),
+[controls](console-receipt-export.md), [projection](command-metadata-projection.md)
+and [proof](receipt-export-testing.md).

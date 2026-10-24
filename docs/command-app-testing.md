@@ -82,3 +82,8 @@ The restored/restarted shipped console also exports [recovery audit NDJSON](reco
 through its retained operator cookie in a separate browser context. The actual file
 matches the restored record's actor, reason, request and outcome exactly and excludes
 payload/credentials. Member command-export selection and v1/v2 files are still checked.
+
+The restored console also [exports computed receipts](receipt-export-testing.md)
+for all four retained/new member commands, then re-reads/exports one command detail.
+Actual receipt message IDs/results match the protected receiver state. The packed
+artifact must include receipt helpers, tests, shared metadata and its own feature guide.

@@ -32,3 +32,7 @@ completion. No export data or continuation is stored in browser storage or URLs.
 [ID search](history-search.md) uses version=2 and selection={scope,state,q}; ordinary
 unsearched files remain v1. Records/end summaries and all segment/cancellation
 bounds are unchanged. Readers must recognize the header version and search context.
+
+Export contents defaults to Command history. Choose [Computed receipts](receipt-export.md)
+for a separate v1 result file under the same history view. Switching contents
+cancels the old attempt and resets its in-memory continuation.

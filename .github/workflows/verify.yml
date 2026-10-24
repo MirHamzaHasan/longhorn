@@ -126,6 +126,7 @@ jobs:
           node scripts/verify-history-view-links.mjs
           node scripts/verify-history-export.mjs
           node scripts/verify-audit-export.mjs
+          node scripts/verify-receipt-export.mjs
           node scripts/verify-command-follow.mjs
           node scripts/verify-console-account.mjs
       - name: Retain console review captures

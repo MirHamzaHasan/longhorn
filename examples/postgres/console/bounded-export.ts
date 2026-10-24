@@ -14,7 +14,7 @@ interface ExportProfile<T extends {id:string}> {
   readonly recordsKey:string
   readonly project:(value:unknown)=>T
   readonly header:(exportedAt:string)=>unknown
-  readonly line:(value:T)=>unknown
+  readonly line:(value:T,signal:AbortSignal)=>unknown|Promise<unknown>
   readonly invalid:()=>Error
   readonly tooLarge:()=>Error
   readonly timeout:()=>Error
@@ -42,7 +42,9 @@ export async function collectBoundedExport<T extends {id:string}>(options:Bounde
       if(!Array.isArray(records)||records.length>limit||(next!==null&&records.length!==limit)||(next!==null&&seen.has(next)))throw invalid()
       const projected=records.map(profile.project),pageIds=new Set(projected.map(c=>c.id))
       if(pageIds.size!==projected.length||projected.some(c=>ids.has(c.id)))throw invalid()
-      const chunk=projected.map(c=>JSON.stringify(profile.line(c))+'\n').join(''),size=encoder.encode(chunk).byteLength
+      const lines:string[]=[]
+      for(const value of projected){active();const line=await profile.line(value,controller.signal);active();lines.push(JSON.stringify(line)+'\n')}
+      const chunk=lines.join(''),size=encoder.encode(chunk).byteLength
       // Reject a whole page so continuation skips no records; reserve the bounded trailer/cursor.
       if(bytes+size+4096>maxBytes){if(count===0)throw profile.tooLarge();reason='byte-limit';break}
       chunks.push(chunk);bytes+=size;count+=projected.length;++pages;for(const id of pageIds)ids.add(id)

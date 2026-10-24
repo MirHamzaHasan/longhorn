@@ -300,7 +300,13 @@ downstream connections, verification, and current limits.
 | Native deliberate recovery proof | [Recovery verification](outbox-recovery-testing.md) | SQL processes, legacy Object fixture and real broker | Upgrade, SIGKILL, competing retries, cleanup races, alarm abort, one receipt and HTTP policy |
 | Durable attributed recovery | [Outbox audit](outbox-audit.md) | Outbox.retryFailedAudited and optional audit stores | Conditional retry and action/result append in one transaction |
 | Audit schema and privileges | [Audit storage](outbox-audit-storage.md) | Separate SQLite/PostgreSQL migration lists | Immutable deployed prefix, independent table/indexes, append/read and maintenance roles |
-| Shared bounded metadata downloads | [Page export engine](bounded-page-export.md) | App-local pure Web collector and shared controls | Closed domain projections, bounds, whole-page continuation and lifetime |
+| Shared bounded downloads | [Page export engine](bounded-page-export.md) | App-local pure Web collector and shared controls | Closed domain projections, serial enrichment, bounds, whole-page continuation and lifetime |
+| Selected computed-result downloads | [Receipt export](receipt-export.md) | Existing history and protected receipt APIs | Owner/operator/status/search selection and exact single-command files |
+| Versioned computed receipts | [Receipt NDJSON](receipt-export-format.md) | Closed command/result projection and v1 selection | Received/not-found observations, private aggregates and command-count trailer |
+| Serial receipt export admission | [Receipt lifetime](receipt-export-lifecycle.md) | Shared collector plus protected per-command reads | Smaller bounds, whole-page continuation, fresh auth and error discard |
+| Browser receipt downloads | [Receipt controls](console-receipt-export.md) | Export contents selector, detail and composed page cleanup | Choice cancellation, explicit resume/start over and follow coexistence |
+| Shared command export fields | [Metadata projection](command-metadata-projection.md) | App-local pure helper | Consistent ordinary/receipt metadata and domain-specific errors |
+| Native receipt export proof | [Receipt verification](receipt-export-testing.md) | Real broker, 1002 HTTP commands and relocated archive | Computed results, 1000-command segments, current admission and 46 captures |
 | Operator audit downloads | [Recovery audit export](recovery-audit-export.md) | Existing fixed-queue operator audit API | All/scoped traversal, recorded outcomes and retained snapshots |
 | Recovery audit NDJSON | [Audit file format](recovery-audit-export-format.md) | Audit-specific v1 header and projection | Attributed metadata, strict selection and explicit continuation |
 | Browser audit export lifetime | [Audit controls](console-audit-export.md) | Page-owned Fetch, Blob and subject fencing | Cancellation, error discard, focus and explicit resume/start over |
@@ -352,8 +358,14 @@ flowchart TD
   HistorySearch --> SearchCursor[Search-bound v3 pages]
   HistorySearch --> SearchIndexes[Owner/global lower-ID indexes]
   HistorySearch --> HistoryExport
+  HistorySearch --> ReceiptExport[Selected computed receipt export]
   HistoryLinks --> ViewHistory[Browser history and fresh first pages]
   HistoryLinks --> ViewSignIn[Validated sign-in return]
+  HistoryConsole --> ReceiptExport
+  ReceiptExport --> BoundedExport
+  ReceiptExport --> ProtectedReceipts[Protected per-command receipt reads]
+  ReceiptExport --> CommandMetadata[Closed command metadata projection]
+  HistoryExport --> CommandMetadata
   HistoryExport --> BoundedExport[Shared bounded page collector]
   BoundedExport --> ExportFiles[Versioned bounded NDJSON segments]
   HistoryExport --> ExportLifetime[Page-owned cancellation and admission]

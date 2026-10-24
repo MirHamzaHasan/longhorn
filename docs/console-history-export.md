@@ -5,6 +5,10 @@ plus the history-export CSS. The same control owns [audit downloads](console-aud
 [format](history-export-format.md), [lifetime](history-export-lifecycle.md),
 [history filters](console-history-filters.md) and [proof](history-export-testing.md).
 
+Commands defaults to Command history in the labelled Export contents selector.
+[Computed receipts](console-receipt-export.md) is a separate choice under the same
+view. Switching contents cancels the old attempt and clears its continuation.
+
 Commands shows Export history beneath the current scope/status selectors, including
 empty selections. The hint names the exported fields. Export starts from the newest
 matching command even if Load older has expanded the visible list. Preparation

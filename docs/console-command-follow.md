@@ -26,3 +26,7 @@ checking and preserves the last admitted data; it does not label an unknown
 delivery as failed. Session expiry or a switched-account 401 uses the existing
 sign-in flow and removes private content. No follow preference or command data is
 stored in localStorage or sessionStorage.
+
+[Receipt downloads](console-receipt-export.md) register separate page-owned work
+alongside follow. The composed page disposer stops both readers on navigation;
+follow updates never initiate an export.

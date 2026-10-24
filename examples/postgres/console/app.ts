@@ -3,6 +3,8 @@ import { CommandCopyError,copyCommandNumbers,parseNumbers } from './numbers.js'
 import { createCommandFollow } from './command-follow.js'
 import { collectHistoryExport } from './history-export.js'
 import { collectAuditExport } from './audit-export.js'
+import { collectReceiptExport } from './receipt-export.js'
+import type { ReceiptExportSelection } from './receipt-export.js'
 import { normalizeHistorySearch } from './history-search.js'
 import { ConsoleRouteError,historyViewHash,parseConsoleRoute } from './routes.js'
 import type { ConsoleRoute,HistoryView } from './routes.js'
@@ -17,6 +19,7 @@ const sidebar=document.querySelector<HTMLElement>('#sidebar')!,identity=document
 const themeButton=document.querySelector<HTMLButtonElement>('#theme')!,logout=document.querySelector<HTMLButtonElement>('#logout')!
 let user:User|undefined,version=0,reads=new AbortController(),deliveryState='failed',noticeRoute='',lastCommandsRoute='#/commands',pendingHistoryRoute:string|undefined
 let clearPageSecrets=()=>{},clearPageWork=()=>{},accountPending=false,pendingKind:'password'|'sessions'|undefined
+function ownPageWork(dispose:()=>void){const previous=clearPageWork;clearPageWork=()=>{previous();dispose()}}
 const reasons:Record<string,string>={'manual-retry':'Manual retry','provider-restored':'Provider restored','configuration-fixed':'Configuration fixed',investigating:'Investigating'}
 const stateLabels:Record<string,string>={pending:'Pending',running:'Sending',succeeded:'Delivered',failed:'Failed',unknown:'Unavailable'}
 function node<K extends keyof HTMLElementTagNameMap>(tag:K,text?:string,className?:string):HTMLElementTagNameMap[K]{const value=document.createElement(tag);if(text!==undefined)value.textContent=text;if(className)value.className=className;return value}
@@ -213,8 +216,10 @@ function newCommand(source?:{id:string;numbers:number[]}){
 }
 function commandRow(command:Command){const row=node('li',undefined,'row'),name=node('div');name.append(link('Command '+command.id.slice(0,8),'#/commands/'+command.id),node('div',command.id,'row-id'));row.append(name,cell('Created',time(command.createdAt)),cell('Delivery',status(command.delivery?.state??'unknown')),cell('Attempts',command.delivery?command.delivery.attempts+' / '+command.delivery.maxAttempts:'—'));return row}
 type ExportResult=Awaited<ReturnType<typeof collectHistoryExport>>
-type FileExportView={label:string;description:string;action:string;noun:string;filename:string;reset:string;more:string;collect:(after:string|null,signal:AbortSignal,progress:(count:number,pages:number)=>void)=>Promise<ExportResult>}
-function fileExportControls(view:FileExportView,current:number,route:string){
+type FileExportView={choice?:string;label:string;description:string;action:string;noun:string;singular:string;filename:string;reset:string;more:string;collect:(after:string|null,signal:AbortSignal,progress:(count:number,pages:number)=>void)=>Promise<ExportResult>}
+function fileExportControls(initial:FileExportView,current:number,route:string,choices:FileExportView[]=[]){
+  let view=initial,choiceVersion=0
+  const countLabel=(selected:FileExportView,count:number)=>count.toLocaleString()+' '+(count===1?selected.singular:selected.noun)
   const section=node('section',undefined,'history-export'),actions=node('div',undefined,'actions'),message=node('p',undefined,'subtle')
   section.setAttribute('aria-label',view.label);message.setAttribute('role','status');message.setAttribute('aria-atomic','true')
   const description=node('p',view.description,'subtle');let task:AbortController|undefined,continuation:string|null=null,objectUrl:string|undefined,revokeTimer:ReturnType<typeof setTimeout>|undefined
@@ -224,32 +229,48 @@ function fileExportControls(view:FileExportView,current:number,route:string){
   const update=(busy:boolean)=>{download.setAttribute('aria-disabled',String(busy));download.textContent=busy?'Preparing…':continuation?'Continue export':view.action;cancel.setAttribute('aria-disabled',String(!busy));startOver.setAttribute('aria-disabled',String(busy));if(busy)cancel.hidden=false}
   const download=button(view.action,()=>{
     if(task||!present())return
-    const controller=new AbortController();task=controller;update(true);message.textContent='Preparing '+view.noun+' export…'
+    const selected=view,choice=choiceVersion,stillCurrent=()=>present()&&choice===choiceVersion,controller=new AbortController();task=controller;update(true);message.textContent='Preparing '+view.noun+' export…'
     void(async()=>{
       try{
-        const result=await view.collect(continuation,controller.signal,(count,pages)=>{if(present()&&(pages===1||pages%10===0))message.textContent='Preparing export: '+count.toLocaleString()+' '+view.noun+'.'})
-        if(controller.signal.aborted||!present())return
+        const result=await selected.collect(continuation,controller.signal,(count,pages)=>{if(stillCurrent()&&(pages===1||pages%10===0))message.textContent='Preparing export: '+countLabel(selected,count)+'.'})
+        if(controller.signal.aborted||!stillCurrent())return
         revoke();objectUrl=URL.createObjectURL(new Blob([result.text],{type:'application/x-ndjson;charset=utf-8'}))
-        const anchor=link('',objectUrl);anchor.download=view.filename+'-'+result.exportedAt.replace(/[:.]/g,'-')+'.ndjson';anchor.hidden=true;document.body.append(anchor)
+        const anchor=link('',objectUrl);anchor.download=selected.filename+'-'+result.exportedAt.replace(/[:.]/g,'-')+'.ndjson';anchor.hidden=true;document.body.append(anchor)
         try{anchor.click()}finally{anchor.remove();revokeTimer=setTimeout(revoke,1000)}
         continuation=result.nextCursor;startOver.hidden=!continuation
-        message.textContent='Export ready. '+result.count.toLocaleString()+' '+view.noun+'.'+(result.complete?'':view.more)
-      }catch(error){if(!present())return;message.textContent=controller.signal.aborted?'Export canceled. No file was downloaded.':'Export stopped. '+(error instanceof Error?error.message:'Refresh and try again.')}
-      finally{if(task===controller)task=undefined;if(present())update(false)}
+        message.textContent='Export ready. '+countLabel(selected,result.count)+'.'+(result.complete?'':selected.more)
+      }catch(error){if(!stillCurrent())return;message.textContent=controller.signal.aborted?'Export canceled. No file was downloaded.':'Export stopped. '+(error instanceof Error?error.message:'Refresh and try again.')}
+      finally{if(task===controller)task=undefined;if(stillCurrent())update(false)}
     })()
   })
+  if(choices.length){
+    const views=[initial,...choices],picker=select(Object.fromEntries(views.map((entry,index)=>[String(index),entry.choice??entry.action])),'0')
+    picker.addEventListener('change',()=>{++choiceVersion;task?.abort();task=undefined;revoke();view=views[Number(picker.value)]!;continuation=null;section.setAttribute('aria-label',view.label);description.textContent=view.description;update(false);cancel.hidden=true;startOver.hidden=true;message.textContent='Export selection changed.'})
+    const choiceField=field('Export contents',picker);choiceField.className='export-choice';section.append(choiceField)
+  }
   cancel.hidden=true;startOver.hidden=true;actions.append(download,cancel,startOver);section.append(description,actions,message)
-  clearPageWork=()=>{task?.abort();revoke()};return section
+  ownPageWork(()=>{task?.abort();revoke()});return section
 }
 function historyExportControls(inputScope:string,inputState:string,current:number,route:string,inputSearch?:string){
-  return fileExportControls({label:'Command history export',description:'Download IDs, dates, and delivery status.',action:'Export history',noun:'commands',filename:'longhorn-commands-'+inputScope+'-'+inputState,reset:'The next export starts with your newest matching commands.',more:' More history is available; continue for the next file.',
+  return fileExportControls({choice:'Command history',label:'Command history export',description:'Download IDs, dates, and delivery status.',action:'Export history',noun:'commands',singular:'command',filename:'longhorn-commands-'+inputScope+'-'+inputState,reset:'The next export starts with your newest matching commands.',more:' More history is available; continue for the next file.',
     collect:(after,signal,progress)=>collectHistoryExport({selection:{scope:inputScope,state:inputState,...(inputSearch?{q:inputSearch}:{})},...(after?{after}:{}),signal,progress,
       read:input=>{const query=new URLSearchParams({scope:inputScope,limit:String(input.limit)});if(inputState!=='all')query.set('state',inputState);if(inputSearch)query.set('q',inputSearch);if(input.after)query.set('after',input.after);return api('/commands?'+query,undefined,{signal:input.signal})},
     }),
-  },current,route)
+  },current,route,[receiptExportView({kind:'history',scope:inputScope,state:inputState,...(inputSearch?{q:inputSearch}:{})})])
+}
+function receiptExportView(selection:ReceiptExportSelection):FileExportView{
+  const single=selection.kind==='command'
+  return{choice:'Computed receipts',label:'Computed receipt export',description:'Download computed results. Missing receipts are marked in the file.',action:'Export receipts',noun:'commands',singular:'command',filename:'longhorn-receipts-'+(selection.kind==='command'?selection.commandId:selection.scope+'-'+selection.state),reset:single?'Export this command again to check its current receipt.':'The next export starts with your newest matching commands.',more:' More commands are available; continue for the next file.',
+    collect:(after,signal,progress)=>collectReceiptExport({selection,...(after?{after}:{}),signal,progress,
+      read:async input=>{
+        if(selection.kind==='command'){const data=await api<{history:unknown}>('/commands/'+selection.commandId,undefined,{signal:input.signal});return{commands:[data.history],nextCursor:null}}
+        const query=new URLSearchParams({scope:selection.scope,limit:String(input.limit)});if(selection.state!=='all')query.set('state',selection.state);if(selection.q)query.set('q',selection.q);if(input.after)query.set('after',input.after);return api('/commands?'+query,undefined,{signal:input.signal})
+      },readReceipt:async(id,signal)=>{try{return await readCommandReceipt(id,signal)}catch(error){if(error instanceof RequestError&&error.status>=500)throw new Error('The receipt service is unavailable. Try again.');throw error}},
+    }),
+  }
 }
 function auditExportControls(deliveryId:string|undefined,current:number,route:string){
-  return fileExportControls({label:'Recovery audit export',description:'Download who requested recovery, why, and the recorded outcome.',action:'Export audit',noun:'recovery actions',filename:'longhorn-audit-'+(deliveryId??'all'),reset:'The next export starts with the oldest matching recovery actions.',more:' More recovery actions are available; continue for the next file.',
+  return fileExportControls({label:'Recovery audit export',description:'Download who requested recovery, why, and the recorded outcome.',action:'Export audit',noun:'recovery actions',singular:'recovery action',filename:'longhorn-audit-'+(deliveryId??'all'),reset:'The next export starts with the oldest matching recovery actions.',more:' More recovery actions are available; continue for the next file.',
     collect:(after,signal,progress)=>collectAuditExport({selection:{deliveryId:deliveryId??null},...(after?{after}:{}),signal,progress,
       read:input=>{const query=new URLSearchParams({limit:String(input.limit)});if(deliveryId)query.set('deliveryId',deliveryId);if(input.after)query.set('after',input.after);return api('/operations/audit?'+query,undefined,{signal:input.signal})},
     }),
@@ -288,7 +309,7 @@ async function readCommandReceipt(id:string,signal?:AbortSignal):Promise<Command
   catch(error){if(error instanceof RequestError&&error.status===404)return null;throw error}
 }
 async function commandPage(id:string){
-  const current=version,data=await api<CommandDetail>('/commands/'+id),value=node('div');let history=data.history,received=false,receiptUnavailable=false
+  const current=version,route=location.hash,data=await api<CommandDetail>('/commands/'+id),value=node('div');let history=data.history,received=false,receiptUnavailable=false
   value.append(link('Back to commands',lastCommandsRoute,'back'),title('Command '+id.slice(0,8),'Submitted '+time(history.createdAt),refresh('Refresh status'),link('Run again','#/new/'+id,'button')))
   const layout=node('div',undefined,'detail-grid'),input=node('section',undefined,'panel');input.append(node('h2','Your numbers'),node('p',data.command.numbers.join(', '),'numbers'),details({'Command ID':node('code',id)}));layout.append(input)
   const delivery=node('section',undefined,'panel'),facts=node('div');delivery.append(node('h2','Delivery'),facts)
@@ -302,7 +323,7 @@ async function commandPage(id:string){
   }
   try{showReceipt(await readCommandReceipt(id))}
   catch(error){if(!(error instanceof RequestError)||error.status===401||error.status===403)throw error;receiptUnavailable=true;showReceipt(null)}
-  if(current!==version)throw new DOMException('Navigation cancelled','AbortError')
+  if(current!==version||location.hash!==route)throw new DOMException('Navigation cancelled','AbortError')
   if(!received){
     const updates=node('div',undefined,'follow-updates'),progress=node('p',undefined,'subtle'),control=button('Follow updates',()=>{if(!finished){if(follow.active)follow.stop();else follow.start()}})
     let finished=false;progress.setAttribute('role','status');progress.setAttribute('aria-live','polite');progress.setAttribute('aria-atomic','true')
@@ -322,11 +343,11 @@ async function commandPage(id:string){
     })
     const visibility=()=>follow.setPaused(document.hidden||!navigator.onLine)
     document.addEventListener('visibilitychange',visibility);addEventListener('online',visibility);addEventListener('offline',visibility)
-    clearPageWork=()=>{follow.dispose();document.removeEventListener('visibilitychange',visibility);removeEventListener('online',visibility);removeEventListener('offline',visibility)}
+    ownPageWork(()=>{follow.dispose();document.removeEventListener('visibilitychange',visibility);removeEventListener('online',visibility);removeEventListener('offline',visibility)})
     visibility();updates.append(progress,control);value.append(updates)
     if(!receiptUnavailable&&history.delivery&&history.delivery.state!=='failed')follow.start()
   }
-  layout.append(receipt);value.append(layout);return value
+  receipt.append(fileExportControls(receiptExportView({kind:'command',commandId:id}),current,route));layout.append(receipt);value.append(layout);return value
 }
 function deliveryRow(delivery:Delivery){const row=node('li',undefined,'row'),name=node('div');name.append(link('Delivery '+delivery.id.slice(0,8),'#/deliveries/'+delivery.id),node('div',delivery.id,'row-id'));row.append(name,cell('Updated',time(delivery.updatedAt)),cell('State',status(delivery.state)),cell('Attempts',delivery.attempts+' / '+delivery.maxAttempts));return row}
 async function deliveriesPage(){

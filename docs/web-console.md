@@ -56,3 +56,7 @@ which rows appear. Loaded pages and export continuation are not part of the URL.
 [Command-ID search](console-history-search.md) accepts an explicitly submitted UUID
 prefix and combines it with scope/status. Its entered prefix is part of the saved
 view link; paging uses v3 context and searched downloads identify q with v2 headers.
+
+[Computed receipt downloads](console-receipt-export.md) use the current history
+selection or one command detail, with explicit missing observations and the same
+page-owned cancellation/focus policy as metadata downloads.

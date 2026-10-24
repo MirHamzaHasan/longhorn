@@ -1,7 +1,7 @@
 # Command history export
 
 Owner: examples/postgres/console/history-export.ts and historyExportControls in
-app.ts, backed by the app-local [shared collector](bounded-page-export.md). Connects [history HTTP](account-command-history.md), [format](history-export-format.md),
+app.ts, using [shared metadata](command-metadata-projection.md) and backed by the app-local [shared collector](bounded-page-export.md). Connects [history HTTP](account-command-history.md), [format](history-export-format.md),
 [lifetime and authorization](history-export-lifecycle.md), [controls](console-history-export.md)
 and [native verification](history-export-testing.md).
 

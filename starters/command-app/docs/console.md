@@ -37,3 +37,7 @@ returns to the validated selection. Private data and cursors stay out of the lin
 [ID search](history-search.md) submits a normalized UUID prefix, retains it across
 status/scope changes and saved-view navigation, and uses inline validation.
 Clear search preserves the other filters; searched export uses an explicit v2 header.
+
+Commands offers [computed receipt downloads](receipt-export.md) under Export
+contents. Detail exports exactly that command after fresh protected reads; follow
+and download work both stop when leaving the page.

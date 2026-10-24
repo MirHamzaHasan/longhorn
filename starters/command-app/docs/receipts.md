@@ -10,3 +10,7 @@ same ID conflicts. Protected reads return at most 100 effects for one command;
 the app checks account ownership before contacting the receiver. The retained
 local directory survives process restart. Connects [delivery](delivery.md),
 [history](history.md), [setup](setup.md) and [backup](backup.md).
+
+[Export computed receipts](receipt-export.md) from selected history or one command
+through fresh protected reads. Recorded not-found observations stay distinct from
+current delivery state; raw input numbers are excluded.
