@@ -38,6 +38,10 @@ Copy `.operator.env.example` to `.operator.env`, replace DATABASE_URL with the
 restricted runtime connection, replace the service token, then run `pnpm start`
 in a shell without MIGRATION_DATABASE_URL. The default console is
 http://127.0.0.1:3011/console. The exact AUTH_ORIGIN must match the browser URL.
+After building, `pnpm check` optionally inspects the configured runtime and receiver
+before you start the app; it opens no app listener and makes no application writes.
+See [preflight](preflight.md) for report fields and exit codes.
+
 Loopback development explicitly enables insecure transport/cookies; production
 requires the HTTPS settings in deployment.md. Environment values override files.
 

@@ -41,6 +41,7 @@
     "test:history-filters": "pnpm build && node scripts/verify-history-filters.mjs",
     "test:command-history": "pnpm build && node scripts/verify-command-history.mjs",
     "test:persistent-operations": "pnpm build && node scripts/verify-persistent-operations.mjs",
+    "check:operator-host": "pnpm --filter example-postgres... build && node examples/postgres/dist/operator-check.js",
     "dev:operator-host": "pnpm --filter example-postgres... build && node examples/postgres/dist/operator-host.js",
     "dev:message-receiver": "pnpm --filter example-outbox-worker... build && node scripts/serve-message-receiver.mjs",
     "test:operator-accounts": "pnpm build && node scripts/verify-operator-accounts.mjs",

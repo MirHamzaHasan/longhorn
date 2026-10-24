@@ -14,3 +14,6 @@ and [deployment](deployment.md). HTTP runtime credentials remain restricted.
 Optional [request cleanup](request-cleanup.md) starts after database ownership and
 drains its admitted prune/error observer before the pool closes. Default-off hosts
 create no cleanup worker or timer.
+
+The optional [preflight command](preflight.md) owns an independent diagnostic pool
+and drains it after read probes. It starts none of the application resources.

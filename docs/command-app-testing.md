@@ -106,3 +106,7 @@ QA artifact; default invocation still packages and verifies the standalone archi
 When the installed CLI is selected, the restored extracted app also runs
 [source-aware development](command-development-testing.md) before disposal. The
 standalone archive still verifies the shared one-off build and complete workflow.
+
+The artifact now verifies [runtime preflight](operator-preflight-testing.md) before
+starting the application. Pending outgoing work, expired reply and business counts
+prove no background services are admitted. Readiness passes again after restore.

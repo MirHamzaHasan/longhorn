@@ -33,7 +33,7 @@ it.each([
   ['create','app','--runtime','bun','--template','command-app'],
   ['create','app','--runtime','deno','--template','command-app'],
   ['create','app','--runtime','workers','--template','command-app'],
-  ['build', '--cwd'], ['build', '--cwd', '.', '--unsafe'], ['build', 'extra'], ['publish'],
+  ['check', '--cwd'], ['check', 'extra'], ['build', '--cwd'], ['build', '--cwd', '.', '--unsafe'], ['build', 'extra'], ['publish'],
 ])('rejects invalid arguments %j without executing a process', async (...args) => {
   let executed = false
   const result = await runCli(args, { ...context(), execute: async () => { executed = true; return 0 } })
@@ -60,6 +60,15 @@ it('refuses unrelated directories and missing scripts', async () => {
   expect(await runCli(['build'], context())).toBe(1)
   expect(errors.at(-1)).toContain('generated LongHorn project')
   await writeFile(join(directory, 'package.json'), JSON.stringify({ longhorn: { schemaVersion: 1, runtime: 'node' } }))
+  expect(await runCli(['check'], context())).toBe(1)
+  expect(errors.at(-1)).toContain('no check script')
   expect(await runCli(['start'], context())).toBe(1)
   expect(errors.at(-1)).toContain('no start script')
+})
+
+it('delegates an explicit project check script without inventing it for other profiles',async()=>{
+  await writeFile(join(directory,'package.json'),JSON.stringify({longhorn:{schemaVersion:1,runtime:'node'},scripts:{check:'node custom.mjs'}}))
+  const calls:unknown[]=[]
+  expect(await runCli(['check'],{...context(),execute:async(...args)=>{calls.push(args);return 9}})).toBe(9)
+  expect(calls).toEqual([[['run','check'],directory]])
 })

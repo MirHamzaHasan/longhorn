@@ -47,3 +47,7 @@ and [deployment](command-app-deployment.md).
 Generated apps now include [source development](command-source-development.md):
 paired app/console rebuilds, private profile reload and a separate retained receiver
 watch command. Existing setup, account policy and deployment ownership are retained.
+
+The generated [preflight command](operator-preflight.md) now inspects the configured
+runtime before serving. It shares native config/schema/role/transport checks,
+emits fixed private-safe observations and closes its independent pool.

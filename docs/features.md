@@ -9,6 +9,11 @@ downstream connections, verification, and current limits.
 
 | Feature | Guide | Implementation owner | Connects to |
 | --- | --- | --- | --- |
+| Operator runtime preflight | [Preflight](operator-preflight.md) | App-local coordinator and native check entry | Shared config/readiness, assets, restricted role, receiver and close |
+| Versioned diagnostic observations | [Report v1](operator-preflight-report.md) | Fixed IDs/statuses/hints | Private values omitted, dependency skips and explicit interrupted state |
+| Shared PostgreSQL readiness | [Schema checks](postgres-application-readiness.md) | Startup, live readiness and preflight | One runtime-visible probe helper and existing optional capabilities |
+| Diagnostic lifetime | [Probe ownership](operator-preflight-lifecycle.md) | Exclusive pool factory and CLI script owner | Admitted work/close drain, signal propagation and custom pnpm fallback |
+| Native preflight proof | [Preflight verification](operator-preflight-testing.md) | Actual archive/installed CLI, PostgreSQL and HTTP peers | Failure/recovery, pending/expired rows untouched, native SQL interruption and no listener |
 | Command source development | [App source loop](command-source-development.md) | Generated dev.mjs and shared build settings | Recursive server/console source, private profiles and usable paired generations |
 | Development build admission | [Build coordination](command-development-builds.md) | One owned revision/debounce/build sequence | In-memory output, superseded work, old native exit and per-role output |
 | Development native lifetime | [Process drain](command-development-lifecycle.md) | Fixed CLI dev owner and isolated Node child | Actual close, awaited builds, failed/forced stop and generic script fallback |
@@ -359,6 +364,10 @@ flowchart TD
   RequestCleanup --> Lifecycle
   OperatorHost --> RequestCleanup
   CommandProject[Command app CLI profile] --> OperatorHost
+  CommandProject --> OperatorPreflight[Read-only runtime checks]
+  OperatorPreflight --> PgReadiness[Shared PostgreSQL readiness]
+  OperatorHost --> PgReadiness
+  OperatorPreflight --> Config
   CommandProject --> SourceDevelopment[Owned source development]
   SourceDevelopment --> OperatorHost
   SourceDevelopment --> ReceiverDevelopment[Separate receipt receiver owner]

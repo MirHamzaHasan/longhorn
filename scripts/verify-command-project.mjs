@@ -58,12 +58,14 @@ try{
   // Custom scripts and lifecycle hooks retain pnpm's script environment/exit status.
   const custom=join(temporary,'custom script owner');await mkdir(join(custom,'dist'),{recursive:true})
   const script="console.log(JSON.stringify({event:process.env.npm_lifecycle_event}));process.exitCode=17\n"
-  await writeFile(join(custom,'custom.mjs'),script);await writeFile(join(custom,'dev.mjs'),script);await writeFile(join(custom,'dist/operator-host.js'),script)
-  for(const scripts of [{start:'node custom.mjs'},{start:'node dist/operator-host.js',prestart:'node -e "process.exit(0)"'},{dev:'node custom.mjs'},{dev:'node dev.mjs',predev:'node -e "process.exit(0)"'}]){
+  await writeFile(join(custom,'custom.mjs'),script);await writeFile(join(custom,'dev.mjs'),script);await writeFile(join(custom,'check.mjs'),script);await writeFile(join(custom,'dist/operator-check.js'),script);await writeFile(join(custom,'dist/operator-host.js'),script)
+  for(const scripts of [{start:'node custom.mjs'},{start:'node dist/operator-host.js',prestart:'node -e "process.exit(0)"'},{dev:'node custom.mjs'},{dev:'node dev.mjs',predev:'node -e "process.exit(0)"'},{check:'node custom.mjs'},{check:'node dist/operator-check.js',precheck:'node -e "process.exit(0)"'}]){
     await writeFile(join(custom,'package.json'),JSON.stringify({type:'module',private:true,packageManager:'pnpm@12.6.0',longhorn:{schemaVersion:1,runtime:'node',template:'command-app'},scripts}))
-    const command=scripts.start?'start':'dev',result=await run(process.execPath,[cli,command,'--cwd',custom],consumer,{},17)
+    const command=scripts.start?'start':scripts.dev?'dev':'check',result=await run(process.execPath,[cli,command,'--cwd',custom],consumer,{},17)
     assert.ok(result.split('\n').some(line=>line===JSON.stringify({event:command})),'pnpm delegation was bypassed')
   }
+  await writeFile(join(custom,'package.json'),JSON.stringify({type:'module',private:true,packageManager:'pnpm@12.6.0',longhorn:{schemaVersion:1,runtime:'node',template:'sqlite-auth'},scripts:{check:'node check.mjs'}}))
+  const authCheck=await run(process.execPath,[cli,'check','--cwd',custom],consumer,{},17);assert.ok(authCheck.includes('{"event":"check"}'))
   for(const runtime of ['bun','deno','workers']){
     const refused=join(temporary,'refused-'+runtime),error=await run(process.execPath,[creator,refused,'--runtime',runtime,'--template','command-app'],consumer,{},1)
     assert.ok(error.includes('requires --runtime node'));await assert.rejects(lstat(refused),{code:'ENOENT'})

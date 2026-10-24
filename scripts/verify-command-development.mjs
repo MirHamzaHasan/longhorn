@@ -49,7 +49,7 @@ export async function verifyCommandDevelopment({directory,cli,origin,receiverEnv
     await writeFile(hostFile,hostSource('second'));await writeFile(cssFile,cssBase+'\n:root{--longhorn-development:second}\n');await listening(app,starts)
     assert.equal((await(await get('/development-check')).json()).generation,'second');assert.ok((await(await get('/console/app.css')).text()).includes('--longhorn-development:second'))
     const nested=await keep('src/development-proof/deep/marker.ts');await mkdir(join(nested,'..'),{recursive:true});await writeFile(nested,"export const developmentMarker='nested-first'\n")
-    const nestedSource=hostSource('nested').replace("import { loadConfig }", "import { developmentMarker } from './development-proof/deep/marker.js'\nimport { loadConfig }").replace("generation:'nested'",'generation:developmentMarker')
+    const nestedSource=hostSource('nested').replace("import { createLogger }", "import { developmentMarker } from './development-proof/deep/marker.js'\nimport { createLogger }").replace("generation:'nested'",'generation:developmentMarker')
     let nestedBefore=count(app,'HTTP server listening');await writeFile(hostFile,nestedSource);await listening(app,nestedBefore);assert.equal((await(await get('/development-check')).json()).generation,'nested-first')
     nestedBefore=count(app,'HTTP server listening');await writeFile(nested,"export const developmentMarker='nested-second'\n");await listening(app,nestedBefore);assert.equal((await(await get('/development-check')).json()).generation,'nested-second')
     // Real admitted HTTP waits on SQL while the old child is asked to drain.

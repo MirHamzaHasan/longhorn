@@ -13,6 +13,7 @@ import { openPostgres } from '../runtimes/node/dist/postgres.js'
 import { Idempotency } from '../packages/idempotency/dist/index.js'
 import { PostgresIdempotencyStore } from '../packages/idempotency/dist/postgres.js'
 import { verifyCommandDevelopment } from './verify-command-development.mjs'
+import { verifyOperatorPreflight } from './verify-operator-preflight.mjs'
 
 // Internal QA inputs let the packed CLI project use this same complete workflow.
 const options=new Map(),args=process.argv.slice(2)
@@ -83,7 +84,9 @@ try{
     await admin.execute(grant)
     try{const rejected=launch(process.execPath,['dist/operator-host.js'],directory,{MIGRATION_DATABASE_URL:undefined});assert.equal((await rejected.ended).code,1);assert.ok(!rejected.records.some(row=>row.message==='HTTP server listening'))}finally{await admin.execute(revoke)}
   }
-  let receiver=await startReceiver(),host=await startHost()
+  let receiver=await startReceiver()
+  await verifyOperatorPreflight({directory,cli,origin,ownerUrl,appUrl,receiverEnvironment:receiverEnv})
+  let host=await startHost()
   const password='a long native starter passphrase',post=(input,cookie)=>({method:'POST',headers:{Origin:origin,'Content-Type':'application/json',...(cookie?{Cookie:cookie}:{})},body:JSON.stringify(input)})
   const nextPassword='a changed native starter passphrase';secrets.push(password,nextPassword)
   for(const username of ['starter.member','starter.operator'])assert.equal((await fetch(origin+'/account/register',post({username,password}))).status,201)
@@ -146,6 +149,7 @@ try{
   assert.equal((await receipt(first.command.id,member)).receipts[0].result.sum,27)
   assert.equal((await receipt(failed.command.id,member)).receipts[0].result.sum,40)
   const retainedReplay=await fetch(origin+'/account/commands',post(input,member));assert.equal(retainedReplay.headers.get('idempotency-replayed'),'true');assert.deepEqual(await retainedReplay.json(),first)
+  const rechecked=cli?await run(process.execPath,[cli,'check','--cwd',directory],directory,{MIGRATION_DATABASE_URL:undefined}):await run(process.execPath,['dist/operator-check.js'],directory,{MIGRATION_DATABASE_URL:undefined});assert.equal(JSON.parse(rechecked.trim()).ready,true)
   const retainedViews=await(await fetch(origin+'/account/history-views',{headers:{Cookie:member}})).json();assert.deepEqual(retainedViews.views,[savedView])
   const retainedAudit=await(await fetch(origin+'/account/operations/audit',{headers:{Cookie:operator}})).json();assert.equal(retainedAudit.records[0].reason,'provider-restored')
   const next=await fetch(origin+'/account/commands',post({id:'after-restore',numbers:[7,9]},member));assert.equal(next.status,201);const newCommand=await next.json();await waitFor(async()=>{const value=await receipt(newCommand.command.id,member);return value&&value.receipts[0].result.sum===16})

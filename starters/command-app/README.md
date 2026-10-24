@@ -31,3 +31,6 @@ There are no default accounts, passwords or remotely deployed services.
 
 After setup, use `pnpm dev` for app/console source reloads and `pnpm dev:receiver`
 in the separate receiver shell. See [development](docs/development.md).
+
+Use `pnpm check` after build/configuration for a read-only runtime report before
+starting the app. See [preflight](docs/preflight.md).

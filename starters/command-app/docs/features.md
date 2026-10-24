@@ -2,6 +2,7 @@
 
 | Feature | Owner | Connections |
 | --- | --- | --- |
+| [Runtime preflight](preflight.md) | src/operator-check.ts, operator-preflight.ts and shared readiness/config loaders | Read-only setup diagnosis, fixed JSON, live dependency checks and drained exit |
 | [Source development](development.md) | dev.mjs, dev-host.mjs and build.config.mjs | Paired app/browser builds, separate receiver watch, latest-generation drain and retained stores |
 | [Creation](generation.md) | Command app CLI profile and shared archive template | Editable actual app, checked assets, selected framework, install policy and explicit setup |
 | [Locked dependencies](dependencies.md) | pnpm-lock.yaml and .longhorn/distribution.json | Local framework overrides, fixed external resolution and explicit updates |

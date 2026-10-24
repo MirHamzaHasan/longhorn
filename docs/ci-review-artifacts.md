@@ -75,3 +75,8 @@ The packed project gate also records [development proof](command-development-tes
 in the exact command-development-proof.json upload path. It contains only aggregate
 outcomes; edited test source, credentials and retained SQL/receiver stores remain
 outside the uploaded source artifacts.
+
+The independent application gate additionally retains
+[preflight proofs](operator-preflight-testing.md) at the exact
+operator-preflight-proof-archive.json and operator-preflight-proof-cli.json paths.
+They contain aggregate observations, with no connection values or database state.

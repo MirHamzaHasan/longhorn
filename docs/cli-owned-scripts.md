@@ -32,3 +32,8 @@ work once. The [packed gate](auth-starter-testing.md) separately proves installe
 CLI close after reload and actual watcher-group SIGINT, including native stop,
 clean owner exit and listener release. Windows signal behavior needs its own native
 execution evidence. Parent crash/descendant supervision remains deployment-owned.
+
+The [command-app check script](operator-preflight-lifecycle.md), exactly
+`node dist/operator-check.js` without pre/post hooks, is another explicit owner.
+Interruptions wait for admitted SQL/HTTP and pool close, preserving 130/143.
+Customized/hooked checks and checks on other profiles retain pnpm behavior.

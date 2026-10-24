@@ -1644,3 +1644,27 @@ noncooperative child's forced-stop failure verify the ownership boundary. See
 [app loop](command-source-development.md), [builds](command-development-builds.md),
 [lifetime](command-development-lifecycle.md), [receiver](receiver-source-development.md)
 and [proof](command-development-testing.md).
+
+
+## 65. Read-Only Runtime Diagnosis through Existing Contracts
+
+An app-local preflight coordinator shares the native operator environment loader,
+console asset reads, PostgreSQL schema/role checks and protected transport health.
+Startup, /readyz and diagnosis now use one runtime-visible schema helper instead
+of duplicate SQL. No migration, grant, provider or business contract is changed.
+
+The check executable emits fixed versioned status/hint data and safe capability
+booleans. Failed prerequisites skip dependent checks while independent probes can
+still report. The invocation owns its database factory and closes that pool on
+all acquired paths. Interruption stops later admission and awaits actual in-flight
+SQL/HTTP plus close; it does not fake provider cancellation. The unchanged check
+script has a direct CLI owner; custom scripts/hooks retain pnpm semantics.
+
+Real archive and installed CLI probes verify config/assets/connection/role/schema/
+grant/cleanup/receiver failures and recovery. A native lock proves interrupted SQL
+must settle before report/exit. Seeded pending delivery and expired replay plus
+business counts prove no listener, dispatcher or cleanup work starts. The full
+workflow rechecks after restore and retains its source-development proof. See
+[feature](operator-preflight.md), [format](operator-preflight-report.md),
+[readiness](postgres-application-readiness.md), [lifetime](operator-preflight-lifecycle.md)
+and [native proof](operator-preflight-testing.md).

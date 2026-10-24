@@ -12,8 +12,8 @@ The existing demo:operator-accounts remains an explicitly temporary sandbox.
 This host now enables [authenticated password changes](password-change-http.md)
 at POST `/account/password`, requiring the appended password migration and two
 specific function grants. Current-password verification happens outside SQL and
-success clears all subject sessions. The browser console has no settings screen
-for this API yet. Stop old login writers during the documented upgrade.
+success clears all subject sessions. The browser [Account page](console-account.md) exposes password changes and
+[session controls](console-session-controls.md). Stop old login writers during the documented upgrade.
 
 1. Provision PostgreSQL owner/runtime roles and deploy the full operations profile
    using pnpm migrate:account-operations in the provisioning shell. Apply the
@@ -51,3 +51,7 @@ receiver storage, and supplying the intended service credentials. Native tests
 prove independent process restarts, interruption after committed effect,
 credential rotation, owner rejection and audited outage recovery. No cloud
 deployment or backup/replication policy is implied.
+
+Use [runtime preflight](operator-preflight.md) after build/configuration to inspect
+assets, runtime PostgreSQL/schema/authority and protected receiver health without
+starting the host. It shares the host loader and current readiness checks.

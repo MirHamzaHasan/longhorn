@@ -102,3 +102,8 @@ Its [fixed start owner](command-project-lifecycle.md) preserves custom/hook pnpm
 The unchanged command-app dev script now selects its [source owner](command-source-development.md)
 directly, with one forwarded signal and actual native drain. Receiver development
 uses the generated app's separate pnpm dev:receiver script and receiver shell.
+
+`longhorn check --cwd DIRECTORY` runs a supplied project check script. The
+[command-app profile](operator-preflight.md) supplies its native read-only diagnostic
+owner, with one forwarded signal and final JSON after close. Other profiles keep
+normal pnpm delegation and report a missing script unless the app defines one.

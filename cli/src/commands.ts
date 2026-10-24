@@ -6,7 +6,7 @@ import { runtimes } from './templates.js'
 import { signalProcessTree } from './processes.js'
 import type { ProjectRuntime, ProjectTemplate } from './templates.js'
 
-const scriptCommands = ['dev', 'build', 'start', 'typecheck', 'test'] as const
+const scriptCommands = ['dev', 'build', 'start', 'typecheck', 'test', 'check'] as const
 type ScriptCommand = typeof scriptCommands[number]
 type CliContext = {
   cwd?: string
@@ -17,7 +17,7 @@ type CliContext = {
 const help = `LongHorn development CLI
 
   longhorn create <directory> --runtime node|bun|deno|workers [--template api|d1-tasks|sqlite-tasks|sqlite-auth|command-app] [--name <name>] [--install]
-  longhorn dev|build|start|typecheck|test [--cwd <directory>]
+  longhorn dev|build|start|typecheck|test|check [--cwd <directory>]
   longhorn --help
   longhorn --version
 
@@ -53,14 +53,16 @@ async function execute(args: string[], cwd: string): Promise<number> {
   // once; a descendant walk races graceful drain with a second native signal.
   let launcher: string | undefined
   const command = args[0] === 'run' ? args[1] : undefined
-  if (command === 'dev' || command === 'start') {
+  if (command === 'dev' || command === 'start' || command === 'check') {
     const manifest = JSON.parse(await readFile(resolve(cwd, 'package.json'), 'utf8')) as {
       longhorn?: { template?: string }; scripts?: Record<string, string>
     }
     if (!manifest.scripts?.[`pre${command}`] && !manifest.scripts?.[`post${command}`]) {
-      if (manifest.longhorn?.template === 'sqlite-auth' && manifest.scripts?.[command] === `node ${command}.mjs`) launcher = `${command}.mjs`
+      if (manifest.longhorn?.template === 'sqlite-auth' && (command === 'dev' || command === 'start') && manifest.scripts?.[command] === `node ${command}.mjs`) launcher = `${command}.mjs`
       if (manifest.longhorn?.template === 'command-app' && command === 'start'
         && manifest.scripts?.start === 'node dist/operator-host.js') launcher = 'dist/operator-host.js'
+      if (manifest.longhorn?.template === 'command-app' && command === 'check'
+        && manifest.scripts?.check === 'node dist/operator-check.js') launcher = 'dist/operator-check.js'
       if (manifest.longhorn?.template === 'command-app' && command === 'dev'
         && manifest.scripts?.dev === 'node dev.mjs') launcher = 'dev.mjs'
     }

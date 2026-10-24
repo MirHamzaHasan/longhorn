@@ -43,3 +43,7 @@ developer after creation; the original hashes do not forbid edits or upgrade it.
 The template also requires [development tools](command-source-development.md):
 shared build settings, one source owner, native close helper and their generated
 guide. They use existing Node/esbuild dependencies and the same checked recipe.
+
+The checked template also requires [preflight source and guide](operator-preflight.md).
+Its native check entry is part of the common app build settings; configuration and
+runtime schema helpers are shared with the live host, without new dependencies.

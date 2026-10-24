@@ -55,3 +55,7 @@ host with consumers deliberately disabled can be ready for its configured role.
 The portable starter checks its initialized state only; add dependencies explicitly.
 Unit/native tests cover failure/recovery, concurrent probes, deadlines, busy bounds,
 cancellation, close ordering and liveness/readiness separation over real HTTP.
+
+The PostgreSQL example now reuses [one application schema helper](postgres-application-readiness.md)
+for startup/live readiness and an independent [operator preflight](operator-preflight.md).
+The diagnostic owner creates no application services and awaits pool close.

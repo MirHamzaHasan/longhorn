@@ -53,3 +53,8 @@ The restored CLI-created artifact additionally runs [source development proof](c
 It edits actual app/browser/receiver source, observes paired failure/recovery, holds
 a real SQL-backed HTTP write through reload and verifies retained sessions/replies/
 receipts, private profiles, terminal shutdown and explicit forced-stop failure.
+
+[Preflight verification](operator-preflight-testing.md) runs the actual installed
+CLI before the app listens and rechecks the restored app. It covers real grants,
+role/config/assets/receiver failures, interrupted SQL and unchanged pending/replay
+state. Custom check scripts and hooks retain pnpm environment/exit behavior.

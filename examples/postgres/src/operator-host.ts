@@ -1,12 +1,10 @@
-import { loadConfig } from '@longhorn/config'
 import { createLogger } from '@longhorn/logger'
-import { readEnv } from '@longhorn/node/config'
 import { openPostgres } from '@longhorn/node/postgres'
 import { nodeRuntime } from '@longhorn/node'
 import { createScryptPasswordHasher } from '@longhorn/node/passwords'
 import type { Longhorn } from '@longhorn/core'
 import { createPostgresApp } from './app.js'
-import { operatorConfigSchema } from './operator-config.js'
+import { loadOperatorConfiguration } from './operator-environment.js'
 import { createOperationTransport } from './operation-transport.js'
 import { checkOperatorRuntimeRole } from './operator-runtime.js'
 import { loadConsoleAssets } from './console-assets.js'
@@ -19,7 +17,7 @@ async function shutdown(){
 }
 for(const signal of ['SIGINT','SIGTERM'])process.on(signal,()=>{void shutdown().catch(()=>{bootstrap.error('Operator shutdown failed');process.exitCode=1})})
 const starting=(async()=>{
-  const config=await loadConfig(operatorConfigSchema,await readEnv({files:[new URL('../.operator.env',import.meta.url),new URL('../.operator.env.local',import.meta.url)],ignoreMissing:true}))
+  const config=await loadOperatorConfiguration()
   if(requested)return
   const logger=createLogger({level:config.logLevel,bindings:{app:'operator-host'}})
   app=createPostgresApp({logger,workerEnabled:false,schedulerEnabled:false,console:await loadConsoleAssets(),
