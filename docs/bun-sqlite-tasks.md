@@ -37,7 +37,8 @@ They are not durable audit history. The basic list/summary route has no paginati
 the provider's default 1000-row output limit remains explicit.
 
 This example does not add revision/idempotency headers to task CRUD, production
-account policy, a Bun CLI template or cloud deployment. The optional provider is
-available to applications independently. See [storage](bun-sqlite.md),
+account policy or cloud deployment. For an independent generated copy with owned
+source watching, use the [Bun SQLite starter](bun-sqlite-starter.md). The optional
+provider is available independently. See [storage](bun-sqlite.md),
 [async ownership](bun-sqlite-transactions.md), [events](task-events.md),
 [cache](task-cache.md) and [verification](bun-sqlite-testing.md).

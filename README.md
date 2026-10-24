@@ -31,6 +31,11 @@ For local Node persistence, use
 The [SQLite starter](docs/sqlite-starter.md) includes the real task service,
 file storage, typed events, memory summary caching and native persistence tests.
 
+For the same task application on native Bun, use
+`pnpm create:app ../bun-tasks --runtime bun --template sqlite-tasks`.
+The [Bun SQLite starter](docs/bun-sqlite-starter.md) includes native tests,
+retained file storage and owned development reloads.
+
 ## Run the command console
 
 ```sh

@@ -79,7 +79,8 @@
     "migrate:postgres": "pnpm --filter example-postgres^... build && pnpm --filter example-postgres migrate",
     "demo:postgres": "pnpm build && node scripts/demo-postgres.mjs",
     "test:bun-sqlite": "pnpm build && node scripts/verify-bun-sqlite.mjs",
-    "dev:bun-sqlite": "pnpm --filter example-bun-sqlite... build && bun examples/bun-sqlite/dist/index.js"
+    "dev:bun-sqlite": "pnpm --filter example-bun-sqlite... build && bun examples/bun-sqlite/dist/index.js",
+    "test:bun-sqlite-project": "pnpm build && node scripts/verify-sqlite-project.mjs bun"
   },
   "packageManager": "pnpm@12.6.0"
 }

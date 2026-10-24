@@ -471,8 +471,23 @@ coordinate across awaits; lost native transaction ownership prevents later
 autocommit through a caught rollback error. Existing queue/scheduler/replay stores
 run unchanged. The task host shares Node's application/repository and persists
 through real process restarts. Native gates prove lock contention, SIGKILL recovery,
-participant failures and concurrent HTTP writers. This does not add a Bun starter
-profile, nonblocking SQL I/O, distributed locking or Deno-specific persistence.
+participant failures and concurrent HTTP writers. SQL I/O remains synchronous;
+distributed locking and Deno-specific persistence are separate work. An independent
+Bun starter now uses this provider as described below.
+
+## Independent Bun SQLite workflow implemented
+
+[Runtime/profile selection](bun-sqlite-starter.md),
+[owned development](bun-sqlite-starter-development.md) and
+[installed proof](bun-sqlite-starter-testing.md) each have a guide. The existing
+sqlite-tasks application now supports --runtime bun as well as Node. A fixed
+internal asset variant preserves the public template identity and descriptor v1.
+It snapshots actual shared source, Bun host/storage and adapted native tests,
+without copying Node/Workers adapters. A Node/esbuild supervisor retains the old
+host on failed compilation, drains serial replacements and stops on startup failure.
+Packed binaries, relocation/frozen install, native source/persistence tests and
+actual HTTP/watch/schema failure gates establish an editable independent app.
+Production account policy, deployment and automatic upgrades remain separate.
 
 ## Subsequent framework modules
 

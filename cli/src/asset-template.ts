@@ -3,13 +3,14 @@ import { join } from 'node:path'
 import { createHash } from 'node:crypto'
 type Descriptor={schemaVersion:number;dependencies:Record<string,string>;devDependencies:Record<string,string>;files:Record<string,string>}
 export type AssetProfile={
-  readonly name:'d1-tasks'|'sqlite-tasks';readonly label:string;readonly runtime:'workers'|'node'
+  readonly name:'d1-tasks'|'sqlite-tasks';readonly label:string;readonly runtime:'workers'|'node'|'bun'
+  readonly assetName?:'bun-sqlite-tasks'
   readonly requiredFiles:readonly string[];readonly requiredDependencies:readonly string[]
   readonly scripts:Readonly<Record<string,string>>;readonly allowBuilds:readonly string[]
 }
 /** Read a named trusted local distribution; hashes are corruption checks, not signatures. */
 export async function readAssetTemplate(framework:string,profile:AssetProfile){
-  const directory=join(framework,'templates',profile.name),files:Record<string,string>=Object.create(null)
+  const directory=join(framework,'templates',profile.assetName??profile.name),files:Record<string,string>=Object.create(null)
   let descriptor:Descriptor
   try{
     descriptor=JSON.parse(await readFile(join(directory,'template.json'),'utf8')) as Descriptor

@@ -1,7 +1,7 @@
 # Shared application template assets
 
 Owner: cli/src/asset-template.ts, profile wrappers and cli/scripts/snapshot.mjs.
-Connects [SQLite](sqlite-starter.md), [D1](d1-starter.md) and
+Connects [Node SQLite](sqlite-starter.md), [Bun SQLite](bun-sqlite-starter.md), [D1](d1-starter.md) and
 [framework snapshots](project-generation.md) through the same trusted asset reader.
 
 The reader retains descriptor schemaVersion 1. Named profile wrappers supply
@@ -20,6 +20,14 @@ The D1 wrapper keeps its existing file requirements, scripts, Workers metadata a
 esbuild/workerd approvals. The Node wrapper selects SQLite source, tsx watch and
 its native persistence test. Shared generation still copies only each selected
 framework closure and rewrites internal packages to relative file overrides.
+
+The Bun wrapper retains the public sqlite-tasks identity while selecting the
+fixed bun-sqlite-tasks asset directory through assetName. It chooses Bun metadata,
+native bun:test scripts and esbuild/Bun approvals. Descriptor version 1 and the
+Node/D1 catalog entries remain compatible. Actual shared task source and Bun
+host/storage wiring are copied with checked import/runner/mock-type adaptations;
+the output excludes Node/Redis hosts and uses only the selected Bun closure.
+See [Bun distribution and proof](bun-sqlite-starter-testing.md).
 
 Build snapshots copy application source from its working example, preserving bytes.
 The Node profile excludes the separate redis-* host/config files. Its persistence

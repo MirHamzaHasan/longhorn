@@ -9,6 +9,9 @@ downstream connections, verification, and current limits.
 
 | Feature | Guide | Implementation owner | Connects to |
 | --- | --- | --- | --- |
+| Independent Bun SQLite project | [Bun starter](bun-sqlite-starter.md) | CLI runtime/profile selection | Existing public SQLite template, native source/tests and selected package closure |
+| Drained Bun development reloads | [Bun development](bun-sqlite-starter-development.md) | Generated Node/esbuild supervisor | Failed-compile retention, serial native replacement and owned signal cleanup |
+| Installed Bun project gate | [Bun project proof](bun-sqlite-starter-testing.md) | Packed CLI and actual Bun hosts | Relocation/frozen install, source/native tests, env/watch/schema failure and retained restart |
 | Native Bun SQLite connection | [Bun storage](bun-sqlite.md) | `@longhorn/bun/sqlite` | Exact int64/blob values, bounded admission, native metadata and drained close |
 | Async Bun transaction ownership | [Bun transactions](bun-sqlite-transactions.md) | Native BEGIN/COMMIT and managed scope | Canonical file gates, auto-rollback fencing and joined queue publishers |
 | Shared SQLite statement boundary | [Statement scanner](sqlite-statement-boundary.md) | Optional shared database entrypoint | D1 compatibility, Bun prefix rejection and trigger bodies |

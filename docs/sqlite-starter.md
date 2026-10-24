@@ -11,7 +11,8 @@ pnpm install
 pnpm dev
 ```
 
-The profile requires Node explicitly. api remains the default four-runtime starter;
+This variant selects Node explicitly; the [Bun variant](bun-sqlite-starter.md) uses
+the same public SQLite template with --runtime bun. api remains the default four-runtime starter;
 d1-tasks remains the separate Workers profile. Both creation binaries and
 createProject accept sqlite-tasks. Incompatible runtime/profile combinations fail
 before output. Generated metadata reports the selected template and retains the

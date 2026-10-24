@@ -78,3 +78,38 @@ await mkdir(join(sqlite,'tests'),{recursive:true});await writeFile(join(sqlite,'
 const basic=JSON.parse(await readFile(join(root,'examples/basic/package.json'),'utf8')),sqliteHashes={}
 await record(sqlite,'',sqliteHashes)
 await writeFile(join(sqlite,'template.json'),JSON.stringify({schemaVersion:1,dependencies:basic.dependencies,devDependencies:{...basic.devDependencies,typescript:'^5.8.2',vitest:'^3.1.1',esbuild:'^0.28.2'},files:sqliteHashes},null,2)+'\n')
+
+// Runtime is a separate selection from the SQLite application template.
+const bunSqlite=join(output,'templates/bun-sqlite-tasks')
+await cp(join(root,'starters/bun-sqlite-tasks'),bunSqlite,{recursive:true})
+await mkdir(join(bunSqlite,'src'),{recursive:true})
+for(const entry of await readdir(join(root,'examples/basic/src'),{withFileTypes:true})){
+  if(!entry.isFile())throw new Error('Basic source layout changed; review Bun template mapping')
+  if(entry.name.startsWith('redis-')||['index.ts','storage.ts'].includes(entry.name))continue
+  let source=await readFile(join(root,'examples/basic/src',entry.name),'utf8')
+  if(entry.name.endsWith('.test.ts')){
+    if(source.split("from 'vitest'").length!==2)throw new Error('Basic test runner changed; review Bun template mapping')
+    source=source.replace("from 'vitest'","from 'bun:test'")
+    source=source.replaceAll("'@longhorn/node'","'@longhorn/bun'").replaceAll('nodeRuntime','bunRuntime').replaceAll('real Node server','real Bun server')
+    if(entry.name==='cache.test.ts'){
+      if(source.split('vi.mocked(store.list)').length!==4)throw new Error('Cache test mocks changed; review Bun template mapping')
+      source="import type { Mock } from 'bun:test'\n"+source.replaceAll('vi.mocked(store.list)','mockedList(store)')+"\nfunction mockedList(store:TasksStore):Mock<TasksStore['list']>{return store.list as Mock<TasksStore['list']>}\n"
+    }
+  }
+  if(source.includes('@longhorn/node')||source.includes("from 'vitest'"))throw new Error('Unexpected Node-only import in Bun task source')
+  await writeFile(join(bunSqlite,'src',entry.name),source)
+}
+for(const entry of['index.ts','storage.ts']){
+  let source=await readFile(join(root,'examples/bun-sqlite/src',entry),'utf8')
+  const matches=[...source.matchAll(/'\.\.\/\.\.\/basic\/src\/([a-z-]+\.js)'/g)]
+  if(matches.length!==(entry==='index.ts'?2:4))throw new Error('Bun task source paths changed; review template mapping')
+  source=source.replace(/'\.\.\/\.\.\/basic\/src\/([a-z-]+\.js)'/g,"'./$1'")
+  await writeFile(join(bunSqlite,'src',entry),source)
+}
+await cp(join(root,'examples/basic/.env.example'),join(bunSqlite,'.env.example'))
+await cp(join(root,'LICENSE'),join(bunSqlite,'LICENSE'))
+await mkdir(join(bunSqlite,'tests'),{recursive:true})
+await writeFile(join(bunSqlite,'tests/persistence.mjs'),persistence.replace("'@longhorn/node/sqlite'","'@longhorn/bun/sqlite'"))
+const bunExample=JSON.parse(await readFile(join(root,'examples/bun-sqlite/package.json'),'utf8')),bunHashes={}
+await record(bunSqlite,'',bunHashes)
+await writeFile(join(bunSqlite,'template.json'),JSON.stringify({schemaVersion:1,dependencies:bunExample.dependencies,devDependencies:{'@types/bun':'1.4.4','bun-runtime':'npm:bun@1.4.4',typescript:'^5.8.2',esbuild:'^0.28.2'},files:bunHashes},null,2)+'\n')

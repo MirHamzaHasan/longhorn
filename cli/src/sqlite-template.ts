@@ -1,5 +1,12 @@
 import{readAssetTemplate}from'./asset-template.js'
-export function readSqliteTemplate(framework:string){return readAssetTemplate(framework,{
+export function readSqliteTemplate(framework:string,runtime:'node'|'bun'='node'){
+  if(runtime==='bun')return readAssetTemplate(framework,{
+    name:'sqlite-tasks',assetName:'bun-sqlite-tasks',label:'Bun SQLite',runtime:'bun',allowBuilds:['esbuild','bun'],
+    requiredFiles:['README.md','build.mjs','build.config.mjs','dev.mjs','src/index.ts','src/app.ts','src/config.ts','src/tasks.ts','src/storage.ts','src/sqlite-tasks.ts','src/task-events.ts','src/task-cache.ts','src/storage.test.ts','tests/persistence.mjs','docs/features.md'],
+    requiredDependencies:['@longhorn/core','@longhorn/container','@longhorn/config','@longhorn/database','@longhorn/bun','@longhorn/http','@longhorn/logger','@longhorn/validation','@longhorn/events','@longhorn/cache'],
+    scripts:{dev:'node dev.mjs',build:'node build.mjs',start:'bun dist/index.js',typecheck:'tsc --noEmit',test:'bun test ./src','test:persistence':'pnpm build && bun tests/persistence.mjs'},
+  })
+  return readAssetTemplate(framework,{
   name:'sqlite-tasks',label:'SQLite',runtime:'node',allowBuilds:['esbuild'],
   requiredFiles:['README.md','build.mjs','build.config.mjs','src/index.ts','src/app.ts','src/config.ts','src/tasks.ts','src/storage.ts','src/sqlite-tasks.ts','src/task-events.ts','src/task-cache.ts','tests/persistence.mjs','docs/features.md'],
   requiredDependencies:['@longhorn/core','@longhorn/container','@longhorn/config','@longhorn/database','@longhorn/node','@longhorn/http','@longhorn/logger','@longhorn/validation','@longhorn/events','@longhorn/cache'],

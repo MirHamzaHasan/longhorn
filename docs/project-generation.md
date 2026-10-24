@@ -13,7 +13,7 @@ const project = await createProject({
   directory: '../my-api',
   runtime: 'node', // node | bun | deno | workers
   name: 'my-api',  // optional; inferred from the destination otherwise
-  template: 'api', // optional; d1-tasks: workers, sqlite-tasks: node
+  template: 'api', // optional; d1-tasks: workers, sqlite-tasks: node or bun
 })
 console.log(project.directory, project.runtime, project.packages)
 ```

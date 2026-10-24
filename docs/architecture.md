@@ -1098,3 +1098,30 @@ and retained restart. Node/D1 application profiles keep their own regression gat
 See [provider](bun-sqlite.md), [ownership](bun-sqlite-transactions.md),
 [boundary](sqlite-statement-boundary.md), [tasks](bun-sqlite-tasks.md)
 and [proof](bun-sqlite-testing.md).
+
+---
+
+## 41. Runtime-Selected SQLite Projects and Owned Bun Development
+
+SQLite task generation now supports Node or Bun through the same public template.
+The trusted profile can select a fixed internal asset directory while preserving
+its metadata identity and descriptor version. The existing Node and D1 variants
+keep their source requirements and scripts. The Bun variant snapshots actual
+shared application source, real Bun storage/host wiring and native application
+tests with checked runner/listener/type adaptations. Package selection excludes
+Node/Workers adapters; relative overrides retain independent editable output.
+
+The generated supervisor runs in Node/esbuild, resolves pinned local Bun and owns
+one serial host replacement chain. Failed compilation retains the old host;
+successful builds await native shutdown before replacement. Unexpected host exit
+or configuration/schema failure stops development. CLI signal forwarding joins
+watcher/host cleanup. Data paths stay project-relative, while Bun owns native
+environment-file behavior from the project launch directory.
+
+The native project gate is shared with the existing Node variant and retains Node
+as its default. Installed packed binaries prove automatic/frozen installation,
+actual native source tests, compiled builds, persistence/integrity, concurrent HTTP,
+retained restart and failed-compile recovery. Schema drift rejects readiness and
+restored source reopens retained state. See [profile](bun-sqlite-starter.md),
+[development](bun-sqlite-starter-development.md), [proof](bun-sqlite-starter-testing.md)
+and [shared assets](application-template-assets.md).

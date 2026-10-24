@@ -15,7 +15,7 @@ beforeEach(async () => {
   for (const name of ['core', 'container', 'http', 'logger', 'runtime', 'config', 'validation', 'database', 'idempotency', 'events', 'cache', 'observability', ...runtimes]) {
     const dependencies: Record<string, string> = name === 'core'
       ? { '@longhorn/container': '0.0.1', '@longhorn/http': '0.0.1', '@longhorn/logger': '0.0.1', '@longhorn/runtime': '0.0.1' }
-      : name === 'node' ? { '@longhorn/database': '0.0.1', '@longhorn/config': '0.0.1' } : name === 'idempotency' ? {'@longhorn/database':'0.0.1'} : {}
+      : name === 'node' ? { '@longhorn/database': '0.0.1', '@longhorn/config': '0.0.1' } : ['bun','idempotency'].includes(name) ? {'@longhorn/database':'0.0.1'} : {}
     const directory = join(framework, name)
     await mkdir(join(directory, 'dist'), { recursive: true })
     await writeFile(join(directory, 'dist/index.js'), `export const runtime = ${JSON.stringify(name)}\n`)
@@ -36,13 +36,13 @@ describe('project generation', () => {
     const descriptor={schemaVersion:1,dependencies:Object.fromEntries(['core','container','config','database','idempotency','validation','workers','runtime'].map(name=>['@longhorn/'+name,'workspace:*'])),devDependencies:{miniflare:'3.20250718.3'},files}
     await writeFile(join(directory,'template.json'),JSON.stringify(descriptor));return {directory,descriptor}
   }
-  async function sqliteAssets(){
-    const directory=join(framework,'templates/sqlite-tasks'),files:Record<string,string>={}
-    for(const path of ['README.md','build.mjs','build.config.mjs','src/index.ts','src/app.ts','src/config.ts','src/tasks.ts','src/storage.ts','src/sqlite-tasks.ts','src/task-events.ts','src/task-cache.ts','tests/persistence.mjs','docs/features.md']){
+  async function sqliteAssets(runtime:'node'|'bun'='node'){
+    const directory=join(framework,'templates',runtime==='bun'?'bun-sqlite-tasks':'sqlite-tasks'),files:Record<string,string>={}
+    for(const path of ['README.md','build.mjs','build.config.mjs','src/index.ts','src/app.ts','src/config.ts','src/tasks.ts','src/storage.ts','src/sqlite-tasks.ts','src/task-events.ts','src/task-cache.ts','tests/persistence.mjs','docs/features.md',...(runtime==='bun'?['dev.mjs','src/storage.test.ts']:[])]){
       const target=join(directory,path),content=path==='README.md'?'# {{PROJECT_NAME}}\n':'editable SQLite application\n'
       await mkdir(join(target,'..'),{recursive:true});await writeFile(target,content);files[path]=createHash('sha256').update(content).digest('hex')
     }
-    const descriptor={schemaVersion:1,dependencies:Object.fromEntries(['core','container','config','database','node','http','logger','validation','events','cache'].map(name=>['@longhorn/'+name,'workspace:*'])),devDependencies:{tsx:'^4.20.0'},files}
+    const descriptor={schemaVersion:1,dependencies:Object.fromEntries(['core','container','config','database',runtime,'http','logger','validation','events','cache'].map(name=>['@longhorn/'+name,'workspace:*'])),devDependencies:runtime==='bun'?{'bun-runtime':'npm:bun@1.4.4'}:{tsx:'^4.20.0'},files}
     await writeFile(join(directory,'template.json'),JSON.stringify(descriptor));return {directory,descriptor}
   }
   it('selects the persistent Node application graph and its own native scripts',async()=>{
@@ -53,11 +53,27 @@ describe('project generation', () => {
     expect(manifest.longhorn).toMatchObject({runtime:'node',template:'sqlite-tasks'});expect(manifest.scripts['test:persistence']).toContain('tests/persistence.mjs')
     expect(manifest.scripts.dev).toBe('tsx watch src/index.ts');expect(await readFile(join(directory,'pnpm-workspace.yaml'),'utf8')).not.toContain('workerd:')
   })
-  it('rejects incomplete SQLite assets and non-Node runtime choices before publishing',async()=>{
+  it('selects Bun SQLite assets while retaining the public SQLite template identity',async()=>{
+    await sqliteAssets('bun');const directory=join(temporary,'persistent-bun')
+    const project=await createProject({directory,runtime:'bun',template:'sqlite-tasks',frameworkDirectory:framework})
+    expect(project.packages).toContain('@longhorn/bun');expect(project.packages).toContain('@longhorn/database');expect(project.packages).not.toContain('@longhorn/node')
+    const manifest=JSON.parse(await readFile(join(directory,'package.json'),'utf8'))
+    expect(manifest.longhorn).toMatchObject({runtime:'bun',template:'sqlite-tasks'})
+    expect(manifest.scripts).toMatchObject({dev:'node dev.mjs',start:'bun dist/index.js',test:'bun test ./src'})
+    expect(manifest.devDependencies['bun-runtime']).toBe('npm:bun@1.4.4')
+    expect(await readFile(join(directory,'pnpm-workspace.yaml'),'utf8')).toContain('bun: true')
+  })
+  it('requires Bun native source tests and verifies their hashes before publishing',async()=>{
+    const assets=await sqliteAssets('bun'),directory=join(temporary,'corrupt-bun')
+    await writeFile(join(assets.directory,'src/storage.test.ts'),'corrupted native source')
+    await expect(createProject({directory,runtime:'bun',template:'sqlite-tasks',frameworkDirectory:framework})).rejects.toThrow('Bun SQLite template assets are unavailable or invalid')
+    expect(await readdir(temporary)).toEqual(['distribution'])
+  })
+  it('rejects incomplete SQLite assets and incompatible runtime choices before publishing',async()=>{
     const assets=await sqliteAssets(),directory=join(temporary,'refused-sqlite')
     delete assets.descriptor.files['src/storage.ts'];await writeFile(join(assets.directory,'template.json'),JSON.stringify(assets.descriptor))
     await expect(createProject({directory,runtime:'node',template:'sqlite-tasks',frameworkDirectory:framework})).rejects.toThrow('SQLite template assets are unavailable or invalid')
-    for(const runtime of ['workers','bun','deno'] as const)await expect(createProject({directory,runtime,template:'sqlite-tasks',frameworkDirectory:framework})).rejects.toThrow('requires --runtime node')
+    for(const runtime of ['workers','deno'] as const)await expect(createProject({directory,runtime,template:'sqlite-tasks',frameworkDirectory:framework})).rejects.toThrow('requires --runtime node or bun')
     expect(await readdir(temporary)).toEqual(['distribution'])
   })
   it('selects the explicit D1 application graph and relocatable editable assets',async()=>{
@@ -97,7 +113,7 @@ describe('project generation', () => {
     expect(project.packages).toContain('@longhorn/events')
     expect(project.packages).toContain('@longhorn/cache')
     expect(project.packages).toContain('@longhorn/observability')
-    expect(project.packages.includes('@longhorn/database')).toBe(runtime === 'node')
+    expect(project.packages.includes('@longhorn/database')).toBe(runtime === 'node'||runtime === 'bun')
     const manifest = JSON.parse(await readFile(join(directory, 'package.json'), 'utf8'))
     expect(manifest.longhorn).toEqual({ schemaVersion: 1, runtime, framework: 'snapshot' })
     expect(manifest.packageManager).toBe('pnpm@12.6.0')
