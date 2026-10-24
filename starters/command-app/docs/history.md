@@ -21,3 +21,5 @@ bounded NDJSON files, independently of the rows loaded in the browser list.
 [View links](history-view-links.md) retain selectors across reload and native
 browser navigation. Each return re-reads the first page with current permissions;
 loaded older rows and export continuation remain local to the rendered view.
+
+[Name the current scope/status/search for reuse across sessions in Saved views.](saved-views.md)

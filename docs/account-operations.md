@@ -41,3 +41,7 @@ acquires the database and Outbox before its dispatcher; shutdown drains HTTP and
 dispatcher before Outbox/database release. History deliberately outlives accounts
 and business-row cleanup. See the [runnable demo](operator-accounts-demo.md) and
 [native gate](operator-accounts-testing.md).
+
+[Saved history views](saved-history-views.md) are an app-local preference module
+registered with account operations over the same DB/Idempotency/account services.
+They add no outgoing work and retain owner-only access even for operators.

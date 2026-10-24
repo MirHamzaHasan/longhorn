@@ -87,3 +87,8 @@ The restored console also [exports computed receipts](receipt-export-testing.md)
 for all four retained/new member commands, then re-reads/exports one command detail.
 Actual receipt message IDs/results match the protected receiver state. The packed
 artifact must include receipt helpers, tests, shared metadata and its own feature guide.
+
+The archive also checkpoints a real [named history view](saved-view-testing.md),
+restores its exact owner/selection/revision, then reopens and updates it through
+a fresh password-authenticated browser. The shared pure values, schema, repository,
+router and starter guide must be present in the shipped source.

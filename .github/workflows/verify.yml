@@ -103,6 +103,7 @@ jobs:
       - run: node scripts/verify-command-history.mjs
       - run: node scripts/verify-history-filters.mjs
       - run: node scripts/verify-history-search.mjs
+      - run: node scripts/verify-history-views.mjs
       - run: node scripts/verify-operator-accounts.mjs
       - run: node scripts/verify-password-changes.mjs
       - run: node scripts/verify-session-controls.mjs
@@ -123,6 +124,7 @@ jobs:
         run: |
           node scripts/verify-console.mjs
           node scripts/verify-history-search-console.mjs
+          node scripts/verify-history-views-console.mjs
           node scripts/verify-history-view-links.mjs
           node scripts/verify-history-export.mjs
           node scripts/verify-audit-export.mjs

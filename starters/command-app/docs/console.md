@@ -41,3 +41,5 @@ Clear search preserves the other filters; searched export uses an explicit v2 he
 Commands offers [computed receipt downloads](receipt-export.md) under Export
 contents. Detail exports exactly that command after fresh protected reads; follow
 and download work both stop when leaving the page.
+
+[Saved views opens personal named filters with explicit update/delete and conflict refresh.](saved-views.md)

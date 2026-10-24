@@ -27,3 +27,5 @@ Existing page cleanup cancels reads/export/follow work and fences late results.
 The browser stores no additional local/session data, and no HTTP endpoint, schema,
 grant or dependency is added. Normal browser history/bookmarks retain the filter
 fragment; entered ID prefixes are retained in the link; payloads, credentials and owner fields are excluded.
+
+[Named personal views persist these canonical filter values in the account database.](saved-views.md)

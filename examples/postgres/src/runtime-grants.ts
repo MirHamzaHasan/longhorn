@@ -10,7 +10,7 @@ export async function grantOperatorRuntime(database: Database, role: string): Pr
     const target = '"' + role + '"'
     for (const statement of [
       'GRANT USAGE ON SCHEMA longhorn_pg_example,longhorn_queue,longhorn_scheduler,longhorn_auth,longhorn_idempotency,longhorn_outbox',
-      'GRANT SELECT,INSERT,UPDATE,DELETE ON TABLE longhorn_pg_example.tasks',
+      'GRANT SELECT,INSERT,UPDATE,DELETE ON TABLE longhorn_pg_example.tasks,longhorn_pg_example.history_views',
       'GRANT USAGE ON SEQUENCE longhorn_pg_example.tasks_id_seq,longhorn_pg_example.private_notes_id_seq',
       'GRANT SELECT,INSERT,UPDATE ON TABLE longhorn_queue.jobs,longhorn_scheduler.schedules',
       'GRANT SELECT,INSERT ON TABLE longhorn_pg_example.task_reports,longhorn_auth.users,longhorn_pg_example.operator_commands,longhorn_outbox.recovery_audit',

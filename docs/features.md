@@ -301,6 +301,13 @@ downstream connections, verification, and current limits.
 | Durable attributed recovery | [Outbox audit](outbox-audit.md) | Outbox.retryFailedAudited and optional audit stores | Conditional retry and action/result append in one transaction |
 | Audit schema and privileges | [Audit storage](outbox-audit-storage.md) | Separate SQLite/PostgreSQL migration lists | Immutable deployed prefix, independent table/indexes, append/read and maintenance roles |
 | Shared bounded downloads | [Page export engine](bounded-page-export.md) | App-local pure Web collector and shared controls | Closed domain projections, serial enrichment, bounds, whole-page continuation and lifetime |
+| Personal named history views | [Saved views](saved-history-views.md) | Account operations DI and existing PostgreSQL/Idempotency | Persistent owner-only filters, reopen/update/delete and current access |
+| Canonical view values | [Names and selection](saved-view-values.md) | Shared pure Web source and moved search helper | NFC/Unicode bounds, strict copied filters and plain-text names |
+| Saved-view HTTP | [Personal view API](saved-view-http.md) | Existing cookie/Origin/viewer middleware | Owner-scoped CRUD, revision/request keys and bounded list |
+| Saved-view transaction ownership | [Concurrency](saved-view-concurrency.md) | Transaction authentication, Idempotency and quota advisory lock | Atomic replies, one last-slot winner, CAS updates/deletes and uncertainty |
+| Saved-view deployment | [Schema and grants](saved-view-migrations.md) | Appended 005 history and trusted runtime provisioner | Composite owner keys, checks, readiness and retained restore |
+| Browser named views | [Saved-view panel](console-saved-views.md) | Native disclosure/select/form and canonical history URLs | Stable retry, conflict refresh, privacy cleanup and optional-load fallback |
+| Native saved-view proof | [Saved-view verification](saved-view-testing.md) | Two native hosts, SIGKILL fixtures, Chromium and archive | Real quota/revision races, auth/owner isolation, restart and 54 captures |
 | Selected computed-result downloads | [Receipt export](receipt-export.md) | Existing history and protected receipt APIs | Owner/operator/status/search selection and exact single-command files |
 | Versioned computed receipts | [Receipt NDJSON](receipt-export-format.md) | Closed command/result projection and v1 selection | Received/not-found observations, private aggregates and command-count trailer |
 | Serial receipt export admission | [Receipt lifetime](receipt-export-lifecycle.md) | Shared collector plus protected per-command reads | Smaller bounds, whole-page continuation, fresh auth and error discard |
@@ -359,6 +366,13 @@ flowchart TD
   HistorySearch --> SearchIndexes[Owner/global lower-ID indexes]
   HistorySearch --> HistoryExport
   HistorySearch --> ReceiptExport[Selected computed receipt export]
+  HistoryConsole --> SavedViews[Account-owned named history views]
+  SavedViews --> ViewValues[Shared canonical name and filter values]
+  SavedViews --> ViewStore[Owner and revision SQL]
+  ViewStore --> Database
+  ViewStore --> Idempotency
+  ViewStore --> ViewQuota[Transaction-owned quota lock]
+  SavedViews --> HistoryLinks
   HistoryLinks --> ViewHistory[Browser history and fresh first pages]
   HistoryLinks --> ViewSignIn[Validated sign-in return]
   HistoryConsole --> ReceiptExport

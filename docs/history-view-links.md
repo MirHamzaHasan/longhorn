@@ -39,3 +39,7 @@ The application does not silently reinterpret the requested scope.
 Fragments and browser navigation need no new HTTP endpoint, schema, grant or
 dependency. Local/session storage still contains no private application state;
 the browser's ordinary address/history/bookmark facilities retain the filter URL.
+
+[Named personal views](saved-history-views.md) now store canonical filter values on
+the server. Opening one produces this same URL format under current admission;
+deleting the preference does not invalidate an existing filter URL.

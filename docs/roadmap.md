@@ -694,8 +694,8 @@ re-reads current pages, retains in-document return links and cancels old work.
 and reactive expiry without accepting arbitrary destinations. Members following
 operator views receive actual denial and an explicit own-scope action. [Proof](history-view-link-testing.md)
 covers real accounts, invalid claims, canceled pagination, bookmarked export,
-26 additional captures and restored shipped assets. Snapshot/scroll/cursor URLs
-and saved named-view persistence remain separate features.
+26 additional captures and restored shipped assets. Snapshot/scroll/cursor URLs remain separate features.
+[Account-owned named views](saved-history-views.md) now persist separately.
 
 ## Command-ID prefix search implemented
 
@@ -734,6 +734,17 @@ cancel on changed contents and share page disposal with follow. [Native proof](r
 covers actual broker effects, 1002 HTTP writes, exact retained continuation,
 46 captures and restored standalone downloads. Snapshot export, import/restore
 and further provider integrations remain separate work.
+
+
+## Account-owned named history views implemented
+
+[Named views](saved-history-views.md) now persist personal scope/status/search across
+sessions and host restart. [Shared values](saved-view-values.md) feed [owner-only CRUD](saved-view-http.md),
+[transaction/revision ownership](saved-view-concurrency.md), the appended [005 schema/grants](saved-view-migrations.md)
+and the [native browser panel](console-saved-views.md). [Proof](saved-view-testing.md)
+covers concurrent quota/edit races, real interrupted commits, changed sessions/roles,
+54 new captures and the independently restored application. Sharing/team views,
+public short links and further account-retention maintenance remain separate work.
 
 ## Subsequent framework modules
 

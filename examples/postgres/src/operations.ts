@@ -1,3 +1,5 @@
+import { configureHistoryViews } from './history-views-http.js'
+import { checkHistoryViewTable } from './history-view-migrations.js'
 import type { AuthEnv } from '@longhorn/auth/hono'
 import type { Longhorn, LonghornEnv } from '@longhorn/core'
 import { provide, token } from '@longhorn/container'
@@ -40,6 +42,7 @@ export async function checkOperationTables(database: Database): Promise<void> {
   if (permission?.allowed !== true) throw new Error('Account operations require the transaction authentication grant')
   await checkHistoryFilterIndexes(database)
   await checkHistorySearchIndexes(database)
+  await checkHistoryViewTable(database)
 }
 export function configurePostgresOperations(app: Longhorn, dbToken: Token<Database>, access: AccountAccess, options: AccountOperationsOptions): void {
   app.container.register(provide(PgOperationOutbox, { deps: [dbToken], factory: db => new Outbox({ name: operationTopic,schema: operationData,store: new PostgresOutboxStore(db),retryDelayMs: 100,maxRetryDelayMs: 1000,leaseMs: 1000 }) }))
@@ -47,6 +50,7 @@ export function configurePostgresOperations(app: Longhorn, dbToken: Token<Databa
   app.container.register(provide(PgCommandHistory,{deps:[dbToken],factory:db=>new PostgresCommandHistory(db)}))
   app.onStart(() => { const outgoing = app.container.resolve(PgOperationOutbox); return () => outgoing.close() })
   if (options.publisher) app.onStart(() => { const worker = app.container.resolve(PgOperationOutbox).createDispatcher(options.publisher!, { pollIntervalMs: 25 }); worker.start(); return () => worker.close() })
+  configureHistoryViews(app,dbToken,access)
   const principal = (c: Context<Env>) => c.get('auth')?.user
   const authorize = (c: Context<Env>) => {
     const user = principal(c)

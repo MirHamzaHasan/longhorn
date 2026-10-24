@@ -60,3 +60,7 @@ view link; paging uses v3 context and searched downloads identify q with v2 head
 [Computed receipt downloads](console-receipt-export.md) use the current history
 selection or one command detail, with explicit missing observations and the same
 page-owned cancellation/focus policy as metadata downloads.
+
+[Personal named history views](console-saved-views.md) add server-persisted presets
+under a native disclosure. They reopen existing canonical filters without storing
+commands or retaining old operator access.

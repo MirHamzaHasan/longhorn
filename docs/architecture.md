@@ -1549,3 +1549,27 @@ existing export regressions and restored archive files verify the connection. Se
 [feature](receipt-export.md), [format](receipt-export-format.md), [lifetime](receipt-export-lifecycle.md),
 [controls](console-receipt-export.md), [projection](command-metadata-projection.md)
 and [proof](receipt-export-testing.md).
+
+## 61. Account-Owned Named Views with Transactional Quota and Revisions
+
+Saved history preferences are an application module over existing PostgreSQL,
+account middleware, DI and Idempotency. Pure shared values normalize names and
+scope/status/search. Owner-leading keys and every SQL predicate isolate personal
+records, including from operators. Current history admission still controls an
+opened all-scope selection; storing it does not preserve a role.
+
+Creates take a per-account transaction advisory lock after authentication, then
+count/insert below twenty under fresh READ COMMITTED statements. Authentication's
+shared ownership alone permits concurrent creates, so it cannot enforce the quota.
+Updates/deletes use revision predicates and named-record results commit atomically
+with request replies. The complete profile appends 005_history_views, with new
+runtime CRUD limited to that table and explicit readiness/regrant requirements.
+
+The native disclosure panel reopens canonical URLs, keeps stable request keys for
+uncertain retries, exposes conflict refresh and fences late callbacks. Private
+form text clears on page disposal alongside export work. Optional preference-read
+failure leaves command history available. Actual native quota/revision races,
+DDL/write SIGKILL, waiting-session revocation, 54 new accessible captures and a
+restored standalone preference verify the connection. See [feature](saved-history-views.md),
+[values](saved-view-values.md), [HTTP](saved-view-http.md), [ownership](saved-view-concurrency.md),
+[schema](saved-view-migrations.md), [UI](console-saved-views.md) and [proof](saved-view-testing.md).

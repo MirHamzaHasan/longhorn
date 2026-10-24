@@ -65,7 +65,7 @@ export function createPostgresApp(resources: { openDatabase: () => Promise<Datab
   app.http.use('*', bodyLimit({ maxSize: 8192, onError: (c) => c.json({ error: 'Request body too large' }, 413) }))
   app.http.get('/', (c) => c.json({ framework: 'LongHorn', database: 'postgres', endpoints: ['/livez', '/readyz', '/metrics', '/tasks', '/tasks/with-report', '/tasks/:id', '/task-reports', '/task-reports/:id', '/task-report-schedules', '/task-report-schedules/:id',
     ...(resources.accounts ? ['/account/register','/account/login','/account/session','/account/notes'] : []),
-    ...(resources.operations ? ['/account/commands','/account/commands/:id/receipt','/account/operations/deliveries','/account/operations/audit'] : [])] }))
+    ...(resources.operations ? ['/account/commands','/account/history-views','/account/commands/:id/receipt','/account/operations/deliveries','/account/operations/audit'] : [])] }))
   app.http.get('/livez', livenessHandler(() => app.state !== 'failed' && app.state !== 'stopped'))
   app.http.get('/readyz', readinessHandler(readiness))
   app.http.get('/metrics', (c) => { c.header('Content-Type', PROMETHEUS_CONTENT_TYPE); return c.body(renderPrometheus(meter.snapshot())) })

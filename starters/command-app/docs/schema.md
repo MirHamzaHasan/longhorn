@@ -22,3 +22,5 @@ requires valid/ready indexes on the expected tables. Existing grants suffice.
 lower-ID pattern indexes after the complete filter profile. Budget regular
 transactional index builds in maintenance before updated hosts; startup/readiness
 checks require valid/ready indexes, with the same runtime grants.
+
+[Apply appended 005_history_views and rerun runtime provisioning for named preferences.](saved-views.md)

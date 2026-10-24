@@ -53,7 +53,7 @@ try{
   assert.equal(await visibleColumn(),0);assert.equal((await end(held,'SIGKILL')).signal,'SIGKILL');assert.equal(await visibleColumn(),0)
   const migrations=[launch(),launch()];const added=[]
   for(const instance of migrations){const result=await stage(instance,'migrated');added.push(result.added);assert.equal((await end(instance)).code,0)}
-  assert.deepEqual(added.map(value=>value.length).sort(),[0,4]);assert.deepEqual(added.flat(),['postgres_account_operations/002_command_history','longhorn_postgres_auth/003_password_changes','postgres_account_operations/003_history_filters','postgres_account_operations/004_history_search'])
+  assert.deepEqual(added.map(value=>value.length).sort(),[0,postgresOperationsMigrations.length-postgresOperationsBaseMigrations.length]);assert.deepEqual(added.flat(),postgresOperationsMigrations.slice(postgresOperationsBaseMigrations.length).map(migration=>migration.id))
   const afterHistory=(await owner.execute('SELECT id,checksum FROM longhorn_pg_example.longhorn_migrations ORDER BY position')).rows;assert.deepEqual(afterHistory.slice(0,beforeHistory.length),beforeHistory)
   const legacyRows=(await owner.execute('SELECT id,delivery_id,created_at,history_id FROM longhorn_pg_example.operator_commands ORDER BY history_id')).rows
   assert.equal(legacyRows.find(value=>value.id===a.id).delivery_id,aDelivery.id);assert.equal(Number(legacyRows.find(value=>value.id===a.id).created_at),aDelivery.createdAt)
@@ -61,7 +61,7 @@ try{
   for(const id of [pruned.id,ambiguous.id]){const row=legacyRows.find(value=>value.id===id);assert.equal(row.delivery_id,null);assert.equal(row.created_at,null)}
   assert.equal(legacyRows.length,4);assert.equal(new Set(legacyRows.map(value=>String(value.history_id))).size,4)
   await owner.execute('GRANT EXECUTE ON FUNCTION longhorn_auth.lock_session_user(text) TO longhorn_app')
-  await owner.execute('GRANT SELECT,INSERT ON longhorn_pg_example.operator_commands TO longhorn_app')
+  await owner.execute('GRANT SELECT,INSERT ON longhorn_pg_example.operator_commands TO longhorn_app');await owner.execute('GRANT SELECT,INSERT,UPDATE,DELETE ON longhorn_pg_example.history_views TO longhorn_app')
   await owner.execute('GRANT USAGE ON SCHEMA longhorn_outbox TO longhorn_app');await owner.execute('GRANT SELECT,INSERT ON longhorn_outbox.recovery_audit TO longhorn_app')
   console.log('History upgrade: immutable legacy migration prefix, real DDL/metadata SIGKILL rollback, concurrent owner migrations, safe malformed/overflow JSON handling and unambiguous retained-delivery backfill verified.')
 

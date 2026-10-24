@@ -33,7 +33,7 @@ async function finish(owned,signal){if(signal)owned.child.kill(signal);const tim
 const decode=value=>JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(value.replace(/-/g,'+').replace(/_/g,'/')),c=>c.charCodeAt(0))))
 try{
   sandbox=await startPostgresSandbox();const owner=await connect({connectionString:sandbox.ownerUrl}),db=await connect({connectionString:sandbox.appUrl})
-  const previous=postgresOperationsMigrations.slice(0,-postgresHistorySearchMigrations.length);assert.equal(previous.at(-1).id,'postgres_account_operations/003_history_filters')
+  const previous=postgresOperationsMigrations.slice(0,postgresOperationsMigrations.findIndex(migration=>migration.id===postgresHistorySearchMigrations[0].id));assert.equal(previous.at(-1).id,'postgres_account_operations/003_history_filters')
   await migratePostgres(owner,previous,{schema:'longhorn_pg_example'})
   const store=new PostgresAuthStore(owner),accounts=new AuthService(store,createScryptPasswordHasher()),alice=await accounts.register('search.alice',password),bob=await accounts.register('search.bobby',password)
   await accounts.register('search.operator',password);await store.setUserRole('search.operator','numbers-operator',true)
@@ -42,9 +42,9 @@ try{
   assert.equal((await owner.execute("SELECT pg_catalog.to_regclass('longhorn_pg_example.operator_commands_search_history')::text AS name")).rows[0].name,null)
   assert.equal((await finish(held,'SIGKILL')).signal,'SIGKILL');assert.deepEqual((await owner.execute('SELECT position,id,checksum FROM longhorn_pg_example.longhorn_migrations ORDER BY position')).rows,before)
   const one=migration(),two=migration(),added=await Promise.all([stage(one,'migrated'),stage(two,'migrated')]);for(const child of[one,two])assert.deepEqual(await finish(child),{code:0,signal:null})
-  assert.deepEqual(added.map(v=>v.added.length).sort(),[0,1]);assert.deepEqual(added.flatMap(v=>v.added),postgresHistorySearchMigrations.map(v=>v.id));assert.deepEqual((await owner.execute('SELECT position,id,checksum FROM longhorn_pg_example.longhorn_migrations ORDER BY position')).rows.slice(0,before.length),before)
+  assert.deepEqual(added.map(v=>v.added.length).sort(),[0,postgresOperationsMigrations.length-previous.length]);assert.deepEqual(added.flatMap(v=>v.added),postgresOperationsMigrations.slice(previous.length).map(v=>v.id));assert.deepEqual((await owner.execute('SELECT position,id,checksum FROM longhorn_pg_example.longhorn_migrations ORDER BY position')).rows.slice(0,before.length),before)
   assert.equal((await owner.execute({sql:'SELECT id FROM longhorn_pg_example.operator_commands WHERE id=$1',args:[legacy]})).rows[0].id,legacy)
-  await owner.execute('GRANT EXECUTE ON FUNCTION longhorn_auth.lock_session_user(text) TO longhorn_app');await owner.execute('GRANT SELECT,INSERT ON longhorn_pg_example.operator_commands TO longhorn_app');await owner.execute('GRANT USAGE ON SCHEMA longhorn_outbox TO longhorn_app');await owner.execute('GRANT SELECT,INSERT ON longhorn_outbox.recovery_audit TO longhorn_app')
+  await owner.execute('GRANT EXECUTE ON FUNCTION longhorn_auth.lock_session_user(text) TO longhorn_app');await owner.execute('GRANT SELECT,INSERT ON longhorn_pg_example.operator_commands TO longhorn_app');await owner.execute('GRANT SELECT,INSERT,UPDATE,DELETE ON longhorn_pg_example.history_views TO longhorn_app');await owner.execute('GRANT USAGE ON SCHEMA longhorn_outbox TO longhorn_app');await owner.execute('GRANT SELECT,INSERT ON longhorn_outbox.recovery_audit TO longhorn_app')
   await checkHistorySearchIndexes(db);await owner.execute('DROP INDEX longhorn_pg_example.operator_commands_owner_search_history');try{await assert.rejects(checkHistorySearchIndexes(db),/must be deployed/)}finally{await owner.execute(postgresHistorySearchMigrations[0].statements[1])}
   console.log('Search upgrade: exact prior profile/checksums and retained rows, pre-commit SIGKILL rollback, two-owner serialization and index readiness verified.')
   let url

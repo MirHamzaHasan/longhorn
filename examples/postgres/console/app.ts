@@ -1,4 +1,6 @@
 import './app.css'
+import { normalizeSavedSelection,normalizeViewName } from '../src/history-view-values.js'
+import type { SavedHistoryView } from '../src/history-view-values.js'
 import { CommandCopyError,copyCommandNumbers,parseNumbers } from './numbers.js'
 import { createCommandFollow } from './command-follow.js'
 import { collectHistoryExport } from './history-export.js'
@@ -18,6 +20,7 @@ const root=document.querySelector<HTMLElement>('#main')!,notice=document.querySe
 const sidebar=document.querySelector<HTMLElement>('#sidebar')!,identity=document.querySelector<HTMLElement>('#identity')!,operatorNav=document.querySelector<HTMLElement>('#operator-nav')!
 const themeButton=document.querySelector<HTMLButtonElement>('#theme')!,logout=document.querySelector<HTMLButtonElement>('#logout')!
 let user:User|undefined,version=0,reads=new AbortController(),deliveryState='failed',noticeRoute='',lastCommandsRoute='#/commands',pendingHistoryRoute:string|undefined
+let activeSavedView:{subject:string;id:string}|undefined,savedViewsOpen=false
 let clearPageSecrets=()=>{},clearPageWork=()=>{},accountPending=false,pendingKind:'password'|'sessions'|undefined
 function ownPageWork(dispose:()=>void){const previous=clearPageWork;clearPageWork=()=>{previous();dispose()}}
 const reasons:Record<string,string>={'manual-retry':'Manual retry','provider-restored':'Provider restored','configuration-fixed':'Configuration fixed',investigating:'Investigating'}
@@ -49,12 +52,12 @@ function openHistoryView(view:HistoryView){
   if(location.hash!==next)window.history.pushState(window.history.state,'',next)
   void render()
 }
-async function api<T>(path:string,body?:unknown,options:{preserveUnauthorized?:boolean;acrossNavigation?:boolean;expectedStatus?:number;signal?:AbortSignal}={}):Promise<T>{
+async function api<T>(path:string,body?:unknown,options:{preserveUnauthorized?:boolean;acrossNavigation?:boolean;expectedStatus?:number;signal?:AbortSignal;method?:'PUT'|'DELETE'}={}):Promise<T>{
   const controller=new AbortController(),parents=[body===undefined&&!options.acrossNavigation?reads.signal:undefined,options.signal].filter((signal):signal is AbortSignal=>!!signal);let expired=false
   const abort=()=>controller.abort();for(const parent of parents){parent.addEventListener('abort',abort,{once:true});if(parent.aborted)abort()}
   const timer=setTimeout(()=>{expired=true;controller.abort()},15000)
   try{
-    const response=await fetch('/account'+path,{method:body===undefined?'GET':'POST',credentials:'same-origin',cache:'no-store',headers:{...(body===undefined?{}:{'Content-Type':'application/json'}),...(user?{'X-LongHorn-Viewer':user.id}:{})},signal:controller.signal,...(body===undefined?{}:{body:JSON.stringify(body)})})
+    const response=await fetch('/account'+path,{method:options.method??(body===undefined?'GET':'POST'),credentials:'same-origin',cache:'no-store',headers:{...(body===undefined?{}:{'Content-Type':'application/json'}),...(user?{'X-LongHorn-Viewer':user.id}:{})},signal:controller.signal,...(body===undefined?{}:{body:JSON.stringify(body)})})
     let data:unknown=null
     if(response.status!==204){try{data=await response.json()}catch(error){if(controller.signal.aborted)throw error;throw new RequestError(response.status,'The response could not be read. Try again.',null)}}
     if(parents.some(parent=>parent.aborted))throw new DOMException('Navigation cancelled','AbortError')
@@ -276,6 +279,33 @@ function auditExportControls(deliveryId:string|undefined,current:number,route:st
     }),
   },current,route)
 }
+async function savedViewsPanel(view:HistoryView,current:number,route:string){
+  const subject=user!.id,present=()=>current===version&&location.hash===route&&user?.id===subject
+  try{
+    const data=await api<{views:SavedHistoryView[]}>('/history-views');if(!present())throw new DOMException('Navigation canceled','AbortError')
+    if(!Array.isArray(data.views)||data.views.length>20)throw new Error('Invalid saved views')
+    if(activeSavedView?.subject!==subject)activeSavedView=undefined
+    const editing=data.views.find(entry=>entry.id===activeSavedView?.id),selection=normalizeSavedSelection(view)
+    if(!editing)activeSavedView=undefined
+    const panel=node('details',undefined,'history-presets'),summary=node('summary','Saved views ('+data.views.length+')'),form=node('form',undefined,'preset-form'),picker=select({'':'Current filters',...Object.fromEntries(data.views.map(entry=>[entry.id,entry.name]))},editing?.id??''),name=node('input'),error=node('p',undefined,'form-error'),actions=node('div',undefined,'actions'),submit=node('button',editing?'Update view':'Save view')
+    let busy=false,saveKey=crypto.randomUUID(),lastInput:string|undefined,deleteKey=crypto.randomUUID()
+    panel.open=savedViewsOpen||!!editing;panel.append(summary);panel.addEventListener('toggle',()=>{if(present())savedViewsOpen=panel.open})
+    picker.addEventListener('change',()=>{if(busy)return;const selected=data.views.find(entry=>entry.id===picker.value);activeSavedView=selected?{subject,id:selected.id}:undefined;savedViewsOpen=true;if(selected)openHistoryView(selected.selection);else void render()})
+    name.name='view-name';name.required=true;name.maxLength=320;name.value=editing?.name??'';submit.type='submit';error.hidden=true;error.id='view-error-'+crypto.randomUUID();error.setAttribute('role','alert');name.addEventListener('input',()=>{name.removeAttribute('aria-invalid');name.removeAttribute('aria-errormessage');error.hidden=true})
+    const failure=(reason:unknown)=>{if(!present())return;error.textContent=reason instanceof Error?reason.message:'Could not save this view. Refresh views and try again.';error.hidden=false}
+    const updateBusy=(pending:boolean)=>{busy=pending;for(const control of form.querySelectorAll<HTMLInputElement|HTMLButtonElement|HTMLSelectElement>('input,button,select'))control.disabled=pending}
+    form.addEventListener('submit',event=>{event.preventDefault();if(busy||!present())return;let normalized:string;try{normalized=normalizeViewName(name.value)}catch(reason){failure(reason);name.setAttribute('aria-invalid','true');name.setAttribute('aria-errormessage',error.id);name.focus();return}
+      const intent=JSON.stringify({name:normalized,selection,...(editing?{expectedRevision:editing.revision}:{})});if(lastInput!==undefined&&intent!==lastInput)saveKey=crypto.randomUUID();lastInput=intent;error.hidden=true;updateBusy(true);submit.textContent='Saving…'
+      const body=editing?{requestId:saveKey,expectedRevision:editing.revision,name:normalized,selection}:{id:saveKey,name:normalized,selection}
+      void api<{view:SavedHistoryView}>('/history-views'+(editing?'/'+editing.id:''),body,editing?{method:'PUT'}:{}).then(result=>{if(!present())return;activeSavedView={subject,id:result.view.id};savedViewsOpen=true;announce(editing?'Saved view updated.':'Saved view created.');void render()}).catch(failure).finally(()=>{if(present()){updateBusy(false);submit.textContent=editing?'Update view':'Save view'}})
+    })
+    if(editing)actions.append(button('Open view',()=>{if(!busy)openHistoryView(editing.selection)}))
+    actions.append(submit)
+    if(editing)actions.append(button('Delete view',()=>{if(busy||!present())return;error.hidden=true;updateBusy(true);void api('/history-views/'+editing.id,{requestId:deleteKey,expectedRevision:editing.revision},{method:'DELETE',expectedStatus:204}).then(()=>{if(!present())return;activeSavedView=undefined;savedViewsOpen=true;announce('Saved view deleted.');void render()}).catch(failure).finally(()=>{if(present())updateBusy(false)})}))
+    actions.append(button('Refresh views',()=>{if(!busy)void render()}));form.append(field('Saved view',picker),field('View name',name,'Use up to 80 characters.'),node('p',editing?'Update this saved view with the current filters.':'Save the current scope, delivery status and ID search.','subtle'),actions,error);panel.append(form)
+    ownPageWork(()=>{name.value='';error.textContent=''});return panel
+  }catch(error){if(!present()||error instanceof RequestError&&error.status===401)throw error;const panel=node('section',undefined,'history-presets');panel.append(node('p','Saved views could not be loaded.','subtle'),button('Refresh views',()=>{void render()}));return panel}
+}
 async function commandsPage(view:HistoryView){
   const current=version,route=location.hash,inputScope=view.scope,inputState=view.state,inputSearch=view.q,query=new URLSearchParams({limit:'20',scope:inputScope})
   if(inputState!=='all')query.set('state',inputState)
@@ -292,7 +322,7 @@ async function commandsPage(view:HistoryView){
   searchActions.append(submit);if(inputSearch)searchActions.append(button('Clear search',()=>openHistoryView({scope:inputScope,state:inputState})))
   search.append(field('Command ID starts with',term,'Use at least 4 characters. Search is kept in this view link.'),searchActions,searchError)
   search.addEventListener('submit',event=>{event.preventDefault();try{const q=normalizeHistorySearch(term.value);openHistoryView({scope:inputScope,state:inputState,...(q?{q}:{})})}catch(error){searchError.textContent=error instanceof Error?error.message:'Enter a command ID prefix.';searchError.hidden=false;term.setAttribute('aria-invalid','true');term.setAttribute('aria-errormessage',searchError.id);term.focus()}})
-  value.append(search,historyExportControls(inputScope,inputState,current,route,inputSearch))
+  const saved=await savedViewsPanel(view,current,route);if(current!==version||location.hash!==route)throw new DOMException('Navigation canceled','AbortError');value.append(saved,search,historyExportControls(inputScope,inputState,current,route,inputSearch))
   if(!data.commands.length){value.append(inputState==='all'&&!inputSearch?empty('No commands yet',inputScope==='all'?'Submitted commands will appear here.':'Create a command to start your history.',link('Create command','#/new','button primary')):empty('No matching commands',inputSearch?'Change the command ID or delivery status and try again.':'Choose another delivery status or refresh this list.',inputState==='all'?undefined:button('Show all',()=>openHistoryView({...view,state:'all'}))));return value}
   const rows=node('ul',undefined,'rows');rows.setAttribute('aria-label','Command history');rows.append(...data.commands.map(commandRow));value.append(rows)
   let cursor=data.nextCursor
@@ -418,7 +448,7 @@ function setTheme(dark:boolean,remember=false){document.documentElement.dataset.
 let saved:string|null=null;try{saved=localStorage.getItem('longhorn-theme')}catch{}
 setTheme(saved?saved==='dark':matchMedia('(prefers-color-scheme: dark)').matches)
 themeButton.addEventListener('click',()=>setTheme(document.documentElement.dataset.theme!=='dark',true))
-logout.addEventListener('click',()=>{if(accountPending||logout.disabled)return;logout.disabled=true;void api('/logout',{}).then(()=>{user=undefined;lastCommandsRoute='#/commands';pendingHistoryRoute=undefined;syncAccount();announce('Signed out.');location.hash='#/welcome';void render()}).catch(reason=>announce((reason as Error).message,true)).finally(()=>{logout.disabled=false})})
+logout.addEventListener('click',()=>{if(accountPending||logout.disabled)return;logout.disabled=true;void api('/logout',{}).then(()=>{user=undefined;lastCommandsRoute='#/commands';pendingHistoryRoute=undefined;activeSavedView=undefined;savedViewsOpen=false;syncAccount();announce('Signed out.');location.hash='#/welcome';void render()}).catch(reason=>announce((reason as Error).message,true)).finally(()=>{logout.disabled=false})})
 addEventListener('hashchange',()=>{void render()});addEventListener('pagehide',()=>{++version;clearPageWork();reads.abort();clearPageSecrets();root.replaceChildren();sidebar.hidden=true;identity.textContent=''})
 addEventListener('pageshow',event=>{if(event.persisted)location.reload()})
 document.querySelector<HTMLAnchorElement>('.skip')!.addEventListener('click',event=>{event.preventDefault();root.focus()})

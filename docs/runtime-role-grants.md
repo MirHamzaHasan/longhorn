@@ -29,3 +29,8 @@ No provisioning endpoint or owner credential is added to HTTP.
 can start through these actual grants, invalid/administrative roles are rejected,
 restored state works after regranting and user/audit mutation plus migration-history
 reads remain denied.
+
+[Saved-view deployment](saved-view-migrations.md) adds SELECT/INSERT/UPDATE/DELETE
+only on longhorn_pg_example.history_views. Apply appended 005, then rerun the
+trusted provisioner. No auth-user, audit-maintenance or schema-creation authority
+is added, and startup requires the new table/CRUD grants.

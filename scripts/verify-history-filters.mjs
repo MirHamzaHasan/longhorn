@@ -50,7 +50,7 @@ try{
   assert.deepEqual(added.map(value=>value.added.length).sort(),[0,postgresOperationsMigrations.length-previous.length]);assert.deepEqual(added.flatMap(value=>value.added),postgresOperationsMigrations.slice(previous.length).map(value=>value.id))
   assert.deepEqual((await owner.execute('SELECT position,id,checksum FROM longhorn_pg_example.longhorn_migrations ORDER BY position')).rows.slice(0,before.length),before)
   assert.equal((await owner.execute({sql:'SELECT delivery_id,created_at,numbers FROM longhorn_pg_example.operator_commands WHERE id=$1',args:[legacy]})).rows[0].delivery_id,null)
-  await owner.execute('GRANT EXECUTE ON FUNCTION longhorn_auth.lock_session_user(text) TO longhorn_app');await owner.execute('GRANT SELECT,INSERT ON longhorn_pg_example.operator_commands TO longhorn_app');await owner.execute('GRANT USAGE ON SCHEMA longhorn_outbox TO longhorn_app');await owner.execute('GRANT SELECT,INSERT ON longhorn_outbox.recovery_audit TO longhorn_app')
+  await owner.execute('GRANT EXECUTE ON FUNCTION longhorn_auth.lock_session_user(text) TO longhorn_app');await owner.execute('GRANT SELECT,INSERT ON longhorn_pg_example.operator_commands TO longhorn_app');await owner.execute('GRANT SELECT,INSERT,UPDATE,DELETE ON longhorn_pg_example.history_views TO longhorn_app');await owner.execute('GRANT USAGE ON SCHEMA longhorn_outbox TO longhorn_app');await owner.execute('GRANT SELECT,INSERT ON longhorn_outbox.recovery_audit TO longhorn_app')
   await checkHistoryFilterIndexes(db)
   await owner.execute('DROP INDEX longhorn_queue.command_history_state')
   try{await assert.rejects(checkHistoryFilterIndexes(db),/must be deployed/)}finally{await owner.execute(postgresHistoryFilterMigrations[0].statements[1])}

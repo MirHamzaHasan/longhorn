@@ -52,3 +52,8 @@ lower-ID pattern indexes after the complete filter profile. Regular transactiona
 builds block writes; budget maintenance time/storage before updated hosts start.
 Matching browser/API versions understand v3 search cursors and v2 searched files.
 Existing unsearched cursor/file contracts and runtime grants remain unchanged.
+
+Named-view support appends [005_history_views](saved-view-migrations.md) after the
+complete previous profile. Existing installations must migrate as owner and rerun
+provision:runtime before the new host starts. Offline checkpoints include the new
+table/ledger; rollback does not remove deployed history or rewrite old statements.

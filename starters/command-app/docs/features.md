@@ -12,8 +12,9 @@
 | [Commands](commands.md) | src/operations.ts, operation-contracts.ts | Hono validation, DI, transaction-locked identity, scoped request replay |
 | [Audit export](audit-export.md) | console/audit-export.ts, bounded-export.ts and app.ts | Existing operator pages, recorded snapshots, bounded NDJSON and page disposal |
 | [Receipt export](receipt-export.md) | console/receipt-export.ts, history-metadata.ts, bounded-export.ts and app.ts | Selected protected results, serial reads, exact continuation and composed page disposal |
+| [Named history views](saved-views.md) | src/history-views.ts, history-views-http.ts, shared values and console/app.ts | Owner-only preferences, transactional quota/revisions, canonical reopening and retained restore |
 | [History export](history-export.md) | console/history-export.ts and app.ts | Selected metadata, versioned NDJSON segments, cancellation and exact continuation |
-| [Saved history views](history-view-links.md) | console/routes.ts and app.ts | Canonical filter fragments, Back/Forward, sign-in return and fresh server admission |
+| [History view links](history-view-links.md) | console/routes.ts and app.ts | Canonical filter fragments, Back/Forward, sign-in return and fresh server admission |
 | [ID search](history-search.md) | src/command-history.ts, history-search-migrations.ts and console helpers | Bound UUID prefixes, v3 cursors, owner-deployed indexes and searched NDJSON v2 |
 | [Command history](history.md) | src/command-history.ts | Owner predicates, int64 cursors, live outgoing metadata |
 | [Delivery history filters](history-filters.md) | src/command-history.ts, history-filter-migrations.ts and console/app.ts | Live state predicates, status-bound cursors, appended indexes and isolated page cancellation |

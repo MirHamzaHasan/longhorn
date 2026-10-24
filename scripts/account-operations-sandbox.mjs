@@ -12,6 +12,7 @@ export async function startAccountOperationsSandbox(){
     await owner.execute('GRANT EXECUTE ON FUNCTION longhorn_auth.lock_session_user(text) TO longhorn_app')
     for(const signature of postgresPasswordFunctions)await owner.execute('GRANT EXECUTE ON FUNCTION '+signature+' TO longhorn_app')
     await owner.execute('GRANT SELECT,INSERT ON longhorn_pg_example.operator_commands TO longhorn_app')
+    await owner.execute('GRANT SELECT,INSERT,UPDATE,DELETE ON longhorn_pg_example.history_views TO longhorn_app')
     await owner.execute('GRANT USAGE ON SCHEMA longhorn_outbox TO longhorn_app')
     await owner.execute('GRANT SELECT,INSERT ON longhorn_outbox.recovery_audit TO longhorn_app')
     return sandbox
