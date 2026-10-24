@@ -25,3 +25,7 @@ and selection resets on a full reload.
 [Command updates](command-updates.md) follow unfinished delivery/receipt detail
 with a bounded read loop. Pause/resume and manual refresh remain available; hidden/
 offline tabs pause and navigation disposes the loop without moving keyboard focus.
+
+[History export](history-export.md) downloads the current selection as metadata-only
+NDJSON with explicit continuation files. Cancel/navigation/filter changes stop the
+current attempt; neither export data nor cursors enter persistent browser storage.

@@ -11,7 +11,7 @@ pnpm demo:operator-accounts
 
 Open http://127.0.0.1:3010/console, choose Create account and enter a username and
 a password of at least 15 characters. Create a command containing `4, 8, 15`.
-Open its detail and Refresh status. Its receipt has count 3, sum 27, minimum 4
+Open its detail and follow the automatic updates. Its receipt has count 3, sum 27, minimum 4
 and maximum 15. Commands returns to your owned history. Sign out and sign back
 in to inspect the same rows. Another member cannot read them.
 

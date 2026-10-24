@@ -53,4 +53,9 @@ Its six states and two scaled phone captures contribute another 26 frames.
 writes 26 additional captures under `.artifacts/console/follow`. Its actual broker
 receipt arrives without Refresh status; pause/resume, terminal/error stop, focus,
 canceled reads, offline and viewer/session boundaries use built browser assets.
-The three browser gates together produce 201 captures, with separate reports.
+The command, account and follow gates produce 201 captures, with separate reports.
+
+[History export verification](history-export-testing.md) adds 34 captures under
+`.artifacts/console/export` plus actual download/continuation assertions. The four
+browser suites together produce 235 frames in separate reports; file contents are
+checked independently of screenshots and are not hosted capture upload paths.

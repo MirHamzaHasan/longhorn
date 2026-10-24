@@ -121,6 +121,7 @@ jobs:
       - id: verify-console
         run: |
           node scripts/verify-console.mjs
+          node scripts/verify-history-export.mjs
           node scripts/verify-command-follow.mjs
           node scripts/verify-console-account.mjs
       - name: Retain console review captures

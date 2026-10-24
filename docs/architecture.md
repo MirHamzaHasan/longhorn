@@ -1453,3 +1453,22 @@ broker receipts and Chromium prove real results, focus, error stop, viewer/sessi
 boundaries and shipped application behavior. See [behavior](command-live-updates.md),
 [lifetime](command-follow-lifecycle.md), [controls](console-command-follow.md) and
 [proof](command-follow-testing.md).
+
+## 56. Bounded History Export with Explicit Continuation
+
+The browser export collector traverses the same authenticated metadata pages as
+Commands, independently of rendered rows. It copies scope/state, awaits one page
+at a time and serializes only named safe fields into versioned NDJSON. Row/page/
+UTF-8/time bounds produce explicit continuation summaries; byte rejection retains
+the previous page boundary. Failure/cancellation returns no current file. Every
+page keeps cookie/viewer and owner/operator admission; no server endpoint, schema,
+grant or package dependency is added.
+
+The route owns cancellation and temporary Blob URLs, and binds final download to
+its version/hash/subject. Controls preserve focus and require explicit continuation;
+no data/cursor enters browser storage or URLs. Live-page semantics remain unchanged,
+so files do not claim snapshot consistency. Source cases and real PostgreSQL/download
+proof cover limits, 10001-row scale, exact retained continuation, admission changes,
+accessible captures and shipped restore. See [feature](history-export.md),
+[format](history-export-format.md), [lifetime](history-export-lifecycle.md),
+[controls](console-history-export.md) and [proof](history-export-testing.md).

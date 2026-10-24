@@ -62,3 +62,7 @@ The shipped detail also [follows a failed command](command-follow-testing.md) wh
 an actual operator recovery delivers its receipt. Chromium receives that computed
 result without Refresh status before both processes restart. The later restored
 rerun must likewise show its actual receipt in the current detail before leaving.
+
+The restored shipped console also downloads [history NDJSON](history-export.md).
+Its header/summary and four command IDs must match the retained/new rows exactly;
+no numbers, outgoing payload or lease tokens may appear in the actual file.

@@ -47,3 +47,7 @@ The console can [reuse an admitted source](command-rerun.md) through its existin
 detail GET and ordinary new submission. The source remains unchanged and supplies
 no target owner or lineage metadata. [Viewer consistency](console-viewer-binding.md)
 is an optional pre-handler claim check; owner predicates still use the cookie principal.
+
+[Browser export](history-export.md) traverses these same metadata pages, preserving
+scope/status and fresh admission. It adds no bulk endpoint or broader projection;
+its explicit continuation files keep the existing live-pagination limits.

@@ -659,7 +659,7 @@ checksums and require owner maintenance deployment. The [console](console-histor
 resets pages on selection and isolates canceled continuations. [Native proof](history-filter-testing.md)
 covers real queue transitions, DDL interruption/concurrency, saved cursors, restricted
 grants, actual index plans, 117 command captures and filtering in the restored app.
-Exports, text search, saved filter URLs and automated polling remain separate work.
+Text search, saved filter URLs and automated history-list refresh remain separate work.
 
 ## Command delivery and receipt following implemented
 
@@ -670,6 +670,18 @@ handles hidden/offline pause, generation fencing, time/check limits and navigati
 errors or limits. [Proof](command-follow-testing.md) covers native results, cancellation,
 auth boundaries, 26 additional captures and the shipped independent application.
 Server push, background synchronization and automatic recovery remain separate work.
+
+## Selected command history export implemented
+
+[History export](history-export.md) traverses the current owner/operator/status
+selection through existing protected pages. [Versioned NDJSON](history-export-format.md)
+uses bounded files with explicit continuation rather than silently truncating the
+selection. [Page ownership](history-export-lifecycle.md) handles cancellation,
+errors, timeout and fresh admission; [controls](console-history-export.md) keep
+focus and expose continue/start over. [Native proof](history-export-testing.md)
+checks actual downloads, a 10000-row segment plus its exact remainder, no secret
+fields, authorization changes, 34 captures and the restored standalone application.
+Snapshot exports, receipts/audit export and import remain separate protocols.
 
 ## Subsequent framework modules
 

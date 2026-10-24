@@ -1,6 +1,7 @@
 import './app.css'
 import { CommandCopyError,copyCommandNumbers,parseNumbers } from './numbers.js'
 import { createCommandFollow } from './command-follow.js'
+import { collectHistoryExport } from './history-export.js'
 
 type User={id:string;username:string;roles:string[]}
 type Delivery={id:string;state:'pending'|'running'|'succeeded'|'failed';attempts:number;maxAttempts:number;availableAt:number;updatedAt:number;lastFailure:string|null}
@@ -198,14 +199,44 @@ function newCommand(source?:{id:string;numbers:number[]}){
   });panel.append(form);value.append(panel);return value
 }
 function commandRow(command:Command){const row=node('li',undefined,'row'),name=node('div');name.append(link('Command '+command.id.slice(0,8),'#/commands/'+command.id),node('div',command.id,'row-id'));row.append(name,cell('Created',time(command.createdAt)),cell('Delivery',status(command.delivery?.state??'unknown')),cell('Attempts',command.delivery?command.delivery.attempts+' / '+command.delivery.maxAttempts:'—'));return row}
+function historyExportControls(inputScope:string,inputState:string,current:number,route:string){
+  const section=node('section',undefined,'history-export'),actions=node('div',undefined,'actions'),message=node('p',undefined,'subtle')
+  section.setAttribute('aria-label','Command history export');message.setAttribute('role','status');message.setAttribute('aria-atomic','true')
+  const description=node('p','Download IDs, dates, and delivery status.','subtle');let task:AbortController|undefined,continuation:string|null=null,objectUrl:string|undefined,revokeTimer:ReturnType<typeof setTimeout>|undefined
+  const present=()=>current===version&&location.hash===route&&user?.id===subject,subject=user!.id
+  const revoke=()=>{clearTimeout(revokeTimer);if(objectUrl){URL.revokeObjectURL(objectUrl);objectUrl=undefined}}
+  const cancel=button('Cancel export',()=>{task?.abort()}),startOver=button('Start over',()=>{if(task)return;continuation=null;update(false);startOver.hidden=true;message.textContent='The next export starts with your newest matching commands.';download.focus()})
+  const update=(busy:boolean)=>{download.setAttribute('aria-disabled',String(busy));download.textContent=busy?'Preparing…':continuation?'Continue export':'Export history';cancel.setAttribute('aria-disabled',String(!busy));startOver.setAttribute('aria-disabled',String(busy));if(busy)cancel.hidden=false}
+  const download=button('Export history',()=>{
+    if(task||!present())return
+    const controller=new AbortController();task=controller;update(true);message.textContent='Preparing command history export…'
+    void(async()=>{
+      try{
+        const result=await collectHistoryExport({selection:{scope:inputScope,state:inputState},...(continuation?{after:continuation}:{}),signal:controller.signal,
+          read:input=>{const query=new URLSearchParams({scope:inputScope,limit:String(input.limit)});if(inputState!=='all')query.set('state',inputState);if(input.after)query.set('after',input.after);return api('/commands?'+query,undefined,{signal:input.signal})},
+          progress:(count,pages)=>{if(present()&&(pages===1||pages%10===0))message.textContent='Preparing export: '+count.toLocaleString()+' commands.'},
+        })
+        if(controller.signal.aborted||!present())return
+        revoke();objectUrl=URL.createObjectURL(new Blob([result.text],{type:'application/x-ndjson;charset=utf-8'}))
+        const anchor=link('',objectUrl);anchor.download='longhorn-commands-'+inputScope+'-'+inputState+'-'+result.exportedAt.replace(/[:.]/g,'-')+'.ndjson';anchor.hidden=true;document.body.append(anchor)
+        try{anchor.click()}finally{anchor.remove();revokeTimer=setTimeout(revoke,1000)}
+        continuation=result.nextCursor;startOver.hidden=!continuation
+        message.textContent='Export ready. '+result.count.toLocaleString()+' commands.'+(result.complete?'':' More history is available; continue for the next file.')
+      }catch(error){if(!present())return;message.textContent=controller.signal.aborted?'Export canceled. No file was downloaded.':'Export stopped. '+(error instanceof Error?error.message:'Refresh and try again.')}
+      finally{if(task===controller)task=undefined;if(present())update(false)}
+    })()
+  })
+  cancel.hidden=true;startOver.hidden=true;actions.append(download,cancel,startOver);section.append(description,actions,message)
+  clearPageWork=()=>{task?.abort();revoke()};return section
+}
 async function commandsPage(){
-  const inputScope=operator()?scope:'mine',inputState=historyState,query=new URLSearchParams({limit:'20',scope:inputScope})
+  const current=version,route=location.hash,inputScope=operator()?scope:'mine',inputState=historyState,query=new URLSearchParams({limit:'20',scope:inputScope})
   if(inputState!=='all')query.set('state',inputState)
-  const data=await api<Page<{commands:Command[]}>>('/commands?'+query),value=node('div');value.append(title(inputScope==='all'?'All commands':'Your commands','Follow each command through delivery and receipt.',refresh(),link('Create command','#/new','button primary')))
+  const data=await api<Page<{commands:Command[]}>>('/commands?'+query),value=node('div');if(current!==version||location.hash!==route)throw new DOMException('Navigation cancelled','AbortError');value.append(title(inputScope==='all'?'All commands':'Your commands','Follow each command through delivery and receipt.',refresh(),link('Create command','#/new','button primary')))
   const tools=node('div',undefined,'tools history-tools')
   if(operator()){const picker=select({mine:'My commands',all:'All commands'},inputScope);picker.addEventListener('change',()=>{scope=picker.value;void render()});tools.append(field('Show commands',picker))}
   const state=select({all:'All deliveries',pending:'Pending',running:'Sending',succeeded:'Delivered',failed:'Failed',unavailable:'Unavailable'},inputState)
-  state.addEventListener('change',()=>{historyState=state.value;void render()});tools.append(field('Delivery status',state));value.append(tools)
+  state.addEventListener('change',()=>{historyState=state.value;void render()});tools.append(field('Delivery status',state));value.append(tools,historyExportControls(inputScope,inputState,current,route))
   if(!data.commands.length){value.append(inputState==='all'?empty('No commands yet',inputScope==='all'?'Submitted commands will appear here.':'Create a command to start your history.',link('Create command','#/new','button primary')):empty('No matching commands','Choose another delivery status or refresh this list.',button('Show all',()=>{historyState='all';void render()})));return value}
   const rows=node('ul',undefined,'rows');rows.setAttribute('aria-label','Command history');rows.append(...data.commands.map(commandRow));value.append(rows)
   let cursor=data.nextCursor

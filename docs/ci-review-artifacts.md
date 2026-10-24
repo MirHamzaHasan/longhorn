@@ -52,3 +52,7 @@ availability requires an account-level change; the workflow does not delete othe
 repositories' artifacts or change billing. Until storage is available, use
 `pnpm package:command-app` for the local archive/checksum and `pnpm test:console`
 for local captures. The upload action's original error remains visible in logs.
+
+The nested [export captures](history-export-testing.md) and accessibility report
+use those same console PNG/report paths. Downloaded NDJSON and the private native
+fixture are not included by the hosted capture globs.

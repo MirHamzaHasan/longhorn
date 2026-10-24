@@ -43,3 +43,7 @@ Check command history after reloading an ambiguous submission. The existing
 [Delivery status selectors](console-history-filters.md) filter Commands within the
 current scope, restart pagination on selection and keep canceled older pages from
 announcing stale errors. Show all clears only status; membership is live.
+
+[Export history](console-history-export.md) downloads IDs, dates and delivery status
+for the entire selected traversal, independently of loaded list rows. Large results
+use explicit continuation files; cancel/navigation/errors discard the current file.

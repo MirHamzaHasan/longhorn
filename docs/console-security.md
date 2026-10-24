@@ -55,3 +55,8 @@ ordinary page-read signal. It checks cancellation before handling a response's
 status or data, disposes listeners/timers on navigation and never submits a mutation.
 A hidden/offline tab pauses within a fixed bounded run; active 401 responses retain
 the existing session/viewer clearing policy.
+
+[History export](history-export-lifecycle.md) uses the existing protected reads,
+keeps segment text/cursors in memory and discards the current file after any failed
+admission. Route/version/subject checks precede download. Temporary Blob URLs are
+revoked; export adds no persistent browser data or external transmission.

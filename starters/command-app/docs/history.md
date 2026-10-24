@@ -14,3 +14,6 @@ Connects [schema](schema.md), [commands](commands.md) and [receipts](receipts.md
 [Delivery filters](history-filters.md) add optional state selection with live
 membership. Unfiltered v1 cursors remain compatible; filtered v2 cursors bind
 status as well as viewer/scope/queue. Change a filter from its first page.
+
+[Export](history-export.md) traverses the same current scope/status as explicit
+bounded NDJSON files, independently of the rows loaded in the browser list.
