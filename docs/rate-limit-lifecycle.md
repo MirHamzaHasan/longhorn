@@ -34,3 +34,7 @@ lost post-commit acknowledgement; neither path is automatically retried.
 [Object ownership](object-limit-lifecycle.md) uses the existing managed SQLite
 store and drains HTTP/limiter work before Object SQL. Quota commits participate in
 the existing alarm hook without making bucket expiry a wakeup candidate.
+
+When [periodic cleanup](rate-limit-cleanup.md) is explicitly enabled, drain it
+before the limiter and borrowed database. It owns an admitted prune and async
+error observer; actual blocked native SQL keeps shutdown pending.

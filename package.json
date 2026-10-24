@@ -114,7 +114,9 @@
     "test:redis-limits": "pnpm build && node scripts/verify-redis-limits.mjs",
     "dev:redis-limits": "pnpm --filter example-redis-limits... build && node examples/redis-limits/dist/index.js",
     "test:d1-rate-limits": "pnpm build && node scripts/verify-d1-rate-limits.mjs",
-    "test:object-rate-limits": "pnpm build && node scripts/verify-object-rate-limits.mjs"
+    "test:object-rate-limits": "pnpm build && node scripts/verify-object-rate-limits.mjs",
+    "dev:maintained-limits": "pnpm --filter example-maintained-limits... build && node examples/maintained-limits/dist/index.js",
+    "test:limit-cleanup": "pnpm build && node scripts/verify-limit-cleanup.mjs && node scripts/verify-prune-packages.mjs"
   },
   "packageManager": "pnpm@12.6.0"
 }

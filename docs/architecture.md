@@ -1775,3 +1775,29 @@ disabled and private live-policy failure after re-enabling.
 See [store](object-request-limits.md), [API](object-report-limits.md),
 [deployment](object-limit-deployment.md), [lifetime](object-limit-lifecycle.md) and
 [verification](object-limit-testing.md).
+
+
+## 70. One Owned Pruning Loop for Explicit Store Maintenance
+
+The optional runtime/prune-worker entrypoint owns serial bounded calls to a borrowed
+pruner, with a delayed interval after settlement, awaited error observation and
+close that drains actual work. Existing IdempotencyCleanup delegates to that same
+engine while preserving its API. Optional RateLimitCleanup borrows RateLimiter.prune
+so application/server clock and provider expiry semantics stay in their current ports.
+No new schema, timer on import, implicit grant or resource acquisition is introduced.
+
+A native SQLite report example connects bearer-selected stable identity, typed
+configuration, budget middleware and default-off cleanup. HTTP drains before
+cleanup/limiter/database release, including startup rollback. Pruning never resets
+live quota or mutates report results. PostgreSQL maintenance remains a separate
+restricted identity with SELECT/DELETE plus a column UPDATE grant for its locking
+SELECT; the existing command HTTP role still has no DELETE.
+
+Native Node/Bun/Deno SQLite proofs hold a real writer through shutdown. PostgreSQL
+proofs skip a renewed row, recover after grant withdrawal and observe blocked native
+SQL before close waits. Finite workerd tests establish portable coordination only.
+Actual independent package archives also prove relocated frozen install, exports,
+declarations and both cleanup facades sharing the same owner.
+See [engine](prune-worker.md), [API](rate-limit-cleanup.md),
+[retention](rate-limit-cleanup-retention.md), [lifetime](rate-limit-cleanup-lifecycle.md),
+[example](rate-limit-cleanup-example.md) and [verification](rate-limit-cleanup-testing.md).

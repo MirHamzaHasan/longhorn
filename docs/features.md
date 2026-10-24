@@ -9,6 +9,12 @@ downstream connections, verification, and current limits.
 
 | Feature | Guide | Implementation owner | Connects to |
 | --- | --- | --- | --- |
+| Owned bounded pruning | [Prune worker](prune-worker.md) | Optional @longhorn/runtime/prune-worker | Serial delayed batches, observer ownership and shared cleanup facades |
+| Request budget cleanup | [Cleanup API](rate-limit-cleanup.md) | Optional @longhorn/ratelimit/cleanup | Existing limiter/store clocks and explicit native-host lifetime |
+| Budget cleanup retention | [Expiry and authority](rate-limit-cleanup-retention.md) | Existing provider prune methods | Table-wide bounds, live preservation and separate PostgreSQL lock/delete grants |
+| Budget cleanup shutdown | [Lifecycle](rate-limit-cleanup-lifecycle.md) | Shared worker and limiter admission | Reentrant close, actual native drain and reverse resource release |
+| Maintained SQLite report API | [Example](rate-limit-cleanup-example.md) | examples/maintained-limits | Typed opt-in settings, capability identity, computed results and persisted quota |
+| Native and packed cleanup proof | [Verification](rate-limit-cleanup-testing.md) | Native stores/hosts and independent package consumer | Locked drain, renewal/grants, retained budgets, frozen relocation and declarations |
 | Object SQLite request budgets | [Existing managed store](object-request-limits.md) | SqliteRateLimitStore over createDurableSqlite | Native input gate, post-ownership clock, transaction rollback and persisted counters |
 | Shared Object report budget | [Optional HTTP policy](object-report-limits.md) | Default-off scheduled/alarm report app | Both POST routes, typed bindings, DI, counted validation and unaffected background work |
 | Object quota schema deployment | [Complete profiles](object-limit-deployment.md) | Report app migration composition | Unchanged scheduled/alarm history prefix, appended shared schema and retained toggles |
@@ -507,6 +513,9 @@ flowchart TD
   DurableReports --> ObjectBudget[Optional shared report attempt budget]
   ObjectBudget --> ManagedLimit[Existing managed SQLite limiter]
   ManagedLimit --> DurableSql
+  LimitCleanup[Optional rate limit cleanup] --> ManagedLimit
+  LimitCleanup --> PruneOwner[Shared owned prune worker]
+  LedgerCleanup[Existing idempotency cleanup] --> PruneOwner
   QueueEvents[Workers queue event adapter] --> ManagedWork
   QueueEvents --> Workers
   BrokerQueue[Platform broker batches] --> QueueEvents

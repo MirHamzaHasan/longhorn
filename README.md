@@ -609,3 +609,10 @@ exhaustion. Run `pnpm test:object-rate-limits` for native concurrency, upgrade,
 interruption and retained-host proof. Each part has its own guide:
 [store](docs/object-request-limits.md), [deployment](docs/object-limit-deployment.md),
 [lifecycle](docs/object-limit-lifecycle.md) and [verification](docs/object-limit-testing.md).
+
+[Owned budget cleanup](docs/rate-limit-cleanup.md) now schedules bounded expiry
+maintenance through the existing limiter. A [runnable SQLite report API](docs/rate-limit-cleanup-example.md)
+uses default-off cleanup; run `pnpm dev:maintained-limits` with a private API_TOKEN.
+`pnpm test:limit-cleanup` checks native stores, locked shutdown and independently
+packed/relocated packages. Both budget and request-ledger cleanup share one
+[owned pruning loop](docs/prune-worker.md).

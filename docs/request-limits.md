@@ -52,3 +52,7 @@ The optional Redis provider borrows the existing Node command connection, uses o
 atomic reservation and native expiry, and receives no client clock. An explicit
 now override is invalid for a server-timed store. See [deployment](redis-rate-limit-deployment.md),
 [working protected example](redis-rate-limit-example.md) and [proof](redis-rate-limit-testing.md).
+
+[Optional owned cleanup](rate-limit-cleanup.md) schedules bounded pruning in native
+hosts using the shared [prune worker](prune-worker.md). The [SQLite example](rate-limit-cleanup-example.md)
+proves disabled/enabled retention and lifecycle; maintenance never refills live budgets.

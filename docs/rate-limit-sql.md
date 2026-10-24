@@ -28,10 +28,13 @@ against a compromised holder of all runtime credentials.
 
 RateLimiter.prune(limit=100) is explicit table-wide maintenance across all scopes,
 removing only expired rows. A separate PostgreSQL maintenance identity needs
-SELECT/DELETE and schema USAGE. Its single statement takes an ordered bounded
+SELECT/DELETE, schema USAGE and UPDATE on at least one column for the locking
+SELECT. See [maintenance authority](rate-limit-cleanup-retention.md). Its single
+statement takes an ordered bounded
 FOR UPDATE SKIP LOCKED prefix, then deletes those rows. SQLite atomically deletes
 the ordered bounded key prefix under its native write transaction. Live windows
-are preserved; no daemon, background timer, maintenance CLI or HTTP reset exists.
+are preserved. Stores create no background work; optional [owned cleanup](rate-limit-cleanup.md)
+can schedule bounded batches in a native host. No HTTP reset is installed.
 
 Keep shared clocks/policies aligned. SQLite write contention uses its existing
 provider admission/transaction rules; PostgreSQL serializes only competing bucket

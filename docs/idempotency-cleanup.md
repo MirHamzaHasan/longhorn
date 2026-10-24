@@ -44,3 +44,8 @@ coordination contract; it does not establish a persistent Workers timer service.
 For Fetch/scheduled hosts, await bounded requests.prune(limit) calls inside the
 platform's existing invocation lifetime. Callback and batch-sqlite APIs retain
 their separate contracts.
+
+The scheduling engine is now the shared optional [PruneWorker](prune-worker.md).
+The existing IdempotencyCleanup facade, options, snapshots and shutdown/error
+behavior remain compatible. [Rate-limit cleanup](rate-limit-cleanup.md) uses the
+same owner with its own store/clock/expiry protocol.

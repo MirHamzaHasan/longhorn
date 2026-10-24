@@ -33,3 +33,7 @@ HTTP admission and drains requests, then releases startup resources in reverse
 order. The account host drains cleanup before its outgoing services and pool.
 Its native proof holds a real PostgreSQL table lock, observes a blocked prune and
 checks that neither close nor pool release completes before that lock is released.
+
+The same ownership implementation now lives in [PruneWorker](prune-worker.md);
+IdempotencyCleanup delegates to it without changing its public entrypoint or
+ledger semantics. Both native and independently installed package gates cover it.

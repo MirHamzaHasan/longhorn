@@ -96,6 +96,16 @@ jobs:
       - run: pnpm build
       - run: pnpm typecheck
       - run: pnpm test
+      - run: node scripts/verify-prune-packages.mjs
+      - name: Retain packed prune proof
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: prune-package-proof
+          path: .artifacts/prune-package-proof.json
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 14
       - run: node scripts/verify-object-rate-limits.mjs
       - name: Retain Object request limit proof
         if: always()
@@ -133,6 +143,16 @@ jobs:
       - run: node scripts/verify-history-search.mjs
       - run: node scripts/verify-history-views.mjs
       - run: node scripts/verify-request-cleanup.mjs
+      - run: node scripts/verify-limit-cleanup.mjs
+      - name: Retain native budget cleanup proof
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: limit-cleanup-proof
+          path: .artifacts/limit-cleanup-proof.json
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 14
       - run: node scripts/verify-rate-limits.mjs
       - run: node scripts/verify-command-limits.mjs
       - run: node scripts/verify-operator-accounts.mjs

@@ -5,6 +5,7 @@ import { configDefaults, defineConfig } from 'vitest/config'
 export default defineConfig({
   resolve: {
     alias: Object.entries({
+      '@longhorn/ratelimit/cleanup': './packages/ratelimit/src/cleanup.ts',
       '@longhorn/ratelimit/batch-sqlite': './packages/ratelimit/src/batch-sqlite.ts',
       '@longhorn/ratelimit/redis': './packages/ratelimit/src/redis.ts',
       '@longhorn/ratelimit/hono': './packages/ratelimit/src/hono.ts',
@@ -70,6 +71,7 @@ export default defineConfig({
       '@longhorn/http': './packages/http/src/index.ts',
       '@longhorn/logger/hono': './packages/logger/src/hono.ts',
       '@longhorn/logger': './packages/logger/src/index.ts',
+      '@longhorn/runtime/prune-worker': './packages/runtime/src/prune-worker.ts',
       '@longhorn/runtime': './packages/runtime/src/index.ts',
       '@longhorn/bun': './runtimes/bun/src/index.ts',
       '@longhorn/deno': './runtimes/deno/src/index.ts',
