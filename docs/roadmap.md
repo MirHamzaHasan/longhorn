@@ -62,7 +62,9 @@ for the contracts and concurrency/durability boundaries.
 
 [Bun](bun.md), [Deno](deno.md), and [Workers](workers.md) use the shared Fetch and
 lifecycle boundaries. `pnpm test:runtimes` executes pinned Bun/Deno binaries and local
-workerd, including bindings and background work. Node SQLite remains Node-specific.
+workerd, including bindings and background work. Node's SQLite provider remains
+Node-specific; the separate [native Bun provider](bun-sqlite.md) now implements
+the same callback database contract.
 
 ## Project creation implemented
 
@@ -456,6 +458,21 @@ Installed hosts prove concurrent writes, restart, integrity, environment precede
 process-local observations and source watching. Startup failures preserve retained
 state. D1 keeps its existing descriptor/output via the shared validator. Neither
 profile adds automatic publication, upgrades or production account policy.
+
+## Native Bun SQLite implemented
+
+[Provider](bun-sqlite.md), [async ownership](bun-sqlite-transactions.md),
+[shared statement boundaries](sqlite-statement-boundary.md),
+[persistent tasks](bun-sqlite-tasks.md) and [native proof](bun-sqlite-testing.md)
+each have a guide. Bun's native synchronous driver now implements the existing
+Database interface with exact int64 values, input snapshots, bounded admission,
+real async callback transactions and actual resource drain. Same-file handles
+coordinate across awaits; lost native transaction ownership prevents later
+autocommit through a caught rollback error. Existing queue/scheduler/replay stores
+run unchanged. The task host shares Node's application/repository and persists
+through real process restarts. Native gates prove lock contention, SIGKILL recovery,
+participant failures and concurrent HTTP writers. This does not add a Bun starter
+profile, nonblocking SQL I/O, distributed locking or Deno-specific persistence.
 
 ## Subsequent framework modules
 

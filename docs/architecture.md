@@ -1071,3 +1071,30 @@ schema denial and SQLite integrity. D1 and the default four-runtime starters ret
 their separate native regressions. See [profile](sqlite-starter.md),
 [assets](application-template-assets.md), [lifetime](sqlite-starter-lifecycle.md)
 and [proof](sqlite-starter-testing.md).
+
+---
+
+## 40. Native Bun SQLite and Asynchronous Callback Ownership
+
+The optional Bun /sqlite entrypoint implements the existing Database contract with
+native bun:sqlite. The HTTP entrypoint stays independent. Inputs are snapshotted,
+int64 values remain exact and native statements are finalized deterministically.
+The former D1 statement scanner is a shared pure database entrypoint, preserving
+trigger bodies while rejecting silently ignored statement suffixes.
+
+Native SQLite calls are synchronous; an in-process canonical-file FIFO owns the
+whole asynchronous transaction lifetime. BEGIN IMMEDIATE surrounds the callback,
+managed participant drain and commit. Same-file reentrancy rejects instead of
+blocking its own event loop. Native automatic rollback fences the delegate before
+later SQL can escape into autocommit. Close rejects new admission and drains the
+handle's accepted work before native release. Post-materialization result failures
+remain potentially post-commit outside an explicit transaction.
+
+The Bun task host imports the existing task app/service/repository, wiring native
+storage, migrations, DI and lifecycle to Bun.serve. Native tests run unchanged SQL
+queue, scheduler and callback replay protocols. Separate processes prove busy-lock
+failure without query replay, pre/post-commit SIGKILL behavior, actual HTTP writers
+and retained restart. Node/D1 application profiles keep their own regression gates.
+See [provider](bun-sqlite.md), [ownership](bun-sqlite-transactions.md),
+[boundary](sqlite-statement-boundary.md), [tasks](bun-sqlite-tasks.md)
+and [proof](bun-sqlite-testing.md).

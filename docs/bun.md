@@ -45,3 +45,12 @@ options, an occupied port, actual TCP requests, resource startup, draining, clea
 port reuse after close, and generic transport errors. The executable example verifies
 DI, JSON validation, request IDs, structured logs, and signal shutdown.
 Bun 1.4.4 is pinned for reproducible verification.
+
+## Native persistent storage
+
+The optional [Bun SQLite provider](bun-sqlite.md) uses `bun:sqlite` behind the
+existing Database contract. Its [async transaction ownership](bun-sqlite-transactions.md)
+keeps native locks through callback/participant completion. SQL itself remains
+synchronous and can block Bun's event loop. The HTTP entrypoint does not import it.
+Run `pnpm dev:bun-sqlite` for the [persistent task host](bun-sqlite-tasks.md), and
+`pnpm test:bun-sqlite` for [native storage/process verification](bun-sqlite-testing.md).

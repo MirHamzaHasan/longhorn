@@ -5,6 +5,8 @@ Owner: `@longhorn/node/sqlite`. Uses the local SQLite entrypoint of
 the [runtime-neutral database contract](database.md). Native driver and filesystem
 imports stay inside this Node-specific entrypoint; importing shared core or the
 Node HTTP adapter does not import this SQLite module.
+For Bun's native driver, use the separate [Bun SQLite entrypoint](bun-sqlite.md)
+with its own synchronous-execution and async-lifetime policy.
 The adapter marks its executor/connection dialect as sqlite. Portable boolean
 arguments bind as integer bigint 1/0; PostgreSQL retains native booleans through
 its [separate provider](postgres.md). SQL/placeholder syntax is never rewritten.

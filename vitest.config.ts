@@ -50,6 +50,7 @@ export default defineConfig({
       '@longhorn/container': './packages/container/src/index.ts',
       '@longhorn/config': './packages/config/src/index.ts',
       '@longhorn/database/batch': './packages/database/src/batch.ts',
+      '@longhorn/database/sqlite-statement': './packages/database/src/sqlite-statement.ts',
       '@longhorn/database/postgres': './packages/database/src/postgres.ts',
       '@longhorn/database/transactions': './packages/database/src/transactions.ts',
       '@longhorn/database': './packages/database/src/index.ts',

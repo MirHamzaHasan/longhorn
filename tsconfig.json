@@ -1,6 +1,7 @@
 {
   "files": [],
   "references": [
+    { "path": "./examples/bun-sqlite" },
     { "path": "./examples/queue-worker" },
     { "path": "./examples/durable-worker" },
     { "path": "./examples/scheduled-worker" },

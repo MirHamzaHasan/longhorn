@@ -2,7 +2,7 @@
 
 Owner: `@longhorn/database`. Connects [runtime adapters](runtimes.md) to application
 repositories without importing native drivers, filesystem APIs, or a schema vendor.
-Concrete implementations are [Node SQLite](sqlite.md), [Node PostgreSQL](postgres.md)
+Concrete implementations are [Node SQLite](sqlite.md), [Bun SQLite](bun-sqlite.md), [Node PostgreSQL](postgres.md)
 and [Durable Object SQLite](workers-durable-sqlite.md).
 The optional [D1 provider](workers-d1.md) implements the separate
 [BatchDatabase capability](batch-database.md), using the same statements/results

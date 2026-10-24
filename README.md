@@ -408,6 +408,11 @@ The portable example does not import the Node SQLite provider.
 See [Bun](docs/bun.md), [Deno](docs/deno.md), and [Workers](docs/workers.md) for APIs,
 permissions, platform lifetime differences, and verified tooling versions.
 
+`pnpm dev:bun-sqlite` runs the [persistent Bun task API](docs/bun-sqlite-tasks.md)
+using native `bun:sqlite` and the existing task service/repository. The optional
+[Bun storage entrypoint](docs/bun-sqlite.md) supports async callback transactions
+and managed publishers; native SQL itself executes synchronously.
+
 ## Checks and built execution
 
 ```sh
@@ -416,6 +421,7 @@ pnpm typecheck
 pnpm test
 pnpm test:persistence
 pnpm test:runtimes
+pnpm test:bun-sqlite
 pnpm test:worker-scheduled
 pnpm test:worker-storage
 pnpm test:d1

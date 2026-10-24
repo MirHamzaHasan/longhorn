@@ -9,6 +9,11 @@ downstream connections, verification, and current limits.
 
 | Feature | Guide | Implementation owner | Connects to |
 | --- | --- | --- | --- |
+| Native Bun SQLite connection | [Bun storage](bun-sqlite.md) | `@longhorn/bun/sqlite` | Exact int64/blob values, bounded admission, native metadata and drained close |
+| Async Bun transaction ownership | [Bun transactions](bun-sqlite-transactions.md) | Native BEGIN/COMMIT and managed scope | Canonical file gates, auto-rollback fencing and joined queue publishers |
+| Shared SQLite statement boundary | [Statement scanner](sqlite-statement-boundary.md) | Optional shared database entrypoint | D1 compatibility, Bun prefix rejection and trigger bodies |
+| Persistent Bun task host | [Bun tasks](bun-sqlite-tasks.md) | `examples/bun-sqlite` | Existing task service/repository, DI, migrations, cache/events and native listener |
+| Native Bun storage gate | [Bun proof](bun-sqlite-testing.md) | Actual Bun files/processes and HTTP | SQL stores, lock contention, process kills, concurrent writes and retained restart |
 | Persistent Node SQLite project | [SQLite starter](sqlite-starter.md) | CLI SQLite profile | Editable task service, native file persistence, typed events and derived memory cache |
 | Shared application asset reader | [Template assets](application-template-assets.md) | CLI asset/profile modules | Compatible D1/Node descriptors, checked hashes/paths/bytes and selected package closures |
 | SQLite starter resource lifetime | [SQLite lifetime](sqlite-starter-lifecycle.md) | Source/compiled Node host | Environment precedence, project data paths, startup/schema checks, source watching and drain |

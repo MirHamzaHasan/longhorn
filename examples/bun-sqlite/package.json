@@ -1,0 +1,23 @@
+{
+  "name": "example-bun-sqlite",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --clean",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@longhorn/bun": "workspace:*",
+    "@longhorn/config": "workspace:*",
+    "@longhorn/container": "workspace:*",
+    "@longhorn/core": "workspace:*",
+    "@longhorn/database": "workspace:*",
+    "@longhorn/events": "workspace:*",
+    "@longhorn/cache": "workspace:*",
+    "@longhorn/http": "workspace:*",
+    "@longhorn/logger": "workspace:*",
+    "@longhorn/validation": "workspace:*",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": { "@types/bun": "^1.4.3" }
+}
