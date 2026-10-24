@@ -9,7 +9,7 @@ const root=document.querySelector<HTMLElement>('#main')!,notice=document.querySe
 const sidebar=document.querySelector<HTMLElement>('#sidebar')!,identity=document.querySelector<HTMLElement>('#identity')!,operatorNav=document.querySelector<HTMLElement>('#operator-nav')!
 const themeButton=document.querySelector<HTMLButtonElement>('#theme')!,logout=document.querySelector<HTMLButtonElement>('#logout')!
 let user:User|undefined,version=0,reads=new AbortController(),scope='mine',deliveryState='failed',noticeRoute=''
-let clearPageSecrets=()=>{},passwordPending=false
+let clearPageSecrets=()=>{},accountPending=false,pendingKind:'password'|'sessions'|undefined
 const reasons:Record<string,string>={'manual-retry':'Manual retry','provider-restored':'Provider restored','configuration-fixed':'Configuration fixed',investigating:'Investigating'}
 const stateLabels:Record<string,string>={pending:'Pending',running:'Sending',succeeded:'Delivered',failed:'Failed',unknown:'Unavailable'}
 function node<K extends keyof HTMLElementTagNameMap>(tag:K,text?:string,className?:string):HTMLElementTagNameMap[K]{const value=document.createElement(tag);if(text!==undefined)value.textContent=text;if(className)value.className=className;return value}
@@ -45,18 +45,18 @@ async function api<T>(path:string,body?:unknown,options:{preserveUnauthorized?:b
   }catch(error){if(error instanceof RequestError)throw error;if(parent?.aborted)throw new DOMException('Navigation cancelled','AbortError');throw new RequestError(0,expired?'The request timed out. Try again.':'Could not reach LongHorn. Try again.',undefined)}
   finally{clearTimeout(timer);parent?.removeEventListener('abort',abort)}
 }
-function syncAccount(){logout.disabled=passwordPending;document.body.dataset.authenticated=String(!!user);sidebar.hidden=!user;logout.hidden=!user;operatorNav.hidden=!operator();identity.textContent=user?user.username+(operator()?' · Operator':' · Member'):''}
+function syncAccount(){logout.disabled=accountPending;for(const control of root.querySelectorAll<HTMLInputElement|HTMLButtonElement>('[data-account-control]'))control.disabled=accountPending;document.body.dataset.authenticated=String(!!user);sidebar.hidden=!user;logout.hidden=!user;operatorNav.hidden=!operator();identity.textContent=user?user.username+(operator()?' · Operator':' · Member'):''}
 function welcome(){const value=node('section',undefined,'welcome');value.append(node('p','Command operations','eyebrow'),node('h1','Keep each command in view'),node('p','Create a command. Follow its delivery and receipt.'));const actions=node('div',undefined,'actions');actions.append(link('Sign in','#/login','button primary'),link('Create account','#/register','button'));value.append(actions,node('p','Your history stays with your account. Operators can inspect delivery failures and record recovery actions.','welcome-note'));return value}
 function authPage(register:boolean){
   const value=node('section',undefined,'panel narrow');value.append(node('h1',register?'Create your account':'Sign in to LongHorn'),node('p',register?'Keep your commands and receipts together.':'Open your saved command history.','subtle'))
   const form=node('form',undefined,'form-stack'),username=node('input'),password=node('input'),error=node('p',undefined,'form-error'),submit=node('button',register?'Create account':'Sign in','primary')
   username.name='username';username.autocomplete='username';username.required=true;username.minLength=3;username.maxLength=64;username.spellcheck=false;username.autocapitalize='none'
   password.name='password';password.type='password';password.autocomplete=register?'new-password':'current-password';password.required=true;password.minLength=register?15:1;password.maxLength=256
-  error.setAttribute('role','alert');error.hidden=true;submit.type='submit';submit.disabled=passwordPending
-  if(passwordPending)value.append(node('p','A password change is still being checked. Wait before signing in.','subtle'))
+  error.setAttribute('role','alert');error.hidden=true;submit.type='submit';submit.disabled=accountPending
+  if(accountPending)value.append(node('p','An account change is still being checked. Wait before signing in.','subtle'))
   clearPageSecrets=()=>{password.value=''}
   form.append(field('Username',username,'3–64 letters, numbers, dots, dashes or underscores.'),field('Password',password,register?'Use at least 15 characters.':undefined),error,submit)
-  form.addEventListener('submit',event=>{event.preventDefault();if(passwordPending||submit.disabled)return;const current=version;submit.disabled=true;submit.textContent=register?'Creating account…':'Signing in…';error.hidden=true;void(async()=>{
+  form.addEventListener('submit',event=>{event.preventDefault();if(accountPending||submit.disabled)return;const current=version;submit.disabled=true;submit.textContent=register?'Creating account…':'Signing in…';error.hidden=true;void(async()=>{
     try{const input={username:username.value,password:password.value};if(register)await api('/register',input);const session=await api<{user:User}>('/login',input);password.value='';if(current!==version)return;user=session.user;syncAccount();location.hash='#/commands';announce(register?'Your account is ready.':'Signed in.')}
     catch(reason){if(current!==version)return;error.textContent=reason instanceof Error?reason.message:'Sign-in failed. Try again.';error.hidden=false;password.setAttribute('aria-invalid','true');password.focus()}
     finally{submit.disabled=false;submit.textContent=register?'Create account':'Sign in'}
@@ -67,29 +67,31 @@ function passwordSignIn(message:string,error=false){
   user=undefined;syncAccount();announce(message,error,'#/login');location.hash='#/login';void render()
 }
 function accountPage(){
-  const value=node('div');value.append(title('Your account','Signed in as '+user!.username+'.'))
+  const value=node('div'),panels=node('div',undefined,'account-stack');value.append(title('Your account','Signed in as '+user!.username+'.'));panels.append(passwordPanel(),sessionPanel());value.append(panels);return value
+}
+function passwordPanel(){
   const panel=node('section',undefined,'panel account-panel');panel.append(node('h2','Change password'))
   if(document.body.dataset.passwordChanges!=='true'){
-    panel.append(node('p','Password changes are unavailable on this host.','subtle'));value.append(panel);return value
+    panel.append(node('p','Password changes are unavailable on this host.','subtle'));return panel
   }
   panel.append(node('p','Changing it signs you out on every device.','subtle'))
   const form=node('form',undefined,'form-stack'),current=node('input'),next=node('input'),confirm=node('input')
   const error=node('p',undefined,'form-error'),submit=node('button','Change password','primary'),progress=node('p',undefined,'subtle')
   const username=node('input');username.type='hidden';username.name='username';username.autocomplete='username';username.value=user!.username
   for(const [input,name,autocomplete]of [[current,'currentPassword','current-password'],[next,'nextPassword','new-password'],[confirm,'confirmPassword','new-password']]as const){
-    input.name=name;input.type='password';input.autocomplete=autocomplete;input.required=true;input.maxLength=256
+    input.name=name;input.type='password';input.autocomplete=autocomplete;input.required=true;input.maxLength=256;input.dataset.accountControl='true'
     input.addEventListener('input',()=>{input.removeAttribute('aria-invalid');input.removeAttribute('aria-errormessage');error.hidden=true})
   }
-  error.id='password-error';error.setAttribute('role','alert');error.hidden=true;submit.type='submit'
-  progress.setAttribute('role','status');progress.hidden=!passwordPending;progress.textContent='Checking a password change. Wait before signing in or submitting another.'
+  error.id='password-error';error.setAttribute('role','alert');error.hidden=true;submit.type='submit';submit.dataset.accountControl='true'
+  progress.setAttribute('role','status');progress.hidden=!accountPending;progress.textContent=pendingKind==='sessions'?'Updating your sign-ins. Wait before making another account change.':'Checking a password change. Wait before signing in or submitting another.'
   const clear=()=>{current.value='';next.value='';confirm.value=''};clearPageSecrets=clear
-  const pending=(active:boolean)=>{for(const input of [current,next,confirm])input.disabled=active;submit.disabled=active;submit.textContent=active?'Changing password…':'Change password';progress.hidden=!active;form.setAttribute('aria-busy',String(active))}
+  const pending=(active:boolean)=>{for(const input of [current,next,confirm])input.disabled=active;submit.disabled=active;submit.textContent=active&&pendingKind==='password'?'Changing password…':'Change password';progress.hidden=!active;form.setAttribute('aria-busy',String(active))}
   error.tabIndex=-1
   const invalid=(input:HTMLInputElement|undefined,message:string)=>{error.textContent=message;error.hidden=false;if(input){input.setAttribute('aria-invalid','true');input.setAttribute('aria-errormessage',error.id)}(input??error).focus()}
-  pending(passwordPending)
+  pending(accountPending)
   form.append(username,field('Current password',current),field('New password',next,'Use 15–128 characters. Spaces count and are kept.'),field('Confirm new password',confirm),error,progress,submit)
   form.addEventListener('submit',event=>{
-    event.preventDefault();if(passwordPending||submit.disabled)return
+    event.preventDefault();if(accountPending||submit.disabled)return
     const length=[...next.value].length
     if(length<15||length>128){invalid(next,'Use 15–128 characters for your new password.');return}
     if(next.value!==confirm.value){invalid(confirm,'The new passwords do not match. Enter the same password twice.');return}
@@ -97,7 +99,7 @@ function accountPage(){
     if(left.length===right.length&&left.every((byte,index)=>byte===right[index])){invalid(next,'Choose a password different from your current one.');return}
     const currentVersion=version,subject=user!.id,input={currentPassword:current.value,nextPassword:next.value}
     error.hidden=true;for(const field of [current,next,confirm]){field.removeAttribute('aria-invalid');field.removeAttribute('aria-errormessage')}
-    passwordPending=true;pending(true);syncAccount()
+    accountPending=true;pendingKind='password';pending(true);syncAccount()
     // fetch serializes immediately. Clear the controls while the native KDF runs.
     const request=api('/password',input,{preserveUnauthorized:true,expectedStatus:204});clear()
     void(async()=>{
@@ -119,14 +121,48 @@ function accountPage(){
         else if(reason instanceof RequestError&&reason.status===403)message='Password change was refused. Reload this page before trying again.'
         else finish=()=>passwordSignIn('Could not confirm the password change. Sign in with your new password. If it does not work, try your previous password.',true)
       }finally{
-        clear();passwordPending=false;syncAccount()
+        clear();accountPending=false;pendingKind=undefined;syncAccount()
         if(finish)finish()
         else if(currentVersion===version){pending(false);invalid(errorField,message)}
-        else{announce(message,true);if(location.hash==='#/account'||!user)void render()}
+        else{announce(message,true);if(location.hash==='#/account'||location.hash==='#/login'||location.hash==='#/register'||!user)void render()}
       }
     })()
   })
-  panel.append(form);value.append(panel);return value
+  panel.append(form);return panel
+}
+function sessionPanel(){
+  const panel=node('section',undefined,'panel account-panel');panel.append(node('h2','Sign-in controls'))
+  if(document.body.dataset.sessionControls!=='true'){
+    panel.append(node('p','Session controls are unavailable on this host.','subtle'));return panel
+  }
+  panel.append(node('p','End other sign-ins, or sign out on every device.','subtle'),node('p','Ending other sessions keeps this browser signed in.','hint'))
+  const actions=node('div',undefined,'actions'),progress=node('p',pendingKind==='sessions'?'Updating your sign-ins…':'An account change is still being checked.','hint');progress.setAttribute('role','status');progress.hidden=!accountPending
+  for(const [scope,label]of [['others','End other sessions'],['all','Sign out everywhere']]as const){
+    const control=button(label,()=>{
+      if(accountPending)return
+      const currentVersion=version;accountPending=true;pendingKind='sessions';clearPageSecrets();syncAccount();progress.hidden=false
+      void(async()=>{
+        let finish:(()=>void)|undefined,message='',failed=false
+        try{
+          const result=await api<{revokedSessions:number}>('/sessions/revoke',{scope},{expectedStatus:200})
+          if(!result||!Number.isSafeInteger(result.revokedSessions)||result.revokedSessions<0||(scope==='all'&&result.revokedSessions===0))throw new Error('Invalid session control response')
+          if(scope==='all')finish=()=>passwordSignIn('Signed out everywhere. Sign in to continue.')
+          else message=result.revokedSessions===0?'No other active sessions to end.':'Ended '+result.revokedSessions+' other '+(result.revokedSessions===1?'session.':'sessions.')
+        }catch(reason){
+          failed=true
+          if(reason instanceof RequestError&&reason.status===401)finish=()=>passwordSignIn('Your session ended. Sign in to continue.',true)
+          else if(reason instanceof RequestError&&(reason.status===400||reason.status===403))message='Session change was refused. Reload this page before trying again.'
+          else finish=()=>passwordSignIn('Could not confirm the session change. Sign in to check your account.',true)
+        }finally{
+          accountPending=false;pendingKind=undefined;clearPageSecrets();syncAccount();progress.hidden=true
+          if(finish)finish()
+          else{announce(message,failed);if(currentVersion===version){notice.tabIndex=-1;notice.focus()}else if(location.hash==='#/account'||location.hash==='#/login'||location.hash==='#/register')void render()}
+        }
+      })()
+    })
+    control.dataset.accountControl='true';control.disabled=accountPending;actions.append(control)
+  }
+  panel.append(actions,progress);return panel
 }
 function parseNumbers(text:string){const parts=text.trim().split(/[\s,]+/);if(!text.trim()||parts.length>100||parts.some(value=>!(/^[+-]?(?:\d+\.?\d*|\.\d+)(?:e[+-]?\d+)?$/i.test(value))||!Number.isFinite(Number(value))||Math.abs(Number(value))>1e12))throw new Error('Enter 1–100 numbers between −1 trillion and 1 trillion.');return parts.map(Number)}
 function newCommand(){
@@ -218,7 +254,7 @@ function setTheme(dark:boolean,remember=false){document.documentElement.dataset.
 let saved:string|null=null;try{saved=localStorage.getItem('longhorn-theme')}catch{}
 setTheme(saved?saved==='dark':matchMedia('(prefers-color-scheme: dark)').matches)
 themeButton.addEventListener('click',()=>setTheme(document.documentElement.dataset.theme!=='dark',true))
-logout.addEventListener('click',()=>{if(passwordPending||logout.disabled)return;logout.disabled=true;void api('/logout',{}).then(()=>{user=undefined;syncAccount();announce('Signed out.');location.hash='#/welcome';void render()}).catch(reason=>announce((reason as Error).message,true)).finally(()=>{logout.disabled=false})})
+logout.addEventListener('click',()=>{if(accountPending||logout.disabled)return;logout.disabled=true;void api('/logout',{}).then(()=>{user=undefined;syncAccount();announce('Signed out.');location.hash='#/welcome';void render()}).catch(reason=>announce((reason as Error).message,true)).finally(()=>{logout.disabled=false})})
 addEventListener('hashchange',()=>{void render()});addEventListener('pagehide',()=>{++version;reads.abort();clearPageSecrets();root.replaceChildren();sidebar.hidden=true;identity.textContent=''})
 addEventListener('pageshow',event=>{if(event.persisted)location.reload()})
 document.querySelector<HTMLAnchorElement>('.skip')!.addEventListener('click',event=>{event.preventDefault();root.focus()})

@@ -1,5 +1,6 @@
 import type { Database, Migration, SqlRow, SqlExecutor } from '@longhorn/database'
 import { assertTransactionExecutor } from '@longhorn/database/transactions'
+import { SqliteSessionControlStore } from './sqlite-session-controls.js'
 import { normalizeUsername } from './credentials.js'
 import { SqlitePasswordStore } from './sqlite-passwords.js'
 import type { TransactionalAuthStore, AuthUser, CredentialUser, StoredSession, RoleChangeResult } from './types.js'
@@ -39,8 +40,9 @@ function integer(value: unknown): number {
 }
 
 export class SqliteAuthStore implements TransactionalAuthStore {
+  readonly sessionControls: SqliteSessionControlStore
   readonly passwordChanges: SqlitePasswordStore
-  constructor(private readonly database: Database) { this.passwordChanges = new SqlitePasswordStore(database) }
+  constructor(private readonly database: Database) { this.sessionControls = new SqliteSessionControlStore(database); this.passwordChanges = new SqlitePasswordStore(database) }
   async createUser(input: CredentialUser): Promise<boolean> {
     const result = await this.database.execute({
       sql: 'INSERT INTO longhorn_auth_users (id, username, password_hash, roles) VALUES (?, ?, ?, ?) ON CONFLICT(username) DO NOTHING',

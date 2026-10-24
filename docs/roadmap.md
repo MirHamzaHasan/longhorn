@@ -583,7 +583,7 @@ evidence remain separate work.
 ## Independent native auth workflow implemented
 
 The [sqlite-auth profile](auth-starter.md) generates Node, Bun or Deno projects
-with actual editable auth source, native crypto/storage, seven copied app cases
+with actual editable auth source, native crypto/storage, eight copied app cases
 and per-feature guides. [Checked assets](auth-starter-snapshot.md) retain descriptor
 v1 and selected dependency closure. The [launcher](auth-starter-launcher.md) applies
 the shared schema/environment policy and literal Deno grants; [development](auth-starter-development.md)
@@ -616,11 +616,26 @@ reauthentication/session distinction, one pending mutation across navigation and
 secret clearing are implemented. Success requires sign-in; uncertain responses
 are explained and never replayed. The [browser proof](console-account-testing.md)
 covers native revocation/throttling, dropped and late responses, the real deadline,
-keyboard, both themes, phone widths and 42 additional captures. The relocated
+keyboard, both themes, phone widths and 58 account captures. The relocated
 archive changes credentials through its shipped form after restore/regrant.
 
 Recovery/reset, MFA, additional browser engines and physical-device assistive
 technology checks remain future work.
+
+## Authenticated session controls implemented
+
+[Session controls](session-controls.md) now support ending other live sign-ins
+while retaining the initiator, or ending all current live sign-ins. Optional
+[SQLite](sqlite-session-controls.md) and [PostgreSQL](postgres-session-controls.md)
+ports reauthenticate/check expiry after transaction ownership using the existing
+schema and restricted capability. Strict [HTTP routes](session-controls-http.md)
+connect native/generated apps to the [browser Account actions](console-session-controls.md).
+Password/session controls share pending state, clear secrets and never replay
+unconfirmed responses. [Native proof](session-controls-testing.md) covers real
+concurrency/ordering, expiry, rollback, four pre-commit kills, mixed-host cookies,
+58 account captures and both controls after independent restore/regrant/restart.
+
+Per-device inventory/metadata, recovery/reset and MFA remain separate future work.
 
 ## Subsequent framework modules
 

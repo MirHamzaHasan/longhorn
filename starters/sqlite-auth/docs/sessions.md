@@ -17,3 +17,6 @@ Current user roles reload from storage. There is no principal cache to invalidat
 Accounts/sessions survive native host restart; this is local retained SQLite,
 not a distributed database or a cross-machine session service. See
 [migrations](migrations.md), [accounts](accounts.md) and [testing](testing.md).
+
+[Session controls](session-controls.md) add authenticated other/all sign-out with
+shared ownership and explicit uncertain-result policy.

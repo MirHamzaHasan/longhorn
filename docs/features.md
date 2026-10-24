@@ -9,6 +9,11 @@ downstream connections, verification, and current limits.
 
 | Feature | Guide | Implementation owner | Connects to |
 | --- | --- | --- | --- |
+| Authenticated session controls | [Session controls](session-controls.md) | AuthService optional capability | Reauthenticated others/all scopes, live counts, current/peer preservation and explicit opt-in |
+| Native SQLite session controls | [SQLite session controls](sqlite-session-controls.md) | Optional auth/sqlite-session-controls | Existing schema, managed ownership, post-wait expiry and atomic scoped deletion |
+| Restricted PostgreSQL session controls | [PostgreSQL session controls](postgres-session-controls.md) | Optional auth/postgres-session-controls | Existing transaction-auth grants, shared protocol admission, row ownership and READ COMMITTED |
+| Guarded session-control HTTP | [Session HTTP](session-controls-http.md) | Native auth and optional PostgreSQL routing | Exact-origin cookies, strict scope, guarded legacy logout-all and private results |
+| Native session-control proof | [Session testing](session-controls-testing.md) | Real runtimes/SQL and copied projects | Reciprocal races, login/password ordering, wait expiry, native rollback and four SIGKILL checkpoints |
 | Authenticated password replacement | [Password changes](password-changes.md) | AuthService opt-in capability | Current password, fixed input policy, durable reauthentication budget and atomic session revocation |
 | Credential-fenced session issuance | [Session fencing](password-session-fencing.md) | SessionManager.createIf and SQL store ports | Private candidates, expected-hash commit, current login-only hosts and old-verifier rejection |
 | Native SQLite credential mutation | [SQLite passwords](sqlite-password-changes.md) | Optional auth/sqlite-passwords | Existing schema, managed transaction, post-ownership expiry and copied inputs |
@@ -108,7 +113,8 @@ downstream connections, verification, and current limits.
 | Working web console | [Console](web-console.md) | PostgreSQL example browser client | Signup, history, commands, receipts and real API failures |
 | Console browser boundary | [Console security](console-security.md) | Fixed asset routes and client API helper | CSP, HttpOnly cookies, relative requests, session clearing |
 | Browser account settings | [Account](console-account.md) | Console Account route and host capability | Password confirmation, current-session probe, pending navigation, secret clearing and sign-in after replacement |
-| Browser account native proof | [Account testing](console-account-testing.md) | Chromium and native PostgreSQL/scrypt | Live 401 distinction, peer revocation, throttling, lost/late responses and 42 captures |
+| Browser sign-in controls | [Console session controls](console-session-controls.md) | Existing Account route and shared mutation state | End others/all, count feedback, cross-action exclusion, late results and no ambiguous replay |
+| Browser account native proof | [Account testing](console-account-testing.md) | Chromium and native PostgreSQL/scrypt | Live 401 distinction, peer revocation, throttling, lost/late responses and 58 captures |
 | Browser operator recovery | [Console recovery](console-recovery.md) | Console delivery/audit screens | Current allowance, deliberate retry, conflict and account attribution |
 | Console interaction design | [Design rules](console-design.md) | Browser CSS and DOM | Light/dark tokens, responsive hierarchy, honest states |
 | Native browser verification | [Console testing](console-testing.md) | Chromium, axe and owned native services | Actual receipts, dropped responses, keyboard and 65 command/recovery captures |

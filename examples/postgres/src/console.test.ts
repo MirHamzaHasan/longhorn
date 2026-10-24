@@ -45,13 +45,14 @@ it('rejects a console host without account operations before opening a database'
 
 
 it('exposes only the host password capability and keeps account navigation in the authenticated shell', async () => {
-  for (const enabled of [false, true]) {
+  for (const enabled of [false, true]) for (const sessions of [false, true]) {
     const app = new Longhorn()
-    configureConsole(app, { script: '', style: '' }, { passwordChanges: enabled })
+    configureConsole(app, { script: '', style: '' }, { passwordChanges: enabled, sessionControls: sessions })
     try {
-      const response = await app.fetch(new Request('http://localhost/console?passwordChanges=true'))
+      const response = await app.fetch(new Request('http://localhost/console?passwordChanges=true&sessionControls=true'))
       const html = await response.text()
       expect(html).toContain('data-password-changes="' + enabled + '"')
+      expect(html).toContain('data-session-controls="' + sessions + '"')
       expect(html).toContain('href="#/account" data-nav="account">Account</a>')
       expect(html).toContain('<aside id="sidebar" hidden>')
     } finally { await app.close() }

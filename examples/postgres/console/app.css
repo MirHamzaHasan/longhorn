@@ -17,3 +17,5 @@ input,select,textarea{border-color:#788078}
 .account-panel input,.account-panel button{min-height:48px}
 
 .account-panel input[aria-invalid=true]{border-color:var(--danger)}
+
+.account-stack{display:grid;gap:24px;max-width:560px}.account-stack .hint{margin:0 0 16px}.account-stack .form-stack .hint{margin:6px 0 0}.account-stack .actions{margin-top:20px}

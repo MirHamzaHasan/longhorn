@@ -55,7 +55,8 @@ pnpm demo:operator-accounts
 
 Open **http://127.0.0.1:3010/console**. Create an account, submit numbers and
 follow the command through delivery to its computed receipt. Operators can
-inspect failures, retry delivery and read the recovery audit. This demo owns
+inspect failures, retry delivery and read the recovery audit. Account offers
+[password changes](docs/console-account.md) and [sign-in controls](docs/console-session-controls.md). This demo owns
 temporary PostgreSQL and receiver data. See the [complete walkthrough](docs/command-application.md)
 and [persistent host](docs/persistent-operator-host.md) for retained storage.
 

@@ -38,3 +38,5 @@ it cannot extend expiries through UPDATE under the example's grants.
 
 [Native proofs](postgres-auth-testing.md) cover failed replacement, process death,
 exact expiry, session hashing, cross-process rotation/revocation, restart and cascades.
+
+Authenticated others/all revocation is recorded in [session controls](postgres-session-controls.md).

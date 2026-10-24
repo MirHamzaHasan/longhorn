@@ -29,10 +29,13 @@ server session. pagehide removes private DOM and a restored page reloads its ses
 
 Labels, autocomplete, keyboard/error focus, 48px controls, both themes and narrow
 widths follow the [console](console.md). Repository verification uses real native
-PostgreSQL/scrypt and Chromium, plus 42 accessible screenshots. The independent
+PostgreSQL/scrypt and Chromium, plus 58 accessible screenshots. The independent
 archive gate uses this shipped form after actual restore/regrant and checks old
 sessions, peer preservation, retained history and restart. Physical-device
 assistive technology, other browser engines and password-manager apps require
 manual checks. Recovery/reset and MFA are separate features.
 
 Connects [features](features.md), [backup](backup.md) and [deployment](deployment.md).
+
+[Session controls](session-controls.md) add authenticated other/all sign-out with
+shared ownership and explicit uncertain-result policy.

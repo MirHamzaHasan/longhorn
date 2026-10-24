@@ -4,6 +4,7 @@
 | --- | --- | --- |
 | [Locked dependencies](dependencies.md) | pnpm-lock.yaml and .longhorn/distribution.json | Local framework overrides, fixed external resolution and explicit updates |
 | [Account access](accounts.md) | src/accounts.ts | Native scrypt, AuthService, HttpOnly session cookies, exact Origin |
+| [Session controls](session-controls.md) | AuthService, account routing and SQL session-control port | Token-owned others/all scopes, live counts, post-ownership expiry and atomic revocation |
 | [Password changes](password-changes.md) | src/accounts.ts and auth password capability | Current-password verification, fenced login, explicit functions and atomic session revocation |
 | [Browser account](account.md) | console/app.ts, app.css and src/console.ts | Host capability, password confirmation, live session probe, pending navigation and uncertain outcomes |
 | [Commands](commands.md) | src/operations.ts, operation-contracts.ts | Hono validation, DI, transaction-locked identity, scoped request replay |

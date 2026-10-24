@@ -72,6 +72,7 @@
     "test:password-runtimes": "pnpm build && node scripts/verify-password-runtimes.mjs",
     "test:native-auth": "pnpm build && node scripts/verify-password-runtimes.mjs && node scripts/verify-auth.mjs bun",
     "test:auth-project": "pnpm build && node scripts/verify-auth-project.mjs",
+    "test:session-controls": "pnpm build && node scripts/verify-session-controls.mjs",
     "test:password-changes": "pnpm build && node scripts/verify-password-changes.mjs && node scripts/verify-auth.mjs bun",
     "test:events": "pnpm build && node scripts/verify-events.mjs",
     "test:cache": "pnpm build && node scripts/verify-cache.mjs",

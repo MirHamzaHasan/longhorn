@@ -1,6 +1,6 @@
 import { SessionManager, tokenHash, validSessionToken } from './sessions.js'
 import type { SqlExecutor } from '@longhorn/database'
-import type { Authenticated, AuthStore, AuthUser, CredentialUser, IssuedSession, PasswordHasher, PasswordChangeStore, TransactionalAuthStore } from './types.js'
+import type { Authenticated, AuthStore, AuthUser, CredentialUser, IssuedSession, PasswordHasher, PasswordChangeStore, TransactionalAuthStore, SessionControlStore, SessionControlScope } from './types.js'
 
 export class AuthError extends Error {
   constructor(readonly code: 'INVALID_INPUT' | 'USERNAME_TAKEN' | 'INVALID_CREDENTIALS' | 'RATE_LIMITED' | 'CAPACITY', readonly retryAfterMs?: number) {
@@ -41,15 +41,20 @@ export class AuthService {
   private readonly clock: () => number
   private readonly loginLimit: number
   private readonly loginWindowMs: number
+  private readonly sessionControls: SessionControlStore | undefined
   private readonly passwordChanges: PasswordChangeStore | undefined
   private readonly passwordSession: PasswordChangeStore['createSession'] | undefined
   constructor(private readonly store: AuthStore, private readonly passwords: PasswordHasher,
-    options: { sessionTtlMs?: number; clock?: () => number; loginLimit?: number; loginWindowMs?: number; passwordChanges?: boolean } = {}) {
+    options: { sessionTtlMs?: number; clock?: () => number; loginLimit?: number; loginWindowMs?: number; passwordChanges?: boolean; sessionControls?: boolean } = {}) {
     this.clock = options.clock ?? Date.now
     this.sessions = new SessionManager(store, { clock: this.clock, ...(options.sessionTtlMs === undefined ? {} : { ttlMs: options.sessionTtlMs }) })
     this.loginLimit = options.loginLimit ?? 10
     this.loginWindowMs = options.loginWindowMs ?? 15 * 60 * 1000
     if (options.passwordChanges !== undefined && typeof options.passwordChanges !== 'boolean') throw new Error('Invalid password change setting')
+    if (options.sessionControls !== undefined && typeof options.sessionControls !== 'boolean') throw new Error('Invalid session control setting')
+    const controls = store.sessionControls
+    if (options.sessionControls && typeof controls?.revoke !== 'function') throw new Error('Auth store does not support session controls')
+    this.sessionControls = options.sessionControls ? Object.freeze({ revoke: controls!.revoke.bind(controls) }) : undefined
     const changes = store.passwordChanges
     if (options.passwordChanges && (typeof changes?.createSession !== 'function' || typeof changes.replacePassword !== 'function')) throw new Error('Auth store does not support password changes')
     if (changes !== undefined && typeof changes.createSession !== 'function') throw new Error('Invalid password session capability')
@@ -110,6 +115,15 @@ export class AuthService {
     const changed = await this.passwordChanges.replacePassword({ userId: user.id, tokenHash: await tokenHash(token),
       expectedPasswordHash: user.passwordHash, nextPasswordHash, attemptKey }, () => this.now())
     if (!changed) throw new AuthError('INVALID_CREDENTIALS')
+  }
+  async revokeSessions(token: string | undefined, scope: SessionControlScope): Promise<{ readonly revokedSessions: number }> {
+    if (!this.sessionControls) throw new Error('Session controls are not enabled')
+    if (scope !== 'others' && scope !== 'all') throw new AuthError('INVALID_INPUT')
+    if (!validSessionToken(token)) throw new AuthError('INVALID_CREDENTIALS')
+    const count = await this.sessionControls.revoke(Object.freeze({ tokenHash: await tokenHash(token), scope }), () => this.now())
+    if (count === undefined) throw new AuthError('INVALID_CREDENTIALS')
+    if (!Number.isSafeInteger(count) || count < 0 || (scope === 'all' && count === 0)) throw new Error('Invalid session control result')
+    return Object.freeze({ revokedSessions: count })
   }
   async authenticate(token: string | undefined): Promise<Authenticated | undefined> {
     const session = await this.sessions.authenticate(token)

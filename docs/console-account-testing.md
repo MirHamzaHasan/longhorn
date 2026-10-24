@@ -31,8 +31,8 @@ Verified behavior includes:
 - Detached input clearing, pagehide private DOM removal, a fresh session on reload,
   password autocomplete, keyboard order, cookie privacy and theme-only storage.
 
-The gate records 42 screenshots and `accessibility.json` under ignored
-`.artifacts/console/account` (`LONGHORN_ACCOUNT_QA_DIR` overrides it). Account,
+The gate records 58 screenshots and `accessibility.json` under ignored
+`.artifacts/console/account` (`LONGHORN_ACCOUNT_QA_DIR` overrides it). Account, session controls,
 validation, wrong-password, pending, success, expiry, uncertain, disabled, throttle
 and timeout states use light/dark themes at 1360/390px widths; 130% text is checked
 in both themes on phone width. It requires no horizontal overflow, no browser page
@@ -49,3 +49,9 @@ regrant. The native [password gate](password-change-testing.md) remains responsi
 for SQL/concurrency/expiry/crash durability; browser tests do not replace it.
 CI runs both browser gates and retains nested captures through the existing
 [review artifact](ci-review-artifacts.md) job, subject to hosted availability.
+
+[Session controls](console-session-controls.md) add four states (16 captures):
+held other-session deletion, completed others, all-device sign-out and dropped
+committed all-device response. The gate verifies current/unrelated account
+preservation, zero-other feedback, shared password/session exclusion, navigation
+and no automatic retry.

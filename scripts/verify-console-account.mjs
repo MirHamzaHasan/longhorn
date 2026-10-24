@@ -47,7 +47,7 @@ async function submit(page){await page.getByRole('button',{name:'Change password
 async function startHost(passwordChanges){
   const selected=await port(),origin='http://127.0.0.1:'+selected
   const app=createPostgresApp({console:await loadConsoleAssets(),openDatabase:()=>openPostgres({connectionString:sandbox.appUrl}),workerEnabled:false,schedulerEnabled:false,
-    accounts:{origin,secure:false,sessionTtlMs:28800000,passwords:createScryptPasswordHasher(),passwordChanges},
+    accounts:{origin,secure:false,sessionTtlMs:28800000,passwords:createScryptPasswordHasher(),passwordChanges,sessionControls:passwordChanges},
     operations:{publisher:{async publish(){throw new Error('Account gate must not publish commands')}},async readReceipt(){throw new Error('Account gate must not read receipts')}}})
   apps.push(app);const server=await app.listen(nodeRuntime,{hostname:'127.0.0.1',port:selected});return server.url+'/console'
 }
@@ -64,6 +64,31 @@ try{
   assert.equal(await member.getByLabel('Current password',{exact:true}).getAttribute('autocomplete'),'current-password')
   assert.equal(await member.getByLabel('New password',{exact:true}).getAttribute('autocomplete'),'new-password')
   await member.getByLabel('Current password',{exact:true}).focus();await member.keyboard.press('Tab');await expect(member.getByLabel('New password',{exact:true})).toBeFocused();await member.keyboard.press('Tab');await expect(member.getByLabel('Confirm new password',{exact:true})).toBeFocused();await member.keyboard.press('Tab');await expect(member.getByRole('button',{name:'Change password',exact:true})).toBeFocused()
+  // Session controls use the same actual account, plus an unrelated account.
+  const stranger=await page();await go(stranger,'#/register');await stranger.getByLabel('Username',{exact:true}).fill('account.stranger');await stranger.getByLabel('Password',{exact:true}).fill(password);await stranger.getByRole('button',{name:'Create account',exact:true}).click();await expect(stranger.getByRole('heading',{name:'Your commands',exact:true})).toBeVisible()
+  await signIn(peer,'account.member',password)
+  let sessionRequests=0;member.on('request',request=>{if(new URL(request.url()).pathname==='/account/sessions/revoke'&&request.method()==='POST')sessionRequests++})
+  let releaseSessions,sessionsArrived
+  const sessionsGate=new Promise(resolve=>{releaseSessions=resolve}),sessionsArrival=new Promise(resolve=>{sessionsArrived=resolve})
+  await member.route('**/account/sessions/revoke',async route=>{const response=await route.fetch();assert.equal(response.status(),200);assert.deepEqual(await response.json(),{revokedSessions:1});sessionsArrived();await sessionsGate;await route.fulfill({response})},{times:1})
+  await fill(member,password,replacement);await member.getByRole('button',{name:'End other sessions',exact:true}).click()
+  try{
+    await bounded(sessionsArrival);await emptyPasswords(member);await expect(member.getByRole('button',{name:'Change password',exact:true})).toBeDisabled();await expect(member.getByRole('button',{name:'Sign out everywhere',exact:true})).toBeDisabled();await expect(member.getByRole('button',{name:'Sign out',exact:true})).toBeDisabled()
+    await member.locator('form').dispatchEvent('submit');await member.getByRole('button',{name:'End other sessions',exact:true}).dispatchEvent('click');assert.equal(requests,0);assert.equal(sessionRequests,1)
+    await go(member,'#/new');await go(member,'#/account');await expect(member.getByRole('button',{name:'Change password',exact:true})).toBeDisabled();await capture(member,'sessions-pending')
+  }finally{releaseSessions()}
+  await expect(member.locator('#notice')).toContainText('Ended 1 other session.');await expect(member.getByRole('button',{name:'Change password',exact:true})).toBeEnabled();await member.unroute('**/account/sessions/revoke');await capture(member,'other-sessions-ended')
+  await go(peer,'#/new');await peer.evaluate(()=>{location.hash='#/commands'});await expect(peer.getByRole('heading',{name:'Sign in to LongHorn'})).toBeVisible()
+  await go(stranger,'#/new');await go(stranger,'#/commands');await expect(stranger.getByRole('heading',{name:'Your commands',exact:true})).toBeVisible()
+  await member.getByRole('button',{name:'End other sessions',exact:true}).click();await expect(member.locator('#notice')).toContainText('No other active sessions to end.')
+  await signIn(peer,'account.member',password);await member.getByRole('button',{name:'Sign out everywhere',exact:true}).click();await expect(member.locator('#notice')).toContainText('Signed out everywhere.');await expect(member.getByRole('heading',{name:'Sign in to LongHorn'})).toBeVisible();await expect(member.locator('#sidebar')).toBeHidden();await capture(member,'signed-out-everywhere')
+  await go(peer,'#/new');await peer.evaluate(()=>{location.hash='#/commands'});await expect(peer.getByRole('heading',{name:'Sign in to LongHorn'})).toBeVisible()
+  assert.equal(await stranger.evaluate(async()=>(await fetch('/account/session')).status),200)
+  await signIn(member,'account.member',password);await go(member,'#/account')
+  // The server really commits all-device revocation before its response is lost.
+  await member.route('**/account/sessions/revoke',async route=>{const response=await route.fetch();assert.equal(response.status(),200);await route.abort('failed')},{times:1})
+  const beforeSessionLoss=sessionRequests;await member.getByRole('button',{name:'Sign out everywhere',exact:true}).click();await expect(member.locator('#notice')).toContainText('Could not confirm the session change.');await expect(member.getByRole('heading',{name:'Sign in to LongHorn'})).toBeVisible();await capture(member,'session-change-unconfirmed');assert.equal(sessionRequests,beforeSessionLoss+1);await member.unroute('**/account/sessions/revoke')
+  await signIn(member,'account.member',password);await go(member,'#/account')
   const inputHandle=await member.getByLabel('Current password',{exact:true}).elementHandle();await fill(member,password,replacement);await go(member,'#/new');assert.equal(await inputHandle.evaluate(input=>input.value),'');await inputHandle.dispose();await go(member,'#/account');await emptyPasswords(member)
   await fill(member,password,replacement,'a mismatching browser password');await submit(member);await expect(member.getByRole('alert')).toContainText('do not match');await expect(member.getByLabel('Confirm new password',{exact:true})).toBeFocused();assert.equal(requests,0);await capture(member,'confirmation-error')
   await fill(member,password,'🐮'.repeat(8));await submit(member);await expect(member.getByRole('alert')).toContainText('15–128 characters');assert.equal(requests,0)
@@ -103,7 +128,7 @@ try{
   try{await bounded(wrongArrival);await go(member,'#/new')}finally{releaseWrong()}
   await expect(member.getByRole('status')).toContainText('current password was not correct');await expect(member.getByRole('heading',{name:'Create a command',exact:true})).toBeVisible();await expect(member.getByRole('button',{name:'Sign out',exact:true})).toBeEnabled();await member.unroute('**/account/password')
   // Existing deployments that have not enabled the capability show no form.
-  const disabled=await page();await disabled.goto(disabledUrl);await ready(disabled);await signIn(disabled,'account.member',finalPassword);await go(disabled,'#/account');await expect(disabled.getByText('Password changes are unavailable on this host.',{exact:true})).toBeVisible();await expect(disabled.locator('input[type=password]')).toHaveCount(0);await capture(disabled,'capability-disabled')
+  const disabled=await page();await disabled.goto(disabledUrl);await ready(disabled);await signIn(disabled,'account.member',finalPassword);await go(disabled,'#/account');await expect(disabled.getByText('Password changes are unavailable on this host.',{exact:true})).toBeVisible();await expect(disabled.locator('input[type=password]')).toHaveCount(0);await expect(disabled.getByRole('button',{name:'End other sessions',exact:true})).toHaveCount(0);await capture(disabled,'capability-disabled')
   // Actual durable account throttling retains a valid session and clears fields.
   const limited=await page();await go(limited,'#/register');await limited.getByLabel('Username',{exact:true}).fill('account.limited');await limited.getByLabel('Password',{exact:true}).fill(password);await limited.getByRole('button',{name:'Create account',exact:true}).click();await expect(limited.getByRole('heading',{name:'Your commands',exact:true})).toBeVisible();await go(limited,'#/account')
   for(let attempt=0;attempt<10;attempt++){await fill(limited,'wrong current password',replacement);await submit(limited);await expect(limited.getByRole('alert')).toContainText('current password was not correct');await expect(limited.getByRole('button',{name:'Change password',exact:true})).toBeEnabled()}
@@ -117,7 +142,7 @@ try{
   }
   // pagehide clears even a detached field; a restored document reloads its session.
   const oldField=await member.getByLabel('Current password',{exact:true}).elementHandle();await member.evaluate(()=>dispatchEvent(new PageTransitionEvent('pagehide')));assert.equal(await oldField.evaluate(input=>input.value),'');assert.equal(await member.locator('#main').textContent(),'');await oldField.dispose();await member.reload();await ready(member);await emptyPasswords(member)
-  for(const page of [member,peer,disabled,limited]){
+  for(const page of [member,peer,disabled,limited,stranger]){
     assert.equal(await page.evaluate(()=>sessionStorage.length),0)
     assert.ok((await page.evaluate(()=>Object.keys(localStorage))).every(key=>key==='longhorn-theme'))
     assert.ok(!(await page.evaluate(()=>document.cookie)).includes('longhorn_dev'))
@@ -135,7 +160,7 @@ try{
   try{await bounded(lateArrival);await expect(member.getByRole('status')).toContainText('Could not confirm the password change.',{timeout:20000})}finally{releaseLate()}
   await bounded(lateDelivery);assert.equal(requests,beforeTimeout+1);await expect(member.getByRole('heading',{name:'Sign in to LongHorn'})).toBeVisible();await expect(member.getByLabel('Password',{exact:true})).toHaveValue('');await capture(member,'change-timed-out');await member.unroute('**/account/password');await signIn(member,'account.member',timeoutPassword)
   await writeFile(resolve(output,'accessibility.json'),JSON.stringify({violations,captures},null,2));assert.deepEqual(errors,[]);assert.deepEqual(violations,[])
-  console.log('Console account: actual scrypt/PostgreSQL, Unicode validation, live 401 session distinction, native revocation, pending navigation, single submission, real throttling, dropped committed response, actual deadline/late success, capability flag, secret clearing, keyboard and '+captures.length+' accessible browser captures verified.')
+  console.log('Console account: actual scrypt/PostgreSQL, scoped session revocation, shared account mutation exclusion, Unicode validation, live 401 session distinction, native revocation, pending navigation, single submission, real throttling, dropped committed response, actual deadline/late success, capability flag, secret clearing, keyboard and '+captures.length+' accessible browser captures verified.')
 }finally{
   try{await browser?.close()}finally{try{for(const app of apps.reverse())await app.close()}finally{await sandbox?.stop()}}
 }

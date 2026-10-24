@@ -37,7 +37,7 @@ export function createPostgresApp(resources: { openDatabase: () => Promise<Datab
     await app.container.resolve(PgDatabase).execute('SELECT id FROM longhorn_queue.jobs LIMIT 0')
     await app.container.resolve(PgDatabase).execute('SELECT id FROM longhorn_scheduler.schedules LIMIT 0')
     await app.container.resolve(PgDatabase).execute('SELECT request_key FROM longhorn_idempotency.requests LIMIT 0')
-    if (resources.accounts) await checkAccountTables(app.container.resolve(PgDatabase),resources.accounts.passwordChanges)
+    if (resources.accounts) await checkAccountTables(app.container.resolve(PgDatabase),resources.accounts.passwordChanges,resources.accounts.sessionControls)
     if (resources.operations) await checkOperationTables(app.container.resolve(PgDatabase))
     return true
   })
@@ -52,7 +52,7 @@ export function createPostgresApp(resources: { openDatabase: () => Promise<Datab
       await database.execute('SELECT id FROM longhorn_queue.jobs LIMIT 0')
       await database.execute('SELECT id FROM longhorn_scheduler.schedules LIMIT 0')
       await database.execute('SELECT request_key FROM longhorn_idempotency.requests LIMIT 0')
-      if (resources.accounts) await checkAccountTables(database,resources.accounts.passwordChanges)
+      if (resources.accounts) await checkAccountTables(database,resources.accounts.passwordChanges,resources.accounts.sessionControls)
       if (resources.operations) await checkOperationTables(database)
       app.container.register(provide(PgDatabase, { factory: () => database }))
       return () => database.close()
@@ -102,6 +102,6 @@ export function createPostgresApp(resources: { openDatabase: () => Promise<Datab
     const access = configurePostgresAccounts(app,PgDatabase,resources.accounts)
     if (resources.operations) configurePostgresOperations(app,PgDatabase,access,resources.operations)
   }
-  if(resources.console)configureConsole(app,resources.console,{passwordChanges:resources.accounts?.passwordChanges??false})
+  if(resources.console)configureConsole(app,resources.console,{passwordChanges:resources.accounts?.passwordChanges??false,sessionControls:resources.accounts?.sessionControls??false})
   return app
 }

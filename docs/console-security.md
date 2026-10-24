@@ -32,8 +32,13 @@ storage, member/operator restrictions and session expiry.
 
 [Account password settings](console-account.md) handle reauthentication 401 with
 a fresh same-subject session check before retaining private UI. Only this operation
-and its probe bypass automatic 401 clearing. The shell advertises one host-owned
-boolean capability. Pending auth changes block another password submission, login
+and its probe bypass automatic 401 clearing. The shell advertises host-owned
+boolean password/session capabilities. Pending auth changes block another password submission, login
 and logout; an unconfirmed mutation is never replayed. pagehide removes private DOM
 and a restored back/forward-cache page reloads to revalidate its session. See
 [account browser proof](console-account-testing.md).
+
+[Session controls](console-session-controls.md) use the same account mutation gate
+and strict token-owned API. Only the server selects the subject. Live count results
+contain no session digest or other-account metadata. The browser never replays an
+unconfirmed deletion.

@@ -6,6 +6,8 @@ export default defineConfig({
   resolve: {
     alias: Object.entries({
       '@longhorn/http/client': './packages/http/src/client.ts',
+      '@longhorn/auth/sqlite-session-controls': './packages/auth/src/sqlite-session-controls.ts',
+      '@longhorn/auth/postgres-session-controls': './packages/auth/src/postgres-session-controls.ts',
       '@longhorn/auth/scrypt': './packages/auth/src/scrypt.ts',
       '@longhorn/auth/sqlite-passwords': './packages/auth/src/sqlite-passwords.ts',
       '@longhorn/auth/postgres-passwords': './packages/auth/src/postgres-passwords.ts',

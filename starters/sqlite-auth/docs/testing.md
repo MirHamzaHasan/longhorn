@@ -9,7 +9,7 @@ on Deno grant environment access because the pinned assertions inspect CI/vendor
 settings; the application launcher's seven-key policy remains separate. Source tests
 use a deliberately fake password provider; they are not crypto evidence.
 
-The seven app cases cover strict input/origin/body bounds, current roles, owner
+The eight app cases cover strict input/origin/body bounds, current roles, owner
 isolation/privacy, session rotation/expiry/revocation, durable retry policy and
 bounded note pages/deleted/maximum-int64 cursors with actual native SQLite.
 They also cover password replacement, preserved peers/notes, cookie clearing and

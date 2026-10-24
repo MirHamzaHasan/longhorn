@@ -1362,3 +1362,26 @@ keyboard and accessible screenshots. The independently packed/restored app also
 uses its shipped form. See [account](console-account.md),
 [proof](console-account-testing.md), [security](console-security.md) and
 [password HTTP](password-change-http.md).
+
+## 51. Authenticated Session Revocation and Browser Controls
+
+AuthService opts into a token-owned session-control store with others/all scopes.
+Frozen hash-only input enters one borrowed database transaction. SQLite uses its
+managed write gate. PostgreSQL takes the existing subject-exclusive password/login
+advisory ownership before row locks, then reuses the restricted transaction-auth
+function to revalidate the initiating token. The trusted clock is sampled after
+ownership; deletion/counts include only live subject rows. READ COMMITTED is
+required for fresh post-admission state. No new schema/function or broader runtime
+privilege is introduced. Trusted raw session writers remain responsible for joining
+the protocol; later logins and already accepted work are not banned/canceled.
+
+Native/generated auth apps and the opt-in PostgreSQL operator expose strict scoped
+cookie APIs. Enabled legacy logout-all joins the same authenticated atomic service.
+The browser Account route offers both actions under a shared password/session
+mutation gate; unknown outcomes remain unconfirmed and are never replayed.
+Native races, expiry after real waits, rollback, four pre-commit process deaths,
+mixed-host HTTP, accessible browser captures and restored independent-app buttons
+verify the integration. See [service](session-controls.md),
+[SQLite](sqlite-session-controls.md), [PostgreSQL](postgres-session-controls.md),
+[HTTP](session-controls-http.md), [browser](console-session-controls.md) and
+[proof](session-controls-testing.md).

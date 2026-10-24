@@ -6,7 +6,7 @@ and the existing trusted asset reader/generator. Internal asset directories are
 `{ schemaVersion: 1, runtime, framework: 'snapshot', template: 'sqlite-auth' }`.
 
 The builder copies `app.ts`, `config.ts` and `notes.ts` without rewriting them.
-It selects the actual Node/Bun/Deno host as `src/index.ts`. All seven application
+It selects the actual Node/Bun/Deno host as `src/index.ts`. All eight application
 source cases are retained. Native variants map only the test-runner import and
 SQLite adapter import, with checked expected counts; unexpected Node-only imports
 or host/storage/password selection fail the build. Node uses Vitest, Bun uses

@@ -159,3 +159,22 @@ it('preserves the credential and active session on bad reauthentication and shar
   const blocked = await request('/auth/password', 'POST', { currentPassword: password, nextPassword }, current.cookie)
   expect(blocked.status).toBe(429); expect(blocked.headers.get('Retry-After')).toBe('900')
 })
+
+
+it('reauthenticates scoped session control, keeps the initiator for others and guards strict input/origin', async () => {
+  const { request, register, login } = await setup(() => 1000)
+  await register('alice'); await register('bob')
+  const first = await login('alice'), second = await login('alice'), peer = await login('bob')
+  expect((await request('/auth/sessions/revoke', 'POST', { scope: 'all' })).status).toBe(401)
+  expect((await request('/auth/sessions/revoke', 'POST', { scope: 'others' }, first.cookie, 'https://attacker.example')).status).toBe(403)
+  for (const body of [{ scope: 'invalid' }, { scope: 'all', userId: 'bob' }, {}]) expect((await request('/auth/sessions/revoke', 'POST', body, first.cookie)).status).toBe(400)
+  const response = await request('/auth/sessions/revoke', 'POST', { scope: 'others' }, first.cookie)
+  expect(response.status).toBe(200); expect(await response.json()).toEqual({ revokedSessions: 1 }); expect(response.headers.get('Set-Cookie')).toBeNull()
+  expect((await request('/auth/session', 'GET', undefined, first.cookie)).status).toBe(200)
+  expect((await request('/auth/session', 'GET', undefined, second.cookie)).status).toBe(401)
+  expect((await request('/auth/session', 'GET', undefined, peer.cookie)).status).toBe(200)
+  const ended = await request('/auth/sessions/revoke', 'POST', { scope: 'all' }, first.cookie)
+  expect(ended.status).toBe(200); expect(await ended.json()).toEqual({ revokedSessions: 1 }); expect(ended.headers.get('Set-Cookie')).toContain('Max-Age=0')
+  expect((await request('/auth/session', 'GET', undefined, first.cookie)).status).toBe(401)
+  expect((await request('/auth/session', 'GET', undefined, peer.cookie)).status).toBe(200)
+})

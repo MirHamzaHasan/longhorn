@@ -14,6 +14,8 @@ The same built assets are included in `pnpm dev:operator-host` at `/console`.
 That host retains data in separately provisioned PostgreSQL and receipt storage;
 the demo removes its temporary state on exit. Account opens the [password settings](console-account.md), including sign-in after
 a successful change and honest guidance after an unconfirmed response.
+[Sign-in controls](console-session-controls.md) can end other sessions while keeping
+this browser, or sign out everywhere.
 No schema or role administration
 is exposed through the browser. The API root remains at `/`.
 

@@ -50,7 +50,7 @@ export function createAuthApp(config: AppConfig, resources: {
       app.container.register(provide(Connection, { factory: () => database }))
       app.container.register(provide(Auth, { deps: [Connection], factory: (connection) => new AuthService(
         new SqliteAuthStore(connection), resources.passwords, {
-          sessionTtlMs: config.sessionTtlMs, passwordChanges: true, ...(resources.clock ? { clock: resources.clock } : {}),
+          sessionTtlMs: config.sessionTtlMs, passwordChanges: true, sessionControls: true, ...(resources.clock ? { clock: resources.clock } : {}),
         },
       ) }))
       return () => database.close()
@@ -87,9 +87,15 @@ export function createAuthApp(config: AppConfig, resources: {
     return c.body(null, 204)
   })
   routes.post('/auth/logout-all', auth.requireUser, async (c) => {
-    await c.get('container').resolve(Auth).revokeAll(c.get('auth')!.user.id)
-    auth.clearSession(c)
-    return c.body(null, 204)
+    try { await c.get('container').resolve(Auth).revokeSessions(auth.token(c), 'all'); auth.clearSession(c); return c.body(null, 204) }
+    catch (error) { return failure(c, error) }
+  })
+  routes.post('/auth/sessions/revoke', auth.requireUser, validate('json', z.object({ scope: z.enum(['others', 'all']) }).strict()), async c => {
+    try {
+      const scope = c.req.valid('json').scope, result = await c.get('container').resolve(Auth).revokeSessions(auth.token(c), scope)
+      if (scope === 'all') auth.clearSession(c)
+      return c.json(result)
+    } catch (error) { return failure(c, error) }
   })
   routes.get('/admin', auth.requireRole('admin'), (c) => c.json({ allowed: true }))
   routes.post('/auth/password', auth.requireUser, validate('json', passwordChange), async c => {

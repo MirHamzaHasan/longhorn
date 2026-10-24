@@ -65,3 +65,5 @@ expiry boundaries, revocation, user deletion, invalid tokens/clocks, and propaga
 store errors. SQLite tests use multiple connections and failed replacement writes.
 `pnpm test:auth` verifies actual process restarts, cross-process revocation, expiry,
 and portable session execution in workerd.
+
+Authenticated others/all revocation is recorded in [session controls](session-controls.md).

@@ -38,7 +38,7 @@ const starting=(async()=>{
   await broker.ready
   if(requested)return
   const publisher=createQueuePublisher(await broker.getQueueProducer('MESSAGES'))
-  app=createPostgresApp({console:await loadConsoleAssets(),openDatabase:()=>openPostgres({connectionString:sandbox.appUrl}),accounts:{origin,secure:false,sessionTtlMs:28800000,passwords:createScryptPasswordHasher(),passwordChanges:true},
+  app=createPostgresApp({console:await loadConsoleAssets(),openDatabase:()=>openPostgres({connectionString:sandbox.appUrl}),accounts:{origin,secure:false,sessionTtlMs:28800000,passwords:createScryptPasswordHasher(),passwordChanges:true,sessionControls:true},
     operations:{publisher:{async publish(message,context){if(!available)throw new Error('Demo publisher is unavailable');await publisher.publish(message,context)}},
       readReceipt:id=>broker.dispatchFetch('http://receipts/receipts/'+id)}})
   const server=await app.listen(nodeRuntime,{hostname:'127.0.0.1',port})

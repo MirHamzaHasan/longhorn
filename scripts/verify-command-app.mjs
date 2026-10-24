@@ -157,8 +157,16 @@ try{
   assert.equal((await(await fetch(origin+'/account/commands',{headers:{Cookie:fresh}})).json()).commands.length,3)
   assert.equal((await stop(host)).code,0);host=await startHost()
   assert.equal((await fetch(origin+'/account/session',{headers:{Cookie:fresh}})).status,200)
+  browser=await chromium.launch();const sessionPage=await browser.newPage()
+  await sessionPage.goto(origin+'/console#/login');await sessionPage.getByLabel('Username',{exact:true}).fill('starter.member');await sessionPage.getByLabel('Password',{exact:true}).fill(nextPassword);await sessionPage.getByRole('button',{name:'Sign in',exact:true}).click();await sessionPage.getByRole('heading',{name:'Your commands',exact:true}).waitFor()
+  for(const cookie of await sessionPage.context().cookies())secrets.push(cookie.value)
+  await sessionPage.getByRole('link',{name:'Account',exact:true}).click();await sessionPage.getByRole('button',{name:'End other sessions',exact:true}).click();await expect(sessionPage.locator('#notice')).toContainText('Ended 1 other session.')
+  assert.equal((await fetch(origin+'/account/session',{headers:{Cookie:fresh}})).status,401);assert.equal((await fetch(origin+'/account/session',{headers:{Cookie:operator}})).status,200)
+  await sessionPage.getByRole('link',{name:'Commands',exact:true}).click();await expect(sessionPage.getByRole('heading',{name:'Your commands',exact:true})).toBeVisible();assert.equal(await sessionPage.locator('ul.rows>li').count(),3)
+  await sessionPage.getByRole('link',{name:'Account',exact:true}).click();await sessionPage.getByRole('button',{name:'Sign out everywhere',exact:true}).click();await expect(sessionPage.locator('#notice')).toContainText('Signed out everywhere.');await expect(sessionPage.getByRole('heading',{name:'Sign in to LongHorn'})).toBeVisible()
+  assert.ok(!(await sessionPage.context().cookies()).some(cookie=>cookie.name==='longhorn_dev'));await browser.close();browser=undefined
   for(const secret of secrets)assert.ok(!host.output().includes(secret),'Restored host logged a credential')
-  console.log('Restored password capability: shipped browser Account form and explicit function regrant permit native replacement and all-session revocation without direct password UPDATE; current history/peer session survive a host restart.')
+  console.log('Restored password capability: shipped browser Account form and explicit function regrant permit native replacement and all-session revocation without direct password UPDATE; current history/peer session survive a host restart; shipped scoped sign-out controls preserve the current browser and isolate the operator.')
 }finally{
   await browser?.close();await Promise.all([...instances].map(stop));await admin?.close();await cluster?.stop();await rm(temporary,{recursive:true,force:true})
 }

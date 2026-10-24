@@ -202,6 +202,14 @@ try {
   assert.ok(plan.rows.some(row => String(row.detail).includes('private_notes_owner')))
   assert.equal((await inspector.execute('PRAGMA integrity_check')).rows[0]?.integrity_check, 'ok')
   assert.equal((await inspector.execute('SELECT count(*) AS count FROM longhorn_migrations')).rows[0]?.count, 2n)
+  const revokedDevice = await login(b, 'alice')
+  const scoped = await request(thirdUrl ?? a, '/auth/sessions/revoke', { method: 'POST', cookie: paged.cookie, body: { scope: 'others' } })
+  assert.equal(scoped.status, 200); assert.ok((await scoped.json()).revokedSessions >= 1)
+  for (const base of [a,b,...(thirdUrl?[thirdUrl]:[])]) {
+    assert.equal((await request(base, '/auth/session', { cookie: paged.cookie })).status, 200)
+    assert.equal((await request(base, '/auth/session', { cookie: revokedDevice.cookie })).status, 401)
+    assert.equal((await request(base, '/auth/session', { cookie: bob.cookie })).status, 200)
+  }
   const changeDevice = await login(b, 'alice')
   assert.equal((await request(a, '/auth/password', { method: 'POST', cookie: paged.cookie, body: { currentPassword: password, nextPassword }, requestOrigin: 'https://attacker.example' })).status, 403)
   assert.equal((await request(a, '/auth/password', { method: 'POST', cookie: paged.cookie, body: { currentPassword: 'wrong', nextPassword } })).status, 401)

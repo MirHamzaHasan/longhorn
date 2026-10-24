@@ -35,6 +35,6 @@ physical-device touch sizing still require manual verification. Artifacts contai
 test account IDs only and are ignored by source control.
 
 `pnpm test:console` also runs the separate [account gate](console-account-testing.md),
-with 42 additional screenshots under `.artifacts/console/account`, real password
+with 58 additional screenshots under `.artifacts/console/account`, real password
 replacement/throttling/session revocation, dropped responses and the real browser
 deadline. The original command/recovery gate remains 65 captures.

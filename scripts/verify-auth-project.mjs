@@ -126,8 +126,8 @@ try {
     for (const action of ['typecheck', 'test', 'build']) {
       const output = await command(process.execPath, [cli, action, '--cwd', directory], consumer)
       if (action === 'test') {
-        assert.match(output, runtime === 'bun' ? /7 pass/ : /7 passed/)
-        console.log(runtime + ': all seven copied auth application cases passed on the selected native test runner.')
+        assert.match(output, runtime === 'bun' ? /8 pass/ : /8 passed/)
+        console.log(runtime + ': all eight copied auth application cases passed on the selected native test runner.')
       }
     }
     await command('pnpm', ['run', 'test:persistence'], directory)

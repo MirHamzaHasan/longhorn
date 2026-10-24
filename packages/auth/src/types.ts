@@ -40,8 +40,16 @@ export interface PasswordChangeStore {
   /** Sample the trusted synchronous clock after obtaining user/session ownership. */
   replacePassword(input: PasswordChangeInput, now: () => number): Promise<boolean>
 }
+export type SessionControlScope = 'others' | 'all'
+export type SessionControlInput = { readonly tokenHash: string; readonly scope: SessionControlScope }
+/** Reauthenticate the initiating token after ownership; atomically delete live subject sessions.
+ * undefined means invalid/expired initiation, with no writes. Counts exclude already expired rows. */
+export interface SessionControlStore {
+  revoke(input: SessionControlInput, now: () => number): Promise<number | undefined>
+}
 export interface AuthStore extends CredentialStore, SessionStore, LoginAttemptStore {
   readonly passwordChanges?: PasswordChangeStore
+  readonly sessionControls?: SessionControlStore
 }
 export interface TransactionalAuthStore extends AuthStore {
   /** Retain native/coordinated authorization ownership until the caller's transaction finishes. */

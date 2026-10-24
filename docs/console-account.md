@@ -58,3 +58,7 @@ keyboard/password-manager use. No functional animation was added. See
 [account verification](console-account-testing.md), [browser security](console-security.md),
 [design](console-design.md), [console](web-console.md) and [feature connections](features.md).
 Recovery/reset, MFA and real-device assistive-technology verification remain separate.
+
+The same Account route now includes [session controls](console-session-controls.md).
+Both forms share one pending account action, including login/logout exclusion and
+password clearing when a session action starts.
