@@ -11,6 +11,7 @@ export async function readCommandTemplate(framework: string) {
       'src/maintain-limits.ts', 'src/limit-maintenance.ts', 'src/limit-maintenance-config.ts', 'src/limit-maintenance-access.ts', 'src/limit-maintenance-grants.ts', 'src/provision-limit-maintenance.ts',
       'src/operations.ts', 'src/operations-migrations.ts', 'src/runtime-grants.ts', 'src/accounts.ts',
       'src/command-history.ts', 'src/history-views.ts', 'src/request-cleanup.ts', 'src/command-limits.ts', 'src/command-limit-migrations.ts',
+      'console/session-inventory.ts', 'console/session-inventory.test.ts', 'docs/session-inventory.md', 'docs/session-inventory-schema.md', 'docs/session-inventory-lifecycle.md',
       'console/app.ts', 'console/app.css', 'console/routes.ts', 'receiver/receiver.ts', 'receiver/receipts.ts',
       'receiver/contracts.ts', 'receiver/message-effect.ts', 'docs/features.md', 'docs/setup.md',
       'docs/deployment.md', 'docs/dependencies.md', 'docs/backup.md', 'docs/generation.md', 'docs/development.md', 'docs/preflight.md', 'docs/request-limits.md', 'docs/limit-maintenance.md', 'docs/limit-maintenance-role.md', 'docs/limit-maintenance-report.md'],

@@ -42,10 +42,22 @@
     "./postgres-session-controls": {
       "types": "./dist/postgres-session-controls.d.ts",
       "import": "./dist/postgres-session-controls.js"
+    },
+    "./session-inventory": {
+      "types": "./dist/session-inventory.d.ts",
+      "import": "./dist/session-inventory.js"
+    },
+    "./sqlite-session-inventory": {
+      "types": "./dist/sqlite-session-inventory.d.ts",
+      "import": "./dist/sqlite-session-inventory.js"
+    },
+    "./postgres-session-inventory": {
+      "types": "./dist/postgres-session-inventory.d.ts",
+      "import": "./dist/postgres-session-inventory.js"
     }
   },
   "scripts": {
-    "build": "tsup src/index.ts src/hono.ts src/sqlite.ts src/postgres.ts src/bearer.ts src/scrypt.ts src/sqlite-passwords.ts src/postgres-passwords.ts src/sqlite-session-controls.ts src/postgres-session-controls.ts --format esm --dts --clean",
+    "build": "tsup src/index.ts src/hono.ts src/sqlite.ts src/postgres.ts src/bearer.ts src/scrypt.ts src/sqlite-passwords.ts src/postgres-passwords.ts src/sqlite-session-controls.ts src/postgres-session-controls.ts src/session-inventory.ts src/sqlite-session-inventory.ts src/postgres-session-inventory.ts --format esm --dts --clean",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

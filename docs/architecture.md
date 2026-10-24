@@ -1825,3 +1825,28 @@ native proof exercises those installed commands and an actual account quota/repl
 See [tool](command-limit-maintenance.md), [role](command-limit-maintenance-role.md),
 [lifetime](command-limit-maintenance-lifecycle.md), [report](command-limit-maintenance-report.md)
 and [verification](command-limit-maintenance-testing.md).
+
+
+## 72. Public Session References behind Fresh Authorization
+
+A separate optional SessionInventory service composes with existing authentication
+instead of extending AuthStore/SessionManager or rewriting credential writers.
+Appended native schema backfills public references and supplies defaults/triggers
+for later unchanged inserts. References are non-secret selectors; no token/hash or
+inferred device/IP metadata enters pages, cursors or DOM state.
+
+Managed SQL stores reauthenticate the initiating token under ownership and sample
+time afterwards. PostgreSQL joins the existing per-user advisory/user/session lock
+protocol; SQLite uses native write ownership. Owner-filtered expiry/reference
+keysets and selected DELETE/RETURNING publish only after commit. Cursors bind both
+account and initiating public session. The HTTP adapter retains cookie/origin/viewer
+policy and clears the cookie for committed current-session revocation.
+
+The Account panel owns reads by page, retains mutation exclusion to settlement,
+confirms selected IDs and clears stale rows. Native engines prove upgrade/rollback,
+legacy writers, reciprocal controls, post-wait expiry and SIGKILL before/after commit.
+Object SQLite and actual Scrypt/PostgreSQL/browser checks cover the native portable
+boundary. The independent command workflow also checks restored references and
+selected revocation. See [API](session-inventory.md), [schema](session-inventory-schema.md),
+[HTTP](session-inventory-http.md), [console](console-session-inventory.md),
+[lifetime](session-inventory-lifecycle.md) and [proof](session-inventory-testing.md).

@@ -9,6 +9,15 @@ downstream connections, verification, and current limits.
 
 | Feature | Guide | Implementation owner | Connects to |
 | --- | --- | --- | --- |
+| Active-session coordination | [Inventory API](session-inventory.md) | Optional @longhorn/auth/session-inventory | Captured hash-only input, fresh native authorization and public-only records |
+| Session inventory continuation | [Cursors](session-inventory-cursors.md) | Service codec and SQL keyset | Expiry/reference order, bounded pages and owner/initiating-session binding |
+| Native public session references | [Schema](session-inventory-schema.md) | Appended provider migrations | Unchanged legacy writers/history, backfill, native default/trigger and indexes |
+| SQLite session inventory | [SQLite store](sqlite-session-inventory.md) | Managed SQLite provider subpath | Reauthentication, post-ownership clock, RETURNING projection and rollback |
+| PostgreSQL session inventory | [PostgreSQL store](postgres-session-inventory.md) | Managed PostgreSQL provider subpath | Shared advisory/user/session ownership, READ COMMITTED and existing grants |
+| Selected session HTTP controls | [HTTP routes](session-inventory-http.md) | Native auth examples and opt-in command accounts | Scoped pages, strict body/origin/viewer guards and current-cookie clearing |
+| Session inventory lifetime | [Ownership](session-inventory-lifecycle.md) | Borrowed stores and HTTP/page owners | Commit acknowledgement, request/pool drain and mutation/navigation settlement |
+| Account active sessions | [Console panel](console-session-inventory.md) | Existing Account page | Real expiry/current rows, manual pages, confirmation, focus and stale-view fencing |
+| Native/browser session proof | [Verification](session-inventory-testing.md) | Native SQL/processes, Object SQLite and real browser | Upgrade/rollback, reciprocal revocation, SIGKILL, private API and accessible captures |
 | Command budget maintenance modes | [Native tool](command-limit-maintenance.md) | Dedicated PostgreSQL process | Typed private files, read-only check, one bounded batch or owned periodic watch |
 | Separate maintenance authority | [Role provisioning](command-limit-maintenance-role.md) | Transactional owner tool and read-only guard | Minimal bucket grants, rollback, schema/role/column checks and unchanged HTTP authority |
 | Maintenance interruption | [Lifetime](command-limit-maintenance-lifecycle.md) | Managed app work and existing cleanup | Accepted SQL drain, idle stop, observer settlement and database last |
@@ -520,6 +529,10 @@ flowchart TD
   ManagedLimit --> DurableSql
   LimitCleanup[Optional rate limit cleanup] --> LimitCoordinator[Portable RateLimiter.prune]
   LimitCleanup --> PruneOwner[Shared owned prune worker]
+  SessionInventory[Optional active-session service] --> SessionInventoryStore[Native session inventory stores]
+  SessionInventoryStore --> Database
+  AccountSessions[Account active sessions] --> SessionInventory
+  SessionReferences[Native session reference migrations] --> Database
   CommandMaintenance[Dedicated budget maintenance process] --> LimitCleanup
   CommandMaintenance --> MaintenanceRole[Separate restricted SQL identity]
   CommandMaintenance --> PgLimitStore[Existing PostgreSQL limiter store]

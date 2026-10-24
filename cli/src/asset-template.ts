@@ -19,7 +19,7 @@ export async function readAssetTemplate(framework:string,profile:AssetProfile){
     for(const dependencies of[descriptor.dependencies,descriptor.devDependencies])for(const[name,version]of Object.entries(dependencies)){
       if(!/^(@[a-z0-9-]+\/)?[a-z0-9-]+$/.test(name)||typeof version!=='string'||!version||version.length>128||(!name.startsWith('@longhorn/')&&/^(?:file:|link:|workspace:)/.test(version)))throw new Error()
     }
-    const entries=Object.entries(descriptor.files);if(!entries.length||entries.length>128)throw new Error()
+    const entries=Object.entries(descriptor.files);if(!entries.length||entries.length>(profile.name==='command-app'?160:128))throw new Error()
     let bytes=0
     for(const[path,hash]of entries){
       if(!/^[A-Za-z0-9_./-]+$/.test(path)||path.startsWith('/')||path.split('/').some(part=>!part||part==='.'||part==='..')||path.startsWith('.longhorn/')||['package.json','pnpm-workspace.yaml'].includes(path)||typeof hash!=='string'||!/^[a-f0-9]{64}$/.test(hash))throw new Error()

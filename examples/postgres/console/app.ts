@@ -1,4 +1,5 @@
 import './app.css'
+import { createSessionInventoryPanel } from './session-inventory.js'
 import { normalizeSavedSelection,normalizeViewName } from '../src/history-view-values.js'
 import type { SavedHistoryView } from '../src/history-view-values.js'
 import { CommandCopyError,copyCommandNumbers,parseNumbers } from './numbers.js'
@@ -92,7 +93,15 @@ function passwordSignIn(message:string,error=false){
   rememberHistoryDestination();user=undefined;syncAccount();announce(message,error,'#/login');location.hash='#/login';void render()
 }
 function accountPage(){
-  const value=node('div'),panels=node('div',undefined,'account-stack');value.append(title('Your account','Signed in as '+user!.username+'.'));panels.append(passwordPanel(),sessionPanel());value.append(panels);return value
+  const value=node('div'),panels=node('div',undefined,'account-stack');value.append(title('Your account','Signed in as '+user!.username+'.'));panels.append(passwordPanel(),sessionPanel());if(document.body.dataset.sessionInventory==='true'){
+    const current=version,subject=user!.id
+    panels.append(createSessionInventoryPanel({request:(path,body,managedChange)=>api(path,body,{expectedStatus:200,preserveUnauthorized:managedChange===true,acrossNavigation:managedChange===true}),active:()=>current===version&&user?.id===subject,busy:()=>accountPending,
+      begin:()=>{if(accountPending||current!==version||user?.id!==subject)return false;accountPending=true;pendingKind='sessions';clearPageSecrets();syncAccount();return true},
+      end:()=>{accountPending=false;pendingKind=undefined;syncAccount();if(current!==version&&['#/account','#/login','#/register'].includes(location.hash))void render()},signedOut:()=>passwordSignIn('This session ended. Sign in to continue.'),
+      failure:reason=>{if(reason instanceof RequestError&&reason.status===401)passwordSignIn(sessionMessage(reason.data),true);else if(reason instanceof RequestError&&(reason.status===400||reason.status===403)){announce('Session change was refused. Refresh to try again.',true);if(current===version)void render()}else passwordSignIn('Could not confirm the session change. Sign in to check your account.',true)},
+      announce:message=>announce(message),own:ownPageWork,
+    }))
+  }value.append(panels);return value
 }
 function passwordPanel(){
   const panel=node('section',undefined,'panel account-panel');panel.append(node('h2','Change password'))
@@ -182,7 +191,7 @@ function sessionPanel(){
         }finally{
           accountPending=false;pendingKind=undefined;clearPageSecrets();syncAccount();progress.hidden=true
           if(finish)finish()
-          else{announce(message,failed);if(currentVersion===version){notice.tabIndex=-1;notice.focus()}else if(location.hash==='#/account'||location.hash==='#/login'||location.hash==='#/register')void render()}
+          else{if(!failed)dispatchEvent(new Event('longhorn:sessions-changed'));announce(message,failed);if(currentVersion===version){notice.tabIndex=-1;notice.focus()}else if(location.hash==='#/account'||location.hash==='#/login'||location.hash==='#/register')void render()}
         }
       })()
     })

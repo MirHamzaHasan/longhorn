@@ -53,7 +53,7 @@ try{
     const drift=launch('pnpm',['install','--frozen-lockfile','--offline','--reporter=append-only'],directory,{CI:'true'});assert.equal((await drift.ended).code,1);assert.ok(drift.output().includes('OUTDATED_LOCKFILE'),safe(drift.output()))
     assert.equal(await readFile(join(directory,'pnpm-lock.yaml'),'utf8'),locked,'Rejected manifest drift rewrote the lockfile')
   }finally{await writeFile(manifestFile,manifestText)}
-  for(const asset of ['console/bounded-export.ts','console/audit-export.ts','console/audit-export.test.ts','docs/audit-export.md','console/history-metadata.ts','console/receipt-export.ts','console/receipt-export.test.ts','docs/receipt-export.md','src/history-view-values.ts','src/history-views.ts','src/history-views-http.ts','src/history-view-migrations.ts','docs/saved-views.md','src/request-cleanup.ts','docs/request-cleanup.md','src/command-limits.ts','src/command-limit-migrations.ts','docs/request-limits.md'])assert.ok((await readFile(join(directory,asset),'utf8')).length>0,'Missing shipped feature asset: '+asset)
+  for(const asset of ['console/bounded-export.ts','console/audit-export.ts','console/audit-export.test.ts','docs/audit-export.md','console/history-metadata.ts','console/receipt-export.ts','console/receipt-export.test.ts','docs/receipt-export.md','src/history-view-values.ts','src/history-views.ts','src/history-views-http.ts','src/history-view-migrations.ts','docs/saved-views.md','src/request-cleanup.ts','docs/request-cleanup.md','src/command-limits.ts','src/command-limit-migrations.ts','docs/request-limits.md','console/session-inventory.ts','console/session-inventory.test.ts','docs/session-inventory.md','docs/session-inventory-schema.md','docs/session-inventory-lifecycle.md'])assert.ok((await readFile(join(directory,asset),'utf8')).length>0,'Missing shipped feature asset: '+asset)
   for(const action of ['typecheck','test','build'])if(cli)await run(process.execPath,[cli,action,'--cwd',directory],directory);else await run('pnpm',[action],directory)
   console.log('Command distribution: actual archive relocated, frozen-installed in CI mode with unchanged locked dependencies, manifest drift rejected, typechecked, tested and built without workspace paths or unpublished registry dependencies.')
 
@@ -119,6 +119,8 @@ try{
   assert.equal((await receipt(first.command.id,member)).receipts[0].result.sum,27)
   const savedViewInput={id:crypto.randomUUID(),name:'Restored command',selection:{scope:'mine',state:'all',q:first.command.id.slice(0,8)}},savedViewResponse=await fetch(origin+'/account/history-views',post(savedViewInput,member));assert.equal(savedViewResponse.status,201);const savedView=(await savedViewResponse.json()).view;assert.equal(savedView.revision,1)
   const audit=await(await fetch(origin+'/account/operations/audit',{headers:{Cookie:operator}})).json();assert.equal(audit.records.length,1);assert.equal(audit.records[0].reason,'provider-restored')
+  const inventory=async()=>{const response=await fetch(origin+'/account/sessions?limit=50',{headers});assert.equal(response.status,200);assert.equal(response.headers.get('cache-control'),'no-store');const page=await response.json();assert.equal(page.nextCursor,null);assert.ok(page.sessions.length>=1);for(const session of page.sessions){assert.deepEqual(Object.keys(session).sort(),['current','expiresAt','id']);assert.match(session.id,/^[a-f0-9]{32}$/);assert.ok(Number.isSafeInteger(session.expiresAt))}assert.equal(page.sessions.filter(row=>row.current).length,1);assert.ok(!/token|password|hash/i.test(JSON.stringify(page)));return page}
+  const checkpointInventory=await inventory();assert.ok(checkpointInventory.sessions.some(row=>!row.current))
   for(const instance of [host,receiver]){for(const secret of secrets)assert.ok(!instance.output().includes(secret),'Host logged a credential');assert.equal((await stop(instance)).code,0)}
   console.log('Command distribution: shipped schema/grants and separate credential shells, actual browser assets, native sessions, scoped replay/history, protected receipts, denial checks, outage/retry/audit, shipped automatic receipt updates without manual refresh and both-process persistence verified.')
 
@@ -148,6 +150,11 @@ try{
   await run('pnpm',['migrate'],directory,restoreEnvironment);await run('pnpm',['provision:runtime','starter_app'],directory,restoreEnvironment)
   await writeFile(join(directory,'.operator.env'),Object.entries({...hostEnv,DATABASE_URL:restoredAppUrl.href}).filter(([,value])=>value!==undefined).map(([key,value])=>key+'='+value).join('\n')+'\n',{mode:0o600})
   receiverEnv.RECEIVER_DATA_PATH=restoredReceiver;receiver=await startReceiver();host=await startHost()
+  assert.deepEqual(await inventory(),checkpointInventory,'Offline checkpoint must preserve public references, ordering, expiry and the initiating session')
+  const selected=checkpointInventory.sessions.find(row=>!row.current)
+  const endSelected=async()=>{const response=await fetch(origin+'/account/sessions/end',post({id:selected.id},member));assert.equal(response.status,200);return response.json()}
+  assert.deepEqual(await endSelected(),{revokedSessions:1,current:false});assert.deepEqual(await endSelected(),{revokedSessions:0,current:false})
+  assert.deepEqual((await inventory()).sessions,checkpointInventory.sessions.filter(row=>row.id!==selected.id))
   const restoredHistory=await(await fetch(origin+'/account/commands',{headers})).json();assert.equal(restoredHistory.commands.length,2)
   assert.equal((await receipt(first.command.id,member)).receipts[0].result.sum,27)
   assert.equal((await receipt(failed.command.id,member)).receipts[0].result.sum,40)
@@ -218,6 +225,8 @@ try{
     assert.equal((await stop(host)).code,0);assert.equal((await stop(receiver)).code,0)
     await verifyCommandDevelopment({directory,cli,origin,receiverEnvironment:receiverEnv,ownerUrl:restoredOwnerUrl.href,username:'starter.member',password:nextPassword})
   }
+  await mkdir(join(root,'.artifacts'),{recursive:true});await writeFile(join(root,'.artifacts/session-inventory-distribution-proof-'+(cli?'cli':'archive')+'.json'),JSON.stringify({profile:cli?'packed-cli':'archive',frozenInstall:true,sourceBuildAndTests:true,publicProjection:true,stableReferencesAfterOfflineRestore:true,selectedRevocation:true,repeatRevocationZero:true,initiatorPreserved:true,existingCommandsReceiptsReplayAndAudit:true},null,2)+'\n')
+  console.log('Session inventory distribution: shipped SDK/UI/docs, stable native references after offline restore, selected revocation/repeat and preserved initiator verified through the complete independent workflow.')
 }finally{
   await browser?.close();await Promise.all([...instances].map(stop));await admin?.close();await cluster?.stop();await rm(temporary,{recursive:true,force:true})
 }

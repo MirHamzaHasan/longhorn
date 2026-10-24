@@ -152,6 +152,12 @@ try {
       }
       const second = start(), otherUrl = await listening(second)
       assert.equal((await request(otherUrl, '/auth/session', { cookie: alice.cookie })).status, 200)
+      const inventoryPeer=await login(otherUrl,'bob'),sessionsResponse=await request(url,'/auth/sessions?limit=50',{cookie:bob.cookie});assert.equal(sessionsResponse.status,200)
+      const inventory=await sessionsResponse.json();assert.equal(inventory.sessions.length,2);assert.equal(inventory.nextCursor,null);assert.equal(inventory.sessions.filter(row=>row.current).length,1)
+      for(const session of inventory.sessions){assert.deepEqual(Object.keys(session).sort(),['current','expiresAt','id']);assert.match(session.id,/^[a-f0-9]{32}$/)}
+      const selected=inventory.sessions.find(row=>!row.current),end=()=>request(otherUrl,'/auth/sessions/end',{method:'POST',cookie:bob.cookie,body:{id:selected.id}})
+      assert.deepEqual(await(await end()).json(),{revokedSessions:1,current:false});assert.deepEqual(await(await end()).json(),{revokedSessions:0,current:false})
+      assert.equal((await request(url,'/auth/session',{cookie:inventoryPeer.cookie})).status,401);assert.equal((await request(otherUrl,'/auth/session',{cookie:bob.cookie})).status,200)
       await inspector.execute({ sql: 'UPDATE longhorn_auth_users SET roles=? WHERE id=?', args: ['["admin"]', alice.user.id] })
       assert.equal((await request(otherUrl, '/admin', { cookie: alice.cookie })).status, 200)
       await inspector.execute({ sql: 'UPDATE longhorn_auth_users SET roles=? WHERE id=?', args: ['["member"]', alice.user.id] })
@@ -190,7 +196,7 @@ try {
       assert.equal((await request(url, '/auth/session', { cookie: rotated.cookie })).status, 401)
       assert.equal((await request(url, '/auth/session', { cookie: bob.cookie })).status, 200)
       assert.equal((await inspector.execute('PRAGMA integrity_check')).rows[0].integrity_check, 'ok')
-      assert.equal((await inspector.execute('SELECT count(*) AS n FROM longhorn_migrations')).rows[0].n, 2n)
+      assert.deepEqual((await inspector.execute('SELECT id FROM longhorn_migrations ORDER BY position')).rows.map(row=>row.id),['longhorn_auth/001_users_sessions_attempts','auth_example/001_notes','longhorn_auth/002_session_inventory'])
       await stop(first); await stop(second)
     } finally { await inspector.close() }
     await assert.rejects(access(join(directory, 'wrong.sqlite')))

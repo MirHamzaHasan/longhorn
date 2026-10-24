@@ -623,3 +623,9 @@ identity. Workspace commands use `pnpm maintain:command-limits`; generated apps
 use `pnpm maintain:limits`. [Provisioning](docs/command-limit-maintenance-role.md)
 keeps bucket DELETE outside the HTTP runtime. Run
 `pnpm test:command-limit-maintenance` for native and independently installed proof.
+
+[Active-session inventory](docs/session-inventory.md) now connects native auth
+stores to the [Account panel](docs/console-session-inventory.md): bounded expiry/current
+pages and selected sign-out using public references rather than bearer material.
+The [appended schema](docs/session-inventory-schema.md) preserves legacy writers.
+Run `pnpm test:session-inventory` for native SQL/process, Object and browser proofs.

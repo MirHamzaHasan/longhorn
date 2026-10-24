@@ -21,7 +21,7 @@ const starting=(async()=>{
   if(requested)return
   const logger=createLogger({level:config.logLevel,bindings:{app:'operator-host'}})
   app=createPostgresApp({logger,workerEnabled:false,schedulerEnabled:false,console:await loadConsoleAssets(),
-    accounts:{origin:config.authOrigin,secure:config.secureCookies,sessionTtlMs:config.sessionTtlMs,passwords:createScryptPasswordHasher(),passwordChanges:true,sessionControls:true},
+    accounts:{origin:config.authOrigin,secure:config.secureCookies,sessionTtlMs:config.sessionTtlMs,passwords:createScryptPasswordHasher(),passwordChanges:true,sessionControls:true,sessionInventory:true},
     operations:{...createOperationTransport(config),...(config.commandLimits?{commandLimits:config.commandLimits}:{}),...(config.requestCleanup?{requestCleanup:{...config.requestCleanup,onError:()=>{logger.warn('Expired request cleanup failed')}}}:{})},openDatabase:async()=>{
       const database=await openPostgres({connectionString:config.databaseUrl,maxConnections:config.maxConnections})
       try{await checkOperatorRuntimeRole(database);return database}catch(error){await database.close();throw error}

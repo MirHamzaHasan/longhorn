@@ -62,3 +62,7 @@ Recovery/reset, MFA and real-device assistive-technology verification remain sep
 The same Account route now includes [session controls](console-session-controls.md).
 Both forms share one pending account action, including login/logout exclusion and
 password clearing when a session action starts.
+
+The separate [active-session inventory](session-inventory.md) now supplies bounded
+expiry/current pages and selected revocation. Its [Account panel](console-session-inventory.md)
+uses the existing bulk controls without changing their policy or interfaces.

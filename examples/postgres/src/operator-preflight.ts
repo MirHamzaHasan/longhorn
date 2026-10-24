@@ -59,7 +59,7 @@ export async function checkOperatorApplication(options: {
         await database.execute('SELECT 1')
       })
       if(connection.ok){
-        const schema=await probe('schema',()=>checkPostgresTables(database!,{passwordChanges:true,sessionControls:true},{...(config.requestCleanup?{requestCleanup:config.requestCleanup}:{}),...(config.commandLimits?{commandLimits:config.commandLimits}:{})}))
+        const schema=await probe('schema',()=>checkPostgresTables(database!,{passwordChanges:true,sessionControls:true,sessionInventory:true},{...(config.requestCleanup?{requestCleanup:config.requestCleanup}:{}),...(config.commandLimits?{commandLimits:config.commandLimits}:{})}))
         if(schema.ok)await probe('runtime-role',()=>checkOperatorRuntimeRole(database!));else skipped('runtime-role')
       }else{skipped('schema');skipped('runtime-role')}
       await probe('receiver',async()=>{if(await createOperationTransport(config).checkHealth!(signal)!==true)throw new Error('Receiver health failed')})

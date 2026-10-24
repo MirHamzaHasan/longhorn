@@ -237,5 +237,5 @@ await writeFile(join(command,'receiver/tsconfig.json'),JSON.stringify({extends:'
 await writeFile(join(command,'.gitignore'),'node_modules/\ndist/\ndata/\n.env\n.env.*\n!.env.example\n.operator.env\n.operator.env.local\n.maintenance.env\n.maintenance.env.local\n*.tsbuildinfo\n')
 const commandExample=JSON.parse(await readFile(join(root,'examples/postgres/package.json'),'utf8')),commandHashes={}
 await record(command,'',commandHashes)
-if(Object.keys(commandHashes).length>128)throw new Error('Command template exceeds the shared asset bound')
+if(Object.keys(commandHashes).length>160)throw new Error('Command template exceeds the shared asset bound')
 await writeFile(join(command,'template.json'),JSON.stringify({schemaVersion:1,dependencies:{...commandExample.dependencies,'@longhorn/workers':'workspace:*','@longhorn/runtime':'workspace:*',miniflare:'3.20250718.3'},devDependencies:{'@types/node':'^22.13.10','@cloudflare/workers-types':'^5.20261022.1',esbuild:'^0.28.2',typescript:'^5.8.2',vitest:'^3.1.1'},files:commandHashes},null,2)+'\n')

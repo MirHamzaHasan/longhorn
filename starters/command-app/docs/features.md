@@ -49,3 +49,8 @@ A separate [budget maintenance tool](limit-maintenance.md) supplies read-only ch
 one bounded batch or owned watch. [Restricted role provisioning](limit-maintenance-role.md)
 keeps DELETE out of the HTTP runtime. [Reports/signals](limit-maintenance-report.md)
 record actual drain and private aggregate output.
+
+[Active sessions](session-inventory.md) now list private expiry/current status
+and end one selected sign-in. [Appended reference schema](session-inventory-schema.md)
+preserves old writers and backups; [page/request lifetime](session-inventory-lifecycle.md)
+keeps native ownership and stale-viewer protection.

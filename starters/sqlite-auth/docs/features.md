@@ -18,3 +18,6 @@
 composes DI, migrations and Hono routes. `src/notes.ts` owns bounded SQL reads;
 `src/config.ts` is the shared launcher/host schema. Framework code stays in its
 local package snapshot. These files do not reference the original monorepo.
+
+[Active-session inventory](session-inventory.md) lists scoped live references and
+ends a selected session through native ownership, without exposing token hashes.

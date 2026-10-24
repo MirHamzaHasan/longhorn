@@ -168,6 +168,16 @@ jobs:
       - run: node scripts/verify-operator-accounts.mjs
       - run: node scripts/verify-password-changes.mjs
       - run: node scripts/verify-session-controls.mjs
+      - run: node scripts/verify-session-inventory.mjs
+      - name: Retain native session inventory proof
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: session-inventory-native-proof
+          path: .artifacts/session-inventory-native-proof.json
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 14
       - run: node scripts/verify-persistent-operations.mjs
   browser:
     runs-on: ubuntu-24.04
@@ -192,6 +202,7 @@ jobs:
           node scripts/verify-receipt-export.mjs
           node scripts/verify-command-follow.mjs
           node scripts/verify-console-account.mjs
+          node scripts/verify-session-inventory-console.mjs
       - name: Retain console review captures
         id: console-artifact
         if: always()
@@ -202,6 +213,7 @@ jobs:
           path: |
             .artifacts/console/**/*.png
             .artifacts/console/**/accessibility.json
+            .artifacts/session-inventory-console-proof.json
           include-hidden-files: true
           if-no-files-found: warn
           retention-days: 14
@@ -238,6 +250,8 @@ jobs:
             .artifacts/longhorn-command-project.tgz
             .artifacts/longhorn-command-project.tgz.sha256
             .artifacts/command-project-proof.json
+            .artifacts/session-inventory-distribution-proof-archive.json
+            .artifacts/session-inventory-distribution-proof-cli.json
             .artifacts/command-development-proof.json
             .artifacts/operator-preflight-proof-archive.json
             .artifacts/operator-preflight-proof-cli.json

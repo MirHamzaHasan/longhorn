@@ -40,3 +40,8 @@ Expired command budgets can be reclaimed through the separate
 keep its .maintenance.env private, then use `pnpm maintain:limits check`,
 `pnpm maintain:limits once` or `pnpm maintain:limits watch`. The HTTP runtime keeps
 its existing grants and does not acquire this identity.
+
+[Active sessions](docs/session-inventory.md) now list private expiry/current status
+and end one selected sign-in. [Appended reference schema](docs/session-inventory-schema.md)
+preserves old writers and backups; [page/request lifetime](docs/session-inventory-lifecycle.md)
+keeps native ownership and stale-viewer protection.

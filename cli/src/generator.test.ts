@@ -34,7 +34,7 @@ describe('project generation', () => {
       'src/app.ts', 'src/operator-host.ts', 'src/operator-check.ts', 'src/operator-preflight.ts', 'src/operator-environment.ts', 'src/postgres-readiness.ts', 'src/operator-config.ts', 'src/operator-runtime.ts', 'src/operations.ts',
       'src/maintain-limits.ts', 'src/provision-limit-maintenance.ts', 'src/limit-maintenance.ts', 'src/limit-maintenance-config.ts', 'src/limit-maintenance-access.ts', 'src/limit-maintenance-grants.ts',
       'src/operations-migrations.ts', 'src/runtime-grants.ts', 'src/accounts.ts', 'src/command-history.ts',
-      'src/history-views.ts', 'src/request-cleanup.ts', 'src/command-limits.ts', 'src/command-limit-migrations.ts', 'console/app.ts', 'console/app.css', 'console/routes.ts',
+      'src/history-views.ts', 'src/request-cleanup.ts', 'src/command-limits.ts', 'src/command-limit-migrations.ts', 'console/session-inventory.ts', 'console/session-inventory.test.ts', 'docs/session-inventory.md', 'docs/session-inventory-schema.md', 'docs/session-inventory-lifecycle.md', 'console/app.ts', 'console/app.css', 'console/routes.ts',
       'receiver/receiver.ts', 'receiver/receipts.ts', 'receiver/contracts.ts', 'receiver/message-effect.ts',
       'docs/features.md', 'docs/setup.md', 'docs/deployment.md', 'docs/dependencies.md', 'docs/backup.md', 'docs/generation.md', 'docs/development.md', 'docs/preflight.md', 'docs/request-limits.md', 'docs/limit-maintenance.md', 'docs/limit-maintenance-role.md', 'docs/limit-maintenance-report.md']
     for (const path of paths) {
@@ -49,6 +49,17 @@ describe('project generation', () => {
     }, devDependencies: { vitest: '^3.1.1' }, files }
     await writeFile(join(directory, 'template.json'), JSON.stringify(descriptor)); return { directory, descriptor }
   }
+  it.each([{command:true,count:160,valid:true},{command:true,count:161,valid:false},{command:false,count:128,valid:true},{command:false,count:129,valid:false}])('bounds trusted assets by profile: $command / $count / $valid',async ({command,count,valid})=>{
+    const assets=await(command?commandAssets():authAssets('node'))
+    for(let i=Object.keys(assets.descriptor.files).length;i<count;i++){
+      const path='docs/extra-'+i+'.md',content='additional local feature guide\n'
+      await writeFile(join(assets.directory,path),content);assets.descriptor.files[path]=createHash('sha256').update(content).digest('hex')
+    }
+    await writeFile(join(assets.directory,'template.json'),JSON.stringify(assets.descriptor))
+    const directory=join(temporary,'bounded-profile'),created=createProject({directory,runtime:'node',template:command?'command-app':'sqlite-auth',frameworkDirectory:framework})
+    if(valid)await expect(created).resolves.toHaveProperty('directory',directory)
+    else{await expect(created).rejects.toThrow('assets are unavailable or invalid');expect(await readdir(temporary)).toEqual(['distribution'])}
+  })
   it('creates the complete Node command profile with an explicit receiver and archive metadata', async () => {
     await commandAssets(); const directory = join(temporary, 'personal console')
     const project = await createProject({directory, name:'my-console', runtime:'node', template:'command-app', frameworkDirectory:framework})
@@ -83,7 +94,7 @@ describe('project generation', () => {
     const directory = join(framework, 'templates', runtime + '-sqlite-auth'), files: Record<string, string> = {}
     for (const path of ['README.md', 'build.mjs', 'build.config.mjs', 'dev.mjs', 'host.mjs', 'start.mjs',
       'src/index.ts', 'src/app.ts', 'src/config.ts', 'src/notes.ts', 'src/app.test.ts', 'tests/persistence.mjs',
-      ...['features', 'accounts', 'passwords', 'sessions', 'http', 'notes', 'configuration', 'lifecycle', 'migrations', 'testing', 'password-changes'].map(name => 'docs/' + name + '.md'),
+      ...['features', 'accounts', 'passwords', 'sessions', 'http', 'notes', 'configuration', 'lifecycle', 'migrations', 'testing', 'password-changes', 'session-inventory'].map(name => 'docs/' + name + '.md'),
       ...(runtime === 'deno' ? ['build-tests.mjs', 'tests/runner.ts', 'tests/permissions.mjs'] : [])]) {
       const target = join(directory, path), content = path === 'README.md' ? '# {{PROJECT_NAME}}\n' : 'editable auth asset\n'
       await mkdir(join(target, '..'), { recursive: true }); await writeFile(target, content)

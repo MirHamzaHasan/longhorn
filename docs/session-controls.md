@@ -46,3 +46,7 @@ substitute for token-authenticated user controls.
 See [HTTP](session-controls-http.md), [browser](console-session-controls.md),
 [native verification](session-controls-testing.md), [sessions](sessions.md) and
 [feature connections](features.md).
+
+The separate [active-session inventory](session-inventory.md) now supplies bounded
+expiry/current pages and selected revocation. Its [Account panel](console-session-inventory.md)
+uses the existing bulk controls without changing their policy or interfaces.

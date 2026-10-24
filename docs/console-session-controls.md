@@ -38,3 +38,7 @@ both shipped controls after restore/regrant and restart. See
 [native proof](session-controls-testing.md), [sessions](sessions.md) and
 [feature index](features.md). Physical-device assistive technology and other
 browser engines remain separate manual checks.
+
+The separate [active-session inventory](session-inventory.md) now supplies bounded
+expiry/current pages and selected revocation. Its [Account panel](console-session-inventory.md)
+uses the existing bulk controls without changing their policy or interfaces.

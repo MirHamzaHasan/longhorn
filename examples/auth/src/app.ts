@@ -1,3 +1,5 @@
+import { SessionInventory } from '@longhorn/auth/session-inventory'
+import { SqliteSessionInventoryStore,sqliteSessionInventoryMigrations } from '@longhorn/auth/sqlite-session-inventory'
 import { AuthError, AuthService } from '@longhorn/auth'
 import type { PasswordHasher } from '@longhorn/auth'
 import { cookieAuth } from '@longhorn/auth/hono'
@@ -18,6 +20,7 @@ import type { AppConfig } from './config.js'
 import { listNotes, noteListQuery } from './notes.js'
 
 type Env = LonghornEnv & AuthEnv
+const Inventory=token<SessionInventory>('active authentication sessions')
 const Auth = token<AuthService>('authentication')
 const Connection = token<Database>('auth example database')
 const credentials = z.object({ username: z.string().min(3).max(64), password: z.string().min(1).max(256) }).strict()
@@ -46,13 +49,14 @@ export function createAuthApp(config: AppConfig, resources: {
           title TEXT NOT NULL CHECK (length(title) BETWEEN 1 AND 200)
         ) STRICT`,
         'CREATE INDEX private_notes_owner ON private_notes(owner_id)',
-      ] }])
+      ] },...sqliteSessionInventoryMigrations])
       app.container.register(provide(Connection, { factory: () => database }))
       app.container.register(provide(Auth, { deps: [Connection], factory: (connection) => new AuthService(
         new SqliteAuthStore(connection), resources.passwords, {
           sessionTtlMs: config.sessionTtlMs, passwordChanges: true, sessionControls: true, ...(resources.clock ? { clock: resources.clock } : {}),
         },
       ) }))
+      app.container.register(provide(Inventory,{deps:[Connection],factory:connection=>new SessionInventory(new SqliteSessionInventoryStore(connection),{...(resources.clock?{clock:resources.clock}:{})})}))
       return () => database.close()
     } catch (error) {
       try { await database.close() } catch (cleanupError) {
@@ -96,6 +100,13 @@ export function createAuthApp(config: AppConfig, resources: {
       if (scope === 'all') auth.clearSession(c)
       return c.json(result)
     } catch (error) { return failure(c, error) }
+  })
+  routes.get('/auth/sessions',auth.requireUser,async(c,next)=>{if(Object.values(c.req.queries()).some(values=>values.length!==1))return c.json({error:'Invalid session query'},400);await next()},validate('query',z.object({limit:z.string().regex(/^[0-9]+$/).optional(),cursor:z.string().min(1).max(2048).optional()}).strict()),async c=>{
+    const query=c.req.valid('query')
+    try{return c.json(await c.get('container').resolve(Inventory).list(auth.token(c),{...(query.limit?{limit:Number(query.limit)}:{}),...(query.cursor?{cursor:query.cursor}:{})}))}catch(error){return failure(c,error)}
+  })
+  routes.post('/auth/sessions/end',auth.requireUser,validate('json',z.object({id:z.string().regex(/^[a-f0-9]{32}$/)}).strict()),async c=>{
+    try{const result=await c.get('container').resolve(Inventory).revoke(auth.token(c),c.req.valid('json').id);if(result.current)auth.clearSession(c);return c.json(result)}catch(error){return failure(c,error)}
   })
   routes.get('/admin', auth.requireRole('admin'), (c) => c.json({ allowed: true }))
   routes.post('/auth/password', auth.requireUser, validate('json', passwordChange), async c => {

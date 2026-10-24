@@ -29,7 +29,7 @@
     "package:command-app": "pnpm build && node scripts/package-command-app.mjs",
     "test:command-app": "pnpm build && node scripts/verify-command-app.mjs",
     "test:command-project": "pnpm build && node scripts/verify-command-project.mjs",
-    "test:console": "pnpm build && node scripts/verify-console.mjs && node scripts/verify-history-search-console.mjs && node scripts/verify-history-views-console.mjs && node scripts/verify-history-view-links.mjs && node scripts/verify-history-export.mjs && node scripts/verify-audit-export.mjs && node scripts/verify-receipt-export.mjs && node scripts/verify-command-follow.mjs && node scripts/verify-console-account.mjs",
+    "test:console": "pnpm build && node scripts/verify-console.mjs && node scripts/verify-history-search-console.mjs && node scripts/verify-history-views-console.mjs && node scripts/verify-history-view-links.mjs && node scripts/verify-history-export.mjs && node scripts/verify-audit-export.mjs && node scripts/verify-receipt-export.mjs && node scripts/verify-command-follow.mjs && node scripts/verify-console-account.mjs && node scripts/verify-session-inventory-console.mjs",
     "test:history-views": "pnpm build && node scripts/verify-history-views.mjs && node scripts/verify-history-views-console.mjs",
     "test:history-search": "pnpm build && node scripts/verify-history-search.mjs && node scripts/verify-history-search-console.mjs",
     "test:history-view-links": "pnpm build && node scripts/verify-history-view-links.mjs",
@@ -37,7 +37,7 @@
     "test:audit-export": "pnpm build && node scripts/verify-audit-export.mjs",
     "test:history-export": "pnpm build && node scripts/verify-history-export.mjs",
     "test:command-follow": "pnpm build && node scripts/verify-command-follow.mjs",
-    "test:console:account": "pnpm build && node scripts/verify-console-account.mjs",
+    "test:console:account": "pnpm build && node scripts/verify-console-account.mjs && node scripts/verify-session-inventory-console.mjs",
     "test:history-filters": "pnpm build && node scripts/verify-history-filters.mjs",
     "test:command-history": "pnpm build && node scripts/verify-command-history.mjs",
     "test:persistent-operations": "pnpm build && node scripts/verify-persistent-operations.mjs",
@@ -119,7 +119,8 @@
     "test:limit-cleanup": "pnpm build && node scripts/verify-limit-cleanup.mjs && node scripts/verify-prune-packages.mjs",
     "maintain:command-limits": "pnpm --filter example-postgres... build && node examples/postgres/dist/maintain-limits.js",
     "test:command-limit-maintenance": "pnpm build && node scripts/verify-command-limit-maintenance.mjs",
-    "provision:command-limit-maintenance": "pnpm --filter example-postgres... build && node examples/postgres/dist/provision-limit-maintenance.js"
+    "provision:command-limit-maintenance": "pnpm --filter example-postgres... build && node examples/postgres/dist/provision-limit-maintenance.js",
+    "test:session-inventory": "pnpm build && node scripts/verify-session-inventory.mjs && node scripts/verify-session-inventory-console.mjs"
   },
   "packageManager": "pnpm@12.6.0"
 }

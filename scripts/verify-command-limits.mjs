@@ -34,7 +34,8 @@ try{
   await stage(held,'before-commit');assert.equal((await owner.execute("SELECT pg_catalog.to_regclass('longhorn_rate_limit.buckets')::text AS name")).rows[0].name,null)
   held.child.kill('SIGKILL');assert.equal((await held.ended).signal,'SIGKILL');assert.deepEqual(await ledger(),before)
   const migrations=[migration(),migration()];await Promise.all(migrations.map(row=>stage(row,'migrated')));for(const row of migrations)assert.equal((await row.ended).code,0)
-  assert.deepEqual(migrations.map(row=>row.lines.find(v=>v.stage==='migrated').added.length).sort(),[0,1]);assert.deepEqual((await ledger()).slice(0,before.length),before)
+  assert.deepEqual(migrations.map(row=>row.lines.find(v=>v.stage==='migrated').added.length).sort(),[0,2]);assert.deepEqual((await ledger()).slice(0,before.length),before)
+  assert.deepEqual((await ledger()).slice(before.length).map(row=>row.id),['longhorn_rate_limit/001_buckets','longhorn_postgres_auth/004_session_inventory'])
   await grantOperatorRuntime(owner,'longhorn_app');await checkCommandLimitAccess(db);await checkOperatorRuntimeRole(db)
   for(const [grant,revoke]of[
     ['GRANT DELETE ON longhorn_rate_limit.buckets TO longhorn_app','REVOKE DELETE ON longhorn_rate_limit.buckets FROM longhorn_app'],
@@ -81,7 +82,7 @@ try{
   const pending=request('/account/commands',{cookie:fresh,body:input});await waitFor(async()=>(await owner.execute({sql:'SELECT EXISTS(SELECT 1 FROM pg_stat_activity WHERE $1::integer=ANY(pg_blocking_pids(pid))) AS blocked',args:[pid]})).rows[0].blocked===true)
   let closed=false;const closing=first.value.close().then(()=>{closed=true});await sleep(30);assert.equal(closed,false);time=2100;release();await locking;locking=undefined
   assert.equal((await pending).status,201);await closing;assert.equal(closed,true)
-  await mkdir('.artifacts',{recursive:true});await writeFile('.artifacts/command-limit-proof.json',JSON.stringify({previousProfileCompatible:true,originalLedgerPreserved:true,killedMigrationRollback:true,competingOwnersAdded:[0,1],minimalGrants:true,maintenanceDenied:true,sharedAccountsAndHosts:true,guardOrdering:true,invalidAndReplayCount:true,readsUnaffected:true,noBlockedEffects:true,sessionResetDoesNotRefill:true,expiryRetainsReplay:true,grantReadinessRecovery:true,disabledCompatible:true,nativeHttpSqlShutdownDrain:true},null,2)+'\n')
+  await mkdir('.artifacts',{recursive:true});await writeFile('.artifacts/command-limit-proof.json',JSON.stringify({previousProfileCompatible:true,originalLedgerPreserved:true,killedMigrationRollback:true,competingOwnersAdded:[0,2],minimalGrants:true,maintenanceDenied:true,sharedAccountsAndHosts:true,guardOrdering:true,invalidAndReplayCount:true,readsUnaffected:true,noBlockedEffects:true,sessionResetDoesNotRefill:true,expiryRetainsReplay:true,grantReadinessRecovery:true,disabledCompatible:true,nativeHttpSqlShutdownDrain:true},null,2)+'\n')
   console.log('Command limits: native upgrade rollback/race, restricted grants, two hosts/sessions, authenticated attempt ordering, 429/no effects, expiry/replay, 503/readiness recovery, default-off compatibility and held SQL/HTTP shutdown verified.')
 }finally{
   release?.();await locking?.catch(()=>{});for(const row of children)if(row.child.exitCode===null&&row.child.signalCode===null){row.child.kill('SIGKILL');await row.ended}

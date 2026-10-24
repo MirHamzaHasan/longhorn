@@ -1,3 +1,5 @@
+import { SessionInventory } from '@longhorn/auth/session-inventory'
+import { PostgresSessionInventoryStore,checkPostgresSessionInventory } from '@longhorn/auth/postgres-session-inventory'
 import { AuthError,AuthService } from '@longhorn/auth'
 import type { PasswordHasher } from '@longhorn/auth'
 import { cookieAuth } from '@longhorn/auth/hono'
@@ -16,10 +18,11 @@ import type { Context } from 'hono'
 import { z } from 'zod'
 import { PostgresPrivateNotes,privateNoteParams,privateNoteQuery,privateNoteSchema } from './private-notes.js'
 
+export const PgSessionInventory=token<SessionInventory>('active account session inventory')
 export const PgAuthStore=token<PostgresAuthStore>('PostgreSQL account store')
 export const PgAccounts=token<AuthService>('PostgreSQL account service')
 export const PgPrivateNotes=token<PostgresPrivateNotes>('PostgreSQL private notes')
-export type AccountOptions={ readonly origin: string;readonly secure: boolean;readonly sessionTtlMs: number;readonly passwords: PasswordHasher;readonly clock?: () => number;readonly passwordChanges?: boolean;readonly sessionControls?: boolean }
+export type AccountOptions={ readonly origin: string;readonly secure: boolean;readonly sessionTtlMs: number;readonly passwords: PasswordHasher;readonly clock?: () => number;readonly passwordChanges?: boolean;readonly sessionControls?: boolean;readonly sessionInventory?: boolean }
 type Env=LonghornEnv & AuthEnv
 const credentials=z.object({ username: z.string().min(3).max(64),password: z.string().min(1).max(256) }).strict()
 const registration=credentials.extend({ password: z.string().min(15).max(256) })
@@ -30,11 +33,12 @@ function failure(c: Context<Env>,error: unknown): Response {
   const statuses={ INVALID_INPUT: 400,USERNAME_TAKEN: 409,INVALID_CREDENTIALS: 401,RATE_LIMITED: 429,CAPACITY: 503 } as const
   return c.json({ error: error.message },statuses[error.code])
 }
-export async function checkAccountTables(database: Database,passwordChanges=false,sessionControls=false): Promise<void> {
+export async function checkAccountTables(database: Database,passwordChanges=false,sessionControls=false,sessionInventory=false): Promise<void> {
   await database.execute('SELECT id FROM longhorn_auth.users LIMIT 0')
   await database.execute('SELECT token_hash FROM longhorn_auth.sessions LIMIT 0')
   await database.execute('SELECT key FROM longhorn_auth.attempts LIMIT 0')
   await database.execute('SELECT id FROM longhorn_pg_example.private_notes LIMIT 0')
+  if(sessionInventory)await checkPostgresSessionInventory(database)
   if(sessionControls)await checkPostgresSessionControls(database)
   if(passwordChanges)await checkPostgresPasswordFunctions(database)
 }
@@ -44,6 +48,7 @@ export function configurePostgresAccounts(app: Longhorn,databaseToken: Token<Dat
     sessionTtlMs: options.sessionTtlMs,passwordChanges:options.passwordChanges??false,sessionControls:options.sessionControls??false,...(options.clock ? { clock: options.clock } : {}),
   }) }))
   app.container.register(provide(PgPrivateNotes,{ deps: [databaseToken],factory: database => new PostgresPrivateNotes(database) }))
+  if(options.sessionInventory)app.container.register(provide(PgSessionInventory,{deps:[databaseToken],factory:database=>new SessionInventory(new PostgresSessionInventoryStore(database),{...(options.clock?{clock:options.clock}:{})})}))
   app.onStart(() => { app.container.resolve(PgAccounts) })
   const routes=new Hono<Env>()
   const auth=cookieAuth<Env>({ origin: options.origin,secure: options.secure,resolve: c => c.get('container').resolve(PgAccounts) })
@@ -77,6 +82,15 @@ export function configurePostgresAccounts(app: Longhorn,databaseToken: Token<Dat
       return c.json(result)
     }catch(error){return failure(c,error)}
   })
+  if(options.sessionInventory){
+    routes.get('/sessions',auth.requireUser,async(c,next)=>{if(Object.values(c.req.queries()).some(values=>values.length!==1))return c.json({error:'Invalid session query'},400);await next()},validate('query',z.object({limit:z.string().regex(/^[0-9]+$/).optional(),cursor:z.string().min(1).max(2048).optional()}).strict()),async c=>{
+      const query=c.req.valid('query')
+      try{return c.json(await c.get('container').resolve(PgSessionInventory).list(auth.token(c),{...(query.limit?{limit:Number(query.limit)}:{}),...(query.cursor?{cursor:query.cursor}:{})}))}catch(error){return failure(c,error)}
+    })
+    routes.post('/sessions/end',auth.requireUser,validate('json',z.object({id:z.string().regex(/^[a-f0-9]{32}$/)}).strict()),async c=>{
+      try{const result=await c.get('container').resolve(PgSessionInventory).revoke(auth.token(c),c.req.valid('json').id);if(result.current)auth.clearSession(c);return c.json(result)}catch(error){return failure(c,error)}
+    })
+  }
   routes.get('/admin',auth.requireRole('admin'),c => c.json({ allowed: true }))
   if(options.passwordChanges)routes.post('/password',auth.requireUser,validate('json',passwordChange),async c=>{
     const input=c.req.valid('json')
