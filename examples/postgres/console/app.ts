@@ -2,6 +2,7 @@ import './app.css'
 import { CommandCopyError,copyCommandNumbers,parseNumbers } from './numbers.js'
 import { createCommandFollow } from './command-follow.js'
 import { collectHistoryExport } from './history-export.js'
+import { collectAuditExport } from './audit-export.js'
 import { normalizeHistorySearch } from './history-search.js'
 import { ConsoleRouteError,historyViewHash,parseConsoleRoute } from './routes.js'
 import type { ConsoleRoute,HistoryView } from './routes.js'
@@ -211,35 +212,48 @@ function newCommand(source?:{id:string;numbers:number[]}){
   });panel.append(form);value.append(panel);return value
 }
 function commandRow(command:Command){const row=node('li',undefined,'row'),name=node('div');name.append(link('Command '+command.id.slice(0,8),'#/commands/'+command.id),node('div',command.id,'row-id'));row.append(name,cell('Created',time(command.createdAt)),cell('Delivery',status(command.delivery?.state??'unknown')),cell('Attempts',command.delivery?command.delivery.attempts+' / '+command.delivery.maxAttempts:'—'));return row}
-function historyExportControls(inputScope:string,inputState:string,current:number,route:string,inputSearch?:string){
+type ExportResult=Awaited<ReturnType<typeof collectHistoryExport>>
+type FileExportView={label:string;description:string;action:string;noun:string;filename:string;reset:string;more:string;collect:(after:string|null,signal:AbortSignal,progress:(count:number,pages:number)=>void)=>Promise<ExportResult>}
+function fileExportControls(view:FileExportView,current:number,route:string){
   const section=node('section',undefined,'history-export'),actions=node('div',undefined,'actions'),message=node('p',undefined,'subtle')
-  section.setAttribute('aria-label','Command history export');message.setAttribute('role','status');message.setAttribute('aria-atomic','true')
-  const description=node('p','Download IDs, dates, and delivery status.','subtle');let task:AbortController|undefined,continuation:string|null=null,objectUrl:string|undefined,revokeTimer:ReturnType<typeof setTimeout>|undefined
+  section.setAttribute('aria-label',view.label);message.setAttribute('role','status');message.setAttribute('aria-atomic','true')
+  const description=node('p',view.description,'subtle');let task:AbortController|undefined,continuation:string|null=null,objectUrl:string|undefined,revokeTimer:ReturnType<typeof setTimeout>|undefined
   const present=()=>current===version&&location.hash===route&&user?.id===subject,subject=user!.id
   const revoke=()=>{clearTimeout(revokeTimer);if(objectUrl){URL.revokeObjectURL(objectUrl);objectUrl=undefined}}
-  const cancel=button('Cancel export',()=>{task?.abort()}),startOver=button('Start over',()=>{if(task)return;continuation=null;update(false);startOver.hidden=true;message.textContent='The next export starts with your newest matching commands.';download.focus()})
-  const update=(busy:boolean)=>{download.setAttribute('aria-disabled',String(busy));download.textContent=busy?'Preparing…':continuation?'Continue export':'Export history';cancel.setAttribute('aria-disabled',String(!busy));startOver.setAttribute('aria-disabled',String(busy));if(busy)cancel.hidden=false}
-  const download=button('Export history',()=>{
+  const cancel=button('Cancel export',()=>{task?.abort()}),startOver=button('Start over',()=>{if(task)return;continuation=null;update(false);startOver.hidden=true;message.textContent=view.reset;download.focus()})
+  const update=(busy:boolean)=>{download.setAttribute('aria-disabled',String(busy));download.textContent=busy?'Preparing…':continuation?'Continue export':view.action;cancel.setAttribute('aria-disabled',String(!busy));startOver.setAttribute('aria-disabled',String(busy));if(busy)cancel.hidden=false}
+  const download=button(view.action,()=>{
     if(task||!present())return
-    const controller=new AbortController();task=controller;update(true);message.textContent='Preparing command history export…'
+    const controller=new AbortController();task=controller;update(true);message.textContent='Preparing '+view.noun+' export…'
     void(async()=>{
       try{
-        const result=await collectHistoryExport({selection:{scope:inputScope,state:inputState,...(inputSearch?{q:inputSearch}:{})},...(continuation?{after:continuation}:{}),signal:controller.signal,
-          read:input=>{const query=new URLSearchParams({scope:inputScope,limit:String(input.limit)});if(inputState!=='all')query.set('state',inputState);if(inputSearch)query.set('q',inputSearch);if(input.after)query.set('after',input.after);return api('/commands?'+query,undefined,{signal:input.signal})},
-          progress:(count,pages)=>{if(present()&&(pages===1||pages%10===0))message.textContent='Preparing export: '+count.toLocaleString()+' commands.'},
-        })
+        const result=await view.collect(continuation,controller.signal,(count,pages)=>{if(present()&&(pages===1||pages%10===0))message.textContent='Preparing export: '+count.toLocaleString()+' '+view.noun+'.'})
         if(controller.signal.aborted||!present())return
         revoke();objectUrl=URL.createObjectURL(new Blob([result.text],{type:'application/x-ndjson;charset=utf-8'}))
-        const anchor=link('',objectUrl);anchor.download='longhorn-commands-'+inputScope+'-'+inputState+'-'+result.exportedAt.replace(/[:.]/g,'-')+'.ndjson';anchor.hidden=true;document.body.append(anchor)
+        const anchor=link('',objectUrl);anchor.download=view.filename+'-'+result.exportedAt.replace(/[:.]/g,'-')+'.ndjson';anchor.hidden=true;document.body.append(anchor)
         try{anchor.click()}finally{anchor.remove();revokeTimer=setTimeout(revoke,1000)}
         continuation=result.nextCursor;startOver.hidden=!continuation
-        message.textContent='Export ready. '+result.count.toLocaleString()+' commands.'+(result.complete?'':' More history is available; continue for the next file.')
+        message.textContent='Export ready. '+result.count.toLocaleString()+' '+view.noun+'.'+(result.complete?'':view.more)
       }catch(error){if(!present())return;message.textContent=controller.signal.aborted?'Export canceled. No file was downloaded.':'Export stopped. '+(error instanceof Error?error.message:'Refresh and try again.')}
       finally{if(task===controller)task=undefined;if(present())update(false)}
     })()
   })
   cancel.hidden=true;startOver.hidden=true;actions.append(download,cancel,startOver);section.append(description,actions,message)
   clearPageWork=()=>{task?.abort();revoke()};return section
+}
+function historyExportControls(inputScope:string,inputState:string,current:number,route:string,inputSearch?:string){
+  return fileExportControls({label:'Command history export',description:'Download IDs, dates, and delivery status.',action:'Export history',noun:'commands',filename:'longhorn-commands-'+inputScope+'-'+inputState,reset:'The next export starts with your newest matching commands.',more:' More history is available; continue for the next file.',
+    collect:(after,signal,progress)=>collectHistoryExport({selection:{scope:inputScope,state:inputState,...(inputSearch?{q:inputSearch}:{})},...(after?{after}:{}),signal,progress,
+      read:input=>{const query=new URLSearchParams({scope:inputScope,limit:String(input.limit)});if(inputState!=='all')query.set('state',inputState);if(inputSearch)query.set('q',inputSearch);if(input.after)query.set('after',input.after);return api('/commands?'+query,undefined,{signal:input.signal})},
+    }),
+  },current,route)
+}
+function auditExportControls(deliveryId:string|undefined,current:number,route:string){
+  return fileExportControls({label:'Recovery audit export',description:'Download who requested recovery, why, and the recorded outcome.',action:'Export audit',noun:'recovery actions',filename:'longhorn-audit-'+(deliveryId??'all'),reset:'The next export starts with the oldest matching recovery actions.',more:' More recovery actions are available; continue for the next file.',
+    collect:(after,signal,progress)=>collectAuditExport({selection:{deliveryId:deliveryId??null},...(after?{after}:{}),signal,progress,
+      read:input=>{const query=new URLSearchParams({limit:String(input.limit)});if(deliveryId)query.set('deliveryId',deliveryId);if(input.after)query.set('after',input.after);return api('/operations/audit?'+query,undefined,{signal:input.signal})},
+    }),
+  },current,route)
 }
 async function commandsPage(view:HistoryView){
   const current=version,route=location.hash,inputScope=view.scope,inputState=view.state,inputSearch=view.q,query=new URLSearchParams({limit:'20',scope:inputScope})
@@ -339,10 +353,11 @@ async function deliveryPage(id:string){
 }
 function auditRow(audit:Audit){const row=node('li',undefined,'row audit-row'),name=node('div');name.append(link('Delivery '+audit.deliveryId.slice(0,8),'#/deliveries/'+audit.deliveryId),node('div',time(audit.createdAt),'row-id'));row.append(name,cell('Actor',node('code',audit.actor)),cell('Reason',reasons[audit.reason]??audit.reason),cell('Outcome',audit.outcome.replace(/-/g,' ')));return row}
 async function auditPage(id?:string){
-  const query='?limit=20'+(id?'&deliveryId='+id:''),data=await api<Page<{records:Audit[]}>>('/operations/audit'+query),value=node('div');value.append(title('Recovery audit',id?'Recovery actions for delivery '+id.slice(0,8)+'.':'Who requested recovery, why, and what changed.',refresh()))
+  const current=version,route=location.hash,query='?limit=20'+(id?'&deliveryId='+id:''),data=await api<Page<{records:Audit[]}>>('/operations/audit'+query),value=node('div');if(current!==version||location.hash!==route)throw new DOMException('Navigation canceled','AbortError');value.append(title('Recovery audit',id?'Recovery actions for delivery '+id.slice(0,8)+'.':'Who requested recovery, why, and what changed.',refresh()))
   if(id)value.append(link('Show all recovery actions','#/audit','back'))
+  value.append(auditExportControls(id,current,route))
   const rows=node('ul',undefined,'rows');rows.setAttribute('aria-label','Recovery audit');rows.append(...data.records.map(auditRow));if(data.records.length)value.append(rows);else value.append(empty('No recovery actions','Deliberate delivery retries will appear here.'))
-  let cursor=data.nextCursor;const more=button('Load more actions',()=>{if(!cursor)return;more.disabled=true;const current=version;void api<Page<{records:Audit[]}>>('/operations/audit'+query+'&after='+encodeURIComponent(cursor)).then(next=>{if(current!==version)return;rows.append(...next.records.map(auditRow));cursor=next.nextCursor;more.hidden=!cursor;announce('Loaded '+next.records.length+' recovery actions.')}).catch(reason=>announce((reason as Error).message,true)).finally(()=>{more.disabled=false})},'more');more.hidden=!cursor;value.append(more);return value
+  let cursor=data.nextCursor;const more=button('Load more actions',()=>{if(!cursor)return;more.disabled=true;void api<Page<{records:Audit[]}>>('/operations/audit'+query+'&after='+encodeURIComponent(cursor)).then(next=>{if(current!==version)return;rows.append(...next.records.map(auditRow));cursor=next.nextCursor;more.hidden=!cursor;announce('Loaded '+next.records.length+' recovery actions.')}).catch(reason=>{if(current===version)announce((reason as Error).message,true)}).finally(()=>{more.disabled=false})},'more');more.hidden=!cursor;value.append(more);return value
 }
 async function render(){
   const current=++version;clearPageWork();clearPageWork=()=>{};clearPageSecrets();clearPageSecrets=()=>{};reads.abort();reads=new AbortController();root.setAttribute('aria-busy','true')

@@ -1,6 +1,7 @@
 # Browser history export controls
 
-Owner: historyExportControls in console/app.ts and the history-export CSS. Connects
+Owner: historyExportControls and shared fileExportControls in console/app.ts,
+plus the history-export CSS. The same control owns [audit downloads](console-audit-export.md). Connects
 [format](history-export-format.md), [lifetime](history-export-lifecycle.md),
 [history filters](console-history-filters.md) and [proof](history-export-testing.md).
 

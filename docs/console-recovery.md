@@ -22,7 +22,8 @@ and review. Retry retains the original message ID and cumulative attempts.
 
 Recovery audit lists actor IDs, reason, outcome and time, including conflicting
 valid requests. Opening a delivery's recovery history scopes the same bounded
-audit API to that ID. Succeeded transport delivery and computed receipt are
+audit API to that ID. Operators can [export the matching audit](console-audit-export.md)
+through bounded metadata-only files, including after delivery pruning. Succeeded transport delivery and computed receipt are
 separate observations. The receipt consumer dedupes stable IDs under its existing
 storage rules; there is no cross-service exactly-once guarantee.
 

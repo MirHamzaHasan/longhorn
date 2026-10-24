@@ -300,6 +300,11 @@ downstream connections, verification, and current limits.
 | Native deliberate recovery proof | [Recovery verification](outbox-recovery-testing.md) | SQL processes, legacy Object fixture and real broker | Upgrade, SIGKILL, competing retries, cleanup races, alarm abort, one receipt and HTTP policy |
 | Durable attributed recovery | [Outbox audit](outbox-audit.md) | Outbox.retryFailedAudited and optional audit stores | Conditional retry and action/result append in one transaction |
 | Audit schema and privileges | [Audit storage](outbox-audit-storage.md) | Separate SQLite/PostgreSQL migration lists | Immutable deployed prefix, independent table/indexes, append/read and maintenance roles |
+| Shared bounded metadata downloads | [Page export engine](bounded-page-export.md) | App-local pure Web collector and shared controls | Closed domain projections, bounds, whole-page continuation and lifetime |
+| Operator audit downloads | [Recovery audit export](recovery-audit-export.md) | Existing fixed-queue operator audit API | All/scoped traversal, recorded outcomes and retained snapshots |
+| Recovery audit NDJSON | [Audit file format](recovery-audit-export-format.md) | Audit-specific v1 header and projection | Attributed metadata, strict selection and explicit continuation |
+| Browser audit export lifetime | [Audit controls](console-audit-export.md) | Page-owned Fetch, Blob and subject fencing | Cancellation, error discard, focus and explicit resume/start over |
+| Native audit export proof | [Audit download verification](recovery-audit-export-testing.md) | Actual recovery HTTP and relocated archive | 105 real actions, fresh admission, retained audit and 34 captures |
 | Recovery identity/reason policy | [Audit attribution](outbox-audit-attribution.md) | Trusted application principal and demo service binding | Validated identifiers/codes, no client actor claim or credential-derived identity |
 | Bounded recovery history | [Audit history](outbox-audit-history.md) | Outbox.auditHistory and explicit SQL projection | Queue/delivery keyset cursors, historical result summaries, deleted targets |
 | Independent audit retention | [Audit retention](outbox-audit-retention.md) | Outbox.pruneAudit and maintenance role | Bounded queue-scoped deletion, job/history independence and close drain |
@@ -349,7 +354,8 @@ flowchart TD
   HistorySearch --> HistoryExport
   HistoryLinks --> ViewHistory[Browser history and fresh first pages]
   HistoryLinks --> ViewSignIn[Validated sign-in return]
-  HistoryExport --> ExportFiles[Versioned bounded NDJSON segments]
+  HistoryExport --> BoundedExport[Shared bounded page collector]
+  BoundedExport --> ExportFiles[Versioned bounded NDJSON segments]
   HistoryExport --> ExportLifetime[Page-owned cancellation and admission]
   HistoryConsole --> CommandFollow[Bounded command detail updates]
   CommandFollow --> FollowLifetime[Page and visibility ownership]
@@ -358,6 +364,9 @@ flowchart TD
   OutboxRecovery --> Outbox
   OutboxRecovery --> Database
   Operations --> Audit[Durable recovery audit]
+  Audit --> AuditExport[Operator audit NDJSON export]
+  AuditExport --> BoundedExport
+  AuditExport --> ExportLifetime
   Audit --> OutboxRecovery
   Audit --> Database
   Audit --> AlarmClock

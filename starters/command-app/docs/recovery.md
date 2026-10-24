@@ -22,3 +22,7 @@ and verify history, receipt and audit. Independent delivery/receipt retention ca
 make old metadata unavailable. Delivery acknowledgement is separate from database
 commit; consumer dedupe handles repeated stable IDs without a cross-service
 exactly-once guarantee.
+
+Operators can [download audit metadata](audit-export.md) globally or for one delivery,
+including recorded outcomes retained after delivery pruning. Each export page uses
+the existing operator/session/viewer checks and bounded cancellation policy.

@@ -681,7 +681,8 @@ errors, timeout and fresh admission; [controls](console-history-export.md) keep
 focus and expose continue/start over. [Native proof](history-export-testing.md)
 checks actual downloads, a 10000-row segment plus its exact remainder, no secret
 fields, authorization changes, 34 captures and the restored standalone application.
-Snapshot exports, receipts/audit export and import remain separate protocols.
+Snapshot exports, receipt export and import remain separate protocols.
+[Recovery audit exports](recovery-audit-export.md) are now implemented separately.
 
 ## Bookmarkable history views implemented
 
@@ -707,6 +708,18 @@ identifies the narrowed selection. [Native proof](history-search-testing.md)
 covers actual queue states, upgrade death/concurrency, restricted projection,
 6000-row owner/global plans, 26 captures and restored standalone search/export.
 Request-key, substring, arbitrary text/number and payload search remain separate work.
+
+
+## Recovery audit export implemented
+
+[Operator audit downloads](recovery-audit-export.md) now traverse all actions or one
+delivery through existing fresh admission. Their [v1 file schema](recovery-audit-export-format.md)
+preserves attributed retry snapshots, including all four outcomes and pruned
+sources. A [shared bounded collector](bounded-page-export.md) and [page controls](console-audit-export.md)
+reuse limits, exact continuation and cancellation with command exports. [Native proof](recovery-audit-export-testing.md)
+covers 105 actual recovery requests, real files, role/session/viewer changes,
+34 new captures and the independently restored application. Receipt downloads,
+snapshot exports and import/restore remain separate protocols.
 
 ## Subsequent framework modules
 

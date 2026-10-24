@@ -1508,3 +1508,22 @@ metadata-only privileges, measured plans and restored assets verify the connecti
 See [API](history-id-search.md), [cursor](history-search-cursors.md),
 [migration](history-search-migrations.md), [console](console-history-search.md),
 [files](history-search-export.md) and [proof](history-search-testing.md).
+
+## 59. Operator Audit Export through Shared Bounded Collection
+
+Audit export traverses the existing protected fixed-queue API, globally or for a
+selected delivery. Its domain wrapper validates and copies only the recorded
+actor/reason/request/outcome/result fields, including missing results and audit
+retained after delivery pruning. Audit NDJSON v1 is separate from command v1/v2.
+No endpoint, schema, grant or framework package is added.
+
+An app-local pure Web collector now owns both exports' sequential pagination,
+row/page/UTF-8/deadline bounds, duplicate/cursor guards and whole-page continuation.
+Domain wrappers keep their projections/headers/errors. A shared page-owned control
+fences downloads by route/subject, releases Blob URLs, preserves focus and discards
+failed/canceled attempts. Each API page independently checks current admission;
+live traversal does not become a snapshot. Native API recovery, actual downloads,
+34 new accessible captures, existing command continuation tests and restored
+standalone assets verify the connection. See [engine](bounded-page-export.md),
+[feature](recovery-audit-export.md), [format](recovery-audit-export-format.md),
+[controls](console-audit-export.md) and [proof](recovery-audit-export-testing.md).

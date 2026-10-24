@@ -77,3 +77,8 @@ its canonical query across reload and exports exactly that command as [v2 NDJSON
 Clearing only search returns to all four delivered commands before existing
 account/session regressions continue. Native [search proof](history-search-testing.md)
 separately covers migration interruption, index plans and combined cursor context.
+
+The restored/restarted shipped console also exports [recovery audit NDJSON](recovery-audit-export.md)
+through its retained operator cookie in a separate browser context. The actual file
+matches the restored record's actor, reason, request and outcome exactly and excludes
+payload/credentials. Member command-export selection and v1/v2 files are still checked.

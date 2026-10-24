@@ -10,6 +10,7 @@
 | [Run again](command-rerun.md) | console/app.ts and console/numbers.ts | Protected source read, explicit review, separate command/receipt and fresh request key |
 | [Viewer consistency](viewer-binding.md) | src/viewer-binding.ts and console API helper | Displayed public ID matches cookie principal; stale views fail without changing another account |
 | [Commands](commands.md) | src/operations.ts, operation-contracts.ts | Hono validation, DI, transaction-locked identity, scoped request replay |
+| [Audit export](audit-export.md) | console/audit-export.ts, bounded-export.ts and app.ts | Existing operator pages, recorded snapshots, bounded NDJSON and page disposal |
 | [History export](history-export.md) | console/history-export.ts and app.ts | Selected metadata, versioned NDJSON segments, cancellation and exact continuation |
 | [Saved history views](history-view-links.md) | console/routes.ts and app.ts | Canonical filter fragments, Back/Forward, sign-in return and fresh server admission |
 | [ID search](history-search.md) | src/command-history.ts, history-search-migrations.ts and console helpers | Bound UUID prefixes, v3 cursors, owner-deployed indexes and searched NDJSON v2 |

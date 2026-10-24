@@ -1,6 +1,7 @@
 # Export command history
 
-Owner: console/history-export.ts and historyExportControls in console/app.ts.
+Owner: console/history-export.ts, bounded-export.ts and historyExportControls in
+console/app.ts. The app-local collector/control is shared with [audit exports](audit-export.md).
 Connects [history](history.md), [filters](history-filters.md), [console](console.md),
 [viewer admission](viewer-binding.md) and [backup](backup.md).
 

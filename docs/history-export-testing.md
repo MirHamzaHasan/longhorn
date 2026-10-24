@@ -5,11 +5,13 @@ archive gate. Run pnpm test:history-export for the focused native/browser gate,
 pnpm test for source cases, pnpm test:console for all browser gates and
 pnpm test:command-app for the shipped application.
 
-Nine source cases cover copied selection, multi-page traversal, explicit metadata
+Ten source cases cover copied selection, multi-page traversal, explicit metadata
 projection, real default 10,000-row bounds, exact continuation, page/UTF-8 byte limits,
 whole-page rejection, empty output, malformed metadata/cursors, duplicate rows,
 repeated cursors, cancellation/late completion, two-minute deadline and later-page
-authorization/network failure. Failed attempts return no downloadable text result.
+authorization/network failure. Failed attempts return no downloadable text result. The pagination/lifetime engine
+is shared with [recovery audit export](recovery-audit-export-testing.md); domain
+headers/projections remain separate.
 
 The browser gate owns native PostgreSQL, real scrypt accounts, restricted runtime
 credentials and a TCP application with built assets. It creates 103 member commands
