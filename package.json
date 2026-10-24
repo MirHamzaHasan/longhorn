@@ -50,6 +50,7 @@
     "test:outbox-recovery": "pnpm build && node scripts/verify-outbox-recovery.mjs",
     "dev:outbox-worker": "pnpm --filter example-outbox-worker... build && node scripts/serve-outbox-worker.mjs",
     "test:outbox": "pnpm build && node scripts/verify-outbox.mjs",
+    "test:request-cleanup": "pnpm build && node scripts/verify-request-cleanup.mjs",
     "test:idempotency": "pnpm build && node scripts/verify-idempotency.mjs",
     "build": "pnpm -r build",
     "typecheck": "pnpm -r typecheck",

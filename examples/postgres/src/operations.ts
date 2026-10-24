@@ -1,3 +1,6 @@
+import { IdempotencyCleanup } from '@longhorn/idempotency/cleanup'
+import type { IdempotencyCleanupOptions } from '@longhorn/idempotency/cleanup'
+import { checkRequestCleanupAccess } from './request-cleanup.js'
 import { configureHistoryViews } from './history-views-http.js'
 import { checkHistoryViewTable } from './history-view-migrations.js'
 import type { AuthEnv } from '@longhorn/auth/hono'
@@ -27,15 +30,17 @@ import { PostgresCommandHistory,commandHistoryQuery,CommandHistoryCursorError } 
 type Env = LonghornEnv & AuthEnv
 type AccountAccess = ReturnType<typeof configurePostgresAccounts>
 export type AccountOperationsOptions = {
+  readonly requestCleanup?: IdempotencyCleanupOptions
   readonly publisher?: MessagePublisher<OperationData>
   readonly readReceipt?: (id: string,signal: AbortSignal) => Promise<Response>
   readonly checkHealth?: (signal: AbortSignal) => Promise<boolean>
 }
+export const PgRequestCleanup=token<IdempotencyCleanup>('expired request cleanup')
 export const PgOperationOutbox = token<Outbox<OperationData>>('account command outgoing messages')
 const Requests = token<Idempotency>('account command request replay')
 export const PgCommandHistory=token<PostgresCommandHistory>('account command history')
 const params = z.object({ id: z.uuid() })
-export async function checkOperationTables(database: Database): Promise<void> {
+export async function checkOperationTables(database: Database,requestCleanup=false): Promise<void> {
   await database.execute('SELECT id,history_id,created_at,delivery_id FROM longhorn_pg_example.operator_commands LIMIT 0')
   await database.execute('SELECT id FROM longhorn_outbox.recovery_audit LIMIT 0')
   const permission = (await database.execute("SELECT has_function_privilege(current_user,'longhorn_auth.lock_session_user(text)','EXECUTE') AS allowed")).rows[0]
@@ -43,6 +48,7 @@ export async function checkOperationTables(database: Database): Promise<void> {
   await checkHistoryFilterIndexes(database)
   await checkHistorySearchIndexes(database)
   await checkHistoryViewTable(database)
+  if(requestCleanup)await checkRequestCleanupAccess(database)
 }
 export function configurePostgresOperations(app: Longhorn, dbToken: Token<Database>, access: AccountAccess, options: AccountOperationsOptions): void {
   app.container.register(provide(PgOperationOutbox, { deps: [dbToken], factory: db => new Outbox({ name: operationTopic,schema: operationData,store: new PostgresOutboxStore(db),retryDelayMs: 100,maxRetryDelayMs: 1000,leaseMs: 1000 }) }))
@@ -50,6 +56,11 @@ export function configurePostgresOperations(app: Longhorn, dbToken: Token<Databa
   app.container.register(provide(PgCommandHistory,{deps:[dbToken],factory:db=>new PostgresCommandHistory(db)}))
   app.onStart(() => { const outgoing = app.container.resolve(PgOperationOutbox); return () => outgoing.close() })
   if (options.publisher) app.onStart(() => { const worker = app.container.resolve(PgOperationOutbox).createDispatcher(options.publisher!, { pollIntervalMs: 25 }); worker.start(); return () => worker.close() })
+  if(options.requestCleanup){
+    const cleanupOptions={...options.requestCleanup}
+    app.container.register(provide(PgRequestCleanup,{deps:[Requests],factory:requests=>new IdempotencyCleanup(requests,cleanupOptions)}))
+    app.onStart(()=>{const cleanup=app.container.resolve(PgRequestCleanup);cleanup.start();return()=>cleanup.close()})
+  }
   configureHistoryViews(app,dbToken,access)
   const principal = (c: Context<Env>) => c.get('auth')?.user
   const authorize = (c: Context<Env>) => {

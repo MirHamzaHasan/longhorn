@@ -51,3 +51,7 @@ from silently acting under a newly switched cookie; it grants no identity or rol
 owner profile before updated hosts start. Its two expression index builds belong
 in stopped-writer maintenance and need storage/build time; no new runtime grant
 or automatic schema repair is introduced.
+
+[Request cleanup](request-cleanup-host.md) is opt-in in the shipped runtime profile.
+It reuses ledger SELECT/DELETE grants and adds no deployment migration. Review its
+[table-wide expiry policy](request-cleanup-retention.md) before enabling hosts.

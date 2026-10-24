@@ -54,3 +54,6 @@ The complete profile includes [history-filter indexes](history-filters.md). Thei
 regular transactional builds block writes, so deploy them during stopped-writer
 maintenance before starting updated hosts. Startup/readiness checks require both
 valid/ready indexes; no new runtime privileges are needed.
+
+For optional bounded maintenance of expired replay rows, see
+[request cleanup](request-cleanup.md). It stays off in the example profile.

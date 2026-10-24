@@ -72,3 +72,6 @@ and later publish through a broker. The [command pipeline](outbox-worker-example
 persists command, request result and outgoing ID together; consumer receipts use
 that ID to handle remote redelivery. Request replay retention and consumer
 deduplication retention remain separate policies.
+
+Optional [owned cleanup](idempotency-cleanup.md) schedules bounded prune calls through
+the existing lifecycle, leaving import/construction and logical retention unchanged.

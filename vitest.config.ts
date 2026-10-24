@@ -21,6 +21,7 @@ export default defineConfig({
       '@longhorn/idempotency/sqlite': './packages/idempotency/src/sqlite.ts',
       '@longhorn/idempotency/batch-sqlite': './packages/idempotency/src/batch-sqlite.ts',
       '@longhorn/idempotency/postgres': './packages/idempotency/src/postgres.ts',
+      '@longhorn/idempotency/cleanup': './packages/idempotency/src/cleanup.ts',
       '@longhorn/idempotency': './packages/idempotency/src/index.ts',
       '@longhorn/observability/hono': './packages/observability/src/hono.ts',
       '@longhorn/observability/prometheus': './packages/observability/src/prometheus.ts',

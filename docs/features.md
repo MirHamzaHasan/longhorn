@@ -9,6 +9,11 @@ downstream connections, verification, and current limits.
 
 | Feature | Guide | Implementation owner | Connects to |
 | --- | --- | --- | --- |
+| Owned replay cleanup | [Cleanup worker](idempotency-cleanup.md) | Optional @longhorn/idempotency/cleanup | Existing prune/clock, serial bounded batches and private aggregate snapshot |
+| Cleanup shutdown | [Cleanup lifetime](idempotency-cleanup-lifecycle.md) | Application startup resources | One owner, awaited errors, no catch-up and SQL drain before database close |
+| Replay expiry and removal | [Retention](request-cleanup-retention.md) | Existing SQL IdempotencyStore | Table-wide expired rows, active ownership, preserved business records and key reuse |
+| Operator request cleanup | [Host wiring](request-cleanup-host.md) | Typed runtime config and operations DI | Default-off flags, existing SELECT/DELETE grants and readiness |
+| Native cleanup proof | [Cleanup testing](request-cleanup-testing.md) | Actual native runtimes/SQL and restored archive | Real SQLite deletion, restricted PostgreSQL, grant recovery, held replacement and pool ordering |
 | Authenticated session controls | [Session controls](session-controls.md) | AuthService optional capability | Reauthenticated others/all scopes, live counts, current/peer preservation and explicit opt-in |
 | Native SQLite session controls | [SQLite session controls](sqlite-session-controls.md) | Optional auth/sqlite-session-controls | Existing schema, managed ownership, post-wait expiry and atomic scoped deletion |
 | Restricted PostgreSQL session controls | [PostgreSQL session controls](postgres-session-controls.md) | Optional auth/postgres-session-controls | Existing transaction-auth grants, shared protocol admission, row ownership and READ COMMITTED |
@@ -341,6 +346,9 @@ flowchart TD
   App --> Core[Core: HTTP + DI + lifecycle]
   App --> Idempotency[Durable request idempotency]
   Idempotency --> Database
+  RequestCleanup[Owned expired request cleanup] --> Idempotency
+  RequestCleanup --> Lifecycle
+  OperatorHost --> RequestCleanup
   Idempotency --> TxPublish
   IdempotentHttp[Task and report retries] --> Idempotency
   IdempotentHttp --> AtomicTasks

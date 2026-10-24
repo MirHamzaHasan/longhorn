@@ -24,12 +24,12 @@ const starting=(async()=>{
   const logger=createLogger({level:config.logLevel,bindings:{app:'operator-host'}})
   app=createPostgresApp({logger,workerEnabled:false,schedulerEnabled:false,console:await loadConsoleAssets(),
     accounts:{origin:config.authOrigin,secure:config.secureCookies,sessionTtlMs:config.sessionTtlMs,passwords:createScryptPasswordHasher(),passwordChanges:true,sessionControls:true},
-    operations:createOperationTransport(config),openDatabase:async()=>{
+    operations:{...createOperationTransport(config),...(config.requestCleanup?{requestCleanup:{...config.requestCleanup,onError:()=>{logger.warn('Expired request cleanup failed')}}}:{})},openDatabase:async()=>{
       const database=await openPostgres({connectionString:config.databaseUrl,maxConnections:config.maxConnections})
       try{await checkOperatorRuntimeRole(database);return database}catch(error){await database.close();throw error}
     },
   }).onStop(()=>{logger.info('Application stopped')})
   const server=await app.listen(nodeRuntime,{hostname:config.hostname,port:config.port})
-  if(!requested)logger.info('HTTP server listening',{url:server.url,dispatchEnabled:config.dispatchEnabled})
+  if(!requested)logger.info('HTTP server listening',{url:server.url,dispatchEnabled:config.dispatchEnabled,requestCleanupEnabled:!!config.requestCleanup})
 })()
 try{await starting}catch{bootstrap.error('Operator startup failed; verify runtime configuration, grants and deployed operations migrations');process.exitCode=1;await shutdown()}

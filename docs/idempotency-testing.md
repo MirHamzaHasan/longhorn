@@ -41,3 +41,7 @@ example data or cloud accounts. Full PostgreSQL and transaction-publishing gates
 protect existing task/report/account/queue/scheduler behavior; generated-project
 checks protect archived packaging. A passing local native gate does not establish
 cross-database/external-effect atomicity or managed-cloud routing/failover behavior.
+
+[Cleanup verification](request-cleanup-testing.md) additionally exercises an optional
+serial owner, native SQLite on all three hosts, restricted PostgreSQL grant recovery
+and real blocked-query drain. Existing store ownership/expiry tests remain separate.

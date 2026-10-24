@@ -48,3 +48,7 @@ if using transaction publishing, and keep request output invisible until the out
 commit. The raw store contract trusts normalized inputs; applications should use
 Idempotency. Stores do not own database migrations or shutdown.
 See [native ownership/cleanup proofs](idempotency-testing.md).
+
+The optional [cleanup owner](idempotency-cleanup.md) supplies serial polling and drained
+shutdown. Its [retention guide](request-cleanup-retention.md) explains table-wide
+scope and business-record boundaries; stores still own all native SQL policy.

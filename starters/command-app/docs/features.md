@@ -9,6 +9,7 @@
 | [Browser account](account.md) | console/app.ts, app.css and src/console.ts | Host capability, password confirmation, live session probe, pending navigation and uncertain outcomes |
 | [Run again](command-rerun.md) | console/app.ts and console/numbers.ts | Protected source read, explicit review, separate command/receipt and fresh request key |
 | [Viewer consistency](viewer-binding.md) | src/viewer-binding.ts and console API helper | Displayed public ID matches cookie principal; stale views fail without changing another account |
+| [Expired request cleanup](request-cleanup.md) | src/request-cleanup.ts, operations.ts and optional framework worker | Default-off polling, existing ledger grants, table-wide expiry and drained shutdown |
 | [Commands](commands.md) | src/operations.ts, operation-contracts.ts | Hono validation, DI, transaction-locked identity, scoped request replay |
 | [Audit export](audit-export.md) | console/audit-export.ts, bounded-export.ts and app.ts | Existing operator pages, recorded snapshots, bounded NDJSON and page disposal |
 | [Receipt export](receipt-export.md) | console/receipt-export.ts, history-metadata.ts, bounded-export.ts and app.ts | Selected protected results, serial reads, exact continuation and composed page disposal |

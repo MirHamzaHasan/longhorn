@@ -104,6 +104,7 @@ jobs:
       - run: node scripts/verify-history-filters.mjs
       - run: node scripts/verify-history-search.mjs
       - run: node scripts/verify-history-views.mjs
+      - run: node scripts/verify-request-cleanup.mjs
       - run: node scripts/verify-operator-accounts.mjs
       - run: node scripts/verify-password-changes.mjs
       - run: node scripts/verify-session-controls.mjs

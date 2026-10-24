@@ -38,3 +38,7 @@ does not apply migrations, create roles, grant operators or print configuration
 values. Configuration failures produce sanitized startup diagnostics. Source
 tests cover origin/transport/owner-config rejection; native tests also reject
 actual owner credentials and start with the restricted role.
+
+Optional [expired request cleanup](request-cleanup-host.md) adds default-off
+REQUEST_CLEANUP_ENABLED, REQUEST_CLEANUP_INTERVAL_MS and REQUEST_CLEANUP_LIMIT.
+The worker borrows the existing request store and drains before pool closure.

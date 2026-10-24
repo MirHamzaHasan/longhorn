@@ -42,3 +42,6 @@ technology remain deployment/manual verification work.
 Preserve `X-LongHorn-Viewer` unchanged when proxying `/account` requests from the
 console. This optional [displayed-account check](viewer-binding.md) prevents stale tabs
 from silently acting under a newly switched cookie; it grants no identity or role.
+
+[Expired replay cleanup](request-cleanup.md) is optional and uses existing runtime
+ledger privileges. Enable it explicitly per host; it adds no schema migration.

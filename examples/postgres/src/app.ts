@@ -38,7 +38,7 @@ export function createPostgresApp(resources: { openDatabase: () => Promise<Datab
     await app.container.resolve(PgDatabase).execute('SELECT id FROM longhorn_scheduler.schedules LIMIT 0')
     await app.container.resolve(PgDatabase).execute('SELECT request_key FROM longhorn_idempotency.requests LIMIT 0')
     if (resources.accounts) await checkAccountTables(app.container.resolve(PgDatabase),resources.accounts.passwordChanges,resources.accounts.sessionControls)
-    if (resources.operations) await checkOperationTables(app.container.resolve(PgDatabase))
+    if (resources.operations) await checkOperationTables(app.container.resolve(PgDatabase),!!resources.operations.requestCleanup)
     return true
   })
   app.container.register(provide(Tasks, { deps: [PgDatabase], factory: (database) => new PostgresTasksStore(database) }))
@@ -53,7 +53,7 @@ export function createPostgresApp(resources: { openDatabase: () => Promise<Datab
       await database.execute('SELECT id FROM longhorn_scheduler.schedules LIMIT 0')
       await database.execute('SELECT request_key FROM longhorn_idempotency.requests LIMIT 0')
       if (resources.accounts) await checkAccountTables(database,resources.accounts.passwordChanges,resources.accounts.sessionControls)
-      if (resources.operations) await checkOperationTables(database)
+      if (resources.operations) await checkOperationTables(database,!!resources.operations.requestCleanup)
       app.container.register(provide(PgDatabase, { factory: () => database }))
       return () => database.close()
     } catch (error) { try { await database.close() } catch (cleanupError) { throw new AggregateError([error, cleanupError], 'PostgreSQL example startup and cleanup failed', { cause: error }) }; throw error }

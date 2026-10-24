@@ -10,6 +10,9 @@ export const operatorConfigSchema=configInputSchema.omit({WORKER_ENABLED:true,SC
   MESSAGE_SERVICE_TOKEN:z.string().regex(/^[A-Za-z0-9_-]{32,256}$/),
   MESSAGE_ALLOW_INSECURE_LOOPBACK:z.enum(['true','false']).default('false').transform(value=>value==='true'),
   MESSAGE_HTTP_TIMEOUT_MS:z.string().regex(/^\d+$/).default('2000').transform(Number).pipe(z.number().int().min(1).max(60000)),
+  REQUEST_CLEANUP_ENABLED:z.enum(['true','false']).default('false').transform(value=>value==='true'),
+  REQUEST_CLEANUP_INTERVAL_MS:z.string().regex(/^\d+$/).default('60000').transform(Number).pipe(z.number().int().min(1000).max(86400000)),
+  REQUEST_CLEANUP_LIMIT:z.string().regex(/^\d+$/).default('100').transform(Number).pipe(z.number().int().min(1).max(10000)),
   DISPATCH_ENABLED:z.enum(['true','false']).default('true').transform(value=>value==='true'),
 }).superRefine((input,context)=>{
   try{serviceBaseUrl(input.MESSAGE_SERVICE_URL,input.MESSAGE_ALLOW_INSECURE_LOOPBACK)}catch{context.addIssue({code:'custom',path:['MESSAGE_SERVICE_URL'],message:'Invalid service endpoint'})}
@@ -22,5 +25,6 @@ export const operatorConfigSchema=configInputSchema.omit({WORKER_ENABLED:true,SC
   authOrigin:input.AUTH_ORIGIN,secureCookies:input.AUTH_COOKIE_SECURE,sessionTtlMs:input.SESSION_TTL_SECONDS*1000,
   messageBaseUrl:input.MESSAGE_SERVICE_URL,messageToken:input.MESSAGE_SERVICE_TOKEN,allowInsecureLoopback:input.MESSAGE_ALLOW_INSECURE_LOOPBACK,
   timeoutMs:input.MESSAGE_HTTP_TIMEOUT_MS,dispatchEnabled:input.DISPATCH_ENABLED,
+  ...(input.REQUEST_CLEANUP_ENABLED?{requestCleanup:{intervalMs:input.REQUEST_CLEANUP_INTERVAL_MS,limit:input.REQUEST_CLEANUP_LIMIT}}:{}),
 }))
 export type OperatorConfig=Readonly<z.output<typeof operatorConfigSchema>>

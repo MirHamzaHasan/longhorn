@@ -1573,3 +1573,26 @@ DDL/write SIGKILL, waiting-session revocation, 54 new accessible captures and a
 restored standalone preference verify the connection. See [feature](saved-history-views.md),
 [values](saved-view-values.md), [HTTP](saved-view-http.md), [ownership](saved-view-concurrency.md),
 [schema](saved-view-migrations.md), [UI](console-saved-views.md) and [proof](saved-view-testing.md).
+
+
+## 62. Lifecycle-Owned Expired Request Cleanup
+
+An optional pure Web subpath schedules existing Idempotency.prune calls without
+changing stores, clocks, SQL or retention. One admitted batch settles before its
+interval begins; full batches and errors never spin or overlap. Shutdown wakes
+idle waits and drains real SQL plus async error observation before pool release.
+A private aggregate snapshot records local runs/removals/errors without request data.
+
+The PostgreSQL operator host opts in through typed default-off configuration and
+an existing DI request provider. Enabled startup/readiness verifies existing ledger
+SELECT/DELETE authority; no schema, migration, grant or endpoint is added. Cleanup
+applies table-wide to expired replies, while live replays and business records keep
+their lifetimes. Multiple hosts have independent budgets.
+
+Actual Node/Bun/Deno SQLite and restricted PostgreSQL prove deletion/replay/expiry,
+permission recovery, active replacement ownership and blocked SQL drain. A finite
+workerd invocation proves the portable loop contract, without a persistent timer
+claim. The independent restored archive exercises its shipped opt-in configuration.
+See [worker](idempotency-cleanup.md), [lifetime](idempotency-cleanup-lifecycle.md),
+[retention](request-cleanup-retention.md), [host](request-cleanup-host.md) and
+[proof](request-cleanup-testing.md).
