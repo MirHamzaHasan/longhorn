@@ -4,7 +4,8 @@ Owners: `@longhorn/runtime`, `@longhorn/core`, and `@longhorn/node`. Shared cont
 connect an [HTTP app](http.md) to a runtime without importing runtime-specific APIs.
 Native implementations also include [Bun](bun.md), [Deno](deno.md), and [Workers Fetch](workers.md).
 Node also supplies optional native resources through isolated entrypoints:
-[SQLite](sqlite.md), [PostgreSQL](postgres.md), configuration and passwords. Importing
+[SQLite](sqlite.md), [PostgreSQL](postgres.md), [owned processes](managed-node-process.md),
+configuration and passwords. Importing
 the HTTP adapter/shared core does not import the PostgreSQL driver or open a pool.
 
 ## Portable contract

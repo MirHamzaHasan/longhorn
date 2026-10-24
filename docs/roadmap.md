@@ -512,8 +512,24 @@ computation remains pure and versioned; existing queue/SQL ownership stays in th
 application. A typed Web Fetch client validates results and drains actual calls on
 all four JavaScript runtimes. Jobs select it through DI, expose dependency readiness
 and recover durable work after a native outage. A one-command demo computes and
-persists a new report. Native process/plugin orchestration, native durable effects
-and production ingress remain subsequent integrations.
+persists a new report. Direct-child ownership is implemented below; arbitrary
+plugin orchestration, native durable effects and production ingress remain
+subsequent integrations.
+
+## Owned native process lifecycle implemented
+
+[Node process resources](managed-node-process.md),
+[async computation acquisition](report-computer-resources.md),
+[owned Rust integration](owned-native-reports.md),
+[persistent host](native-jobs-host.md) and [proof](managed-process-testing.md)
+each have a guide. The optional Node entrypoint owns one trusted direct executable
+with explicit environment, bounded framing/output, startup cancellation and actual
+exit/forced-stop reporting. Shared core and the portable client remain process-free.
+The jobs app acquires computation after storage and releases it after accepted
+queue/readiness work drains. The new host starts/probes Rust with random credentials
+before HTTP readiness, retains SQLite across restarts, rolls back failed binds and
+recovers durable attempts after native failure. Parent crash supervision,
+descendant ownership and automatic restart remain host deployment concerns.
 
 ## Subsequent framework modules
 

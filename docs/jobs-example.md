@@ -8,6 +8,8 @@ This public loopback demo has a separate database from tasks/auth.
 Local computation is the default. Optional [Rust computation](jobs-native-reports.md)
 uses the same queue/result schema through ReportCompute DI. Run
 `pnpm demo:rust-reports` for the [complete native workflow](rust-reports-demo.md).
+`pnpm dev:jobs-native` instead runs the [persistent owned host](native-jobs-host.md),
+acquiring and draining Rust as a lifecycle resource while retaining jobs/results.
 
 ```sh
 pnpm dev:jobs

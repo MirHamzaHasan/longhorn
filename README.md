@@ -246,6 +246,12 @@ See [protocol](docs/rust-reports.md), [typed client](docs/native-report-client.m
 and [jobs configuration](docs/jobs-native-reports.md). Ordinary apps keep local
 computation unless the native backend is explicitly configured.
 
+For retained data with Rust managed by the jobs app, run `pnpm dev:jobs-native`.
+The [owned host](docs/native-jobs-host.md) starts/probes Rust before HTTP readiness
+and releases it after report calls drain. [Process ownership](docs/managed-node-process.md),
+[async DI acquisition](docs/report-computer-resources.md) and
+[native integration](docs/owned-native-reports.md) each have a guide.
+
 The same app accepts one-time, fixed-interval and UTC-cron definitions at
 `POST /report-schedules`. Schedule state survives restart; SQLite inserts each
 occurrence and advances its cursor atomically across local processes. Read/cancel
@@ -460,6 +466,7 @@ pnpm test:redis-cache
 pnpm test:queues
 pnpm test:scheduler
 pnpm test:observability
+pnpm test:owned-native
 pnpm test:otlp
 pnpm test:otlp-metrics
 pnpm test:otlp-logs
@@ -516,7 +523,9 @@ complete HTTP workflow. Typechecking uses built workspace declarations, so build
   persistent account operations host with restart/outage recovery, native D1
   atomic batches, guarded schema deployment and retained revision-checked Worker
   tasks/activity with exact integer pagination, optional replayable D1 creation
-  and positive committed-result recovery after acknowledgement loss.
+  and positive committed-result recovery after acknowledgement loss, optional
+  versioned Rust report computation, portable typed native calls, and owned Node
+  process resources with a persistent lifecycle-managed Rust jobs host.
 - Planned integrations include additional database providers, telemetry protocols/
   signals and platform triggers; their guarantees need native verification.
 

@@ -85,7 +85,9 @@
     "test:rust-service": "node scripts/build-rust-reports.mjs fmt && node scripts/build-rust-reports.mjs test",
     "test:rust-reports": "pnpm build && pnpm build:rust-reports && node scripts/verify-rust-reports.mjs",
     "dev:rust-reports": "node scripts/serve-rust-reports.mjs",
-    "demo:rust-reports": "pnpm build && pnpm build:rust-reports && node scripts/demo-rust-reports.mjs"
+    "demo:rust-reports": "pnpm build && pnpm build:rust-reports && node scripts/demo-rust-reports.mjs",
+    "dev:jobs-native": "pnpm --filter example-jobs... build && node scripts/serve-native-jobs.mjs",
+    "test:owned-native": "pnpm build && pnpm build:rust-reports && node scripts/verify-owned-native-reports.mjs"
   },
   "packageManager": "pnpm@12.6.0"
 }

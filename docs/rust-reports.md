@@ -51,6 +51,6 @@ responses through Axum's graceful server. Native computation is bounded synchron
 work within the async handler. There is no detached compute thread or forced-success
 timeout. TLS/ingress and independent process deployment remain application-owned.
 See [portable client](native-report-client.md), [jobs integration](jobs-native-reports.md),
-[native proof](rust-reports-testing.md),
+[native proof](rust-reports-testing.md), [lifecycle-owned host](native-jobs-host.md),
 [Axum serving](https://docs.rs/axum/0.8.9/axum/serve/struct.Serve.html) and
 [Tokio shutdown](https://tokio.rs/tokio/topics/shutdown).

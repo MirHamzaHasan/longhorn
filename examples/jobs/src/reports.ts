@@ -8,6 +8,7 @@ export const reportSchema = z.object({ numbers: z.array(z.number().finite().min(
 export type ReportInput = z.output<typeof reportSchema>
 export type ReportResult = { readonly count: number; readonly sum: number; readonly min: number; readonly max: number }
 export type ReportComputer = (input: ReportInput, signal: AbortSignal) => ReportResult | Promise<ReportResult>
+export type ReportComputerResource = { readonly compute: ReportComputer; healthy(signal?: AbortSignal): Promise<boolean>; close(): Promise<void> }
 export const localReportComputer: ReportComputer = ({ numbers }) => Object.freeze({ count: numbers.length,
   sum: numbers.reduce((sum, value) => sum + value, 0), min: Math.min(...numbers), max: Math.max(...numbers) })
 export const reportMigrations: readonly Migration[] = [{ id: 'jobs_example/001_reports', statements: [

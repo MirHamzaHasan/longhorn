@@ -9,13 +9,17 @@ Configure REPORTS_NATIVE_URL and REPORTS_NATIVE_TOKEN together to choose Rust.
 The URL must end in / and follow the service URL policy. Loopback HTTP requires
 REPORTS_NATIVE_ALLOW_INSECURE_LOOPBACK=true; REPORTS_NATIVE_TIMEOUT_MS defaults
 to 2000 and accepts 1–60000. Incomplete/invalid configuration fails before storage
-startup. The app does not automatically build/start the remote process.
+startup. This external-service mode does not build/start the remote process.
+The separate [owned host](native-jobs-host.md) starts a trusted native executable
+through the same [async resource contract](report-computer-resources.md).
 
 The existing reports.v1 payload and result table remain unchanged. The worker
 receives ReportCompute through DI, awaits computation using the job signal, checks
 ownership cancellation again and inserts the result idempotently by stable job ID.
 Only validated native output reaches persistence. The application owns an injected
 custom reportComputer if supplied; the normal selection owns its native client.
+openReportComputer instead acquires an owned compute/health/close resource after
+database startup. It cannot be combined with the borrowed function injection.
 
 Acquisition is database, native client, queue/scheduler, workers/runners and
 readiness. Cleanup reverses that order: readiness probes and handlers settle before

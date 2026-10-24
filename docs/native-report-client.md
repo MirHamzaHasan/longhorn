@@ -38,4 +38,6 @@ The [jobs host](jobs-native-reports.md) registers the selected compute function
 through DI and closes the native client after producers/workers/readiness have
 drained. The [native gate](rust-reports-testing.md) runs the built client against
 the real Rust socket on Node, Bun, Deno and workerd. That portability does not imply
-the jobs host's Node SQLite driver runs on all those platforms.
+the jobs host's Node SQLite driver runs on all those platforms. Optional
+[Node child ownership](owned-native-reports.md) wraps this same portable client in
+an application resource; spawn code stays outside this module.

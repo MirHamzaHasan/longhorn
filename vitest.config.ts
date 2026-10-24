@@ -66,6 +66,7 @@ export default defineConfig({
       '@longhorn/workers/d1': './runtimes/workers/src/d1.ts',
       '@longhorn/workers/durable-sqlite': './runtimes/workers/src/durable-sqlite.ts',
       '@longhorn/workers': './runtimes/workers/src/index.ts',
+      '@longhorn/node/process': './runtimes/node/src/process.ts',
       '@longhorn/node/config': './runtimes/node/src/config.ts',
       '@longhorn/node/sqlite': './runtimes/node/src/sqlite.ts',
       '@longhorn/node': './runtimes/node/src/index.ts',

@@ -228,3 +228,14 @@ authorization does not replace full HTTP/app.run ownership of an operator action
 The audited native callback owns both transition and append before commit/alarm
 projection. Resource cleanup must wait for that final outcome; there is no detached
 audit writer to continue after database release.
+
+## Owned native computation
+
+The jobs app's [async computation factory](report-computer-resources.md) acquires
+after database startup and before queue/worker/readiness startup. The optional
+[Node process resource](managed-node-process.md) joins actual direct-child exit;
+its [Rust wrapper](owned-native-reports.md) drains client calls before stopping
+that process. Reverse cleanup therefore preserves compute and SQL ownership while
+reports settle. The [persistent host](native-jobs-host.md) installs early parent
+signals to abort startup acquisition, handles bind rollback and reports unexpected
+child failure during shutdown. Core does not gain process or parent-signal APIs.

@@ -3,7 +3,8 @@
 Owner: [verify-rust-reports.mjs](../scripts/verify-rust-reports.mjs) and the locked
 Cargo workspace. `pnpm test:rust-service` checks formatting and Rust tests;
 `pnpm test:rust-reports` builds TypeScript/Rust then runs the complete native gate.
-The workflow's rust-reports job pins Rust 1.97.1 and runs the same commands on Linux.
+The workflow's rust-reports job pins Rust 1.97.1 and runs the same commands on Linux,
+followed by the separate [managed host gate](managed-process-testing.md).
 
 Rust tests cover finite bounded arithmetic, maximum cardinality, zero normalization,
 invalid ranges and ambiguous/unknown JSON fields. Source tests cover request

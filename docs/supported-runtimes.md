@@ -19,6 +19,7 @@ account and browser jobs passed there. Package engines allow Node
 | HTTP service client/publisher | All four runtime profiles above | Real TCP to protected receipt receiver; does not imply PostgreSQL on all runtimes |
 | Native Rust report service | Rust 1.97.1/Axum 0.8.9/Tokio 1.51.0 on macOS ARM64 | Locked native binary, bounded authenticated loopback HTTP and signal drain; [proof](rust-reports-testing.md) |
 | Typed native report client | All four JavaScript runtime profiles above | Actual Node/Bun/Deno/workerd Fetch to Rust; jobs integration remains its Node SQLite host |
+| Managed executable / owned Rust jobs | Node 20.19.4, Rust 1.97.1 on macOS ARM64 | Actual direct-child abort/output/exit, startup probe/bind rollback and retained HTTP recovery; [proof](managed-process-testing.md); Windows/Linux execution tracked separately |
 | Redis codec/provider protocol | All four runtime profiles above | Built exports with a fake command client, including real workerd; no non-Node Redis TCP claim |
 | Native Redis task cache | Node 20.19.4, Redis 8.0.0, @redis/client 6.3.0 | Actual authenticated standalone server, TLS proxy, expiry/ACL/restart, native deadline destruction and HTTP outage fallback |
 | Persistent command console host | Node 20.19.4, PostgreSQL 18.4 | Native pg pool, scrypt, complete schema, fixed built assets and restricted role |

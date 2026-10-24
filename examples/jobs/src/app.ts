@@ -13,7 +13,7 @@ import { validate } from '@longhorn/validation/hono'
 import { bodyLimit } from 'hono/body-limit'
 import type { AppConfig } from './config.js'
 import { localReportComputer, reportHandler, reportMigrations, reportQueueName, reportSchema } from './reports.js'
-import type { ReportComputer, ReportInput } from './reports.js'
+import type { ReportComputer, ReportComputerResource, ReportInput } from './reports.js'
 import { createNativeReportComputer } from './native-reports.js'
 import { reportScheduleSchema } from './schedules.js'
 import { configureDiagnostics } from './diagnostics.js'
@@ -26,12 +26,19 @@ export const ReportScheduler = token<Scheduler>('report scheduler')
 export const ReportScheduleRunner = token<SchedulerRunner>('report schedule runner')
 export const ReportCompute = token<ReportComputer>('report computation')
 
-export function createJobsApp(config: AppConfig, resources: { openDatabase: () => Promise<Database>; logger?: Logger; now?: () => number; exporter?: SpanExporter; metricExporter?: MetricExporter; logs?: BufferedLogProcessor; reportComputer?: ReportComputer }): Longhorn {
+export function createJobsApp(config: AppConfig, resources: { openDatabase: () => Promise<Database>; logger?: Logger; now?: () => number; exporter?: SpanExporter; metricExporter?: MetricExporter; logs?: BufferedLogProcessor; reportComputer?: ReportComputer; openReportComputer?: () => Promise<ReportComputerResource> }): Longhorn {
+  if (resources.reportComputer && resources.openReportComputer) throw new Error('Choose one report computation provider')
   const selected = !resources.logger && !resources.logs && config.otlpLogs ? createJobsLogging(config) : undefined
   const logger = resources.logger ?? selected?.logger, logs = resources.logs ?? selected?.processor
   const app = new Longhorn(logger ? { logger } : {})
-  const native = !resources.reportComputer && config.nativeReports ? createNativeReportComputer(config.nativeReports) : undefined
-  app.container.register(provide(ReportCompute, { factory: () => resources.reportComputer ?? native?.compute ?? localReportComputer }))
+  const openComputer = resources.openReportComputer ?? (!resources.reportComputer && config.nativeReports ? async () => createNativeReportComputer(config.nativeReports!) : undefined)
+  let computer: ReportComputerResource | undefined
+  app.container.register(provide(ReportCompute, { factory: () => {
+    if (resources.reportComputer) return resources.reportComputer
+    if (!openComputer) return localReportComputer
+    if (!computer) throw new Error('Report computation resource is not ready')
+    return computer.compute
+  } }))
   // Registered first so final log drain runs after diagnostics and all other stop hooks.
   if (logs) app.onStop(() => logs.close())
   const diagnostics = configureDiagnostics(app, config, {
@@ -39,7 +46,7 @@ export function createJobsApp(config: AppConfig, resources: { openDatabase: () =
     scheduler: () => app.container.resolve(ReportScheduleRunner).snapshot(), ...(resources.exporter ? { exporter: resources.exporter } : {}),
     ...(resources.metricExporter ? { metricExporter: resources.metricExporter } : {}),
     ...(logs ? { logs } : {}),
-    ...(native ? { nativeHealthy: (signal: AbortSignal) => native.healthy(signal) } : {}),
+    ...(openComputer ? { nativeHealthy: (signal: AbortSignal) => computer?.healthy(signal) ?? Promise.resolve(false) } : {}),
   })
   app.container.register(provide(ReportQueue, { deps: [ReportDatabase], factory: (database) => new Queue({
     name: reportQueueName, schema: reportSchema, store: new SqliteQueueStore(database),
@@ -75,7 +82,11 @@ export function createJobsApp(config: AppConfig, resources: { openDatabase: () =
       throw error
     }
   })
-  app.onStart(() => native ? () => native.close() : undefined)
+  app.onStart(async () => {
+    if (!openComputer) return
+    computer = await openComputer()
+    return () => computer!.close()
+  })
   app.onStart(() => {
     const queue = app.container.resolve(ReportQueue)
     return () => queue.close()

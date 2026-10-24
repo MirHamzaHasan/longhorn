@@ -22,6 +22,7 @@ jobs:
       - run: pnpm test:rust-service
       - run: pnpm build:rust-reports
       - run: node scripts/verify-rust-reports.mjs
+      - run: node scripts/verify-owned-native-reports.mjs
   d1-storage:
     runs-on: ubuntu-24.04
     timeout-minutes: 20

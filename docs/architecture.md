@@ -1175,3 +1175,30 @@ built client on Node/Bun/Deno/workerd, forces real body/capacity/deadline bounda
 recovers jobs after service outage/restart and proves native/demo/launcher drain.
 See [service](rust-reports.md), [client](native-report-client.md),
 [jobs](jobs-native-reports.md), [demo](rust-reports-demo.md) and [proof](rust-reports-testing.md).
+
+---
+
+## 44. Optional Node Process Ownership and Asynchronous Report Resources
+
+The isolated @longhorn/node/process entrypoint owns one trusted direct executable
+through explicit argv/environment snapshots, bounded UTF-8 readiness frames and
+lifetime output, startup cancellation and actual exit. Graceful close escalates
+only after its budget and reports forced termination as failure. It does not put
+process APIs in shared core, run a shell, supervise descendants or restart children.
+
+The jobs app now acquires a computation resource asynchronously after its database
+and before queue/worker/readiness startup. ReportCompute remains the portable
+function dependency. Acquisition failure rolls storage back; cleanup joins accepted
+reports before computation/client/process release, then closes storage. Configured
+external native clients use the same resource path without requiring startup health.
+
+The owned Rust implementation generates a private credential and minimal loopback
+environment, validates the ready protocol/address and requires authenticated health.
+It releases partial acquisitions before rejection. A separate persistent Node host
+handles parent signals before startup, rolls back failed HTTP binds and exposes
+child failure through readiness/queue retry. Retained SQLite supports recovery with
+a fresh service on host restart. Direct-child fixtures and actual Rust HTTP/restart
+gates prove the boundaries; parent crash/service supervision remains deployment-owned.
+See [process](managed-node-process.md), [DI](report-computer-resources.md),
+[Rust resource](owned-native-reports.md), [host](native-jobs-host.md) and
+[proof](managed-process-testing.md).

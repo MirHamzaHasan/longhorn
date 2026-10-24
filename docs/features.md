@@ -9,6 +9,11 @@ downstream connections, verification, and current limits.
 
 | Feature | Guide | Implementation owner | Connects to |
 | --- | --- | --- | --- |
+| Owned Node executable | [Managed process](managed-node-process.md) | Optional @longhorn/node/process | Absolute trusted executable, bounded output/startup, cancellation, actual exit and forced-stop failure |
+| Async report computation acquisition | [Report resources](report-computer-resources.md) | Jobs resource factory and ReportCompute DI | Startup rollback, dependency readiness and queue-before-computation/storage drain |
+| Lifecycle-owned Rust service | [Owned native reports](owned-native-reports.md) | Node jobs application resource | Minimal child environment, random credential, versioned health, client-before-child release |
+| Persistent native jobs workflow | [Native jobs host](native-jobs-host.md) | Explicit Node host and launcher | Locked build, retained SQLite, early parent signals, bind rollback and failed-child recovery |
+| Actual managed-process proof | [Owned process testing](managed-process-testing.md) | Real Node fixtures and locked Rust gate | Split frames/output limits, force failure, retained host restart and startup cancellation |
 | Optional Rust compute service | [Native reports](rust-reports.md) | Native Cargo workspace | Authenticated pure report protocol, bounded handler ownership and graceful signals |
 | Portable typed native client | [Report client](native-report-client.md) | Jobs application module over shared JSON client | Input snapshots, protocol/result validation, four-runtime Fetch and real call drain |
 | Native report job backend | [Jobs/Rust](jobs-native-reports.md) | ReportCompute DI and existing queue | Explicit configuration, readiness, cancellation, retry/recovery and retained SQLite results |

@@ -12,6 +12,12 @@ See [the feature guide](../../docs/jobs-example.md) for commands, configuration,
 DI/lifecycle connections, idempotency, persistence and verification. Queue contracts,
 workers, memory storage and SQLite storage each have their own linked guide.
 
+Run `pnpm dev:jobs-native` for the [persistent owned Rust host](../../docs/native-jobs-host.md).
+It starts/probes Rust before the API, retains this example's SQLite data and drains
+the service after accepted reports settle. The [async resource](../../docs/report-computer-resources.md),
+[process owner](../../docs/managed-node-process.md), [Rust wrapper](../../docs/owned-native-reports.md)
+and [actual-process verification](../../docs/managed-process-testing.md) document the connections.
+
 [Remote OTLP tracing](../../docs/jobs-otlp.md) is opt-in via the explicit trace endpoint;
 without it the local memory buffer remains. `pnpm demo:tracing` starts an owned native
 collector and temporary reports API at port 3004. [Configuration](../../docs/otlp-configuration.md),
