@@ -1,8 +1,11 @@
 import{z}from'zod'
 export const configSchema=z.object({
+  D1_CREATE_LIMIT_ENABLED:z.enum(['true','false']).default('false').transform(value=>value==='true'),
+  D1_CREATE_LIMIT_REQUESTS:z.string().regex(/^\d+$/).default('60').transform(Number).pipe(z.number().int().min(1).max(1000000)),
+  D1_CREATE_LIMIT_WINDOW_MS:z.string().regex(/^\d+$/).default('60000').transform(Number).pipe(z.number().int().min(1000).max(86400000)),
   D1_MAX_PENDING:z.string().regex(/^\d+$/).default('6').transform(Number).pipe(z.number().int().min(1).max(64)),
   D1_REQUEST_RETENTION_MS:z.string().regex(/^\d+$/).default('86400000').transform(Number).pipe(z.number().int().min(1).max(2592000000)),
-}).transform(value=>({maxPending:value.D1_MAX_PENDING,retentionMs:value.D1_REQUEST_RETENTION_MS}))
+}).transform(value=>({maxPending:value.D1_MAX_PENDING,retentionMs:value.D1_REQUEST_RETENTION_MS,...(value.D1_CREATE_LIMIT_ENABLED?{createLimits:{limit:value.D1_CREATE_LIMIT_REQUESTS,windowMs:value.D1_CREATE_LIMIT_WINDOW_MS}}:{})}))
 export type D1Config=Readonly<z.output<typeof configSchema>>
 export const title=z.string().trim().min(1).max(200)
 export const createSchema=z.object({title}).strict()

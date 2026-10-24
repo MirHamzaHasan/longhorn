@@ -1,3 +1,4 @@
+import{batchRateLimitMigrations}from'@longhorn/ratelimit/batch-sqlite'
 import type { Migration } from '@longhorn/database'
 import{batchIdempotencyMigrations}from'@longhorn/idempotency/batch-sqlite'
 export const migrations:readonly Migration[]=[
@@ -11,4 +12,5 @@ export const migrations:readonly Migration[]=[
     kind TEXT NOT NULL CHECK(kind IN('created','updated','deleted')),at TEXT NOT NULL,mutation TEXT NOT NULL UNIQUE,UNIQUE(task_id,revision)
   )`,'CREATE INDEX d1_task_activity_task_position ON d1_task_activity(task_id,position)']},
   ...batchIdempotencyMigrations,
+  ...batchRateLimitMigrations,
 ]

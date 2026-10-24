@@ -1,7 +1,7 @@
 # Request attempt limits
 
 Owner: @longhorn/ratelimit. Connects the [memory provider](rate-limit-memory.md),
-[SQL providers](rate-limit-sql.md), [Redis provider](redis-rate-limits.md), [Hono middleware](rate-limit-http.md),
+[SQL providers](rate-limit-sql.md), [Redis provider](redis-rate-limits.md), [native batch provider](batch-rate-limits.md), [Hono middleware](rate-limit-http.md),
 [command application](command-request-limits.md) and [native proof](rate-limit-testing.md).
 Authentication's login throttle remains separate and unchanged.
 
@@ -43,9 +43,9 @@ with fixed codes/messages. Native storage errors retain their original identity.
 The [HTTP adapter](rate-limit-http.md) hides them behind a generic 503.
 
 [Lifecycle](rate-limit-lifecycle.md) owns admission and drain. There is no implicit
-timer, listener, database acquisition, migration or cleanup. D1 and Durable Object
-SQL adapters are not implemented for this package. Node/Bun/Deno native SQLite and
-Node PostgreSQL are verified; workerd uses the finite memory/Hono contract.
+timer, listener, database acquisition, migration or cleanup. Node/Bun/Deno native SQLite and Node PostgreSQL use their managed stores. Actual
+workerd D1 now uses the optional server-timed batch provider; Durable Object SQL
+keeps its separate contract. See [D1 proof](d1-limit-testing.md).
 
 The optional Redis provider borrows the existing Node command connection, uses one
 atomic reservation and native expiry, and receives no client clock. An explicit

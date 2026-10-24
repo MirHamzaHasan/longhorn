@@ -18,3 +18,8 @@ but an unavailable read remains ambiguous. No automatic write retry, timer or pu
 cleanup route is added. Explicit bounded prune preserves business/activity rows.
 Without a key, creation is ordinary; PATCH/DELETE still use revisions. See
 [configuration](configuration.md), [schema](schema.md) and [testing](testing.md).
+
+Optional [task creation limits](request-limits.md) append the native batch bucket
+schema to the complete deployment profile. The budget uses database time and counts
+attempts before task validation/replay. A denied request creates no task/activity/
+request record; closing drains accepted work before the borrowed D1 handle.

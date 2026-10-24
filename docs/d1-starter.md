@@ -35,3 +35,9 @@ The installed project works after relocation without this checkout. Keep
 .longhorn/ and pnpm-workspace.yaml with it; install creates its own pnpm lockfile,
 which can then be frozen. No public registry release, cloud resources, production
 authentication or managed failover is supplied by generation.
+
+[Task creation attempt limits](d1-request-limits.md) now append their own native
+batch schema after the previous complete profile. Limits default off; complete
+migration history still needs deployment. Actual starter source, policy guide and
+opt-in native proof ship together. See [schema](d1-limit-schema.md) and
+[installed verification](d1-limit-testing.md).

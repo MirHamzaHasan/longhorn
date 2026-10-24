@@ -43,3 +43,9 @@ Worker eviction does not guarantee lifecycle cleanup. Await database work inside
 the request; do not assume arbitrary background work or a platform final close
 hook. The provider's explicit close/drain behavior and retained local host restart
 are tested separately in [native verification](d1-testing.md).
+
+[Task creation attempt limits](d1-request-limits.md) now append their own native
+batch schema after the previous complete profile. Limits default off; complete
+migration history still needs deployment. Actual starter source, policy guide and
+opt-in native proof ship together. See [schema](d1-limit-schema.md) and
+[installed verification](d1-limit-testing.md).

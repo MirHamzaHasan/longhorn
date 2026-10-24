@@ -5,6 +5,9 @@ compatibility_date = "2025-07-18"
 [vars]
 D1_MAX_PENDING = "6"
 D1_REQUEST_RETENTION_MS = "86400000"
+D1_CREATE_LIMIT_ENABLED = "false"
+D1_CREATE_LIMIT_REQUESTS = "60"
+D1_CREATE_LIMIT_WINDOW_MS = "60000"
 
 [[d1_databases]]
 binding = "DB"

@@ -63,3 +63,8 @@ wide cursors, retained restart and host cleanup. See [provider](../../docs/worke
 [schema](../../docs/batch-migrations.md), [tasks](../../docs/d1-tasks.md),
 [activity](../../docs/d1-task-activity.md), [pages](../../docs/d1-pagination.md)
 and [native proof](../../docs/d1-testing.md).
+
+[Optional D1 task creation limits](../../docs/d1-request-limits.md) now connect native database time, atomic
+budgets, validation/replay and retained worker state. Run pnpm test:d1-rate-limits
+for actual workerd rollback, concurrency, expiry, upgrade and shutdown evidence.
+The generated starter ships its own policy guide and opt-in native tests.

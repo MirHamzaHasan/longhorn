@@ -55,7 +55,7 @@ try{
   for(const action of['typecheck','test','build'])await command('pnpm',['exec','longhorn',action,'--cwd',directory],consumer)
   await node(['tests/storage.mjs'],directory)
   console.log('D1 starter distribution: workspace/packed binaries, actual source snapshot, relocated fresh/frozen install, types/tests/browser build and shipped native storage/restart gate verified.')
-  const cli=join(consumer,'node_modules/@longhorn/cli/dist/bin.js'),start=()=>launch(process.execPath,[cli,'start','--cwd',directory],consumer)
+  const cli=join(consumer,'node_modules/@longhorn/cli/dist/bin.js'),start=(environment={})=>launch(process.execPath,[cli,'start','--cwd',directory],consumer,{D1_CREATE_LIMIT_ENABLED:'false',...environment})
   let host=start(),url=await listening(host)
   assert.equal((await fetch(url+'/deploy',{method:'POST'})).status,404)
   let response=await fetch(url+'/tasks',post('retained generated task','native-key'));assert.equal(response.status,201);const saved=await response.json()
@@ -91,4 +91,12 @@ try{
   host=start();url=await listening(host);assert.equal((await taskAt(url,saved.task.id)).completed,true);await stop(host)
   assert.ok(!(await readdir(temporary)).some(name=>name.startsWith('.longhorn-create-')))
   console.log('Installed D1 failure boundaries: invalid configuration creates no data directory; changed applied schema rejects readiness and closes development, while restoring source preserves retained data.')
+  const budget={D1_CREATE_LIMIT_ENABLED:'true',D1_CREATE_LIMIT_REQUESTS:'2',D1_CREATE_LIMIT_WINDOW_MS:'5000'}
+  let limited=start(budget),limitedUrl=await listening(limited)
+  let limitedReplay=await fetch(limitedUrl+'/tasks',post('retained generated task','native-key'));assert.equal(limitedReplay.status,201);assert.equal(limitedReplay.headers.get('Idempotency-Replayed'),'true');assert.deepEqual(await limitedReplay.json(),saved);await stop(limited)
+  limited=start(budget);limitedUrl=await listening(limited);limitedReplay=await fetch(limitedUrl+'/tasks',post('retained generated task','native-key'));assert.equal(limitedReplay.status,201);assert.equal(limitedReplay.headers.get('Idempotency-Replayed'),'true');assert.deepEqual(await limitedReplay.json(),saved)
+  const blocked=await fetch(limitedUrl+'/tasks',post('must not create','blocked-key'));assert.equal(blocked.status,429);assert.ok(Number(blocked.headers.get('Retry-After'))>=1);assert.equal((await taskAt(limitedUrl,saved.task.id)).completed,true)
+  await waitFor(limited,async()=>{const response=await fetch(limitedUrl+'/tasks',post('retained generated task','native-key'));if(response.status===429)return false;assert.equal(response.status,201);assert.equal(response.headers.get('Idempotency-Replayed'),'true');assert.deepEqual(await response.json(),saved);return true});await stop(limited)
+  await mkdir(join(root,'.artifacts'),{recursive:true});await writeFile(join(root,'.artifacts/d1-rate-limit-project-proof.json'),JSON.stringify({installedCli:true,sourceSnapshot:true,shippedNativeStorageProof:true,separateHostBudgetRetained:true,countedReplay:true,retryAfter429:true,readsUnaffected:true,expiryRetainsOriginalReplay:true,noPublicDeployAuthority:true},null,2)+'\n')
+  console.log('Installed D1 limit profile: real CLI environment forwarding, retained budget across separate hosts, counted stable replay, 429/read availability and native expiry recovery with the original result verified.')
 }finally{await Promise.all([...instances].map(stop));await rm(temporary,{recursive:true,force:true})}

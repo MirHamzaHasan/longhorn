@@ -29,3 +29,8 @@ Deploy synchronized time and the required persistence policy. This contract does
 not promise failover consistency, exactly-once attempts or client cancellation of
 already accepted server work. See [lifetime](redis-rate-limit-lifecycle.md) and
 [native server queue/expiry proof](redis-rate-limit-testing.md).
+
+The optional [SQLite batch provider](batch-rate-limits.md) also uses this port. One
+native UPSERT samples database time and returns the committed observation. Its
+bounded prune statement samples the same database clock rather than taking host
+now. [Native D1 proof](d1-limit-testing.md) runs with JavaScript Date.now set to zero.

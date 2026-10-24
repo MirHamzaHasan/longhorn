@@ -43,7 +43,7 @@ try{
   assert.equal((await first.fetch('http://tasks/health')).status,503)
   const sql=async(statement,args=[],database='tasks')=>(await json(fixture,'/sql',post({sql:statement,args,database}))).results
   assert.equal((await sql("SELECT name FROM sqlite_master WHERE name='longhorn_batch_migrations'")).length,0)
-  assert.deepEqual((await json(schema,'/deploy',post({}))).applied,['d1-tasks/001','d1-tasks/002','longhorn_batch_idempotency/001_requests'])
+  assert.deepEqual((await json(schema,'/deploy',post({}))).applied,['d1-tasks/001','d1-tasks/002','longhorn_batch_idempotency/001_requests','longhorn_batch_rate_limit/001_buckets'])
   assert.deepEqual((await json(schema,'/deploy',post({}))).applied,[])
   assert.equal((await json(first,'/health')).storage,'d1')
   const hiddenDeploy=await first.fetch('http://tasks/deploy',post({}));assert.equal(hiddenDeploy.status,404,await hiddenDeploy.text())

@@ -5,10 +5,10 @@ import{loadConfig}from'../packages/config/dist/index.js'
 import{configSchema}from'../examples/d1-worker/dist/config.js'
 const port=process.env.PORT??'3016';if(!/^\d+$/.test(port))throw new Error('Invalid D1 host port')
 const options=resolveServeOptions({hostname:process.env.HOST??'127.0.0.1',port:Number(port)}),signals=['SIGINT','SIGTERM']
-const config=await loadConfig(configSchema,{D1_MAX_PENDING:process.env.D1_MAX_PENDING,D1_REQUEST_RETENTION_MS:process.env.D1_REQUEST_RETENTION_MS})
+const config=await loadConfig(configSchema,{D1_MAX_PENDING:process.env.D1_MAX_PENDING,D1_REQUEST_RETENTION_MS:process.env.D1_REQUEST_RETENTION_MS,D1_CREATE_LIMIT_ENABLED:process.env.D1_CREATE_LIMIT_ENABLED,D1_CREATE_LIMIT_REQUESTS:process.env.D1_CREATE_LIMIT_REQUESTS,D1_CREATE_LIMIT_WINDOW_MS:process.env.D1_CREATE_LIMIT_WINDOW_MS})
 const previous=new Map(signals.map(signal=>[signal,new Set(process.listeners(signal))]))
 const database={DB:'longhorn-d1-tasks'},directory=process.env.D1_DATA_PATH??fileURLToPath(new URL('../examples/d1-worker/data/d1',import.meta.url))
-const application={name:'tasks',modules:true,compatibilityDate:'2025-07-18',scriptPath:fileURLToPath(new URL('../examples/d1-worker/dist/index.js',import.meta.url)),d1Databases:database,bindings:{D1_MAX_PENDING:String(config.maxPending),D1_REQUEST_RETENTION_MS:String(config.retentionMs)}}
+const application={name:'tasks',modules:true,compatibilityDate:'2025-07-18',scriptPath:fileURLToPath(new URL('../examples/d1-worker/dist/index.js',import.meta.url)),d1Databases:database,bindings:{D1_MAX_PENDING:String(config.maxPending),D1_REQUEST_RETENTION_MS:String(config.retentionMs),D1_CREATE_LIMIT_ENABLED:String(!!config.createLimits),...(config.createLimits?{D1_CREATE_LIMIT_REQUESTS:String(config.createLimits.limit),D1_CREATE_LIMIT_WINDOW_MS:String(config.createLimits.windowMs)}:{})}}
 const nativeOptions={host:options.hostname,port:options.port,cf:false,compatibilityDate:'2025-07-18',d1Persist:directory,log:new Log(LogLevel.WARN),workers:[
   application,
   {name:'schema',modules:true,compatibilityDate:'2025-07-18',scriptPath:fileURLToPath(new URL('../examples/d1-worker/dist/deploy.js',import.meta.url)),d1Databases:database},

@@ -425,6 +425,9 @@ importers:
       '@longhorn/idempotency':
         specifier: workspace:*
         version: link:../../packages/idempotency
+      '@longhorn/ratelimit':
+        specifier: workspace:*
+        version: link:../../packages/ratelimit
       '@longhorn/validation':
         specifier: workspace:*
         version: link:../../packages/validation

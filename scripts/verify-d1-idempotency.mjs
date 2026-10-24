@@ -33,7 +33,7 @@ try{
   assert.equal((await first.fetch('http://tasks/health')).status,503)
   const legacy=await json(fixture,'/legacy',jsonPost({}))
   assert.equal((await first.fetch('http://tasks/health')).status,503)
-  assert.deepEqual((await json(schema,'/deploy',jsonPost({}))).applied,['longhorn_batch_idempotency/001_requests'])
+  assert.deepEqual((await json(schema,'/deploy',jsonPost({}))).applied,['longhorn_batch_idempotency/001_requests','longhorn_batch_rate_limit/001_buckets'])
   assert.equal((await json(first,'/tasks/'+legacy.id)).task.title,'legacy retained task')
   assert.equal((await json(first,'/tasks/'+legacy.id+'/activity')).activity.length,1)
   assert.deepEqual((await json(schema,'/deploy',jsonPost({}))).applied,[])

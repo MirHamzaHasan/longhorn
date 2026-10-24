@@ -590,3 +590,8 @@ actual runtime, SQL contention/crash, upgrade and HTTP verification.
 Node connection. The protected report example runs with pnpm dev:redis-limits;
 pnpm test:redis-limits verifies actual contention, TTL, ACL, crash recovery and
 lost-reply HTTP shutdown. Each part has its guide in the feature index.
+
+[Optional D1 task creation limits](docs/d1-request-limits.md) now connect native database time, atomic
+budgets, validation/replay and retained worker state. Run pnpm test:d1-rate-limits
+for actual workerd rollback, concurrency, expiry, upgrade and shutdown evidence.
+The generated starter ships its own policy guide and opt-in native tests.

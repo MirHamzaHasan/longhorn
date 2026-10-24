@@ -810,8 +810,8 @@ production ingress and automated repair remain separate verification/actions.
 sessions/hosts and connects migrations/grants, startup/readiness/preflight and
 retained backup state. [Native proof](rate-limit-testing.md) covers actual runtimes,
 SQL contention, process death, upgrade races, HTTP denial and restored distributions.
-Rolling/token-bucket algorithms, worker SQL stores and scheduled bucket
-maintenance remain separate work. Redis storage is implemented below.
+Rolling/token-bucket algorithms, Durable Object SQL stores and scheduled bucket
+maintenance remain separate work. Redis and D1 storage are implemented below.
 
 
 ## Redis request attempt storage implemented
@@ -826,6 +826,18 @@ hosts and token rotation. [Native proof](redis-rate-limit-testing.md) covers act
 Redis contention/TTL/ACL, killed AOF recovery, HTTP outage and lost-reply shutdown;
 other runtimes run the portable protocol with an explicit fake command client.
 Redis cluster/failover and native Redis transports outside Node remain separate work.
+
+
+## Native D1 request budgets implemented
+
+[Atomic SQLite batch limits](batch-rate-limits.md) now supply the existing server-time
+port through one native UPSERT/RETURNING. The [optional public task policy](d1-request-limits.md)
+connects validation/replay, [appended schema](d1-limit-schema.md), complete deployment
+verification and [HTTP/native drain](d1-limit-lifecycle.md). [Native proof](d1-limit-testing.md)
+covers real D1 time, rollback/lost acknowledgement, bounded pruning, owner upgrade
+races, two-worker quotas and packed/relocated CLI hosts with retained budgets.
+Durable Object SQL stores, distributed edge deployment and scheduled maintenance
+remain separate work.
 
 ## Subsequent framework modules
 

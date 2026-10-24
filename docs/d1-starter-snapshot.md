@@ -39,3 +39,9 @@ Generated files become application-owned. Asset hashes are checked during creati
 not used to prohibit later edits. Updates require deliberate review/regeneration;
 there is no automatic overwrite, package publication or schema rollout. See
 [native packed-binary proof](d1-starter-testing.md).
+
+[Task creation attempt limits](d1-request-limits.md) now append their own native
+batch schema after the previous complete profile. Limits default off; complete
+migration history still needs deployment. Actual starter source, policy guide and
+opt-in native proof ship together. See [schema](d1-limit-schema.md) and
+[installed verification](d1-limit-testing.md).

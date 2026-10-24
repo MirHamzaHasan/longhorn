@@ -26,3 +26,7 @@ checks close called synchronously from an admitted provider. See [proof](rate-li
 without sampling the application clock. The [Redis store](redis-rate-limit-lifecycle.md)
 borrows its command connection; close never deletes native TTL keys or retries an
 ambiguous committed reservation.
+
+[D1 batch storage](d1-limit-lifecycle.md) joins the same server-time admission and
+drain, borrowing its existing atomic handle. Native batch rollback differs from a
+lost post-commit acknowledgement; neither path is automatically retried.

@@ -16,6 +16,7 @@ and schema verification precedes requests. Each feature has its own guide.
 | Tasks | [Tasks](tasks.md) | UUIDs, conditional revision writes and activity |
 | Activity | [Activity](activity.md) | Atomic retained task history |
 | Pagination | [Pagination](pagination.md) | Qualified numeric ordering and exact text cursors |
+| Request attempt budget | [Creation limits](request-limits.md) | Optional public quota, native database time, replay, expiry and cleanup |
 | Request replay | [Idempotency](idempotency.md) | Saved responses, key scope, expiry and cleanup |
 | Runtime | [Runtime](runtime.md) | Actual local workerd and cloud deployment boundary |
 | Development | [Development](development.md) | Browser builds, source watch and owned host restart |

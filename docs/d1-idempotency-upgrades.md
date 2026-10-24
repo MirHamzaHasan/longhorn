@@ -27,3 +27,9 @@ schema history does not rename request scopes.
 schema, writes a task/activity, confirms read-only new-app failure, invokes the
 real private helper and proves only the ledger suffix applied before reading
 the retained task/activity and exercising replay.
+
+[Task creation attempt limits](d1-request-limits.md) now append their own native
+batch schema after the previous complete profile. Limits default off; complete
+migration history still needs deployment. Actual starter source, policy guide and
+opt-in native proof ship together. See [schema](d1-limit-schema.md) and
+[installed verification](d1-limit-testing.md).

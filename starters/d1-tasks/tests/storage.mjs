@@ -9,7 +9,8 @@ let worker
 async function make(){
   const previous=new Map(['SIGINT','SIGTERM'].map(signal=>[signal,new Set(process.listeners(signal))])),common={modules:true,compatibilityDate:'2025-07-18',d1Databases:{DB:'longhorn-d1-tasks'}}
   const instance=new Miniflare({host:'127.0.0.1',port:0,cf:false,d1Persist:directory,log:new Log(LogLevel.NONE),workers:[
-    ...['first','second'].map(name=>({...common,name,scriptPath:fileURLToPath(new URL('../dist/index.js',import.meta.url))})),
+    ...['first','second'].map(name=>({...common,name,scriptPath:fileURLToPath(new URL('../dist/index.js',import.meta.url)),bindings:{D1_CREATE_LIMIT_ENABLED:'false'}})),
+    ...['limited-first','limited-second'].map(name=>({...common,name,scriptPath:fileURLToPath(new URL('../dist/index.js',import.meta.url)),bindings:{D1_CREATE_LIMIT_ENABLED:'true',D1_CREATE_LIMIT_REQUESTS:'2',D1_CREATE_LIMIT_WINDOW_MS:'60000'}})),
     {...common,name:'schema',scriptPath:fileURLToPath(new URL('../dist/deploy.js',import.meta.url))},
   ]})
   for(const[signal,listeners]of previous)for(const listener of process.listeners(signal))if(!listeners.has(listener))process.removeListener(signal,listener)
@@ -21,7 +22,7 @@ for(const signal of['SIGINT','SIGTERM'])process.on(signal,()=>{void worker?.disp
 try{
   worker=await make();let first=await worker.getWorker('first'),second=await worker.getWorker('second'),schema=await worker.getWorker('schema')
   assert.equal((await first.fetch('http://tasks/health')).status,503)
-  assert.deepEqual((await json(schema,'/deploy',{method:'POST'})).applied,['d1-tasks/001','d1-tasks/002','longhorn_batch_idempotency/001_requests'])
+  assert.deepEqual((await json(schema,'/deploy',{method:'POST'})).applied,['d1-tasks/001','d1-tasks/002','longhorn_batch_idempotency/001_requests','longhorn_batch_rate_limit/001_buckets'])
   await json(first,'/health');await json(second,'/health')
   assert.equal((await first.fetch('http://tasks/deploy',{method:'POST'})).status,404)
   const responses=await Promise.all(Array.from({length:6},(_,index)=>(index%2?first:second).fetch('http://tasks/tasks',post(' retained task ','one-key'))))
@@ -40,5 +41,11 @@ try{
   const replay=await first.fetch('http://tasks/tasks',post('retained task','one-key'));assert.equal(replay.headers.get('Idempotency-Replayed'),'true');assert.deepEqual(await replay.json(),tasks[0])
   assert.equal((await json(first,'/tasks/'+saved.id)).task.completed,true)
   assert.deepEqual((await json(first,'/tasks/'+saved.id+'/activity')).activity.map(row=>row.kind),['created','updated'])
+  let limited=await worker.getWorker('limited-first'),peer=await worker.getWorker('limited-second')
+  for(const service of[limited,peer]){const result=await service.fetch('http://tasks/tasks',post('retained task','one-key'));assert.equal(result.status,201);assert.equal(result.headers.get('Idempotency-Replayed'),'true');assert.deepEqual(await result.json(),tasks[0])}
+  const blocked=await limited.fetch('http://tasks/tasks',post('must stay absent','blocked-key'));assert.equal(blocked.status,429);assert.ok(Number(blocked.headers.get('Retry-After'))>=1)
+  await worker.dispose();worker=await make();limited=await worker.getWorker('limited-first');assert.equal((await limited.fetch('http://tasks/tasks',post('retained task','one-key'))).status,429)
+  assert.equal((await json(limited,'/tasks/'+saved.id)).task.completed,true)
+  console.log('Installed D1 request limits: optional native schema, two-worker counted replay, Retry-After denial, read availability and retained budget across actual workerd restart verified.')
   console.log('Installed D1 starter: private schema deployment, cross-worker replay, revision conflicts, numeric pages and retained task/activity/response across workerd restart verified.')
 }finally{await worker?.dispose();await rm(directory,{recursive:true,force:true})}

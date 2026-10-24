@@ -9,6 +9,11 @@ downstream connections, verification, and current limits.
 
 | Feature | Guide | Implementation owner | Connects to |
 | --- | --- | --- | --- |
+| Native SQLite batch request limits | [Batch store](batch-rate-limits.md) | Optional @longhorn/ratelimit/batch-sqlite | One UPSERT/RETURNING, database time, policy guard and bounded prune |
+| D1 task creation attempt budget | [Public route](d1-request-limits.md) | Default-off example/starter capability | Shared public identity, validation/replay ordering and retained effects |
+| D1 quota deployment | [Schema profile](d1-limit-schema.md) | Appended batch migration | Original checksum prefix, complete startup verification and private owner deployment |
+| D1 quota lifetime | [Native drain](d1-limit-lifecycle.md) | Existing limiter and D1 handle | Accepted native work, lost acknowledgement and HTTP before database close |
+| Native and installed D1 quota proof | [Verification](d1-limit-testing.md) | Actual workerd and packed CLI project | Batch/DDL rollback, race, two-worker budgets, expiry/replay and separate-host retention |
 | Redis request attempt limits | [Redis store](redis-rate-limits.md) | Optional @longhorn/ratelimit/redis | Atomic server-clock reservations, fixed expiry and scoped hashes |
 | Server-owned limiter time | [Clock contract](rate-limit-server-clock.md) | Explicit storage union and coordinator | Server observedAt, existing SQL callbacks and unchanged public decisions |
 | Redis budget deployment | [Authority and durability](redis-rate-limit-deployment.md) | Dedicated trusted Redis and minimal ACL | Noeviction, native TTL, explicit persistence and stable labels |

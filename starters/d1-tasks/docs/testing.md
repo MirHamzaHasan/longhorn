@@ -7,3 +7,8 @@ task/activity/response across an actual workerd process restart. It never touche
 this project's data/d1 or needs cloud credentials. Source edits should keep these
 checks and expected migration IDs aligned. See [schema](schema.md),
 [database](database.md) and [request replay](idempotency.md).
+
+Optional [task creation limits](request-limits.md) append the native batch bucket
+schema to the complete deployment profile. The budget uses database time and counts
+attempts before task validation/replay. A denied request creates no task/activity/
+request record; closing drains accepted work before the borrowed D1 handle.

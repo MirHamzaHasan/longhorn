@@ -112,7 +112,8 @@
     "test:deno-sqlite-project": "pnpm build && node scripts/verify-sqlite-project.mjs deno",
     "test:rate-limits": "pnpm build && node scripts/verify-rate-limits.mjs && node scripts/verify-command-limits.mjs",
     "test:redis-limits": "pnpm build && node scripts/verify-redis-limits.mjs",
-    "dev:redis-limits": "pnpm --filter example-redis-limits... build && node examples/redis-limits/dist/index.js"
+    "dev:redis-limits": "pnpm --filter example-redis-limits... build && node examples/redis-limits/dist/index.js",
+    "test:d1-rate-limits": "pnpm build && node scripts/verify-d1-rate-limits.mjs"
   },
   "packageManager": "pnpm@12.6.0"
 }

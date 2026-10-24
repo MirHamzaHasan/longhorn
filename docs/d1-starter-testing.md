@@ -43,3 +43,9 @@ Its [first hosted run](https://github.com/MirHamzaHasan/longhorn/actions/runs/40
 failed all seven jobs before runner allocation or an executed step. The D1
 annotation identifies the Actions budget restriction; local success does not
 substitute for a current-head Ubuntu run.
+
+[Task creation attempt limits](d1-request-limits.md) now append their own native
+batch schema after the previous complete profile. Limits default off; complete
+migration history still needs deployment. Actual starter source, policy guide and
+opt-in native proof ship together. See [schema](d1-limit-schema.md) and
+[installed verification](d1-limit-testing.md).

@@ -1721,3 +1721,28 @@ and real HTTP shutdown after a withheld committed reply. Other runtimes execute 
 explicit fake protocol client rather than claim an unimplemented native transport.
 See [provider](redis-rate-limits.md), [time](rate-limit-server-clock.md),
 [example](redis-rate-limit-example.md) and [verification](redis-rate-limit-testing.md).
+
+
+## 68. Database-Time Limits over Native D1 Batch Execution
+
+The optional batch-sqlite limiter store requires an existing SQLite BatchDatabase
+and implements the server-time port. One bound UPSERT/RETURNING computes time in
+SQLite, atomically resets/increments a complete bucket and publishes its committed
+observation. A live policy mismatch makes no update. There is no callback facade,
+pre-write JavaScript time, intermediate claim, follow-up policy read or implicit retry.
+Explicit native-time deletion removes a bounded indexed expired prefix across scopes.
+
+The D1 task example/starter appends a separate bucket migration after the unchanged
+task/activity/request history. Complete manifest verification remains mandatory,
+including when the new capability is off. Private deployment precedes serving.
+An enabled provider probes columns and registers TaskCreateLimits after database
+acquisition; HTTP/limiter work drains before its borrowed handle closes.
+
+The public task demo keys one server-selected application budget, shared across
+enabled workers. Body size runs first; validation, key checks and replay/business
+SQL follow consumption. Denials produce no effects, while a later business error
+retains its separately committed attempt. Native tests prove rollback, lost replies,
+held shutdown, competing upgrades and two-worker admission. The packed relocated
+starter also proves separate-host quota retention and original replay after expiry.
+See [provider](batch-rate-limits.md), [API](d1-request-limits.md),
+[deployment](d1-limit-schema.md) and [native/installed proof](d1-limit-testing.md).

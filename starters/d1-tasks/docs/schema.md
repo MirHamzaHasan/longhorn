@@ -10,3 +10,8 @@ worker, then checks readiness. Public application startup only verifies history/
 columns; /deploy is not a public route. Coordinate retained schema/code versions;
 an older shorter manifest rejects newer history. Cloud deployment needs a separate
 owner-controlled private workflow. See [runtime](runtime.md) and [testing](testing.md).
+
+Optional [task creation limits](request-limits.md) append the native batch bucket
+schema to the complete deployment profile. The budget uses database time and counts
+attempts before task validation/replay. A denied request creates no task/activity/
+request record; closing drains accepted work before the borrowed D1 handle.

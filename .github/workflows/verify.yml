@@ -36,7 +36,17 @@ jobs:
       - run: pnpm build
       - run: node scripts/verify-d1.mjs
       - run: node scripts/verify-d1-idempotency.mjs
+      - run: node scripts/verify-d1-rate-limits.mjs
       - run: node scripts/verify-d1-project.mjs
+      - name: Retain D1 request limit proof
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: d1-request-limit-proof
+          path: |
+            .artifacts/d1-rate-limit-proof.json
+            .artifacts/d1-rate-limit-project-proof.json
+          if-no-files-found: error
   telemetry:
     runs-on: ubuntu-24.04
     timeout-minutes: 20

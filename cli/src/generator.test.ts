@@ -122,11 +122,11 @@ describe('project generation', () => {
   })
   async function d1Assets(){
     const directory=join(framework,'templates/d1-tasks'),files:Record<string,string>={}
-    for(const path of ['README.md','build.mjs','build.config.mjs','serve.mjs','dev.mjs','src/index.ts','src/app.ts','src/deploy.ts','src/schema.ts','src/config.ts','src/tasks.ts','tests/storage.mjs','docs/features.md']){
+    for(const path of ['README.md','build.mjs','build.config.mjs','serve.mjs','dev.mjs','src/index.ts','src/app.ts','src/deploy.ts','src/schema.ts','src/config.ts','src/tasks.ts','src/request-limits.ts','tests/storage.mjs','docs/features.md','docs/request-limits.md']){
       const target=join(directory,path),content=path==='README.md'?'# {{PROJECT_NAME}}\n':'editable application asset\n'
       await mkdir(join(target,'..'),{recursive:true});await writeFile(target,content);files[path]=createHash('sha256').update(content).digest('hex')
     }
-    const descriptor={schemaVersion:1,dependencies:Object.fromEntries(['core','container','config','database','idempotency','validation','workers','runtime'].map(name=>['@longhorn/'+name,'workspace:*'])),devDependencies:{miniflare:'3.20250718.3'},files}
+    const descriptor={schemaVersion:1,dependencies:Object.fromEntries(['core','container','config','database','idempotency','ratelimit','validation','workers','runtime'].map(name=>['@longhorn/'+name,'workspace:*'])),devDependencies:{miniflare:'3.20250718.3'},files}
     await writeFile(join(directory,'template.json'),JSON.stringify(descriptor));return {directory,descriptor}
   }
   async function sqliteAssets(runtime:'node'|'bun'|'deno'='node'){

@@ -1,3 +1,4 @@
+import{configureTaskCreateLimits}from'./request-limits.js'
 import{Longhorn}from'@longhorn/core'
 import{provide,token}from'@longhorn/container'
 import type{BatchDatabase}from'@longhorn/database'
@@ -21,6 +22,7 @@ export function createD1TasksApp(binding:D1Binding,config:D1Config):Longhorn{
     try{
       await verifySqliteBatchMigrations(database,migrations)
       await database.batch(['SELECT id,title,completed,revision,created_at,updated_at,mutation,position FROM d1_tasks LIMIT 0','SELECT task_id,revision,kind,at,mutation,position FROM d1_task_activity LIMIT 0','SELECT scope,request_key,fingerprint,claim,result,expires_at FROM longhorn_batch_idempotency_requests LIMIT 0'])
+      if(config.createLimits)await database.execute('SELECT scope,subject_hash,policy_limit,window_ms,attempts,expires_at,observed_at FROM longhorn_batch_rate_limit_buckets LIMIT 0')
       app.container.register(provide(TaskDatabase,{factory:()=>database}));return()=>database.close()
     }catch(error){await database.close();throw error}
   })
@@ -38,7 +40,8 @@ export function createD1TasksApp(binding:D1Binding,config:D1Config):Longhorn{
   app.http.get('/',c=>c.json({framework:'LongHorn',storage:'d1',endpoints:['/health','/tasks','/tasks/:id','/activity','/tasks/:id/activity']}))
   app.http.get('/health',c=>c.json({status:'ok',storage:'d1',schema:migrations.at(-1)!.id}))
   app.http.get('/tasks',validate('query',pageSchema),async c=>{const page=c.req.valid('query');return c.json(await app.container.resolve(Tasks).list(page.after,page.limit))})
-  app.http.post('/tasks',validate('json',createSchema),async c=>{
+  const createBudget=configureTaskCreateLimits(app,TaskDatabase,config.createLimits)
+  app.http.post('/tasks',createBudget,validate('json',createSchema),async c=>{
     const title=c.req.valid('json').title,key=c.req.header('Idempotency-Key'),tasks=app.container.resolve(Tasks)
     if(key!==undefined&&!validIdempotencyKey(key))return c.json({error:'Invalid idempotency key'},400)
     let task
