@@ -13,7 +13,7 @@ framework is on `main` and the repository is public. Start with the
 | Repository visibility | Public |
 | Branch protection | Active on `main`, with the eight CI jobs required. See [repository settings](repository-settings.md) |
 | Website | Live at https://mirhamzahasan.github.io/longhorn/. See [website](website.md) |
-| Hosted CI | All 8 jobs passed on `main` at `6977d4e`. See below |
+| Hosted CI | All 10 jobs, reaching all 66 gates, passed at `6bd18eb`. See below |
 | Packages | Not published |
 | Cloud deployment | None performed |
 
@@ -71,8 +71,8 @@ The first full run on `main`, on commit `55a85bb`, passed seven jobs on Ubuntu 2
 from an empty pnpm cache. With that fixed, all eight jobs passed on `d4c5657`, the head of PR
 #56, and again on `main` at `6977d4e` (run 41215461094). That day `independent-distribution` failed in 3 of 12 runs
 while building the PostgreSQL clients; see `tasks/task013-postgres-client-build-flake.md`.
-CI reaches about 50 of the 66 gates. The rest, including the outbox and
-PostgreSQL gates, have only run on macOS. See
+Adding `durable-delivery` and `worker-runtime` brought in the outbox, transaction, PostgreSQL and
+Worker gates, and all 10 jobs passed on `6bd18eb` (run 41228077257), reaching all 66 gates. See
 `tasks/task004-hosted-ci.md`.
 
 ## Continuing

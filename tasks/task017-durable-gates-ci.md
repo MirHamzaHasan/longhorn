@@ -1,7 +1,7 @@
 ---
 id: task017
 title: Run the outbox, PostgreSQL and transaction gates in hosted CI
-status: backlog
+status: done
 paths:
   - .github/workflows/verify.yml
   - .github/rulesets/main.json
@@ -9,6 +9,7 @@ paths:
   - docs/development-handoff.md
   - docs/supported-runtimes.md
   - README.md
+  - site/index.html
   - docs/assets/
 shared:
 depends:
@@ -40,3 +41,5 @@ New features. Making the new jobs required before they pass on main.
 Both jobs pass on hosted Ubuntu, and the docs and README counts are updated from that run.
 
 ## Evidence
+
+31 October 2026, hosted Ubuntu 24.04. Run 41228077257 on `6bd18eb`, on pull request 64: all 10 jobs passed, and all 15 added gates passed on their first hosted run, with no gate changed. That is one pass, not a measure of flakiness, and it isn't yet on `main`. The two jobs aren't required checks yet. The `gates` piece was rebuilt and checked by frame in Chromium. Nothing has run on Windows.

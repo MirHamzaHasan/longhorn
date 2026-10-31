@@ -493,10 +493,12 @@ const ground = (W, H) => `<defs><pattern id="g" width="28" height="28" patternUn
 /* One square per gate, read from scripts/ and the CI workflow, lit in a wave. */
 {
   const W = 1280, H = 400, DUR = 16, REST = 15
-  const f = film('gates', W, H, 'Sixty-six squares, one per verification gate, light up in a wave. About fifty are in the hosted CI workflow and the rest run locally on macOS. The caption cycles through what they cause: processes killed during commits, lost replies, concurrent writers, failed schema upgrades, and restore into empty storage.', DUR, REST)
+  const f = film('gates', W, H, 'Sixty-six squares, one per verification gate, light up in a wave. All of them are reached by the hosted CI workflow on Ubuntu. The caption cycles through what they cause: processes killed during commits, lost replies, concurrent writers, failed schema upgrades, and restore into empty storage.', DUR, REST)
   const all = readdirSync(join(out, '../../scripts')).filter((n) => /^verify-.*\.mjs$/.test(n)).map((n) => n.slice(0, -4)).sort()
   const workflow = readFileSync(join(out, '../../.github/workflows/verify.yml'), 'utf8')
+  // A gate counts if the workflow names it, or a gate the workflow runs starts it.
   const inCi = new Set([...workflow.matchAll(/verify-[\w-]+/g)].map((m) => m[0]))
+  for (const g of [...inCi]) if (all.includes(g)) for (const m of readFileSync(join(out, '../../scripts', `${g}.mjs`), 'utf8').matchAll(/verify-[\w-]+(?=\.mjs)/g)) inCi.add(m[0])
   const order = [...all.filter((g) => inCi.has(g)), ...all.filter((g) => !inCi.has(g))]
   const COLS = 22, SZ = 40, GAP = 12, X0 = (W - (COLS * (SZ + GAP) - GAP)) / 2, Y0 = 142
   const squares = order.map((g, i) => {
@@ -513,8 +515,8 @@ const ground = (W, H) => `<defs><pattern id="g" width="28" height="28" patternUn
       : [[0, { o: 0, y: 16 }], [on + 0.4, { o: 1, y: 0 }, 0.4, 'decel'], [on + each - 0.1, { o: 0, y: -10 }, 0.2, 'exit']])
     return `<g class="${id}">${text(display, s, (W - width(display, s, 56)) / 2, 82, 56, C.chalk)}</g>`
   }).join('')
-  const lg = 142 + 3 * (SZ + GAP) + 44, label1 = 'In the hosted CI workflow', label2 = 'Run locally on macOS, not in CI yet'
-  f.write(`${ground(W, H)}${caps}${squares}<rect x="${X0}" y="${lg}" width="22" height="22" rx="5" fill="${C.iron}"/>${text(body, label1, X0 + 34, lg + 19, 26, C.chalk)}<rect x="${X0 + 400}" y="${lg}" width="22" height="22" rx="5" fill="${C.wire}"/>${text(body, label2, X0 + 434, lg + 19, 26, C.chalk)}`)
+  const lg = 142 + 3 * (SZ + GAP) + 44, reached = order.filter((g) => inCi.has(g)).length, label1 = `${reached} of ${all.length} reached by hosted CI on Ubuntu`
+  f.write(`${ground(W, H)}${caps}${squares}<rect x="${X0}" y="${lg}" width="22" height="22" rx="5" fill="${C.iron}"/>${text(body, label1, X0 + 34, lg + 19, 26, C.chalk)}`)
 }
 
 /* Agents in parallel: each claim takes its own paths, and an overlap is refused. */
