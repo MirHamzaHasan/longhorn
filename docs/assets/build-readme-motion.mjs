@@ -1,9 +1,9 @@
-// Builds the README's motion pieces: film, hosts, stack, failures and quickstart, and their -still.svg twins.
+// Builds the README's motion pieces: every animated README piece, and their -still.svg twins.
 // See docs/website.md. Needs opentype.js and the @fontsource fonts in a folder of your choice:
 //   npm install --prefix <folder> opentype.js @fontsource/geist-sans @fontsource/geist-mono
 //   node docs/assets/build-readme-motion.mjs <folder>
 import { createRequire } from 'node:module'
-import { readFileSync, writeFileSync } from 'node:fs'
+import { readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -76,6 +76,10 @@ const ground = (W, H) => `<defs><pattern id="g" width="28" height="28" patternUn
   const f = film('film', W, H, 'One continuous animation of an app window, with a server log on the left and the database on the right. A command for the numbers 4, 8 and 15 is saved with its message in one transaction. kill -9 ends the process and the log goes dark, while both database rows stay. After a restart, two delivery attempts fail while the receiver is down. The third lands, the message is marked delivered and one receipt prints: count 3, sum 27, minimum 4, maximum 15. Write the backend once. Keep the work when the process dies.', DUR, REST)
   const WX = 64, WY = 152, WW = 1152, WH = 536, SPLIT = 716
   f.track('all', [[0, { o: 1 }], [29.6, { o: 0 }, 0.28, 'exit']])
+  // The camera: it opens on the window, pushes in on the rows that survive and on the receipt.
+  const view = (tx, ty, s) => ({ x: +(640 - tx * s).toFixed(1), y: +(420 - ty * s).toFixed(1), s })
+  const REST_VIEW = { x: 0, y: 0, s: 1 }
+  f.track('view', [[0, { x: 26, y: 18, s: 0.96 }], [2.4, REST_VIEW, 2.2, 'emph'], [10.8, view(950, 290, 1.55), 0.9, 'emph'], [12.4, REST_VIEW, 0.8, 'emph'], [21.3, view(950, 510, 1.32), 0.9, 'emph'], [23.1, REST_VIEW, 0.9, 'emph']])
 
   // The crash: one flash and one shake, because this is the only violent moment in the take.
   const KILL = 8.2
@@ -83,6 +87,12 @@ const ground = (W, H) => `<defs><pattern id="g" width="28" height="28" patternUn
   f.track('shake', [[0, { x: 0 }], [KILL + 0.03, { x: 12 }, 0.03, 'linear'], [KILL + 0.09, { x: -9 }, 0.06, 'linear'], [KILL + 0.16, { x: 6 }, 0.07, 'linear'], [KILL + 0.23, { x: -2 }, 0.07, 'linear'], [KILL + 0.29, { x: 0 }, 0.06, 'linear']])
   f.track('dead', [[0, { o: 0 }], [KILL + 0.04, { o: 0.8 }, 0.04, 'exit'], [11.4, { o: 0 }, 0.4, 'decel']])
   f.track('kill', [[0, { o: 0, s: 1.08, x: (WX + SPLIT) / 2, y: 640 }], [KILL + 0.1, { o: 1, s: 1 }, 0.1, 'exit'], [10.9, { o: 0 }, 0.26, 'exit']])
+
+  f.track('wave', [[0, { o: 0, s: 0.05, x: 360, y: 420 }], [KILL, { o: 0.9 }, 0.02], [KILL + 0.8, { o: 0, s: 1 }, 0.8, 'decel']])
+  const tears = [[250, 44, 26], [334, 18, -34], [402, 60, 18], [506, 24, -22], [590, 38, 30]].map(([y, h, dx], i) => {
+    f.track(`g${i}`, [[0, { o: 0, x: 0 }], [KILL + 0.02 + i * 0.03, { o: 0.75, x: dx }, 0.02, 'linear'], [KILL + 0.1 + i * 0.03, { o: 0.25, x: -dx }, 0.03, 'linear'], [KILL + 0.26 + i * 0.03, { o: 0, x: 0 }, 0.05, 'linear']])
+    return `<rect class="g${i}" x="${WX + 8}" y="${y}" width="${SPLIT - WX - 16}" height="${h}" fill="${C.flare}"/>`
+  }).join('')
 
   // The log prints line by line, on real line slots.
   const LX = WX + 28, LY = 232, LH = 34.5, LS = 23
@@ -99,6 +109,10 @@ const ground = (W, H) => `<defs><pattern id="g" width="28" height="28" patternUn
     f.track(`l${i}`, [[0, { o: 0, y: 6 }], [t + 0.24, { o: 1, y: 0 }, 0.24, 'decel']])
     return `<g class="l${i}">${text(mono, s, LX, lineY(slot), LS, tone)}</g>`
   }).join('')
+  const curY = (slot) => lineY(slot) - 18, curX = (s) => LX + s.length * mono.getAdvanceWidth('x', LS) + 6
+  f.track('cursor', [[0, { x: LX, y: curY(0) }], ...log.map(([t, s], i) => [t + 0.24, { x: curX(s), y: curY(i >= 7 ? i + 1 : i) }]), [DUR, { x: LX, y: curY(0) }]])
+  f.track('cursorlive', [[0, { o: 1 }], [KILL, { o: 0 }, 0.02, 'exit'], [11.6, { o: 1 }, 0.1], [DUR, { o: 1 }]])
+  const cursor = `<g class="cursorlive"><g class="cursor"><rect class="blink" width="13" height="24" fill="${C.chalk}"/></g></g>`
   f.track('died', [[0, { o: 0 }], [KILL + 0.06, { o: 1 }, 0.04, 'exit']])
   const died = `<g class="died">${text(mono, 'zsh: killed  pnpm start', LX, lineY(7), LS, C.flare)}</g>`
 
@@ -120,6 +134,9 @@ const ground = (W, H) => `<defs><pattern id="g" width="28" height="28" patternUn
     pill('p4', 'delivered', C.ok, R2, swapPill(18.64)),
   ].join('')
 
+  const ring = (id, x, y, at, tone) => { f.track(id, [[0, { o: 0, s: 0.4, x, y }], [at, { o: 0.9 }, 0.02], [at + 0.7, { o: 0, s: 3 }, 0.7, 'decel']]); return `<g class="${id}"><circle r="34" fill="none" stroke="${tone}" stroke-width="3"/></g>` }
+  const rings = ring('c0', RX + RW / 2, (R1 + R2 + RH) / 2, 6.86, C.iron) + ring('c1', RX + 196, R2 + RH / 2, 18.66, C.ok)
+
   // The receipt prints into the pane, and the chip's numbers become its first line.
   const PT = 372, PH = 288, rows = [['Numbers', '4, 8, 15'], ['Count', '3'], ['Sum', '27'], ['Minimum', '4'], ['Maximum', '15']], RS = 24
   f.track('paper', [[0, { y: -PH - 8 }], [19.6, { y: 0 }, 0.8, 'emph']])
@@ -137,16 +154,23 @@ const ground = (W, H) => `<defs><pattern id="g" width="28" height="28" patternUn
   f.track('msg', [[0, { x: LX + 400, y: lineY(5) - 8, o: 0, s: 0.9 }], [5.95, { o: 1, s: 1 }, 0.2, 'decel'], [6.6, { x: SLOT, y: R2 + RH / 2 }, 0.62, 'inout'], [20.12, LAND, 0.72, 'inout'], [20.3, { o: 0 }, 0.16, 'exit']])
 
   // The process state sits in the title bar and changes word in one slot.
-  const state = (id, s, tone, keys) => { f.track(id, keys); const w = width(mono, s, 19); return `<g class="${id}"><circle cx="${WX + WW - w - 42}" cy="${WY + 25}" r="6" fill="${tone}"/>${text(mono, s, WX + WW - w - 24, WY + 32, 19, tone)}</g>` }
+  const state = (id, s, tone, keys) => { f.track(id, keys); const w = width(mono, s, 19); return `<g class="${id}"><circle class="ping" cx="${WX + WW - w - 42}" cy="${WY + 25}" r="6" fill="none" stroke="${tone}" stroke-width="2"/><circle cx="${WX + WW - w - 42}" cy="${WY + 25}" r="6" fill="${tone}"/>${text(mono, s, WX + WW - w - 24, WY + 32, 19, tone)}</g>` }
   const states = state('s0', 'running', C.ok, [[0, { o: 1 }], [KILL, { o: 0 }, 0.04, 'exit'], [11.7, { o: 1 }, 0.3, 'decel']]) + state('s1', 'killed', C.flare, [[0, { o: 0 }], [KILL + 0.02, { o: 1 }, 0.04, 'exit'], [11.4, { o: 0 }, 0.2, 'exit']])
 
   // Words change in one centred slot: the old ones lift out, the new ones rise in.
   const CX = W / 2, say = (id, parts, start, end) => {
-    const keys = [[0, { o: 0, y: 16 }], [start + 0.36, { o: 1, y: 0 }, 0.46, 'decel']]
-    if (end) keys.push([end, { o: 0, y: -12 }, 0.22, 'exit'])
-    f.track(id, keys)
     const size = 60, base = parts.length > 1 ? 58 : 112
-    return `<g class="${id}">${parts.map(([s, tone], i) => text(display, s, CX - width(display, s, size) / 2, base + i * 64, size, tone)).join('')}</g>`
+    let n = 0
+    return parts.map(([s, tone], i) => {
+      const left = CX - width(display, s, size) / 2, words = s.split(' ')
+      return words.map((word, k) => {
+        const wid = `${id}w${n}`, at = start + 0.36 + n * 0.055, keys = [[0, { o: 0, y: 22 }], [at, { o: 1, y: 0 }, 0.42, 'decel']]; n++
+        if (end) keys.push([end, { o: 0, y: -12 }, 0.2, 'exit'])
+        f.track(wid, keys)
+        const before = words.slice(0, k).join(' ')
+        return `<g class="${wid}">${text(display, word, left + (k ? width(display, before + ' ', size) : 0), base + i * 64, size, tone)}</g>`
+      }).join('')
+    }).join('')
   }
   const words = [
     say('w0', [['Your process will die.', C.chalk]], -0.1, 2.6),
@@ -163,20 +187,21 @@ const ground = (W, H) => `<defs><pattern id="g" width="28" height="28" patternUn
   const horns = ['M46 27C33 29 19 27 11 19 7 15 4 9 3 3', 'M74 27C87 29 101 27 109 19 113 15 116 9 117 3', 'M46 27Q60 20 74 27L68 54Q60 62 52 54Z']
   const mark = `<g transform="translate(${WX + 20} ${WY + 15}) scale(.32)">${horns.map((d) => `<path d="${d}" fill="none" stroke="${C.iron}" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>`).join('')}</g>${text(body, 'LongHorn', WX + 66, WY + 32, 21, C.chalk)}`
 
-  f.write(`${ground(W, H)}<g class="shake"><g class="all">
+  f.write(`${ground(W, H)}<clipPath id="stage"><rect x="0" y="${WY - 6}" width="${W}" height="${H - WY + 6}"/></clipPath><g class="shake"><g class="all"><g clip-path="url(#stage)"><g class="view">
     <rect x="${WX}" y="${WY}" width="${WW}" height="${WH}" rx="14" fill="${C.panel}" stroke="${C.faint}"/>
     <path d="M${WX} ${WY + 50}H${WX + WW}M${SPLIT} ${WY + 50}V${WY + WH}" stroke="${C.faint}"/>
     ${mark}${states}
-    ${lines}
+    ${lines}${cursor}
     <rect class="dead" x="${WX + 1}" y="${WY + 51}" width="${SPLIT - WX - 1}" height="${WH - 52}" fill="${C.ground}"/>
-    ${died}
+    ${died}${tears}
     ${row(R1, 'command')}${row(R2, 'message')}
     <rect class="commit" x="${RX - 8}" y="${R1 - 8}" width="${RW + 16}" height="${R2 + RH - R1 + 16}" rx="14" fill="none" stroke="${C.iron}" stroke-width="2.5"/>
-    ${pills}${receipt}${chip('cmd')}${chip('msg')}
+    ${pills}${rings}${receipt}${chip('cmd')}${chip('msg')}
     <g class="kill">${text(mono, 'kill -9', -width(mono, 'kill -9', 76) / 2, 26, 76, C.flare)}</g>
-    <rect class="flash" width="${W}" height="${H}" fill="${C.flare}"/>
+    <g class="wave"><circle r="620" fill="none" stroke="${C.flare}" stroke-width="5"/></g>
+    </g></g><rect class="flash" width="${W}" height="${H}" fill="${C.flare}"/>
     ${words}
-  </g></g>`)
+  </g></g>`, `.blink{animation:blink 1s steps(2,jump-none) infinite}@keyframes blink{50%{opacity:0}}.ping{transform-box:fill-box;transform-origin:center;animation:ping 1.8s ease-out infinite}@keyframes ping{from{transform:scale(1);opacity:.8}to{transform:scale(2.8);opacity:0}}`)
 }
 
 /* The same app on every host: only the import and the last line change. */
@@ -241,7 +266,7 @@ const ground = (W, H) => `<defs><pattern id="g" width="28" height="28" patternUn
     if (on === true) return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="10" fill="${C.deep}" stroke="${C.wire}"/>${center(C.chalk)}`
     const pose = (state) => ({ o: state ? 1 : 0, y: state ? 0 : 8 })
     const keys = [[0, pose(on[0])]]
-    on.slice(1).forEach((state, i) => { if (state !== on[i]) keys.push([(i + 1) * step + 0.5, pose(state), 0.36, state ? 'decel' : 'exit']) })
+    on.slice(1).forEach((state, i) => { if (state !== on[i]) keys.push([(i + 1) * step + 0.5 + (y - 280) / 700 + (x - LX) / 5000, pose(state), 0.36, state ? 'decel' : 'exit']) })
     if (on.at(-1) !== on[0]) keys.push([DUR, pose(on[0]), 0.36, on[0] ? 'decel' : 'exit'])
     if (keys.length > 1) f.track(id, keys)
     return `${base}<g class="${id}"${keys.length > 1 ? '' : ` opacity="${on[0] ? 1 : 0}"`}><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="10" fill="${C.iron}"/>${center(C.ink)}</g>`
@@ -259,6 +284,7 @@ const ground = (W, H) => `<defs><pattern id="g" width="28" height="28" patternUn
     f.track(id, keys)
     return `<g class="${id}">${text(display, a.name, LX + 28, 191, 42, C.iron)}${text(mono, `examples/${a.dir}`, W - LX - 28 - width(mono, `examples/${a.dir}`, 28), 190, 28, C.muted)}</g>`
   }).join('')
+  f.track('scan', [[0, { y: 130, o: 0 }], ...apps.slice(1).flatMap((_, i) => { const t = (i + 1) * step; return [[t + 0.1, { y: 130, o: 0 }], [t + 0.15, { o: 1 }, 0.05], [t + 0.95, { y: 672 }, 0.8, 'inout'], [t + 1.1, { o: 0 }, 0.15, 'exit']] })])
   f.write(`${ground(W, H)}
     ${text(display, 'Import what you use. Nothing else starts.', LX, 84, 52, C.chalk)}
     <rect x="${LX}" y="130" width="${FULL}" height="92" rx="12" fill="${C.panel}" stroke="${C.faint}"/>${swaps}
@@ -268,7 +294,8 @@ const ground = (W, H) => `<defs><pattern id="g" width="28" height="28" patternUn
     ${label('Core, always there', 466)}
     ${row(core, 480, 56, () => true, 'c', mono, 26)}
     ${label('The host it runs on', 576)}
-    ${row(hosts, 590, 70, (n) => apps.map((a) => a.hosts.includes(n)), 'h', display, 30)}`)
+    ${row(hosts, 590, 70, (n) => apps.map((a) => a.hosts.includes(n)), 'h', display, 30)}
+    <g class="scan"><rect x="${LX}" width="${FULL}" height="3" rx="1.5" fill="${C.iron}"/></g>`)
 }
 
 /* Four failures in turn, each from the table under this piece. One scene plays while the others wait. */
@@ -286,8 +313,9 @@ const ground = (W, H) => `<defs><pattern id="g" width="28" height="28" patternUn
     f.track(`${id}dim`, slot === 0
       ? [[0, { o: 0 }], [SLOT + 0.3, { o: 0.62 }, 0.3, 'decel'], [SLOT * 4 + 0.3, { o: 0 }, 0.4, 'decel']]
       : [[0, { o: 0.62 }], [t0 + 0.3, { o: 0 }, 0.3, 'decel'], ...(slot < 3 ? [[t0 + SLOT + 0.3, { o: 0.62 }, 0.3, 'decel'], [SLOT * 4 + 0.3, { o: 0 }, 0.4, 'decel']] : []), [DUR, { o: 0.62 }, 0.3, 'decel']])
+    f.track(`${id}on`, [[0, { o: slot === 0 ? 1 : 0 }], ...(slot ? [[t0 + 0.3, { o: 1 }, 0.3, 'decel']] : []), [t0 + SLOT + 0.2, { o: 0 }, 0.2, 'exit']])
     f.track(`${id}res`, [[0, { o: 0, y: 14 }], [t0 + 5.3, { o: 1, y: 0 }, 0.5, 'decel'], reset({ o: 0, y: 14 })])
-    return `<g transform="translate(${x} ${y})"><rect width="${CW}" height="${CH}" rx="14" fill="${C.panel}" stroke="${C.faint}"/>${text(display, title, 28, 56, 34, C.chalk)}${draw(t0)}<g class="${id}res">${text(display, result, 28, CH - 30, 30, C.iron)}</g><rect class="${id}dim" width="${CW}" height="${CH}" rx="14" fill="${C.ground}"/></g>`
+    return `<g transform="translate(${x} ${y})"><rect width="${CW}" height="${CH}" rx="14" fill="${C.panel}" stroke="${C.faint}"/>${text(display, title, 28, 56, 34, C.chalk)}${draw(t0)}<g class="${id}res">${text(display, result, 28, CH - 30, 30, C.iron)}</g><rect class="${id}dim" width="${CW}" height="${CH}" rx="14" fill="${C.ground}"/><rect class="${id}on" width="${CW}" height="${CH}" rx="14" fill="none" stroke="${C.iron}" stroke-width="2.5"/></g>`
   }
   const scenes = [
     scene(0, 'The receiver is down', 'Saved. Lands on attempt 3.', (t) => {
@@ -346,4 +374,167 @@ const ground = (W, H) => `<defs><pattern id="g" width="28" height="28" patternUn
   f.track('reply', [[0, { o: 0, y: 8 }], [8.9, { o: 1, y: 0 }, 0.4, 'decel'], [DUR - 0.3, { o: 0 }, 0.26, 'exit']])
   f.write(`${ground(W, H)}<rect x="${WX}" y="${WY}" width="${WW}" height="${WH}" rx="14" fill="${C.panel}" stroke="${C.faint}"/><path d="M${WX} ${WY + 50}H${WX + WW}" stroke="${C.faint}"/>${text(body, 'Terminal', WX + 24, WY + 33, 21, C.muted)}
     ${typed}<g class="reply">${text(mono, '{"status":"ok","runtime":"node","ready":true}', X, Y(6), S, C.ok)}</g>`)
+}
+
+/* The project in four numbers, read from the repository, on reels that roll into place. */
+{
+  const W = 1280, H = 210, DUR = 12, REST = 11
+  const f = film('stats', W, H, 'Four numbers rolling into place: 749 source tests, 66 verification gates, 17 modules and 4 native hosts.', DUR, REST)
+  const tests = /\| (\d+) of \1 tests/.exec(readFileSync(join(out, '../development-handoff.md'), 'utf8'))[1]
+  const gates = readdirSync(join(out, '../../scripts')).filter((n) => /^verify-.*\.mjs$/.test(n)).length
+  const modules = readdirSync(join(out, '../../packages'), { withFileTypes: true }).filter((e) => e.isDirectory()).length
+  const stats = [[tests, 'source tests'], [String(gates), 'verification gates'], [String(modules), 'modules'], ['4', 'native hosts']]
+  const SIZE = 92, LH = 104, BASE = 104
+  const cell = (W - 128) / 4
+  const cells = stats.map(([n, label], c) => {
+    const x0 = 64 + c * cell
+    let cursor = x0
+    const reels = [...n].map((d, i) => {
+      const slot = display.getAdvanceWidth(d, SIZE) + 2, dx = cursor; cursor += slot
+      const id = `n${c}${i}`, stop = -(10 + Number(d)) * LH, t = 1.3 + c * 0.14 + i * 0.1
+      f.track(id, [[0, { y: 0 }], [t, { y: stop }, 1.2, 'emph'], [DUR, { y: 0 }, 0.5, 'exit']])
+      const digits = Array.from({ length: 20 }, (_, k) => text(display, String(k % 10), dx + (slot - width(display, String(k % 10), SIZE)) / 2, BASE + k * LH, SIZE, C.chalk)).join('')
+      return `<g class="${id}">${digits}</g>`
+    }).join('')
+    f.track(`b${c}`, [[0, { o: 0, y: 8 }], [1.5 + c * 0.14, { o: 1, y: 0 }, 0.4, 'decel'], [DUR, { o: 0 }, 0.4, 'exit']])
+    f.track(`u${c}`, [[0, { o: 0 }], [1.3 + c * 0.14, { o: 1 }, 0.8, 'inout'], [DUR, { o: 0 }, 0.4, 'exit']])
+    return `<clipPath id="c${c}"><rect x="${x0 - 4}" y="${BASE - LH + 12}" width="${cell}" height="${LH + 2}"/></clipPath><g clip-path="url(#c${c})">${reels}</g><g class="b${c}">${text(body, label, x0, 160, 28, C.muted)}</g><rect class="u${c}" x="${x0}" y="182" width="${cell - 36}" height="3" rx="1.5" fill="${C.iron}"/>`
+  }).join('')
+  f.write(`${ground(W, H)}${cells}`)
+}
+
+/* A thin wire with one pulse running along it, used between sections. */
+{
+  const W = 1280, H = 28, f = film('divider', W, H, '', 5, 1)
+  f.track('pulse', [[0, { x: -260 }], [3.6, { x: W }, 3.6, 'inout'], [5, { x: W }]])
+  f.write(`<rect width="${W}" height="${H}" fill="${C.ground}"/><path d="M0 14H${W}" stroke="${C.faint}" stroke-width="2"/><g class="pulse"><rect y="12.5" width="260" height="3" rx="1.5" fill="${C.iron}"/><circle cx="260" cy="14" r="5" fill="${C.iron}"/></g>`)
+}
+
+/* The first app: the README's code types itself, then the real reply comes back. */
+{
+  const W = 1280, H = 640, DUR = 20, REST = 19
+  const f = film('firstapp', W, H, 'A code editor types a small LongHorn app with one route. A terminal then requests /hello/Ada and gets back the message Hello, Ada.', DUR, REST)
+  const src = [
+    ["import { Longhorn } from '@longhorn/core'", C.muted], ["import { nodeRuntime } from '@longhorn/node'", C.muted], ['', C.muted],
+    ['const app = new Longhorn()', C.chalk], ['', C.muted],
+    ["app.http.get('/hello/:name', (c) =>", C.chalk], ['  c.json({ message: `Hello, ${c.req.param("name")}` }))', C.iron], ['', C.muted],
+    ['await app.listen(nodeRuntime, { port: 3000 })', C.chalk],
+  ]
+  const WX = 64, WY = 28, WW = 1152, EH = 408, X = WX + 72, Y = (i) => WY + 92 + i * 32, S = 25, adv = mono.getAdvanceWidth('x', S)
+  let t = 0.7
+  const lines = src.map(([s, tone], i) => {
+    const num = text(mono, String(i + 1), WX + 26, Y(i), S, C.faint)
+    if (!s) return num
+    const secs = Math.max(0.25, s.length * 0.022), w = s.length * adv + 4
+    f.track(`e${i}`, [[0, { x: 0, o: 0 }], [t, { o: 1 }], [t + secs, { x: w }, secs, 'linear'], [DUR - 0.3, { x: w, o: 0 }, 0.26, 'exit']])
+    f.track(`f${i}`, [[0, { o: 0 }], [t, { o: 1 }], [DUR - 0.3, { o: 0 }, 0.26, 'exit']])
+    t += secs + 0.14
+    return `${num}<g class="f${i}">${text(mono, s, X, Y(i), S, tone)}</g><clipPath id="y${i}"><rect x="${X - 2}" y="${Y(i) - 25}" width="${w + 6}" height="34"/></clipPath><g clip-path="url(#y${i})"><g class="e${i}"><rect x="${X - 2}" y="${Y(i) - 25}" width="${w + 6}" height="34" fill="${C.panel}"/></g></g>`
+  }).join('')
+  const typed = t, TY = WY + EH + 16, THEAD = 42
+  f.track('tw', [[0, { o: 0, y: 40 }], [typed + 0.6, { o: 1, y: 0 }, 0.6, 'emph'], [DUR - 0.3, { o: 0 }, 0.26, 'exit']])
+  f.track('cmd2', [[0, { o: 0 }], [typed + 1, { o: 1 }, 0.2, 'decel']])
+  f.track('rep', [[0, { o: 0, y: 8 }], [typed + 1.9, { o: 1, y: 0 }, 0.4, 'decel']])
+  f.track('hit', [[0, { o: 0, s: 0.6, x: 880, y: TY + 118 }], [typed + 1.9, { o: 0.8 }, 0.02], [typed + 2.7, { o: 0, s: 3 }, 0.8, 'decel']])
+  f.write(`${ground(W, H)}<rect x="${WX}" y="${WY}" width="${WW}" height="${EH}" rx="14" fill="${C.panel}" stroke="${C.faint}"/><path d="M${WX} ${WY + 50}H${WX + WW}" stroke="${C.faint}"/>${text(body, 'src/index.ts', WX + 24, WY + 33, 21, C.muted)}${lines}
+    <g class="tw"><rect x="${WX}" y="${TY}" width="${WW}" height="${H - TY - 18}" rx="14" fill="${C.ground}" stroke="${C.faint}"/>
+    <g class="cmd2">${text(mono, '$', X - 44, TY + 56, S, C.iron)}${text(mono, 'curl http://127.0.0.1:3000/hello/Ada', X - 18, TY + 56, S, C.chalk)}</g>
+    <g class="rep">${text(mono, '{"message":"Hello, Ada"}', X - 44, TY + 118, 34, C.ok)}</g></g>
+    <g class="hit"><circle r="60" fill="none" stroke="${C.ok}" stroke-width="3"/></g>`)
+}
+
+/* One command through the real path, carried by one chip from station to station. */
+{
+  const W = 1280, H = 620, STEP = 2.5, DUR = 18, REST = 17
+  const f = film('journey', W, H, 'One command travels through six steps. The route authenticates and validates it. Idempotency makes a retry return the original reply. One transaction saves the command and its message. The dispatcher delivers and retries until it lands. The receiver stores one result per message ID. The console shows the receipt.', DUR, REST)
+  const CW = 360, CH = 220, GX = 32, X0 = 64, Y0 = 44, GY = 72
+  const stations = [
+    ['Route', 'Authenticates and', 'validates the request.'], ['Idempotency', 'A retry gets the', 'original reply.'], ['One transaction', 'Command and message', 'are saved together.'],
+    ['Dispatcher', 'Delivers, and retries', 'until it lands.'], ['Receiver', 'Stores one result', 'per message ID.'], ['Console', 'Shows the receipt.', 'Retries are audited.'],
+  ]
+  const pos = (i) => { const r = i < 3 ? 0 : 1, c = r ? 5 - i : i; return { x: X0 + c * (CW + GX), y: Y0 + r * (CH + GY) } }
+  const mid = (i) => { const p = pos(i); return { x: p.x + CW / 2, y: p.y + 34 } }
+  const route = stations.map((_, i) => `${i ? 'L' : 'M'}${mid(i).x} ${mid(i).y}`).join('')
+  const cards = stations.map(([title, a, b], i) => {
+    const p = pos(i), on = 0.8 + i * STEP
+    f.track(`j${i}`, [[0, { o: 0 }], [on, { o: 1 }, 0.3, 'decel'], [DUR, { o: 0 }, 0.3, 'exit']])
+    f.track(`w${i}`, [[0, { o: 0, y: 10 }], [on + 0.12, { o: 1, y: 0 }, 0.4, 'decel'], [DUR, { o: 0 }, 0.3, 'exit']])
+    f.track(`z${i}`, [[0, { o: 0, s: 0.5, x: mid(i).x, y: mid(i).y }], [on, { o: 0.9 }, 0.02], [on + 0.8, { o: 0, s: 2.6 }, 0.8, 'decel']])
+    return `<rect x="${p.x}" y="${p.y}" width="${CW}" height="${CH}" rx="14" fill="${C.panel}" stroke="${C.faint}"/><rect class="j${i}" x="${p.x}" y="${p.y}" width="${CW}" height="${CH}" rx="14" fill="${C.deep}" stroke="${C.iron}" stroke-width="2.5"/>${text(mono, String(i + 1), p.x + 26, p.y + 44, 24, C.muted)}<circle cx="${mid(i).x}" cy="${mid(i).y}" r="8" fill="${C.wire}"/><g class="w${i}">${text(display, title, p.x + 26, p.y + 118, 36, C.chalk)}${text(body, a, p.x + 26, p.y + 158, 25, C.muted)}${text(body, b, p.x + 26, p.y + 192, 25, C.muted)}</g>`
+  }).join('')
+  const rings = stations.map((_, i) => `<g class="z${i}"><circle r="26" fill="none" stroke="${C.iron}" stroke-width="3"/></g>`).join('')
+  const keys = [[0, { ...mid(0), o: 0, s: 0.8 }], [0.7, { o: 1, s: 1 }, 0.4, 'decel']]
+  stations.slice(1).forEach((_, i) => keys.push([0.8 + (i + 1) * STEP, mid(i + 1), 0.9, 'inout']))
+  keys.push([DUR, { o: 0 }, 0.3, 'exit'])
+  f.track('run', keys)
+  const CS = 22, cw = width(mono, '4, 8, 15', CS) + 22
+  f.write(`${ground(W, H)}${cards.replace(/^/, `<path d="${route}" fill="none" stroke="${C.faint}" stroke-width="3"/><path class="flow" d="${route}" fill="none" stroke="${C.wire}" stroke-width="3" stroke-dasharray="6 18"/>`)}${rings}<g class="run"><rect x="${-cw / 2}" y="-18" width="${cw}" height="36" rx="8" fill="${C.iron}"/>${text(mono, '4, 8, 15', -width(mono, '4, 8, 15', CS) / 2, 8, CS, C.ink)}</g>`, `.flow{animation:flow 1s linear infinite}@keyframes flow{to{stroke-dashoffset:-24}}`)
+}
+
+/* A tour of the repository: the highlight walks the tree and the panel says what each folder holds. */
+{
+  const W = 1280, H = 560, STEP = 1.9
+  const rows = [['packages/', '17 modules', 'Portable, and free of Node APIs.'], ['runtimes/', 'Native hosts', 'Node, Bun, Deno and Workers.'], ['examples/', '14 runnable apps', 'Including the PostgreSQL command app.'], ['starters/', 'Project templates', 'Copied in by pnpm create:app.'], ['cli/', 'The CLI', 'And the project generator.'], ['native/rust/', 'Optional Rust', 'A typed, authenticated report service.'], ['scripts/', '66 gates', 'Real engines, processes and browsers.'], ['docs/', 'One guide per feature', 'Indexed in docs/features.md.'], ['site/', 'The website', 'Plain HTML, CSS and JavaScript.'], ['tasks/', 'The work board', 'Keeps parallel work apart.']]
+  const DUR = rows.length * STEP, REST = DUR - 0.8
+  const f = film('repo', W, H, 'A tour of the repository. A highlight walks through packages, runtimes, examples, starters, cli, native, scripts, docs, site and tasks, and a panel says what each one holds.', DUR, REST)
+  const WX = 64, WY = 28, WW = 1152, WH = 504, SPLIT = 500, RY = (i) => WY + 74 + i * 42
+  f.track('bar', [[0, { y: RY(0) - 28 }], ...rows.slice(1).map((_, i) => [(i + 1) * STEP, { y: RY(i + 1) - 28 }, 0.5, 'emph']), [DUR, { y: RY(0) - 28 }, 0.5, 'emph']])
+  const panel = rows.map(([, big, small], i) => {
+    const on = i * STEP, id = `o${i}`
+    f.track(id, i === 0
+      ? [[0, { o: 1, y: 0 }], [STEP - 0.04, { o: 0, y: -14 }, 0.2, 'exit'], [DUR, { o: 1, y: 0 }, 0.4, 'decel']]
+      : [[0, { o: 0, y: 24 }], [on + 0.46, { o: 1, y: 0 }, 0.44, 'decel'], [on + STEP - 0.04, { o: 0, y: -14 }, 0.2, 'exit']])
+    return `<g class="${id}">${text(display, big, SPLIT + 44, WY + 236, 62, C.iron)}${text(body, small, SPLIT + 44, WY + 292, 30, C.muted)}</g>`
+  }).join('')
+  const tree = rows.map(([name], i) => text(mono, name, WX + 44, RY(i), 27, C.chalk)).join('')
+  f.write(`${ground(W, H)}<rect x="${WX}" y="${WY}" width="${WW}" height="${WH}" rx="14" fill="${C.panel}" stroke="${C.faint}"/><path d="M${SPLIT} ${WY}V${WY + WH}" stroke="${C.faint}"/><g class="bar"><rect x="${WX + 14}" width="${SPLIT - WX - 28}" height="40" rx="8" fill="${C.deep}" stroke="${C.iron}"/></g>${tree}${panel}`)
+}
+
+/* One square per gate, read from scripts/ and the CI workflow, lit in a wave. */
+{
+  const W = 1280, H = 400, DUR = 16, REST = 15
+  const f = film('gates', W, H, 'Sixty-six squares, one per verification gate, light up in a wave. About fifty are in the hosted CI workflow and the rest run locally on macOS. The caption cycles through what they cause: processes killed during commits, lost replies, concurrent writers, failed schema upgrades, and restore into empty storage.', DUR, REST)
+  const all = readdirSync(join(out, '../../scripts')).filter((n) => /^verify-.*\.mjs$/.test(n)).map((n) => n.slice(0, -4)).sort()
+  const workflow = readFileSync(join(out, '../../.github/workflows/verify.yml'), 'utf8')
+  const inCi = new Set([...workflow.matchAll(/verify-[\w-]+/g)].map((m) => m[0]))
+  const order = [...all.filter((g) => inCi.has(g)), ...all.filter((g) => !inCi.has(g))]
+  const COLS = 22, SZ = 40, GAP = 12, X0 = (W - (COLS * (SZ + GAP) - GAP)) / 2, Y0 = 142
+  const squares = order.map((g, i) => {
+    const c = i % COLS, r = Math.floor(i / COLS), x = X0 + c * (SZ + GAP), y = Y0 + r * (SZ + GAP), id = `g${i}`, at = 0.8 + (c + r) * 0.07
+    f.track(id, [[0, { o: 0 }], [at + 0.3, { o: 1 }, 0.3, 'decel'], [DUR, { o: 0 }, 0.4, 'exit']])
+    return `<rect x="${x}" y="${y}" width="${SZ}" height="${SZ}" rx="7" fill="${C.deep}" stroke="${C.faint}"/><rect class="${id}" x="${x}" y="${y}" width="${SZ}" height="${SZ}" rx="7" fill="${inCi.has(g) ? C.iron : C.wire}"/>`
+  }).join('')
+  const lines = ['Processes killed during commits.', 'HTTP replies lost on purpose.', 'Concurrent writers on real databases.', 'Schema upgrades that fail.', 'Restores into empty storage.']
+  const each = (DUR - 1) / lines.length
+  const caps = lines.map((s, i) => {
+    const on = 0.4 + i * each, id = `q${i}`
+    f.track(id, i === lines.length - 1
+      ? [[0, { o: 0, y: 16 }], [on + 0.4, { o: 1, y: 0 }, 0.4, 'decel'], [DUR, { o: 0 }, 0.3, 'exit']]
+      : [[0, { o: 0, y: 16 }], [on + 0.4, { o: 1, y: 0 }, 0.4, 'decel'], [on + each - 0.1, { o: 0, y: -10 }, 0.2, 'exit']])
+    return `<g class="${id}">${text(display, s, (W - width(display, s, 56)) / 2, 82, 56, C.chalk)}</g>`
+  }).join('')
+  const lg = 142 + 3 * (SZ + GAP) + 44, label1 = 'In the hosted CI workflow', label2 = 'Run locally on macOS, not in CI yet'
+  f.write(`${ground(W, H)}${caps}${squares}<rect x="${X0}" y="${lg}" width="22" height="22" rx="5" fill="${C.iron}"/>${text(body, label1, X0 + 34, lg + 19, 26, C.chalk)}<rect x="${X0 + 400}" y="${lg}" width="22" height="22" rx="5" fill="${C.wire}"/>${text(body, label2, X0 + 434, lg + 19, 26, C.chalk)}`)
+}
+
+/* Agents in parallel: each claim takes its own paths, and an overlap is refused. */
+{
+  const W = 1280, H = 560, DUR = 16, REST = 15
+  const f = film('agents', W, H, 'Three coding agents claim tasks. The first takes packages/queue/ and the second takes docs/guide.md, each in its own worktree. The third asks for packages/queue/ too and is refused, because that path is owned by the first task.', DUR, REST)
+  const lanes = [
+    { who: 'claude', task: 'task021', path: 'packages/queue/', slug: 'queue-retries', t: 1.2, ok: true }, { who: 'codex', task: 'task022', path: 'docs/guide.md', slug: 'guide-fix', t: 4.2, ok: true }, { who: 'cursor', task: 'task023', path: 'packages/queue/', t: 7.2, ok: false },
+  ]
+  const WX = 64, WW = 1152, LH = 130, Y = (i) => 112 + i * (LH + 14)
+  const rows = lanes.map((l, i) => {
+    const y = Y(i), tone = l.ok ? C.ok : C.flare, cmd = `pnpm task claim ${l.task} --agent ${l.who}`, res = l.ok ? `Worktree: ../LongHorn-worktrees/${l.slug}` : `Cannot claim ${l.task}: ${l.path} is owned by task021`
+    const w = cmd.length * mono.getAdvanceWidth('x', 25) + 4, x = WX + 58
+    f.track(`a${i}`, [[0, { o: 0, y: 20 }], [l.t - 0.3, { o: 1, y: 0 }, 0.5, 'emph'], [DUR, { o: 0 }, 0.4, 'exit']])
+    f.track(`k${i}`, [[0, { x: 0 }], [l.t + 0.7, { x: w }, 0.8, 'linear']])
+    f.track(`r${i}`, [[0, { o: 0, y: 6 }], [l.t + 1.3, { o: 1, y: 0 }, 0.3, 'decel']])
+    f.track(`v${i}`, [[0, { o: 0 }], [l.t + 1.3, { o: 1 }, 0.2, 'decel']])
+    f.track(`z${i}`, [[0, { o: 0, s: 0.5, x: WX + WW - 60, y: y + LH / 2 }], [l.t + 1.3, { o: 0.9 }, 0.02], [l.t + 2.2, { o: 0, s: 3.4 }, 0.9, 'decel']])
+    return `<g class="a${i}"><rect x="${WX}" y="${y}" width="${WW}" height="${LH}" rx="14" fill="${C.panel}" stroke="${C.faint}"/>${text(mono, '$', x - 28, y + 52, 25, C.iron)}${text(mono, cmd, x, y + 52, 25, C.chalk)}<clipPath id="u${i}"><rect x="${x - 2}" y="${y + 26}" width="${w + 6}" height="36"/></clipPath><g clip-path="url(#u${i})"><g class="k${i}"><rect x="${x - 2}" y="${y + 26}" width="${w + 6}" height="36" fill="${C.panel}"/></g></g><g class="r${i}">${text(mono, res, x, y + 98, 25, tone)}</g><g class="v${i}"><circle cx="${WX + WW - 60}" cy="${y + LH / 2}" r="18" fill="${tone}"/></g></g><g class="z${i}"><circle r="20" fill="none" stroke="${tone}" stroke-width="3"/></g>`
+  }).join('')
+  const s = 'One agent. One task. One worktree.'
+  f.write(`${ground(W, H)}${text(display, s, (W - width(display, s, 56)) / 2, 72, 56, C.chalk)}${rows}`)
 }
