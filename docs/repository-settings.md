@@ -44,9 +44,12 @@ gh workflow run "Website" --repo MirHamzaHasan/longhorn
 
 ## Required status checks
 
-Not in the ruleset yet, on purpose. `verify.yml` has passed on a pull request but not yet on `main`, and
-requiring it before then would block merges. After it first passes on `main`, add
-its eight jobs as required checks. That work is `tasks/task004-hosted-ci.md`.
+Active since 31 October 2026, after all eight `verify.yml` jobs passed on `main` at `6977d4e`
+(run 41215461094). A pull request needs `account-operations`, `browser`, `d1-storage`,
+`independent-distribution`, `redis-cache`, `rust-reports`, `source-and-runtimes` and `telemetry`
+to pass. Branches don't have to be up to date with `main`. An admin merge can still bypass the
+checks. If you rename a job in `verify.yml`, update the ruleset too, or pull requests wait
+for a check that never reports.
 
 ## Check made before going public
 

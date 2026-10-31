@@ -1,7 +1,7 @@
 ---
 id: task011
 title: Let the prune gate start from an empty pnpm cache
-status: review
+status: done
 paths:
   - scripts/verify-prune-packages.mjs
 shared:

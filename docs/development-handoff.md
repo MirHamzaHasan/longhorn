@@ -11,9 +11,9 @@ framework is on `main` and the repository is public. Start with the
 | --- | --- |
 | Code | On `main`, including live command history, the agent workflow and the website |
 | Repository visibility | Public |
-| Branch protection | Active on `main`, without required checks yet. See [repository settings](repository-settings.md) |
+| Branch protection | Active on `main`, with the eight CI jobs required. See [repository settings](repository-settings.md) |
 | Website | Live at https://mirhamzahasan.github.io/longhorn/. See [website](website.md) |
-| Hosted CI | All 8 jobs passed on the fix in PR #56. See below |
+| Hosted CI | All 8 jobs passed on `main` at `6977d4e`. See below |
 | Packages | Not published |
 | Cloud deployment | None performed |
 
@@ -69,7 +69,9 @@ ran them.
 The first full run on `main`, on commit `55a85bb`, passed seven jobs on Ubuntu 24.04.
 `source-and-runtimes` stopped at `verify-prune-packages`, whose first install could not start
 from an empty pnpm cache. With that fixed, all eight jobs passed on `d4c5657`, the head of PR
-#56. CI reaches about 50 of the 66 gates. The rest, including the outbox and
+#56, and again on `main` at `6977d4e` (run 41215461094). That day `independent-distribution` failed in 3 of 12 runs
+while building the PostgreSQL clients; see `tasks/task013-postgres-client-build-flake.md`.
+CI reaches about 50 of the 66 gates. The rest, including the outbox and
 PostgreSQL gates, have only run on macOS. See
 `tasks/task004-hosted-ci.md`.
 

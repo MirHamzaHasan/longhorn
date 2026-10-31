@@ -1,7 +1,7 @@
 ---
 id: task010
 title: Public README and collaboration guide
-status: review
+status: done
 paths:
   - README.md
   - docs/assets/

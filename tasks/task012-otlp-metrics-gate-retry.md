@@ -1,7 +1,7 @@
 ---
 id: task012
 title: Stop one slow export from wedging the metric gate
-status: review
+status: done
 paths:
   - scripts/verify-otlp-metrics.mjs
 shared:
