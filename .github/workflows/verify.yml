@@ -269,3 +269,59 @@ jobs:
       - name: Report application verification and artifact availability
         if: always()
         run: node scripts/report-ci-artifacts.mjs application '${{ steps.verify-application.outcome }}' '${{ steps.application-artifact.outcome }}' '${{ steps.application-artifact.outputs.artifact-id }}'
+
+  durable-delivery:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 20.19.4
+      - run: npm install --global pnpm@12.6.0
+      - run: pnpm install --frozen-lockfile
+      - id: build
+        run: pnpm build
+      - run: node scripts/verify-outbox.mjs
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+      - run: node scripts/verify-outbox-recovery.mjs
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+      - run: node scripts/verify-outbox-audit.mjs
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+      - run: node scripts/verify-transaction-publishing.mjs
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+      - run: node scripts/verify-persistence.mjs
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+      - run: node scripts/verify-postgres.mjs
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+      - run: node scripts/verify-idempotency.mjs
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+      - run: node scripts/verify-events.mjs
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+      - run: node scripts/verify-queues.mjs
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+      - run: node scripts/verify-scheduler.mjs
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+      - run: node scripts/verify-observability.mjs
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+
+  worker-runtime:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 20.19.4
+      - run: npm install --global pnpm@12.6.0
+      - run: pnpm install --frozen-lockfile
+      - id: build
+        run: pnpm build
+      - run: node scripts/verify-worker-alarms.mjs
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+      - run: node scripts/verify-worker-queues.mjs
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+      - run: node scripts/verify-worker-scheduled.mjs
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+      - run: node scripts/verify-worker-storage.mjs
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
