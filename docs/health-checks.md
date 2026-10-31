@@ -1,6 +1,6 @@
 # Readiness and liveness
 
-Owner: `@longhorn/observability` (`Readiness`) and `/hono` handlers. Connects
+Owner: `@longhornjs/observability` (`Readiness`) and `/hono` handlers. Connects
 [lifecycle](lifecycle.md), [HTTP](http.md), and [example dependencies](jobs-observability.md).
 
 ```ts

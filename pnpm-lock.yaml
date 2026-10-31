@@ -196,67 +196,67 @@ importers:
 
   cli:
     devDependencies:
-      '@longhorn/auth':
+      '@longhornjs/auth':
         specifier: workspace:*
         version: link:../packages/auth
-      '@longhorn/bun':
+      '@longhornjs/bun':
         specifier: workspace:*
         version: link:../runtimes/bun
-      '@longhorn/cache':
+      '@longhornjs/cache':
         specifier: workspace:*
         version: link:../packages/cache
-      '@longhorn/config':
+      '@longhornjs/config':
         specifier: workspace:*
         version: link:../packages/config
-      '@longhorn/container':
+      '@longhornjs/container':
         specifier: workspace:*
         version: link:../packages/container
-      '@longhorn/core':
+      '@longhornjs/core':
         specifier: workspace:*
         version: link:../packages/core
-      '@longhorn/database':
+      '@longhornjs/database':
         specifier: workspace:*
         version: link:../packages/database
-      '@longhorn/deno':
+      '@longhornjs/deno':
         specifier: workspace:*
         version: link:../runtimes/deno
-      '@longhorn/events':
+      '@longhornjs/events':
         specifier: workspace:*
         version: link:../packages/events
-      '@longhorn/http':
+      '@longhornjs/http':
         specifier: workspace:*
         version: link:../packages/http
-      '@longhorn/idempotency':
+      '@longhornjs/idempotency':
         specifier: workspace:*
         version: link:../packages/idempotency
-      '@longhorn/logger':
+      '@longhornjs/logger':
         specifier: workspace:*
         version: link:../packages/logger
-      '@longhorn/node':
+      '@longhornjs/node':
         specifier: workspace:*
         version: link:../runtimes/node
-      '@longhorn/observability':
+      '@longhornjs/observability':
         specifier: workspace:*
         version: link:../packages/observability
-      '@longhorn/outbox':
+      '@longhornjs/outbox':
         specifier: workspace:*
         version: link:../packages/outbox
-      '@longhorn/queue':
+      '@longhornjs/queue':
         specifier: workspace:*
         version: link:../packages/queue
-      '@longhorn/ratelimit':
+      '@longhornjs/ratelimit':
         specifier: workspace:*
         version: link:../packages/ratelimit
-      '@longhorn/runtime':
+      '@longhornjs/runtime':
         specifier: workspace:*
         version: link:../packages/runtime
-      '@longhorn/scheduler':
+      '@longhornjs/scheduler':
         specifier: workspace:*
         version: link:../packages/scheduler
-      '@longhorn/validation':
+      '@longhornjs/validation':
         specifier: workspace:*
         version: link:../packages/validation
-      '@longhorn/workers':
+      '@longhornjs/workers':
         specifier: workspace:*
         version: link:../runtimes/workers
       '@types/node':
@@ -265,7 +265,7 @@ importers:
 
   create-longhorn:
     dependencies:
-      '@longhorn/cli':
+      '@longhornjs/cli':
         specifier: workspace:*
         version: link:../cli
     devDependencies:
@@ -275,34 +275,34 @@ importers:
 
   examples/auth:
     dependencies:
-      '@longhorn/auth':
+      '@longhornjs/auth':
         specifier: workspace:*
         version: link:../../packages/auth
-      '@longhorn/bun':
+      '@longhornjs/bun':
         specifier: workspace:*
         version: link:../../runtimes/bun
-      '@longhorn/config':
+      '@longhornjs/config':
         specifier: workspace:*
         version: link:../../packages/config
-      '@longhorn/container':
+      '@longhornjs/container':
         specifier: workspace:*
         version: link:../../packages/container
-      '@longhorn/core':
+      '@longhornjs/core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@longhorn/database':
+      '@longhornjs/database':
         specifier: workspace:*
         version: link:../../packages/database
-      '@longhorn/deno':
+      '@longhornjs/deno':
         specifier: workspace:*
         version: link:../../runtimes/deno
-      '@longhorn/logger':
+      '@longhornjs/logger':
         specifier: workspace:*
         version: link:../../packages/logger
-      '@longhorn/node':
+      '@longhornjs/node':
         specifier: workspace:*
         version: link:../../runtimes/node
-      '@longhorn/validation':
+      '@longhornjs/validation':
         specifier: workspace:*
         version: link:../../packages/validation
       hono:
@@ -327,34 +327,34 @@ importers:
 
   examples/basic:
     dependencies:
-      '@longhorn/cache':
+      '@longhornjs/cache':
         specifier: workspace:*
         version: link:../../packages/cache
-      '@longhorn/config':
+      '@longhornjs/config':
         specifier: workspace:*
         version: link:../../packages/config
-      '@longhorn/container':
+      '@longhornjs/container':
         specifier: workspace:*
         version: link:../../packages/container
-      '@longhorn/core':
+      '@longhornjs/core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@longhorn/database':
+      '@longhornjs/database':
         specifier: workspace:*
         version: link:../../packages/database
-      '@longhorn/events':
+      '@longhornjs/events':
         specifier: workspace:*
         version: link:../../packages/events
-      '@longhorn/http':
+      '@longhornjs/http':
         specifier: workspace:*
         version: link:../../packages/http
-      '@longhorn/logger':
+      '@longhornjs/logger':
         specifier: workspace:*
         version: link:../../packages/logger
-      '@longhorn/node':
+      '@longhornjs/node':
         specifier: workspace:*
         version: link:../../runtimes/node
-      '@longhorn/validation':
+      '@longhornjs/validation':
         specifier: workspace:*
         version: link:../../packages/validation
       zod:
@@ -370,34 +370,34 @@ importers:
 
   examples/bun-sqlite:
     dependencies:
-      '@longhorn/bun':
+      '@longhornjs/bun':
         specifier: workspace:*
         version: link:../../runtimes/bun
-      '@longhorn/cache':
+      '@longhornjs/cache':
         specifier: workspace:*
         version: link:../../packages/cache
-      '@longhorn/config':
+      '@longhornjs/config':
         specifier: workspace:*
         version: link:../../packages/config
-      '@longhorn/container':
+      '@longhornjs/container':
         specifier: workspace:*
         version: link:../../packages/container
-      '@longhorn/core':
+      '@longhornjs/core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@longhorn/database':
+      '@longhornjs/database':
         specifier: workspace:*
         version: link:../../packages/database
-      '@longhorn/events':
+      '@longhornjs/events':
         specifier: workspace:*
         version: link:../../packages/events
-      '@longhorn/http':
+      '@longhornjs/http':
         specifier: workspace:*
         version: link:../../packages/http
-      '@longhorn/logger':
+      '@longhornjs/logger':
         specifier: workspace:*
         version: link:../../packages/logger
-      '@longhorn/validation':
+      '@longhornjs/validation':
         specifier: workspace:*
         version: link:../../packages/validation
       zod:
@@ -410,28 +410,28 @@ importers:
 
   examples/d1-worker:
     dependencies:
-      '@longhorn/config':
+      '@longhornjs/config':
         specifier: workspace:*
         version: link:../../packages/config
-      '@longhorn/container':
+      '@longhornjs/container':
         specifier: workspace:*
         version: link:../../packages/container
-      '@longhorn/core':
+      '@longhornjs/core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@longhorn/database':
+      '@longhornjs/database':
         specifier: workspace:*
         version: link:../../packages/database
-      '@longhorn/idempotency':
+      '@longhornjs/idempotency':
         specifier: workspace:*
         version: link:../../packages/idempotency
-      '@longhorn/ratelimit':
+      '@longhornjs/ratelimit':
         specifier: workspace:*
         version: link:../../packages/ratelimit
-      '@longhorn/validation':
+      '@longhornjs/validation':
         specifier: workspace:*
         version: link:../../packages/validation
-      '@longhorn/workers':
+      '@longhornjs/workers':
         specifier: workspace:*
         version: link:../../runtimes/workers
       hono:
@@ -450,34 +450,34 @@ importers:
 
   examples/deno-sqlite:
     dependencies:
-      '@longhorn/cache':
+      '@longhornjs/cache':
         specifier: workspace:*
         version: link:../../packages/cache
-      '@longhorn/config':
+      '@longhornjs/config':
         specifier: workspace:*
         version: link:../../packages/config
-      '@longhorn/container':
+      '@longhornjs/container':
         specifier: workspace:*
         version: link:../../packages/container
-      '@longhorn/core':
+      '@longhornjs/core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@longhorn/database':
+      '@longhornjs/database':
         specifier: workspace:*
         version: link:../../packages/database
-      '@longhorn/deno':
+      '@longhornjs/deno':
         specifier: workspace:*
         version: link:../../runtimes/deno
-      '@longhorn/events':
+      '@longhornjs/events':
         specifier: workspace:*
         version: link:../../packages/events
-      '@longhorn/http':
+      '@longhornjs/http':
         specifier: workspace:*
         version: link:../../packages/http
-      '@longhorn/logger':
+      '@longhornjs/logger':
         specifier: workspace:*
         version: link:../../packages/logger
-      '@longhorn/validation':
+      '@longhornjs/validation':
         specifier: workspace:*
         version: link:../../packages/validation
       zod:
@@ -493,34 +493,34 @@ importers:
 
   examples/durable-worker:
     dependencies:
-      '@longhorn/config':
+      '@longhornjs/config':
         specifier: workspace:*
         version: link:../../packages/config
-      '@longhorn/container':
+      '@longhornjs/container':
         specifier: workspace:*
         version: link:../../packages/container
-      '@longhorn/core':
+      '@longhornjs/core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@longhorn/database':
+      '@longhornjs/database':
         specifier: workspace:*
         version: link:../../packages/database
-      '@longhorn/observability':
+      '@longhornjs/observability':
         specifier: workspace:*
         version: link:../../packages/observability
-      '@longhorn/queue':
+      '@longhornjs/queue':
         specifier: workspace:*
         version: link:../../packages/queue
-      '@longhorn/ratelimit':
+      '@longhornjs/ratelimit':
         specifier: workspace:*
         version: link:../../packages/ratelimit
-      '@longhorn/scheduler':
+      '@longhornjs/scheduler':
         specifier: workspace:*
         version: link:../../packages/scheduler
-      '@longhorn/validation':
+      '@longhornjs/validation':
         specifier: workspace:*
         version: link:../../packages/validation
-      '@longhorn/workers':
+      '@longhornjs/workers':
         specifier: workspace:*
         version: link:../../runtimes/workers
       hono:
@@ -539,43 +539,43 @@ importers:
 
   examples/jobs:
     dependencies:
-      '@longhorn/config':
+      '@longhornjs/config':
         specifier: workspace:*
         version: link:../../packages/config
-      '@longhorn/container':
+      '@longhornjs/container':
         specifier: workspace:*
         version: link:../../packages/container
-      '@longhorn/core':
+      '@longhornjs/core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@longhorn/database':
+      '@longhornjs/database':
         specifier: workspace:*
         version: link:../../packages/database
-      '@longhorn/http':
+      '@longhornjs/http':
         specifier: workspace:*
         version: link:../../packages/http
-      '@longhorn/idempotency':
+      '@longhornjs/idempotency':
         specifier: workspace:*
         version: link:../../packages/idempotency
-      '@longhorn/logger':
+      '@longhornjs/logger':
         specifier: workspace:*
         version: link:../../packages/logger
-      '@longhorn/node':
+      '@longhornjs/node':
         specifier: workspace:*
         version: link:../../runtimes/node
-      '@longhorn/observability':
+      '@longhornjs/observability':
         specifier: workspace:*
         version: link:../../packages/observability
-      '@longhorn/outbox':
+      '@longhornjs/outbox':
         specifier: workspace:*
         version: link:../../packages/outbox
-      '@longhorn/queue':
+      '@longhornjs/queue':
         specifier: workspace:*
         version: link:../../packages/queue
-      '@longhorn/scheduler':
+      '@longhornjs/scheduler':
         specifier: workspace:*
         version: link:../../packages/scheduler
-      '@longhorn/validation':
+      '@longhornjs/validation':
         specifier: workspace:*
         version: link:../../packages/validation
       hono:
@@ -585,7 +585,7 @@ importers:
         specifier: ^4.6.7
         version: 4.6.7
     devDependencies:
-      '@longhorn/auth':
+      '@longhornjs/auth':
         specifier: workspace:*
         version: link:../../packages/auth
       '@types/node':
@@ -597,31 +597,31 @@ importers:
 
   examples/maintained-limits:
     dependencies:
-      '@longhorn/auth':
+      '@longhornjs/auth':
         specifier: workspace:*
         version: link:../../packages/auth
-      '@longhorn/config':
+      '@longhornjs/config':
         specifier: workspace:*
         version: link:../../packages/config
-      '@longhorn/container':
+      '@longhornjs/container':
         specifier: workspace:*
         version: link:../../packages/container
-      '@longhorn/core':
+      '@longhornjs/core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@longhorn/database':
+      '@longhornjs/database':
         specifier: workspace:*
         version: link:../../packages/database
-      '@longhorn/logger':
+      '@longhornjs/logger':
         specifier: workspace:*
         version: link:../../packages/logger
-      '@longhorn/node':
+      '@longhornjs/node':
         specifier: workspace:*
         version: link:../../runtimes/node
-      '@longhorn/ratelimit':
+      '@longhornjs/ratelimit':
         specifier: workspace:*
         version: link:../../packages/ratelimit
-      '@longhorn/validation':
+      '@longhornjs/validation':
         specifier: workspace:*
         version: link:../../packages/validation
       hono:
@@ -640,37 +640,37 @@ importers:
 
   examples/outbox-worker:
     dependencies:
-      '@longhorn/auth':
+      '@longhornjs/auth':
         specifier: workspace:*
         version: link:../../packages/auth
-      '@longhorn/container':
+      '@longhornjs/container':
         specifier: workspace:*
         version: link:../../packages/container
-      '@longhorn/core':
+      '@longhornjs/core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@longhorn/database':
+      '@longhornjs/database':
         specifier: workspace:*
         version: link:../../packages/database
-      '@longhorn/idempotency':
+      '@longhornjs/idempotency':
         specifier: workspace:*
         version: link:../../packages/idempotency
-      '@longhorn/observability':
+      '@longhornjs/observability':
         specifier: workspace:*
         version: link:../../packages/observability
-      '@longhorn/outbox':
+      '@longhornjs/outbox':
         specifier: workspace:*
         version: link:../../packages/outbox
-      '@longhorn/queue':
+      '@longhornjs/queue':
         specifier: workspace:*
         version: link:../../packages/queue
-      '@longhorn/scheduler':
+      '@longhornjs/scheduler':
         specifier: workspace:*
         version: link:../../packages/scheduler
-      '@longhorn/validation':
+      '@longhornjs/validation':
         specifier: workspace:*
         version: link:../../packages/validation
-      '@longhorn/workers':
+      '@longhornjs/workers':
         specifier: workspace:*
         version: link:../../runtimes/workers
       hono:
@@ -689,37 +689,37 @@ importers:
 
   examples/portable:
     dependencies:
-      '@longhorn/bun':
+      '@longhornjs/bun':
         specifier: workspace:*
         version: link:../../runtimes/bun
-      '@longhorn/cache':
+      '@longhornjs/cache':
         specifier: workspace:*
         version: link:../../packages/cache
-      '@longhorn/config':
+      '@longhornjs/config':
         specifier: workspace:*
         version: link:../../packages/config
-      '@longhorn/container':
+      '@longhornjs/container':
         specifier: workspace:*
         version: link:../../packages/container
-      '@longhorn/core':
+      '@longhornjs/core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@longhorn/deno':
+      '@longhornjs/deno':
         specifier: workspace:*
         version: link:../../runtimes/deno
-      '@longhorn/events':
+      '@longhornjs/events':
         specifier: workspace:*
         version: link:../../packages/events
-      '@longhorn/logger':
+      '@longhornjs/logger':
         specifier: workspace:*
         version: link:../../packages/logger
-      '@longhorn/observability':
+      '@longhornjs/observability':
         specifier: workspace:*
         version: link:../../packages/observability
-      '@longhorn/validation':
+      '@longhornjs/validation':
         specifier: workspace:*
         version: link:../../packages/validation
-      '@longhorn/workers':
+      '@longhornjs/workers':
         specifier: workspace:*
         version: link:../../runtimes/workers
       zod:
@@ -738,49 +738,49 @@ importers:
 
   examples/postgres:
     dependencies:
-      '@longhorn/auth':
+      '@longhornjs/auth':
         specifier: workspace:*
         version: link:../../packages/auth
-      '@longhorn/config':
+      '@longhornjs/config':
         specifier: workspace:*
         version: link:../../packages/config
-      '@longhorn/container':
+      '@longhornjs/container':
         specifier: workspace:*
         version: link:../../packages/container
-      '@longhorn/core':
+      '@longhornjs/core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@longhorn/database':
+      '@longhornjs/database':
         specifier: workspace:*
         version: link:../../packages/database
-      '@longhorn/http':
+      '@longhornjs/http':
         specifier: workspace:*
         version: link:../../packages/http
-      '@longhorn/idempotency':
+      '@longhornjs/idempotency':
         specifier: workspace:*
         version: link:../../packages/idempotency
-      '@longhorn/logger':
+      '@longhornjs/logger':
         specifier: workspace:*
         version: link:../../packages/logger
-      '@longhorn/node':
+      '@longhornjs/node':
         specifier: workspace:*
         version: link:../../runtimes/node
-      '@longhorn/observability':
+      '@longhornjs/observability':
         specifier: workspace:*
         version: link:../../packages/observability
-      '@longhorn/outbox':
+      '@longhornjs/outbox':
         specifier: workspace:*
         version: link:../../packages/outbox
-      '@longhorn/queue':
+      '@longhornjs/queue':
         specifier: workspace:*
         version: link:../../packages/queue
-      '@longhorn/ratelimit':
+      '@longhornjs/ratelimit':
         specifier: workspace:*
         version: link:../../packages/ratelimit
-      '@longhorn/scheduler':
+      '@longhornjs/scheduler':
         specifier: workspace:*
         version: link:../../packages/scheduler
-      '@longhorn/validation':
+      '@longhornjs/validation':
         specifier: workspace:*
         version: link:../../packages/validation
       hono:
@@ -802,22 +802,22 @@ importers:
 
   examples/queue-worker:
     dependencies:
-      '@longhorn/container':
+      '@longhornjs/container':
         specifier: workspace:*
         version: link:../../packages/container
-      '@longhorn/core':
+      '@longhornjs/core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@longhorn/database':
+      '@longhornjs/database':
         specifier: workspace:*
         version: link:../../packages/database
-      '@longhorn/observability':
+      '@longhornjs/observability':
         specifier: workspace:*
         version: link:../../packages/observability
-      '@longhorn/validation':
+      '@longhornjs/validation':
         specifier: workspace:*
         version: link:../../packages/validation
-      '@longhorn/workers':
+      '@longhornjs/workers':
         specifier: workspace:*
         version: link:../../runtimes/workers
       hono:
@@ -836,31 +836,31 @@ importers:
 
   examples/redis-limits:
     dependencies:
-      '@longhorn/auth':
+      '@longhornjs/auth':
         specifier: workspace:*
         version: link:../../packages/auth
-      '@longhorn/config':
+      '@longhornjs/config':
         specifier: workspace:*
         version: link:../../packages/config
-      '@longhorn/container':
+      '@longhornjs/container':
         specifier: workspace:*
         version: link:../../packages/container
-      '@longhorn/core':
+      '@longhornjs/core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@longhorn/logger':
+      '@longhornjs/logger':
         specifier: workspace:*
         version: link:../../packages/logger
-      '@longhorn/node':
+      '@longhornjs/node':
         specifier: workspace:*
         version: link:../../runtimes/node
-      '@longhorn/observability':
+      '@longhornjs/observability':
         specifier: workspace:*
         version: link:../../packages/observability
-      '@longhorn/ratelimit':
+      '@longhornjs/ratelimit':
         specifier: workspace:*
         version: link:../../packages/ratelimit
-      '@longhorn/validation':
+      '@longhornjs/validation':
         specifier: workspace:*
         version: link:../../packages/validation
       hono:
@@ -876,25 +876,25 @@ importers:
 
   examples/scheduled-worker:
     dependencies:
-      '@longhorn/container':
+      '@longhornjs/container':
         specifier: workspace:*
         version: link:../../packages/container
-      '@longhorn/core':
+      '@longhornjs/core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@longhorn/logger':
+      '@longhornjs/logger':
         specifier: workspace:*
         version: link:../../packages/logger
-      '@longhorn/observability':
+      '@longhornjs/observability':
         specifier: workspace:*
         version: link:../../packages/observability
-      '@longhorn/queue':
+      '@longhornjs/queue':
         specifier: workspace:*
         version: link:../../packages/queue
-      '@longhorn/scheduler':
+      '@longhornjs/scheduler':
         specifier: workspace:*
         version: link:../../packages/scheduler
-      '@longhorn/workers':
+      '@longhornjs/workers':
         specifier: workspace:*
         version: link:../../runtimes/workers
       zod:
@@ -907,7 +907,7 @@ importers:
 
   packages/auth:
     dependencies:
-      '@longhorn/database':
+      '@longhornjs/database':
         specifier: workspace:*
         version: link:../database
       hono:
@@ -918,7 +918,7 @@ importers:
 
   packages/config:
     dependencies:
-      '@longhorn/validation':
+      '@longhornjs/validation':
         specifier: workspace:*
         version: link:../validation
     devDependencies:
@@ -930,16 +930,16 @@ importers:
 
   packages/core:
     dependencies:
-      '@longhorn/container':
+      '@longhornjs/container':
         specifier: workspace:*
         version: link:../container
-      '@longhorn/http':
+      '@longhornjs/http':
         specifier: workspace:*
         version: link:../http
-      '@longhorn/logger':
+      '@longhornjs/logger':
         specifier: workspace:*
         version: link:../logger
-      '@longhorn/runtime':
+      '@longhornjs/runtime':
         specifier: workspace:*
         version: link:../runtime
 
@@ -955,10 +955,10 @@ importers:
 
   packages/idempotency:
     dependencies:
-      '@longhorn/database':
+      '@longhornjs/database':
         specifier: workspace:*
         version: link:../database
-      '@longhorn/runtime':
+      '@longhornjs/runtime':
         specifier: workspace:*
         version: link:../runtime
 
@@ -970,7 +970,7 @@ importers:
 
   packages/observability:
     dependencies:
-      '@longhorn/logger':
+      '@longhornjs/logger':
         specifier: workspace:*
         version: link:../logger
       hono:
@@ -979,16 +979,16 @@ importers:
 
   packages/outbox:
     dependencies:
-      '@longhorn/database':
+      '@longhornjs/database':
         specifier: workspace:*
         version: link:../database
-      '@longhorn/http':
+      '@longhornjs/http':
         specifier: workspace:*
         version: link:../http
-      '@longhorn/queue':
+      '@longhornjs/queue':
         specifier: workspace:*
         version: link:../queue
-      '@longhorn/validation':
+      '@longhornjs/validation':
         specifier: workspace:*
         version: link:../validation
       hono:
@@ -1000,19 +1000,19 @@ importers:
 
   packages/queue:
     dependencies:
-      '@longhorn/database':
+      '@longhornjs/database':
         specifier: workspace:*
         version: link:../database
-      '@longhorn/validation':
+      '@longhornjs/validation':
         specifier: workspace:*
         version: link:../validation
 
   packages/ratelimit:
     dependencies:
-      '@longhorn/database':
+      '@longhornjs/database':
         specifier: workspace:*
         version: link:../database
-      '@longhorn/runtime':
+      '@longhornjs/runtime':
         specifier: workspace:*
         version: link:../runtime
       hono:
@@ -1023,14 +1023,14 @@ importers:
 
   packages/scheduler:
     dependencies:
-      '@longhorn/database':
+      '@longhornjs/database':
         specifier: workspace:*
         version: link:../database
-      '@longhorn/queue':
+      '@longhornjs/queue':
         specifier: workspace:*
         version: link:../queue
     devDependencies:
-      '@longhorn/validation':
+      '@longhornjs/validation':
         specifier: workspace:*
         version: link:../validation
 
@@ -1046,7 +1046,7 @@ importers:
         specifier: ^4.13.13
         version: 4.13.13
     devDependencies:
-      '@longhorn/http':
+      '@longhornjs/http':
         specifier: workspace:*
         version: link:../http
       zod:
@@ -1055,13 +1055,13 @@ importers:
 
   runtimes/bun:
     dependencies:
-      '@longhorn/auth':
+      '@longhornjs/auth':
         specifier: workspace:*
         version: link:../../packages/auth
-      '@longhorn/database':
+      '@longhornjs/database':
         specifier: workspace:*
         version: link:../../packages/database
-      '@longhorn/runtime':
+      '@longhornjs/runtime':
         specifier: workspace:*
         version: link:../../packages/runtime
     devDependencies:
@@ -1071,13 +1071,13 @@ importers:
 
   runtimes/deno:
     dependencies:
-      '@longhorn/auth':
+      '@longhornjs/auth':
         specifier: workspace:*
         version: link:../../packages/auth
-      '@longhorn/database':
+      '@longhornjs/database':
         specifier: workspace:*
         version: link:../../packages/database
-      '@longhorn/runtime':
+      '@longhornjs/runtime':
         specifier: workspace:*
         version: link:../../packages/runtime
     devDependencies:
@@ -1096,16 +1096,16 @@ importers:
       '@libsql/client':
         specifier: ^0.18.0
         version: 0.18.0
-      '@longhorn/auth':
+      '@longhornjs/auth':
         specifier: workspace:*
         version: link:../../packages/auth
-      '@longhorn/config':
+      '@longhornjs/config':
         specifier: workspace:*
         version: link:../../packages/config
-      '@longhorn/database':
+      '@longhornjs/database':
         specifier: workspace:*
         version: link:../../packages/database
-      '@longhorn/runtime':
+      '@longhornjs/runtime':
         specifier: workspace:*
         version: link:../../packages/runtime
       '@redis/client':
@@ -1115,10 +1115,10 @@ importers:
         specifier: 8.23.1
         version: 8.23.1
     devDependencies:
-      '@longhorn/queue':
+      '@longhornjs/queue':
         specifier: workspace:*
         version: link:../../packages/queue
-      '@longhorn/scheduler':
+      '@longhornjs/scheduler':
         specifier: workspace:*
         version: link:../../packages/scheduler
       '@types/node':
@@ -1133,14 +1133,14 @@ importers:
       '@cloudflare/workers-types':
         specifier: ^5.20261022.1
         version: 5.20261022.1
-      '@longhorn/database':
+      '@longhornjs/database':
         specifier: workspace:*
         version: link:../../packages/database
-      '@longhorn/runtime':
+      '@longhornjs/runtime':
         specifier: workspace:*
         version: link:../../packages/runtime
     devDependencies:
-      '@longhorn/core':
+      '@longhornjs/core':
         specifier: workspace:*
         version: link:../../packages/core
 

@@ -1,6 +1,6 @@
 # Runtime contracts and adapters
 
-Owners: `@longhorn/runtime`, `@longhorn/core`, and `@longhorn/node`. Shared contracts
+Owners: `@longhornjs/runtime`, `@longhornjs/core`, and `@longhornjs/node`. Shared contracts
 connect an [HTTP app](http.md) to a runtime without importing runtime-specific APIs.
 Native implementations also include [Bun](bun.md), [Deno](deno.md), and [Workers Fetch](workers.md).
 Node also supplies optional native resources through isolated entrypoints:
@@ -19,8 +19,8 @@ consistent loopback/3000 defaults. `ContextualFetchApplication` adds typed bindi
 and an execution context for Fetch hosts.
 
 ```ts
-import { Longhorn } from '@longhorn/core'
-import { nodeRuntime } from '@longhorn/node'
+import { Longhorn } from '@longhornjs/core'
+import { nodeRuntime } from '@longhornjs/node'
 
 const app = new Longhorn()
 app.http.get('/health', (c) => c.json({ status: 'ok' }))
@@ -43,7 +43,7 @@ deployment or cross-process orchestrator.
 
 ## Node
 
-`@longhorn/node` uses `@hono/node-server` for Request/Response conversion. `serve()`
+`@longhornjs/node` uses `@hono/node-server` for Request/Response conversion. `serve()`
 also works directly with any `FetchApplication`. Defaults are `127.0.0.1:3000`.
 Startup resolves after binding, returns the actual ephemeral port for `port: 0`, and
 rejects bind errors. Closing is idempotent; active connections drain before close
@@ -51,7 +51,7 @@ resolves. Closing only the returned handle does not release application resource
 use `app.close()` for complete shutdown.
 
 The portable handler does not receive Node incoming/outgoing objects as Hono bindings.
-Node environment/file access is a separate `@longhorn/node/config` entrypoint covered
+Node environment/file access is a separate `@longhornjs/node/config` entrypoint covered
 by [configuration](configuration.md). Node.js 20.19.0+ is supported.
 
 ## Native and Fetch hosts
@@ -60,8 +60,8 @@ by [configuration](configuration.md). Node.js 20.19.0+ is supported.
 | --- | --- | --- |
 | Node | `app.listen(nodeRuntime)` | Native Node listener through Hono |
 | Bun | `app.listen(bunRuntime)` | Native Bun.serve listener |
-| Bun SQLite | `@longhorn/bun/sqlite` | Optional native local-file Database and async transaction ownership |
-| Deno SQLite | `@longhorn/deno/sqlite` | Optional native local-file Database, explicit file grants and async transaction ownership |
+| Bun SQLite | `@longhornjs/bun/sqlite` | Optional native local-file Database and async transaction ownership |
+| Deno SQLite | `@longhornjs/deno/sqlite` | Optional native local-file Database, explicit file grants and async transaction ownership |
 | Deno | `app.listen(denoRuntime)` | Native Deno.serve listener |
 | Workers | `export default createWorker(app)` | Platform listener/isolate; per-request env/context |
 | Workers scheduled | `export default createScheduledWorker(app, options)` | Fetch plus bounded platform scheduled events and managed completion |
@@ -82,5 +82,5 @@ Verification: [registry tests](../packages/core/src/application.test.ts),
 [active request draining](../examples/basic/src/lifecycle.test.ts).
 
 The Node adapter also exports native [password hashing](passwords.md) through
-`@longhorn/node/passwords`, implementing the shared auth contract. The shared auth
+`@longhornjs/node/passwords`, implementing the shared auth contract. The shared auth
 root/Hono entrypoints do not import that native adapter.

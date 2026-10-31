@@ -1,6 +1,6 @@
 # Prometheus text export
 
-Owner: `@longhorn/observability/prometheus`. Connects [metric snapshots](metrics.md)
+Owner: `@longhornjs/observability/prometheus`. Connects [metric snapshots](metrics.md)
 to an application-owned pull endpoint.
 
 ```ts

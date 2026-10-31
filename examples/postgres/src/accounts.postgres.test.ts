@@ -1,6 +1,6 @@
 import { afterEach,beforeEach,expect,it } from 'vitest'
-import type { Longhorn } from '@longhorn/core'
-import { openPostgres } from '@longhorn/node/postgres'
+import type { Longhorn } from '@longhornjs/core'
+import { openPostgres } from '@longhornjs/node/postgres'
 import { createPostgresApp } from './app.js'
 if (process.env.LONGHORN_PG_TEST_OWNED!=='true' || !process.env.LONGHORN_PG_TEST_URL || !process.env.LONGHORN_PG_APP_URL) throw new Error('Use pnpm test:postgres with the owned database')
 const apps: Longhorn[]=[]

@@ -11,18 +11,18 @@
     "start:deno": "deno run --no-prompt --no-lock --node-modules-dir=manual --allow-net=127.0.0.1 --allow-env=HOST,PORT,AUTH_ORIGIN,AUTH_COOKIE_SECURE,SESSION_TTL_SECONDS,DATABASE_PATH,LOG_LEVEL --allow-read=data --allow-write=data dist/deno.js"
   },
   "dependencies": {
-    "@longhorn/auth": "workspace:*",
-    "@longhorn/config": "workspace:*",
-    "@longhorn/container": "workspace:*",
-    "@longhorn/core": "workspace:*",
-    "@longhorn/database": "workspace:*",
-    "@longhorn/logger": "workspace:*",
-    "@longhorn/node": "workspace:*",
-    "@longhorn/validation": "workspace:*",
+    "@longhornjs/auth": "workspace:*",
+    "@longhornjs/config": "workspace:*",
+    "@longhornjs/container": "workspace:*",
+    "@longhornjs/core": "workspace:*",
+    "@longhornjs/database": "workspace:*",
+    "@longhornjs/logger": "workspace:*",
+    "@longhornjs/node": "workspace:*",
+    "@longhornjs/validation": "workspace:*",
     "hono": "^4.13.13",
     "zod": "^4.6.7",
-    "@longhorn/bun": "workspace:*",
-    "@longhorn/deno": "workspace:*"
+    "@longhornjs/bun": "workspace:*",
+    "@longhornjs/deno": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.13.10",

@@ -1,12 +1,12 @@
 # Durable Object SQLite provider
 
-Owner: `@longhorn/workers/durable-sqlite`. Connects a SQLite-backed Durable Object
+Owner: `@longhornjs/workers/durable-sqlite`. Connects a SQLite-backed Durable Object
 to the existing [Database contract](database.md), [transactions](durable-sqlite-transactions.md),
 [migrations](durable-sqlite-migrations.md), [queues](workers-durable-queues.md) and
 [schedule storage](workers-durable-scheduler.md). It imports no Node driver.
 
 ```ts
-import { createDurableSqlite } from '@longhorn/workers/durable-sqlite'
+import { createDurableSqlite } from '@longhornjs/workers/durable-sqlite'
 
 // Inside a SQLite-backed Durable Object, with its original state:
 const database = createDurableSqlite(state, { maxPending: 64 })

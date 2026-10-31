@@ -1,6 +1,6 @@
 # Credentials and authentication
 
-Owner: `@longhorn/auth`. Connects a `PasswordHasher`, account storage, login-attempt
+Owner: `@longhornjs/auth`. Connects a `PasswordHasher`, account storage, login-attempt
 storage, and [sessions](sessions.md). Shared code uses Web Crypto and contains no
 Node APIs. Explicit [Node](passwords.md), [Bun](bun-passwords.md) and
 [Deno](deno-passwords.md) password adapters share the same fixed policy.
@@ -9,9 +9,9 @@ enable authentication.
 The [PostgreSQL store](auth-postgres.md) supplies the same service contracts with native SQL.
 
 ```ts
-import { AuthService } from '@longhorn/auth'
-import { SqliteAuthStore } from '@longhorn/auth/sqlite'
-import { createScryptPasswordHasher } from '@longhorn/node/passwords'
+import { AuthService } from '@longhornjs/auth'
+import { SqliteAuthStore } from '@longhornjs/auth/sqlite'
+import { createScryptPasswordHasher } from '@longhornjs/node/passwords'
 
 const auth = new AuthService(new SqliteAuthStore(database), createScryptPasswordHasher())
 const user = await auth.register('alex', 'a long unique passphrase')

@@ -17,7 +17,7 @@ export async function readAssetTemplate(framework:string,profile:AssetProfile){
     const record=(value:unknown)=>typeof value==='object'&&value!==null&&!Array.isArray(value)
     if(!record(descriptor)||descriptor.schemaVersion!==1||!record(descriptor.dependencies)||!record(descriptor.devDependencies)||!record(descriptor.files))throw new Error()
     for(const dependencies of[descriptor.dependencies,descriptor.devDependencies])for(const[name,version]of Object.entries(dependencies)){
-      if(!/^(@[a-z0-9-]+\/)?[a-z0-9-]+$/.test(name)||typeof version!=='string'||!version||version.length>128||(!name.startsWith('@longhorn/')&&/^(?:file:|link:|workspace:)/.test(version)))throw new Error()
+      if(!/^(@[a-z0-9-]+\/)?[a-z0-9-]+$/.test(name)||typeof version!=='string'||!version||version.length>128||(!name.startsWith('@longhornjs/')&&/^(?:file:|link:|workspace:)/.test(version)))throw new Error()
     }
     const entries=Object.entries(descriptor.files);if(!entries.length||entries.length>(profile.name==='command-app'?160:128))throw new Error()
     let bytes=0
@@ -32,7 +32,7 @@ export async function readAssetTemplate(framework:string,profile:AssetProfile){
   }catch{throw new Error(profile.label+' template assets are unavailable or invalid; rebuild the CLI distribution')}
   return {dependencies:descriptor.dependencies,projectFiles(name:string,dependencies:Record<string,string>,locations:Record<string,string>):Record<string,string>{
     return {...files,'README.md':files['README.md']!.replaceAll('{{PROJECT_NAME}}',name),
-      'package.json':JSON.stringify({name,version:'0.0.0',private:true,type:'module',packageManager:'pnpm@12.6.0',engines:{node:'>=20.19.0'},longhorn:{schemaVersion:1,runtime:profile.runtime,framework:'snapshot',template:profile.name},scripts:profile.scripts,dependencies:{...Object.fromEntries(Object.entries(descriptor.dependencies).filter(([name])=>!name.startsWith('@longhorn/'))),...dependencies},devDependencies:descriptor.devDependencies},null,2)+'\n',
+      'package.json':JSON.stringify({name,version:'0.0.0',private:true,type:'module',packageManager:'pnpm@12.6.0',engines:{node:'>=20.19.0'},longhorn:{schemaVersion:1,runtime:profile.runtime,framework:'snapshot',template:profile.name},scripts:profile.scripts,dependencies:{...Object.fromEntries(Object.entries(descriptor.dependencies).filter(([name])=>!name.startsWith('@longhornjs/'))),...dependencies},devDependencies:descriptor.devDependencies},null,2)+'\n',
       'pnpm-workspace.yaml':'overrides:\n'+Object.entries(locations).map(([name,value])=>'  '+JSON.stringify(name)+': '+JSON.stringify(value)).join('\n')+'\n\nallowBuilds:\n'+profile.allowBuilds.map(name=>'  '+name+': true\n').join(''),
     }
   }}

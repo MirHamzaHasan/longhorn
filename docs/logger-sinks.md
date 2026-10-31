@@ -1,11 +1,11 @@
 # Local log sinks and fanout
 
-Owner: `consoleLogSink` and `fanoutLogSinks` from `@longhorn/logger`. Connects
+Owner: `consoleLogSink` and `fanoutLogSinks` from `@longhornjs/logger`. Connects
 [structured logging](logging.md) to explicitly selected synchronous destinations,
 including a [buffered asynchronous bridge](log-processing.md).
 
 ```ts
-import { createLogger, consoleLogSink, fanoutLogSinks } from '@longhorn/logger'
+import { createLogger, consoleLogSink, fanoutLogSinks } from '@longhornjs/logger'
 
 const logger = createLogger({ sink: fanoutLogSinks([consoleLogSink, processor.sink]) })
 logger.info('Worker ready', { component: 'worker' })

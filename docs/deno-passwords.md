@@ -1,10 +1,10 @@
 # Native Deno passwords
 
-Owner: `runtimes/deno/src/passwords.ts`, exported as `@longhorn/deno/passwords`.
+Owner: `runtimes/deno/src/passwords.ts`, exported as `@longhornjs/deno/passwords`.
 Import it explicitly in a Deno host and create one shared hasher:
 
 ```ts
-import { createScryptPasswordHasher } from '@longhorn/deno/passwords'
+import { createScryptPasswordHasher } from '@longhornjs/deno/passwords'
 const passwords = createScryptPasswordHasher({ concurrency: 1, maxQueue: 8 })
 ```
 

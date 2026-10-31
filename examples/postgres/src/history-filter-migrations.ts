@@ -1,4 +1,4 @@
-import type { Database,Migration } from '@longhorn/database'
+import type { Database,Migration } from '@longhornjs/database'
 
 /** Append after the complete existing profile; index creation and ledger commit are atomic. */
 export const postgresHistoryFilterMigrations:readonly Migration[]=[{

@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { redisConnectionUrl } from '@longhorn/node/redis'
+import { redisConnectionUrl } from '@longhornjs/node/redis'
 const integer=(fallback:string,min:number,max:number)=>z.string().regex(/^\d+$/).default(fallback).transform(Number).pipe(z.number().int().min(min).max(max))
 export const redisLimitsConfig=z.object({
   HOST:z.string().trim().min(1).default('127.0.0.1'),PORT:integer('3028',0,65535),

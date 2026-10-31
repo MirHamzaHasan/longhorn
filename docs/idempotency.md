@@ -1,6 +1,6 @@
 # Durable request idempotency
 
-Owner: `@longhorn/idempotency`. Connects [transactions](database.md),
+Owner: `@longhornjs/idempotency`. Connects [transactions](database.md),
 [validated job publishing](transaction-publishing.md), [JSON fingerprints](idempotency-json.md),
 [SQL records/retention](idempotency-storage.md) and [HTTP retries](idempotency-http.md).
 
@@ -9,9 +9,9 @@ BatchDatabase providers such as D1 using predeclared SQL and a known JSON result
 It does not implement this callback contract or change its retention policy.
 
 ```ts
-import { Idempotency } from '@longhorn/idempotency'
-import { SqliteIdempotencyStore } from '@longhorn/idempotency/sqlite'
-import { enqueueInTransaction } from '@longhorn/queue/transaction'
+import { Idempotency } from '@longhornjs/idempotency'
+import { SqliteIdempotencyStore } from '@longhornjs/idempotency/sqlite'
+import { enqueueInTransaction } from '@longhornjs/queue/transaction'
 
 const requests = new Idempotency({ store: new SqliteIdempotencyStore(database) })
 const outcome = await requests.run({

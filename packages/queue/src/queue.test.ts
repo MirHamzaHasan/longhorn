@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import type { StandardSchemaV1 } from '@longhorn/validation'
+import type { StandardSchemaV1 } from '@longhornjs/validation'
 import { Queue, QueueClosedError, QueueStoreError } from './queue.js'
 import { MemoryQueueStore } from './memory.js'
 import { QueueWorker } from './worker.js'

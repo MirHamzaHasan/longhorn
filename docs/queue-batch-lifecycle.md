@@ -1,6 +1,6 @@
 # Queue batch admission, budgets and resource drain
 
-Owner: `@longhorn/workers/queue`. Connects [queue events](workers-queue-events.md),
+Owner: `@longhornjs/workers/queue`. Connects [queue events](workers-queue-events.md),
 [core app.run](application-work.md), [message decisions](queue-message-decisions.md)
 and [awaited telemetry](queue-consumer-telemetry.md).
 

@@ -1,7 +1,7 @@
 import { expect, it } from 'vitest'
-import { createLogger } from '@longhorn/logger'
-import type { LogRecord } from '@longhorn/logger'
-import { HTTPException } from '@longhorn/http'
+import { createLogger } from '@longhornjs/logger'
+import type { LogRecord } from '@longhornjs/logger'
+import { HTTPException } from '@longhornjs/http'
 import { Longhorn } from './application.js'
 
 it('correlates application and completion logs with the response request ID', async () => {

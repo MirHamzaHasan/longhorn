@@ -1,4 +1,4 @@
-export const PACKAGE_NAME = '@longhorn/validation'
+export const PACKAGE_NAME = '@longhornjs/validation'
 
 export { parse, safeParse } from './schema.js'
 export type { ParseResult } from './schema.js'

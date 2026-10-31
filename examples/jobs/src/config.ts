@@ -1,6 +1,6 @@
 import { z } from 'zod'
-import { parseOtlpHeaders } from '@longhorn/observability/otlp'
-import { serviceBaseUrl } from '@longhorn/http/client'
+import { parseOtlpHeaders } from '@longhornjs/observability/otlp'
+import { serviceBaseUrl } from '@longhornjs/http/client'
 
 const otlpEndpoint=z.string().refine(value => { try { const url=new URL(value);return ['http:','https:'].includes(url.protocol) && !!url.hostname && !url.username && !url.password && !url.search && !url.hash } catch { return false } },'Expected an HTTP(S) OTLP signal endpoint without credentials/query/hash')
 const otlpHeaders=z.string().default('').transform((value,context) => {

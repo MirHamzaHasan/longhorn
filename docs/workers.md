@@ -1,12 +1,12 @@
 # Cloudflare Workers Fetch adapter
 
-Owner: `@longhorn/workers`. Connects a contextual Fetch application to the platform's
+Owner: `@longhornjs/workers`. Connects a contextual Fetch application to the platform's
 `fetch(request, env, ctx)` export. Workers owns sockets and isolate lifetime, so this
 adapter exports `createWorker()` rather than implementing a TCP `serve()` method.
 
 ```ts
-import { Longhorn } from '@longhorn/core'
-import { createWorker } from '@longhorn/workers'
+import { Longhorn } from '@longhornjs/core'
+import { createWorker } from '@longhornjs/workers'
 
 type Bindings = { GREETING: string }
 const app = new Longhorn<Bindings>()
@@ -60,7 +60,7 @@ application-owned. No account connection or deployment is performed.
 
 ## Scheduled events
 
-`@longhorn/workers/scheduled` adds `createScheduledWorker(app, options)` with both
+`@longhornjs/workers/scheduled` adds `createScheduledWorker(app, options)` with both
 Fetch and scheduled exports. It preserves each event's controller/bindings/context,
 shares startup, bounds scheduled admission, and registers the managed callback's
 completion with platform waitUntil. Its cooperative budget keeps resources/slots
@@ -80,7 +80,7 @@ verification also launches this host and checks its shutdown log and clean exit.
 
 ## Durable Object SQL
 
-`@longhorn/workers/durable-sqlite` borrows a SQLite-backed Object's storage through
+`@longhornjs/workers/durable-sqlite` borrows a SQLite-backed Object's storage through
 the existing Database interface. Native transactions and input gates protect
 callback work; SQL values use the platform's safe-number boundary. Existing SQLite
 queue/scheduler stores run above it without importing Node. See
@@ -95,7 +95,7 @@ for commands and the distinction between platform wakeups and durable SQL state.
 
 ## Queue events
 
-`@longhorn/workers/queue` adds createQueueWorker with Fetch and queue exports.
+`@longhornjs/workers/queue` adds createQueueWorker with Fetch and queue exports.
 It forwards platform objects, bounds batch/message work, registers the managed
 completion with waitUntil and requires explicit ack/retry decisions. It drains
 actual callbacks and afterBatch telemetry even when a cooperative budget expires.
@@ -110,7 +110,7 @@ Cloud queue provisioning and deployment remain application-owned.
 
 ## Object alarm timing
 
-`@longhorn/workers/sqlite-alarms` projects the earliest schedule, pending job or
+`@longhornjs/workers/sqlite-alarms` projects the earliest schedule, pending job or
 running lease deadline into the Object's native alarm. An optional internal SQL
 commit hook makes queue/cursor/failure-floor changes and alarm rearming atomic.
 See [host API](workers-sqlite-alarms.md), [planning](alarm-wakeup-planning.md),

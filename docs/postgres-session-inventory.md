@@ -1,6 +1,6 @@
 # PostgreSQL session inventory store
 
-Owner: optional `@longhorn/auth/postgres-session-inventory`. Connects
+Owner: optional `@longhornjs/auth/postgres-session-inventory`. Connects
 [portable service](session-inventory.md), [session controls](postgres-session-controls.md),
 [password ownership](postgres-password-changes.md), [schema](session-inventory-schema.md)
 and [verification](session-inventory-testing.md).

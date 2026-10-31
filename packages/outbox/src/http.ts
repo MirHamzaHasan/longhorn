@@ -1,5 +1,5 @@
-import { createJsonClient } from '@longhorn/http/client'
-import type { JsonClientOptions } from '@longhorn/http/client'
+import { createJsonClient } from '@longhornjs/http/client'
+import type { JsonClientOptions } from '@longhornjs/http/client'
 import type { MessagePublisher } from './index.js'
 
 export class HttpPublishError extends Error {

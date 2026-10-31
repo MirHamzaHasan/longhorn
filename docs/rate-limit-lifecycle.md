@@ -1,6 +1,6 @@
 # Request limiter ownership
 
-Owner: RateLimiter admission in @longhorn/ratelimit. Connects [stores](rate-limit-sql.md)
+Owner: RateLimiter admission in @longhornjs/ratelimit. Connects [stores](rate-limit-sql.md)
 and [middleware](rate-limit-http.md) to the existing application lifecycle.
 
 consume and prune register accepted work before hashing, provider callbacks or any

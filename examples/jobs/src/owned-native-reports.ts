@@ -1,6 +1,6 @@
 import { randomBytes } from 'node:crypto'
 import { dirname } from 'node:path'
-import { startProcess } from '@longhorn/node/process'
+import { startProcess } from '@longhornjs/node/process'
 import { createNativeReportComputer, NativeReportError, nativeReportProtocol } from './native-reports.js'
 import type { ReportComputerResource } from './reports.js'
 

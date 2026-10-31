@@ -1,6 +1,6 @@
 # Portable metrics
 
-Owner: `@longhorn/observability` (`Meter`, `MetricRegistry`). Connects
+Owner: `@longhornjs/observability` (`Meter`, `MetricRegistry`). Connects
 [HTTP telemetry](http-telemetry.md), [Prometheus export](prometheus.md) and
 [background diagnostics](jobs-observability.md).
 The optional [reader](metric-reader.md) and [OTLP exporter](otlp-metrics.md) push

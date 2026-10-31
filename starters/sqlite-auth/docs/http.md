@@ -1,6 +1,6 @@
 # Authentication HTTP boundaries
 
-Owner: `src/app.ts`, using `@longhorn/auth/hono`, Hono validation and application DI.
+Owner: `src/app.ts`, using `@longhornjs/auth/hono`, Hono validation and application DI.
 
 | Route | Behavior |
 | --- | --- |

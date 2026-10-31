@@ -1,6 +1,6 @@
 # Native Deno SQLite
 
-src/storage.ts selects @longhorn/deno/sqlite behind the shared Database interface.
+src/storage.ts selects @longhornjs/deno/sqlite behind the shared Database interface.
 Deno's native node:sqlite executes synchronously, including busy waits. The async facade
 owns queued work, callbacks and shutdown; it does not make SQLite I/O nonblocking.
 Startup enables foreign keys, WAL, synchronous FULL and a bounded busy timeout.

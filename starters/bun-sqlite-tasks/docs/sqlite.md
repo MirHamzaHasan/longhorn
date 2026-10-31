@@ -1,6 +1,6 @@
 # Native Bun SQLite
 
-src/storage.ts selects @longhorn/bun/sqlite behind the shared Database interface.
+src/storage.ts selects @longhornjs/bun/sqlite behind the shared Database interface.
 Native bun:sqlite executes synchronously, including busy waits. The async facade
 owns queued work, callbacks and shutdown; it does not make SQLite I/O nonblocking.
 Startup enables foreign keys, WAL, synchronous FULL and a bounded busy timeout.

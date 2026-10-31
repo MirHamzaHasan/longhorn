@@ -1,5 +1,5 @@
 {
-  "name": "@longhorn/outbox",
+  "name": "@longhornjs/outbox",
   "version": "0.1.0",
   "description": "Transactional delivery, recovery and audit for LongHorn.",
   "license": "MIT",
@@ -41,10 +41,10 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@longhorn/database": "workspace:*",
-    "@longhorn/queue": "workspace:*",
-    "@longhorn/validation": "workspace:*",
-    "@longhorn/http": "workspace:*",
+    "@longhornjs/database": "workspace:*",
+    "@longhornjs/queue": "workspace:*",
+    "@longhornjs/validation": "workspace:*",
+    "@longhornjs/http": "workspace:*",
     "hono": "^4.13.13",
     "zod": "^4.6.7"
   },

@@ -1,5 +1,5 @@
 import type { D1Database,D1DatabaseSession } from '@cloudflare/workers-types'
-import type { BatchDatabase,Database } from '@longhorn/database'
+import type { BatchDatabase,Database } from '@longhornjs/database'
 import { createD1 } from './d1.js'
 function verifyD1Types(binding:D1Database,session:D1DatabaseSession):void{
   const database:BatchDatabase=createD1(binding)

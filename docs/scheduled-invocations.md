@@ -1,6 +1,6 @@
 # Scheduled invocation admission and budgets
 
-Owner: `@longhorn/workers/scheduled`. Connects [platform events](workers-scheduled.md)
+Owner: `@longhornjs/workers/scheduled`. Connects [platform events](workers-scheduled.md)
 to [core resource ownership](application-work.md) and [awaited telemetry](scheduled-telemetry.md).
 
 | Option | Default | Accepted values | Meaning |

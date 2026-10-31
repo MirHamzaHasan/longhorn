@@ -1,12 +1,12 @@
 # Native Deno SQLite provider
 
-Owner: `@longhorn/deno/sqlite`. Implements the existing [Database](database.md)
+Owner: `@longhornjs/deno/sqlite`. Implements the existing [Database](database.md)
 contract with Deno's built-in `node:sqlite`, independently of the Node libSQL adapter.
 The optional entrypoint contains filesystem and async-context imports; the Deno
 HTTP entrypoint and shared packages do not import the native driver.
 
 ```ts
-import { openSqlite } from '@longhorn/deno/sqlite'
+import { openSqlite } from '@longhornjs/deno/sqlite'
 
 const database = await openSqlite({ filename: './data/app.sqlite' })
 try {

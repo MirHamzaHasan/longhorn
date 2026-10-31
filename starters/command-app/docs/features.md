@@ -22,7 +22,7 @@
 | [ID search](history-search.md) | src/command-history.ts, history-search-migrations.ts and console helpers | Bound UUID prefixes, v3 cursors, owner-deployed indexes and searched NDJSON v2 |
 | [Command history](history.md) | src/command-history.ts | Owner predicates, int64 cursors, live outgoing metadata |
 | [Delivery history filters](history-filters.md) | src/command-history.ts, history-filter-migrations.ts and console/app.ts | Live state predicates, status-bound cursors, appended indexes and isolated page cancellation |
-| [Atomic writes](transactions.md) | operations.ts, @longhorn/idempotency, @longhorn/outbox | Business command, history association, replay and outgoing record in one managed transaction |
+| [Atomic writes](transactions.md) | operations.ts, @longhornjs/idempotency, @longhornjs/outbox | Business command, history association, replay and outgoing record in one managed transaction |
 | [Remote delivery](delivery.md) | src/operation-transport.ts | Explicit protected HTTP receiver, bounded transport, dispatcher leases |
 | [Receipt effect](receipts.md) | receiver/receiver.ts, receipts.ts, message-effect.ts | Validated numbers, SQL effect dedupe, matching synchronous acknowledgement |
 | [Operator recovery](recovery.md) | operations.ts and console/app.ts | Conditional allowance, deliberate retry, durable account-attributed audit |
@@ -33,7 +33,7 @@
 | [Offline checkpoint](backup.md) | scripts/state-backup.mjs | PostgreSQL archive, stopped receipt storage, integrity checks and replacement targets |
 
 The source in `.longhorn/framework` is the compiled, versioned dependency
-snapshot. `pnpm-workspace.yaml` overrides every transitive @longhorn dependency
+snapshot. `pnpm-workspace.yaml` overrides every transitive @longhornjs dependency
 to those local copies. Changes to application source do not change the framework.
 Replace the versioned numbers contract, business repository and receipt effect
 together when adapting the example. Preserve atomic enqueue, scoped identities,

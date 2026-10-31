@@ -1,6 +1,6 @@
 # Accounts and login
 
-Owner: `AuthService` from `@longhorn/auth`, composed in `src/app.ts` with
+Owner: `AuthService` from `@longhornjs/auth`, composed in `src/app.ts` with
 `SqliteAuthStore` and the selected [password adapter](passwords.md). Shared auth
 contains no native crypto or SQL driver imports.
 

@@ -1,6 +1,6 @@
 # Node PostgreSQL provider
 
-Owner: `@longhorn/node/postgres`. Connects the portable [database contract](database.md)
+Owner: `@longhornjs/node/postgres`. Connects the portable [database contract](database.md)
 to node-postgres 8.23.1, [transactions](postgres-transactions.md),
 [PostgreSQL migrations](postgres-migrations.md), and [the example](postgres-example.md).
 Native sockets/TLS/pooling stay in this Node entrypoint. Core imports no driver.

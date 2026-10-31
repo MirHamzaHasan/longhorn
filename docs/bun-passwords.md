@@ -1,10 +1,10 @@
 # Native Bun passwords
 
-Owner: `runtimes/bun/src/passwords.ts`, exported as `@longhorn/bun/passwords`.
+Owner: `runtimes/bun/src/passwords.ts`, exported as `@longhornjs/bun/passwords`.
 Import it explicitly in a Bun host and create one shared hasher:
 
 ```ts
-import { createScryptPasswordHasher } from '@longhorn/bun/passwords'
+import { createScryptPasswordHasher } from '@longhornjs/bun/passwords'
 const passwords = createScryptPasswordHasher({ concurrency: 1, maxQueue: 8 })
 ```
 

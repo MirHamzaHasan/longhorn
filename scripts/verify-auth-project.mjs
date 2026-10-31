@@ -99,10 +99,10 @@ try {
   const creatorPack = JSON.parse(await command('pnpm', ['pack', '--json', '--pack-destination', temporary], join(root, 'create-longhorn')))
   for (const runtime of runtimes) assert.ok(cliPack.files.some(file => file.path === 'dist/framework/templates/' + runtime + '-sqlite-auth/template.json'))
   const consumer = join(temporary, 'installed CLI'); await mkdir(consumer)
-  await writeFile(join(consumer, 'package.json'), JSON.stringify({ private: true, packageManager: 'pnpm@12.6.0', dependencies: { '@longhorn/cli': 'file:../' + basename(cliPack.filename), 'create-longhorn': 'file:../' + basename(creatorPack.filename) } }))
-  await writeFile(join(consumer, 'pnpm-workspace.yaml'), 'overrides:\n  \'@longhorn/cli\': ' + JSON.stringify('file:../' + basename(cliPack.filename)) + '\n')
+  await writeFile(join(consumer, 'package.json'), JSON.stringify({ private: true, packageManager: 'pnpm@12.6.0', dependencies: { '@longhornjs/cli': 'file:../' + basename(cliPack.filename), 'create-longhorn': 'file:../' + basename(creatorPack.filename) } }))
+  await writeFile(join(consumer, 'pnpm-workspace.yaml'), 'overrides:\n  \'@longhornjs/cli\': ' + JSON.stringify('file:../' + basename(cliPack.filename)) + '\n')
   await command('pnpm', ['install', '--reporter=append-only'], consumer)
-  const cli = join(consumer, 'node_modules/@longhorn/cli/dist/bin.js')
+  const cli = join(consumer, 'node_modules/@longhornjs/cli/dist/bin.js')
   for (const runtime of runtimes) {
     const generated = join(temporary, runtime + '-created'), directory = join(temporary, runtime + ' relocated auth project')
     await command('pnpm', ['exec', 'create-longhorn', generated, '--runtime', runtime, '--template', 'sqlite-auth', '--name', runtime + '-accounts', '--install'], consumer)
@@ -115,7 +115,7 @@ try {
     for (const name of ['app.ts', 'config.ts', 'notes.ts']) assert.equal(await readFile(join(directory, 'src', name), 'utf8'), await readFile(join(root, 'examples/auth/src', name), 'utf8'))
     assert.equal(await readFile(join(directory, 'src/index.ts'), 'utf8'), await readFile(join(root, 'examples/auth/src', runtime === 'node' ? 'index.ts' : runtime + '.ts'), 'utf8'))
     let expected = await readFile(join(root, 'examples/auth/src/app.test.ts'), 'utf8')
-    if (runtime !== 'node') expected = expected.replace("from 'vitest'", runtime === 'bun' ? "from 'bun:test'" : "from '../tests/runner.js'").replace("'@longhorn/node/sqlite'", "'@longhorn/" + runtime + "/sqlite'")
+    if (runtime !== 'node') expected = expected.replace("from 'vitest'", runtime === 'bun' ? "from 'bun:test'" : "from '../tests/runner.js'").replace("'@longhornjs/node/sqlite'", "'@longhornjs/" + runtime + "/sqlite'")
     assert.equal(await readFile(join(directory, 'src/app.test.ts'), 'utf8'), expected)
     // Scan before installation excludes native node_modules, but covers every shipped source/framework/doc asset.
     const modules = join(directory, 'node_modules'), saved = join(temporary, runtime + '-installed-modules')

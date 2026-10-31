@@ -6,7 +6,7 @@ public:d1-tasks:create:v1 and fingerprints the normalized title. Private apps mu
 derive authenticated scopes; a key grants no authority.
 
 TaskRequests supplies a complete SQL plan and known response to
-@longhorn/idempotency/batch-sqlite. Record/task/activity commit together; a duplicate
+@longhornjs/idempotency/batch-sqlite. Record/task/activity commit together; a duplicate
 key fails before business SQL and reads saved JSON. Matching input returns the
 original 201/body/Location, even after edits/deletion. Changed eligible input returns
 409. Idempotency-Replayed and Idempotency-Expires-At expose replay/deadline policy.

@@ -1,12 +1,12 @@
-import type { Database } from '@longhorn/database'
-import type { Longhorn,LonghornEnv } from '@longhorn/core'
-import { provide,token } from '@longhorn/container'
-import type { Token } from '@longhorn/container'
-import type { AuthEnv } from '@longhorn/auth/hono'
+import type { Database } from '@longhornjs/database'
+import type { Longhorn,LonghornEnv } from '@longhornjs/core'
+import { provide,token } from '@longhornjs/container'
+import type { Token } from '@longhornjs/container'
+import type { AuthEnv } from '@longhornjs/auth/hono'
 import type { MiddlewareHandler } from 'hono'
-import { RateLimiter,RateLimitError } from '@longhorn/ratelimit'
-import { PostgresRateLimitStore } from '@longhorn/ratelimit/postgres'
-import { rateLimit } from '@longhorn/ratelimit/hono'
+import { RateLimiter,RateLimitError } from '@longhornjs/ratelimit'
+import { PostgresRateLimitStore } from '@longhornjs/ratelimit/postgres'
+import { rateLimit } from '@longhornjs/ratelimit/hono'
 export type CommandLimitOptions={readonly limit?:number;readonly windowMs?:number;readonly now?:()=>number}
 export const PgCommandLimits=token<RateLimiter>('authenticated command attempt limits')
 type Env=LonghornEnv&AuthEnv

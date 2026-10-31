@@ -1,4 +1,4 @@
-export const PACKAGE_NAME = '@longhorn/cli'
+export const PACKAGE_NAME = '@longhornjs/cli'
 export { createProject } from './generator.js'
 export type { CreateProjectOptions, CreatedProject } from './generator.js'
 export { runCli } from './commands.js'

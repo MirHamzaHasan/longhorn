@@ -1,4 +1,4 @@
-import type { Queue } from '@longhorn/queue'
+import type { Queue } from '@longhornjs/queue'
 import { CronExpression, MAX_TIMESTAMP } from './cron.js'
 import { scheduleInfo } from './types.js'
 import type { MissedPolicy, ScheduleInfo, ScheduleTiming, SchedulerStore, TickResult } from './types.js'

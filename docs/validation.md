@@ -3,14 +3,14 @@
 Connections: [HTTP](http.md), [configuration](configuration.md), and
 [the tasks example](tasks-example.md). The root API is independent of HTTP.
 
-`@longhorn/validation` accepts Standard Schema-compatible schemas. The package does
+`@longhornjs/validation` accepts Standard Schema-compatible schemas. The package does
 not choose a schema library for applications. The basic example uses Zod.
 
 ## Validate requests
 
 ```ts
-import { Longhorn } from '@longhorn/core'
-import { validate } from '@longhorn/validation/hono'
+import { Longhorn } from '@longhornjs/core'
+import { validate } from '@longhornjs/validation/hono'
 import { z } from 'zod'
 
 const app = new Longhorn()
@@ -88,7 +88,7 @@ The root entrypoint has no HTTP imports, so schemas can be reused for configurat
 job inputs, or application services:
 
 ```ts
-import { parse, safeParse, ValidationError } from '@longhorn/validation'
+import { parse, safeParse, ValidationError } from '@longhornjs/validation'
 import { z } from 'zod'
 
 const settings = z.object({ port: z.coerce.number().int().min(1).max(65535) })

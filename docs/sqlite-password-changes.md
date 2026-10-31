@@ -1,6 +1,6 @@
 # SQLite password/session transactions
 
-Owner: `SqlitePasswordStore` from `@longhorn/auth/sqlite-passwords`, exposed by
+Owner: `SqlitePasswordStore` from `@longhornjs/auth/sqlite-passwords`, exposed by
 `SqliteAuthStore.passwordChanges`. It borrows the same existing `Database`, with
 no new connection, timer, migration or table. Native Node/Bun/Deno providers supply
 the managed callback transaction; the auth store imports no native driver.

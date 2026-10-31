@@ -1,12 +1,12 @@
 # Transactional outgoing messages
 
-Owner: `@longhorn/outbox`. Connects [durable queues](queues.md),
+Owner: `@longhornjs/outbox`. Connects [durable queues](queues.md),
 [managed publishing](transaction-publishing.md), [request replay](idempotency.md),
 [dispatch ownership](outbox-dispatcher.md) and [consumer deduplication](outbox-consumer-deduplication.md).
 
 ```ts
-import { Outbox } from '@longhorn/outbox'
-import { SqliteOutboxStore } from '@longhorn/outbox/sqlite'
+import { Outbox } from '@longhornjs/outbox'
+import { SqliteOutboxStore } from '@longhornjs/outbox/sqlite'
 
 const outgoing = new Outbox({
   name: 'orders.created.v1', schema: orderCreatedSchema,

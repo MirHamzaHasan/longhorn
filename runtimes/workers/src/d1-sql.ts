@@ -1,1 +1,1 @@
-export { assertSqliteStatement as d1Sql } from '@longhorn/database/sqlite-statement'
+export { assertSqliteStatement as d1Sql } from '@longhornjs/database/sqlite-statement'

@@ -1,4 +1,4 @@
-import type { LogRecord,LogValue } from '@longhorn/logger'
+import type { LogRecord,LogValue } from '@longhornjs/logger'
 import type { SpanContext } from './tracing.js'
 
 export type LogEntry = { readonly record: LogRecord;readonly observedAt: number;readonly context?: SpanContext }

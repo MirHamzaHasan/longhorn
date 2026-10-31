@@ -1,8 +1,8 @@
 import { createAdaptorServer } from '@hono/node-server'
-import type { FetchApplication, RuntimeAdapter, ServerHandle, ServeOptions } from '@longhorn/runtime'
-import { resolveServeOptions } from '@longhorn/runtime'
+import type { FetchApplication, RuntimeAdapter, ServerHandle, ServeOptions } from '@longhornjs/runtime'
+import { resolveServeOptions } from '@longhornjs/runtime'
 
-export const PACKAGE_NAME = '@longhorn/node'
+export const PACKAGE_NAME = '@longhornjs/node'
 
 /** Resolve only once the socket is listening; startup errors reject the promise. */
 export async function serve(

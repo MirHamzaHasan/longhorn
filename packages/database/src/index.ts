@@ -1,4 +1,4 @@
-export const PACKAGE_NAME = '@longhorn/database'
+export const PACKAGE_NAME = '@longhornjs/database'
 
 export type SqlValue = string | number | bigint | boolean | null | Uint8Array
 export type SqlRow = Readonly<Record<string, SqlValue>>

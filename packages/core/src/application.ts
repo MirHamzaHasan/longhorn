@@ -1,13 +1,13 @@
-import { Container } from '@longhorn/container'
-import { createHttpApp } from '@longhorn/http'
-import type { Hono } from '@longhorn/http'
-import type { RuntimeAdapter, ServerHandle, ServeOptions } from '@longhorn/runtime'
+import { Container } from '@longhornjs/container'
+import { createHttpApp } from '@longhornjs/http'
+import type { Hono } from '@longhornjs/http'
+import type { RuntimeAdapter, ServerHandle, ServeOptions } from '@longhornjs/runtime'
 import type { RuntimeTarget } from './runtime.js'
 import { Lifecycle } from './lifecycle.js'
 import type { LifecycleState, StartHook, StopHook } from './lifecycle.js'
-import { createLogger } from '@longhorn/logger'
-import type { Logger } from '@longhorn/logger'
-import { requestLogger } from '@longhorn/logger/hono'
+import { createLogger } from '@longhornjs/logger'
+import type { Logger } from '@longhornjs/logger'
+import { requestLogger } from '@longhornjs/logger/hono'
 
 export type LonghornOptions = { logger?: Logger }
 

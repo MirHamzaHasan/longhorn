@@ -73,7 +73,7 @@ try {
     console.log(runtime + ': actual SIGTERM during native password work retains HTTP/SQL ownership through registration and process close.')
   }
   const outDir = join(directory, 'worker')
-  await build({ entry: { worker: join(root, 'scripts/fixtures/scrypt-policy-worker.ts') }, outDir, format: ['esm'], platform: 'browser', target: 'es2022', bundle: true, splitting: false, noExternal: [/^@longhorn\//], silent: true })
+  await build({ entry: { worker: join(root, 'scripts/fixtures/scrypt-policy-worker.ts') }, outDir, format: ['esm'], platform: 'browser', target: 'es2022', bundle: true, splitting: false, noExternal: [/^@longhornjs\//], silent: true })
   const worker = new Miniflare({ modules: true, modulesRoot: outDir, scriptPath: join(outDir, 'worker.js'), compatibilityDate: '2025-07-18', host: '127.0.0.1', port: 0, cf: false, log: new Log(LogLevel.NONE) })
   try { assert.deepEqual(await (await worker.dispatchFetch('http://localhost')).json(), { policy: true, nativePasswordBackend: false }) }
   finally { await worker.dispose() }

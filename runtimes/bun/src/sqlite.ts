@@ -2,9 +2,9 @@ import{Database as NativeDatabase}from'bun:sqlite'
 import{AsyncLocalStorage}from'node:async_hooks'
 import{mkdir,realpath}from'node:fs/promises'
 import{dirname,basename,resolve}from'node:path'
-import type{Database,QueryResult,SqlExecutor,SqlStatement,SqlValue}from'@longhorn/database'
-import{createTransactionScope}from'@longhorn/database/transactions'
-import{assertSqliteStatement}from'@longhorn/database/sqlite-statement'
+import type{Database,QueryResult,SqlExecutor,SqlStatement,SqlValue}from'@longhornjs/database'
+import{createTransactionScope}from'@longhornjs/database/transactions'
+import{assertSqliteStatement}from'@longhornjs/database/sqlite-statement'
 
 export type BunSqliteOptions={
   readonly filename:string;readonly busyTimeoutMs?:number;readonly maxPending?:number

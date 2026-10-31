@@ -1,7 +1,7 @@
 # Restricted PostgreSQL password changes
 
 Owner: `PostgresPasswordStore`, `postgresPasswordMigrations` and
-`postgresPasswordFunctions` from `@longhorn/auth/postgres-passwords`.
+`postgresPasswordFunctions` from `@longhornjs/auth/postgres-passwords`.
 `PostgresAuthStore.passwordChanges` borrows that store's database. Its default login
 fence uses existing table privileges plus built-in transaction advisory locks;
 it needs no new function migration or user UPDATE permission.

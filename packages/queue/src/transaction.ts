@@ -1,5 +1,5 @@
-import type { SqlExecutor } from '@longhorn/database'
-import { participateInTransaction } from '@longhorn/database/transactions'
+import type { SqlExecutor } from '@longhornjs/database'
+import { participateInTransaction } from '@longhornjs/database/transactions'
 import type { Queue, EnqueueOptions } from './queue.js'
 import type { JobInfo, NewJob, QueueStore, StoredJob } from './types.js'
 import { publisherFor } from './publishing.js'

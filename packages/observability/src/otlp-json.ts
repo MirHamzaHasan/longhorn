@@ -43,7 +43,7 @@ export function otlpEnvelope(resource: OtlpResource,signal: 'traces' | 'metrics'
   if (Object.hasOwn(extra,'service.name') || Object.hasOwn(extra,'service.version')) throw new Error('Reserved OTLP resource attribute')
   const resourceAttributes=attributes({ ...extra,'service.name': resource.serviceName,...(resource.serviceVersion===undefined ? {} : { 'service.version': resource.serviceVersion }) })
   const [resources,scopes,items]=signal==='logs' ? ['resourceLogs','scopeLogs','logRecords'] : signal==='metrics' ? ['resourceMetrics','scopeMetrics','metrics'] : ['resourceSpans','scopeSpans','spans']
-  return { prefix: `{"${resources}":[{"resource":{"attributes":${JSON.stringify(resourceAttributes)}},"${scopes}":[{"scope":{"name":"@longhorn/observability","version":"0.1.0"},"${items}":[`,suffix: ']}]}]}' }
+  return { prefix: `{"${resources}":[{"resource":{"attributes":${JSON.stringify(resourceAttributes)}},"${scopes}":[{"scope":{"name":"@longhornjs/observability","version":"0.1.0"},"${items}":[`,suffix: ']}]}]}' }
 }
 /** Incremental byte accounting rejects oversized batches before serializing the remaining spans. */
 export function otlpJson(spans: readonly SpanRecord[],envelope: ReturnType<typeof otlpEnvelope>,maxBytes: number): string {

@@ -175,9 +175,9 @@ tasks and unknown paths return 404. Ctrl+C closes the server.
 ## Build an application
 
 ```ts
-import { Longhorn } from '@longhorn/core'
-import { provide, token } from '@longhorn/container'
-import { nodeRuntime } from '@longhorn/node'
+import { Longhorn } from '@longhornjs/core'
+import { provide, token } from '@longhornjs/container'
+import { nodeRuntime } from '@longhornjs/node'
 
 const Greeting = token<{ say(name: string): string }>('greeting')
 const app = new Longhorn()
@@ -209,15 +209,15 @@ available in every route as `c.get('container')`; it is not a per-request contai
 Typed environment bindings are available through `new Longhorn<{ API_KEY: string }>()`
 and can be passed as the second argument to `app.fetch` by a host.
 
-Request validation is available through `validate` from `@longhorn/validation/hono`.
+Request validation is available through `validate` from `@longhornjs/validation/hono`.
 Pass a Standard Schema-compatible schema and read the typed output from
 `c.req.valid('json')`, `c.req.valid('query')`, or another Hono validation target.
 The standalone `parse` and `safeParse` helpers also work outside HTTP. See
 [validation](validation.md) for examples and error formats.
 
-Typed configuration is available from `@longhorn/config`. Its `loadConfig` helper
+Typed configuration is available from `@longhornjs/config`. Its `loadConfig` helper
 merges supplied records and validates them using Standard Schema. The Node-specific
-`readEnv` helper from `@longhorn/node/config` reads environment variables and `.env`
+`readEnv` helper from `@longhornjs/node/config` reads environment variables and `.env`
 files without changing `process.env`. See [configuration](configuration.md).
 
 `app.onStart()` and `app.onStop()` manage resources around listener startup and
@@ -230,8 +230,8 @@ Pass `new Longhorn({ logger: createLogger(...) })` to enable structured request 
 Each request gets a response ID and a correlated logger at `c.get('logger')`.
 The example uses `LOG_LEVEL=info` by default. See [logging](logging.md).
 
-`@longhorn/database` defines the SQL and transaction boundary. The
-`@longhorn/node/sqlite` adapter opens local SQLite databases, while application-owned
+`@longhornjs/database` defines the SQL and transaction boundary. The
+`@longhornjs/node/sqlite` adapter opens local SQLite databases, while application-owned
 repositories map rows to domain objects. Startup applies checksummed migrations;
 shutdown closes the connection after requests drain. See [database](database.md),
 [migrations](migrations.md), and [SQLite](sqlite.md).

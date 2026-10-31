@@ -1,6 +1,6 @@
 # Managed transaction executor ownership
 
-Owner: `@longhorn/database/transactions`. Connects the portable [Database](database.md)
+Owner: `@longhornjs/database/transactions`. Connects the portable [Database](database.md)
 contract to [transaction publishing](transaction-publishing.md) and native provider
 commit/rollback. It imports no native driver or platform API.
 

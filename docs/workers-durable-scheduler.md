@@ -1,6 +1,6 @@
 # Durable Worker schedule storage and triggers
 
-Owner: existing `@longhorn/scheduler/sqlite` (`SqliteSchedulerStore`) over
+Owner: existing `@longhornjs/scheduler/sqlite` (`SqliteSchedulerStore`) over
 the [Durable SQLite provider](workers-durable-sqlite.md). Connects
 [schedule definitions](scheduler.md), [queue rows](workers-durable-queues.md),
 [platform scheduled events](workers-scheduled.md) and Object lifetime.

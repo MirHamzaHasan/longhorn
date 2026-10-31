@@ -14,13 +14,13 @@ beforeEach(async () => {
   const packages: Record<string, { directory: string; dependencies: Record<string, string> }> = {}
   for (const name of ['core', 'container', 'http', 'logger', 'runtime', 'config', 'validation', 'database', 'auth', 'idempotency', 'ratelimit', 'outbox', 'queue', 'scheduler', 'events', 'cache', 'observability', ...runtimes]) {
     const dependencies: Record<string, string> = name === 'core'
-      ? { '@longhorn/container': '0.0.1', '@longhorn/http': '0.0.1', '@longhorn/logger': '0.0.1', '@longhorn/runtime': '0.0.1' }
-      : name === 'node' ? { '@longhorn/database': '0.0.1', '@longhorn/config': '0.0.1', '@longhorn/auth':'0.0.1' } : ['bun','deno'].includes(name) ? {'@longhorn/database':'0.0.1','@longhorn/auth':'0.0.1'} : ['auth','idempotency'].includes(name) ? {'@longhorn/database':'0.0.1'} : {}
+      ? { '@longhornjs/container': '0.0.1', '@longhornjs/http': '0.0.1', '@longhornjs/logger': '0.0.1', '@longhornjs/runtime': '0.0.1' }
+      : name === 'node' ? { '@longhornjs/database': '0.0.1', '@longhornjs/config': '0.0.1', '@longhornjs/auth':'0.0.1' } : ['bun','deno'].includes(name) ? {'@longhornjs/database':'0.0.1','@longhornjs/auth':'0.0.1'} : ['auth','idempotency'].includes(name) ? {'@longhornjs/database':'0.0.1'} : {}
     const directory = join(framework, name)
     await mkdir(join(directory, 'dist'), { recursive: true })
     await writeFile(join(directory, 'dist/index.js'), `export const runtime = ${JSON.stringify(name)}\n`)
-    await writeFile(join(directory, 'package.json'), JSON.stringify({ name: `@longhorn/${name}`, version: '0.0.1', dependencies }))
-    packages[`@longhorn/${name}`] = { directory: name, dependencies }
+    await writeFile(join(directory, 'package.json'), JSON.stringify({ name: `@longhornjs/${name}`, version: '0.0.1', dependencies }))
+    packages[`@longhornjs/${name}`] = { directory: name, dependencies }
   }
   await writeFile(join(framework, 'manifest.json'), JSON.stringify({ packages }))
 })
@@ -44,7 +44,7 @@ describe('project generation', () => {
     }
     const descriptor = { schemaVersion: 1, dependencies: {
       ...Object.fromEntries(['core','container','config','database','node','auth','http','logger','validation',
-        'idempotency','ratelimit','outbox','queue','scheduler','observability','workers','runtime'].map(name => ['@longhorn/'+name, 'workspace:*'])),
+        'idempotency','ratelimit','outbox','queue','scheduler','observability','workers','runtime'].map(name => ['@longhornjs/'+name, 'workspace:*'])),
       hono: '^4.13.13', zod: '^4.6.7', miniflare: '3.20250718.3',
     }, devDependencies: { vitest: '^3.1.1' }, files }
     await writeFile(join(directory, 'template.json'), JSON.stringify(descriptor)); return { directory, descriptor }
@@ -66,8 +66,8 @@ describe('project generation', () => {
     const manifest = JSON.parse(await readFile(join(directory,'package.json'),'utf8'))
     expect(manifest.longhorn).toEqual({schemaVersion:1,runtime:'node',framework:'snapshot',template:'command-app',application:'commands'})
     expect(manifest.scripts).toMatchObject({'maintain:limits':'node dist/maintain-limits.js','provision:limit-maintenance':'node dist/provision-limit-maintenance.js',check:'node dist/operator-check.js',dev:'node dev.mjs','dev:receiver':'node dev.mjs --receiver',start:'node dist/operator-host.js',receiver:'node scripts/serve-receiver.mjs',migrate:'node dist/migrate-operations.js','state:restore':'node scripts/state-backup.mjs restore'})
-    expect(manifest.dependencies.miniflare).toBe('3.20250718.3'); expect(manifest.dependencies['@longhorn/outbox']).toBe('file:./.longhorn/framework/outbox')
-    expect(project.packages).toContain('@longhorn/workers'); expect(project.packages).not.toContain('@longhorn/bun'); expect(project.packages).not.toContain('@longhorn/deno')
+    expect(manifest.dependencies.miniflare).toBe('3.20250718.3'); expect(manifest.dependencies['@longhornjs/outbox']).toBe('file:./.longhorn/framework/outbox')
+    expect(project.packages).toContain('@longhornjs/workers'); expect(project.packages).not.toContain('@longhornjs/bun'); expect(project.packages).not.toContain('@longhornjs/deno')
     expect(JSON.parse(await readFile(join(directory,'.longhorn/distribution.json'),'utf8'))).toEqual({schemaVersion:1,application:'commands',frameworkPackages:project.packages})
     expect(await readFile(join(directory,'README.md'),'utf8')).toBe('# my-console\n')
     expect(await readFile(join(directory,'pnpm-workspace.yaml'),'utf8')).toContain('workerd: true')
@@ -101,16 +101,16 @@ describe('project generation', () => {
       files[path] = createHash('sha256').update(content).digest('hex')
     }
     const descriptor = { schemaVersion: 1, dependencies: Object.fromEntries(
-      ['auth', 'core', 'container', 'config', 'database', runtime, 'logger', 'validation'].map(name => ['@longhorn/' + name, 'workspace:*'])),
+      ['auth', 'core', 'container', 'config', 'database', runtime, 'logger', 'validation'].map(name => ['@longhornjs/' + name, 'workspace:*'])),
       devDependencies: runtime === 'node' ? { vitest: '^3.1.1' } : { [runtime + '-runtime']: 'npm:' + runtime + '@' + (runtime === 'bun' ? '1.4.4' : '2.9.6') }, files }
     await writeFile(join(directory, 'template.json'), JSON.stringify(descriptor)); return { directory, descriptor }
   }
   it.each(['node', 'bun', 'deno'] as const)('generates selected %s native auth with its framework graph and source/native scripts', async runtime => {
     await authAssets(runtime); const directory = join(temporary, runtime + '-accounts')
     const project = await createProject({ directory, runtime, template: 'sqlite-auth', frameworkDirectory: framework })
-    expect(project.packages).toContain('@longhorn/auth'); expect(project.packages).toContain('@longhorn/' + runtime)
-    for (const other of runtimes.filter(value => value !== runtime)) expect(project.packages).not.toContain('@longhorn/' + other)
-    expect(project.packages).not.toContain('@longhorn/cache')
+    expect(project.packages).toContain('@longhornjs/auth'); expect(project.packages).toContain('@longhornjs/' + runtime)
+    for (const other of runtimes.filter(value => value !== runtime)) expect(project.packages).not.toContain('@longhornjs/' + other)
+    expect(project.packages).not.toContain('@longhornjs/cache')
     const manifest = JSON.parse(await readFile(join(directory, 'package.json'), 'utf8'))
     expect(manifest.longhorn).toMatchObject({ runtime, template: 'sqlite-auth' })
     expect(manifest.scripts).toMatchObject({ dev: 'node dev.mjs', start: 'node start.mjs', 'test:persistence': 'pnpm build && node tests/persistence.mjs' })
@@ -138,7 +138,7 @@ describe('project generation', () => {
       const target=join(directory,path),content=path==='README.md'?'# {{PROJECT_NAME}}\n':'editable application asset\n'
       await mkdir(join(target,'..'),{recursive:true});await writeFile(target,content);files[path]=createHash('sha256').update(content).digest('hex')
     }
-    const descriptor={schemaVersion:1,dependencies:Object.fromEntries(['core','container','config','database','idempotency','ratelimit','validation','workers','runtime'].map(name=>['@longhorn/'+name,'workspace:*'])),devDependencies:{miniflare:'3.20250718.3'},files}
+    const descriptor={schemaVersion:1,dependencies:Object.fromEntries(['core','container','config','database','idempotency','ratelimit','validation','workers','runtime'].map(name=>['@longhornjs/'+name,'workspace:*'])),devDependencies:{miniflare:'3.20250718.3'},files}
     await writeFile(join(directory,'template.json'),JSON.stringify(descriptor));return {directory,descriptor}
   }
   async function sqliteAssets(runtime:'node'|'bun'|'deno'='node'){
@@ -147,13 +147,13 @@ describe('project generation', () => {
       const target=join(directory,path),content=path==='README.md'?'# {{PROJECT_NAME}}\n':'editable SQLite application\n'
       await mkdir(join(target,'..'),{recursive:true});await writeFile(target,content);files[path]=createHash('sha256').update(content).digest('hex')
     }
-    const descriptor={schemaVersion:1,dependencies:Object.fromEntries(['core','container','config','database',runtime,'http','logger','validation','events','cache'].map(name=>['@longhorn/'+name,'workspace:*'])),devDependencies:runtime==='bun'?{'bun-runtime':'npm:bun@1.4.4'}:runtime==='deno'?{'deno-runtime':'npm:deno@2.9.6'}:{tsx:'^4.20.0'},files}
+    const descriptor={schemaVersion:1,dependencies:Object.fromEntries(['core','container','config','database',runtime,'http','logger','validation','events','cache'].map(name=>['@longhornjs/'+name,'workspace:*'])),devDependencies:runtime==='bun'?{'bun-runtime':'npm:bun@1.4.4'}:runtime==='deno'?{'deno-runtime':'npm:deno@2.9.6'}:{tsx:'^4.20.0'},files}
     await writeFile(join(directory,'template.json'),JSON.stringify(descriptor));return {directory,descriptor}
   }
   it('selects the persistent Node application graph and its own native scripts',async()=>{
     await sqliteAssets();const directory=join(temporary,'persistent-node')
     const project=await createProject({directory,runtime:'node',template:'sqlite-tasks',frameworkDirectory:framework})
-    expect(project.template).toBe('sqlite-tasks');expect(project.packages).toContain('@longhorn/cache');expect(project.packages).not.toContain('@longhorn/workers')
+    expect(project.template).toBe('sqlite-tasks');expect(project.packages).toContain('@longhornjs/cache');expect(project.packages).not.toContain('@longhornjs/workers')
     const manifest=JSON.parse(await readFile(join(directory,'package.json'),'utf8'))
     expect(manifest.longhorn).toMatchObject({runtime:'node',template:'sqlite-tasks'});expect(manifest.scripts['test:persistence']).toContain('tests/persistence.mjs')
     expect(manifest.scripts.dev).toBe('tsx watch src/index.ts');expect(await readFile(join(directory,'pnpm-workspace.yaml'),'utf8')).not.toContain('workerd:')
@@ -161,7 +161,7 @@ describe('project generation', () => {
   it('selects Bun SQLite assets while retaining the public SQLite template identity',async()=>{
     await sqliteAssets('bun');const directory=join(temporary,'persistent-bun')
     const project=await createProject({directory,runtime:'bun',template:'sqlite-tasks',frameworkDirectory:framework})
-    expect(project.packages).toContain('@longhorn/bun');expect(project.packages).toContain('@longhorn/database');expect(project.packages).not.toContain('@longhorn/node')
+    expect(project.packages).toContain('@longhornjs/bun');expect(project.packages).toContain('@longhornjs/database');expect(project.packages).not.toContain('@longhornjs/node')
     const manifest=JSON.parse(await readFile(join(directory,'package.json'),'utf8'))
     expect(manifest.longhorn).toMatchObject({runtime:'bun',template:'sqlite-tasks'})
     expect(manifest.scripts).toMatchObject({dev:'node dev.mjs',start:'bun dist/index.js',test:'bun test ./src'})
@@ -177,8 +177,8 @@ describe('project generation', () => {
   it('selects native Deno storage and independent tooling under the same SQLite identity',async()=>{
     await sqliteAssets('deno');const directory=join(temporary,'persistent-deno')
     const project=await createProject({directory,runtime:'deno',template:'sqlite-tasks',frameworkDirectory:framework})
-    expect(project.packages).toContain('@longhorn/deno');expect(project.packages).toContain('@longhorn/database')
-    expect(project.packages).not.toContain('@longhorn/node');expect(project.packages).not.toContain('@longhorn/bun');expect(project.packages).not.toContain('@longhorn/workers')
+    expect(project.packages).toContain('@longhornjs/deno');expect(project.packages).toContain('@longhornjs/database')
+    expect(project.packages).not.toContain('@longhornjs/node');expect(project.packages).not.toContain('@longhornjs/bun');expect(project.packages).not.toContain('@longhornjs/workers')
     const manifest=JSON.parse(await readFile(join(directory,'package.json'),'utf8'))
     expect(manifest.longhorn).toMatchObject({runtime:'deno',template:'sqlite-tasks'})
     expect(manifest.scripts).toMatchObject({dev:'node dev.mjs',start:'node start.mjs',typecheck:'tsc --noEmit'})
@@ -203,10 +203,10 @@ describe('project generation', () => {
   it('selects the explicit D1 application graph and relocatable editable assets',async()=>{
     await d1Assets();const directory=join(temporary,'persistent')
     const project=await createProject({directory,name:'persistent-api',runtime:'workers',template:'d1-tasks',frameworkDirectory:framework})
-    expect(project.template).toBe('d1-tasks');expect(project.packages).toContain('@longhorn/idempotency');expect(project.packages).not.toContain('@longhorn/cache')
+    expect(project.template).toBe('d1-tasks');expect(project.packages).toContain('@longhornjs/idempotency');expect(project.packages).not.toContain('@longhornjs/cache')
     expect(await readFile(join(directory,'README.md'),'utf8')).toBe('# persistent-api\n')
     const manifest=JSON.parse(await readFile(join(directory,'package.json'),'utf8'))
-    expect(manifest.longhorn.template).toBe('d1-tasks');expect(manifest.dependencies['@longhorn/runtime']).toBe('file:./.longhorn/framework/runtime')
+    expect(manifest.longhorn.template).toBe('d1-tasks');expect(manifest.dependencies['@longhornjs/runtime']).toBe('file:./.longhorn/framework/runtime')
     expect(manifest.scripts['test:storage']).toContain('tests/storage.mjs')
   })
   it('rejects corrupt D1 assets before publishing or modifying an empty destination',async()=>{
@@ -233,11 +233,11 @@ describe('project generation', () => {
     const directory = join(temporary, 'My Project')
     const project = await createProject({ directory, runtime, frameworkDirectory: framework })
     expect(project.name).toBe('my-project')
-    expect(project.packages).toContain('@longhorn/http')
-    expect(project.packages).toContain('@longhorn/events')
-    expect(project.packages).toContain('@longhorn/cache')
-    expect(project.packages).toContain('@longhorn/observability')
-    expect(project.packages.includes('@longhorn/database')).toBe(runtime !== 'workers')
+    expect(project.packages).toContain('@longhornjs/http')
+    expect(project.packages).toContain('@longhornjs/events')
+    expect(project.packages).toContain('@longhornjs/cache')
+    expect(project.packages).toContain('@longhornjs/observability')
+    expect(project.packages.includes('@longhornjs/database')).toBe(runtime !== 'workers')
     const manifest = JSON.parse(await readFile(join(directory, 'package.json'), 'utf8'))
     expect(manifest.longhorn).toEqual({ schemaVersion: 1, runtime, framework: 'snapshot' })
     expect(manifest.packageManager).toBe('pnpm@12.6.0')

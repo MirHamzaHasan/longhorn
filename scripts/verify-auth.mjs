@@ -265,7 +265,7 @@ try {
   const bundle = join(temporary, 'worker')
   await build({ entry: { worker: join(root, 'scripts/fixtures/auth-worker.ts') }, outDir: bundle,
     format: ['esm'], platform: 'browser', target: 'es2022', bundle: true, splitting: false,
-    noExternal: [/^@longhorn\//, 'hono'], silent: true,
+    noExternal: [/^@longhornjs\//, 'hono'], silent: true,
   })
   const worker = new Miniflare({ modules: true, modulesRoot: bundle, scriptPath: join(bundle, 'worker.js'),
     compatibilityDate: '2025-07-18', host: '127.0.0.1', port: 0, cf: false, log: new Log(LogLevel.NONE) })

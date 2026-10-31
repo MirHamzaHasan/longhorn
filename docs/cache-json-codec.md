@@ -2,7 +2,7 @@
 
 Implemented with source/type checks and the [built/native gate](redis-cache-testing.md).
 
-Owner: `jsonCacheCodec` and `CacheCodec<T>` from `@longhorn/cache/json`.
+Owner: `jsonCacheCodec` and `CacheCodec<T>` from `@longhornjs/cache/json`.
 Connects [typed caching](cache.md) and [Redis storage](redis-cache.md) without adding
 a schema library to the cache package. Pass an application parser such as
 `value => schema.parse(value)` to validate the stored type on writes and reads.

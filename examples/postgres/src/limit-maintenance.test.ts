@@ -1,5 +1,5 @@
 import { expect, it } from 'vitest'
-import type { Database, QueryResult, SqlStatement } from '@longhorn/database'
+import type { Database, QueryResult, SqlStatement } from '@longhornjs/database'
 import { runLimitMaintenance } from './limit-maintenance.js'
 import { grantLimitMaintenance } from './limit-maintenance-grants.js'
 const config = { databaseUrl: 'private', limit: 2, intervalMs: 1000, statementTimeoutMs: 30000 }

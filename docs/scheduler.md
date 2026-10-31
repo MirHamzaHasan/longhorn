@@ -1,6 +1,6 @@
 # Durable schedules
 
-Owner: `@longhorn/scheduler`. Connects [queue preparation](queues.md),
+Owner: `@longhornjs/scheduler`. Connects [queue preparation](queues.md),
 [UTC cron](cron.md), [timing hosts](scheduler-runner.md), [SQLite storage](scheduler-sqlite.md),
 [memory storage](memory-scheduler.md), and [scheduled reports](scheduled-reports.md).
 The [PostgreSQL provider](scheduler-postgres.md) connects the same timing/coordinator contracts.

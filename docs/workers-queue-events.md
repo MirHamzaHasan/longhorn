@@ -1,13 +1,13 @@
 # Worker queue-event adapter
 
-Owner: `@longhorn/workers/queue`. Connects platform broker batches to
+Owner: `@longhornjs/workers/queue`. Connects platform broker batches to
 [managed application work](application-work.md), [Fetch](workers.md),
 [message decisions](queue-message-decisions.md), [batch lifetime](queue-batch-lifecycle.md)
 and [consumer tracing](queue-consumer-telemetry.md).
 
 ```ts
-import { Longhorn } from '@longhorn/core'
-import { createQueueWorker } from '@longhorn/workers/queue'
+import { Longhorn } from '@longhornjs/core'
+import { createQueueWorker } from '@longhornjs/workers/queue'
 
 const app = new Longhorn<Bindings>()
 export default createQueueWorker(app, {
@@ -49,7 +49,7 @@ callable. The complete batch is checked before any message enters user work.
 Empty ad hoc batches are accepted; an oversized/malformed batch rejects intact.
 
 This adapter implements the broker event lifetime. It does not enqueue into
-`@longhorn/queue`, assign SQL leases, increment broker attempts, run a retry timer,
+`@longhornjs/queue`, assign SQL leases, increment broker attempts, run a retry timer,
 or configure a dead-letter queue. See [Cloudflare's queue API](https://developers.cloudflare.com/queues/configuration/javascript-apis/)
 for platform configuration and [native verification](workers-queue-testing.md)
 for the pinned local engine's tested behavior and broker limitations.

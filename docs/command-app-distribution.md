@@ -16,7 +16,7 @@ pnpm build
 
 The archive contains editable PostgreSQL application/console source, the protected
 receiver/receipt source, local launcher, deployment tools and setup guides. Its
-exact transitive @longhorn closure comes from the CLI's built snapshot; every
+exact transitive @longhornjs closure comes from the CLI's built snapshot; every
 dependency resolves through file overrides inside the archive. There are no
 workspace paths, workspace protocol dependencies, copied node_modules or secrets.
 External dependencies still require a package registry on first installation.

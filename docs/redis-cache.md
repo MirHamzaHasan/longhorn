@@ -2,16 +2,16 @@
 
 Implemented and verified through the [native cache gate](redis-cache-testing.md).
 
-Owner: `RedisCacheStore<T>` from `@longhorn/cache/redis`. It implements the existing
+Owner: `RedisCacheStore<T>` from `@longhornjs/cache/redis`. It implements the existing
 [CacheStore contract](cache.md) using an exclusively owned command client and an
 explicit [persistence codec](cache-json-codec.md). It imports no Node/network/core
 module. The [Node transport](redis-node.md) supplies actual Redis TCP/TLS ownership.
 
 ```ts
-import { Cache } from '@longhorn/cache'
-import { RedisCacheStore } from '@longhorn/cache/redis'
-import { jsonCacheCodec } from '@longhorn/cache/json'
-import { openRedis } from '@longhorn/node/redis'
+import { Cache } from '@longhornjs/cache'
+import { RedisCacheStore } from '@longhornjs/cache/redis'
+import { jsonCacheCodec } from '@longhornjs/cache/json'
+import { openRedis } from '@longhornjs/node/redis'
 
 // profileSchema is the application's runtime schema, for example a Zod schema.
 const codec = jsonCacheCodec(value => profileSchema.parse(value))

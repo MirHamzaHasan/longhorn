@@ -1,4 +1,4 @@
-import type { Database } from '@longhorn/database'
+import type { Database } from '@longhornjs/database'
 import type { PasswordChangeInput, PasswordChangeStore, PasswordSessionInput } from './types.js'
 import { passwordTimestamp, snapshotPasswordChange, snapshotPasswordSession } from './password-store.js'
 

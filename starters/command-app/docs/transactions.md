@@ -1,6 +1,6 @@
 # Managed transactions and identity
 
-Owner: @longhorn/database, @longhorn/auth/postgres and src/operations.ts. A managed
+Owner: @longhornjs/database, @longhornjs/auth/postgres and src/operations.ts. A managed
 executor belongs to one database and expires after its transaction callback.
 Idempotency, outgoing enqueue, business writes and authorization use that same
 scope. The narrow auth function locks the current user/session until commit,

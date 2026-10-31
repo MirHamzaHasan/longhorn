@@ -1,4 +1,4 @@
-import type { SessionEntry, SessionPage, SessionRevocation } from '@longhorn/auth/session-inventory'
+import type { SessionEntry, SessionPage, SessionRevocation } from '@longhornjs/auth/session-inventory'
 export function readSessionPage(value: unknown, previous: readonly SessionEntry[] = []): SessionPage {
   const data = value as SessionPage
   if (!data || !Array.isArray(data.sessions) || data.sessions.length > 10 || (data.nextCursor !== null && (typeof data.nextCursor !== 'string' || !/^[A-Za-z0-9_-]{1,2048}$/.test(data.nextCursor)))) throw new Error('Invalid session page')

@@ -1,11 +1,11 @@
-import { Longhorn } from '@longhorn/core'
-import { token, provide } from '@longhorn/container'
-import type { Logger } from '@longhorn/logger'
-import { validate } from '@longhorn/validation/hono'
+import { Longhorn } from '@longhornjs/core'
+import { token, provide } from '@longhornjs/container'
+import type { Logger } from '@longhornjs/logger'
+import { validate } from '@longhornjs/validation/hono'
 import { z } from 'zod'
-import { EventBus, defineEvent } from '@longhorn/events'
-import { Cache } from '@longhorn/cache'
-import { MemoryCacheStore } from '@longhorn/cache/memory'
+import { EventBus, defineEvent } from '@longhornjs/events'
+import { Cache } from '@longhornjs/cache'
+import { MemoryCacheStore } from '@longhornjs/cache/memory'
 import { configureDiagnostics } from './diagnostics.js'
 
 export type PortableBindings = {

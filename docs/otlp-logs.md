@@ -1,14 +1,14 @@
 # OTLP/HTTP log exporter
 
 Owner: `OtlpHttpLogExporter` and `OtlpLogExportError` from
-`@longhorn/observability/otlp-logs`. Connects structural [LogExporter](log-processing.md)
+`@longhornjs/observability/otlp-logs`. Connects structural [LogExporter](log-processing.md)
 to a collector using portable Fetch and the existing [shared HTTP engine](otlp-delivery.md).
 [Encoding](otlp-logs-json.md), [host integration](jobs-logs-export.md) and
 [native verification](otlp-logs-testing.md) have separate guides.
 
 ```ts
-import { BufferedLogProcessor } from '@longhorn/observability'
-import { OtlpHttpLogExporter } from '@longhorn/observability/otlp-logs'
+import { BufferedLogProcessor } from '@longhornjs/observability'
+import { OtlpHttpLogExporter } from '@longhornjs/observability/otlp-logs'
 
 const exporter = new OtlpHttpLogExporter({
   endpoint: 'https://collector.example/v1/logs', serviceName: 'reports',

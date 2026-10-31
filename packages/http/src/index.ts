@@ -2,7 +2,7 @@ import { Hono } from 'hono'
 import type { Context, Env } from 'hono'
 import { HTTPException } from 'hono/http-exception'
 
-export const PACKAGE_NAME = '@longhorn/http'
+export const PACKAGE_NAME = '@longhornjs/http'
 
 /** Keep Hono's routing, middleware, and type inference intact. */
 export type HttpAppOptions<E extends Env = Env> = {

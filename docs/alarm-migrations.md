@@ -1,6 +1,6 @@
 # Alarm clock schema history
 
-Owner: `alarmClockMigrations` from `@longhorn/workers/sqlite-alarms`. Connects
+Owner: `alarmClockMigrations` from `@longhornjs/workers/sqlite-alarms`. Connects
 [shared migration history](durable-sqlite-migrations.md), [wakeup planning](alarm-wakeup-planning.md)
 and [failure recovery](alarm-recovery.md).
 

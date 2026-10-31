@@ -1,4 +1,4 @@
-export const PACKAGE_NAME = '@longhorn/logger'
+export const PACKAGE_NAME = '@longhornjs/logger'
 
 export type LogLevel = 'debug' | 'info' | 'warn' | 'error' | 'silent'
 export type LogFields = Readonly<Record<string, unknown>>

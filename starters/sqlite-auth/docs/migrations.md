@@ -1,6 +1,6 @@
 # Retained schema and upgrades
 
-Owner: `src/app.ts`, shared `authMigrations` and `@longhorn/database` migration
+Owner: `src/app.ts`, shared `authMigrations` and `@longhornjs/database` migration
 execution. Startup composes the original auth tables with `auth_example/001_notes`.
 The original SQL/checksums are retained; the note owner index already supplies
 bounded ID-ordered reads. Account/session/attempt rows and notes survive restart.

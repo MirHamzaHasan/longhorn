@@ -1,4 +1,4 @@
-import type { Database,SqlValue } from '@longhorn/database'
+import type { Database,SqlValue } from '@longhornjs/database'
 import type { RateLimitReservation,RateLimitStore,StoredRateLimit } from './types.js'
 import { bounded,clock,RateLimitError,reservation } from './protocol.js'
 function integer(value:SqlValue|undefined):number{const n=typeof value==='bigint'?Number(value):value;if(typeof n!=='number'||!Number.isSafeInteger(n))throw new RateLimitError('PROTOCOL');return n}

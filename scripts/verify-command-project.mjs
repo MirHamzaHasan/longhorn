@@ -41,11 +41,11 @@ try{
   const creatorPack=JSON.parse(await run('pnpm',['pack','--json','--pack-destination',temporary],join(root,'create-longhorn')))
   assert.ok(cliPack.files.some(file=>file.path==='dist/framework/templates/command-app/template.json'))
   const installed=join(temporary,'installed CLI');await mkdir(installed)
-  await writeFile(join(installed,'package.json'),JSON.stringify({private:true,packageManager:'pnpm@12.6.0',dependencies:{'@longhorn/cli':'file:../'+basename(cliPack.filename),'create-longhorn':'file:../'+basename(creatorPack.filename)}}))
-  await writeFile(join(installed,'pnpm-workspace.yaml'),"overrides:\n  '@longhorn/cli': "+JSON.stringify('file:../'+basename(cliPack.filename))+'\n')
+  await writeFile(join(installed,'package.json'),JSON.stringify({private:true,packageManager:'pnpm@12.6.0',dependencies:{'@longhornjs/cli':'file:../'+basename(cliPack.filename),'create-longhorn':'file:../'+basename(creatorPack.filename)}}))
+  await writeFile(join(installed,'pnpm-workspace.yaml'),"overrides:\n  '@longhornjs/cli': "+JSON.stringify('file:../'+basename(cliPack.filename))+'\n')
   await run('pnpm',['install','--no-frozen-lockfile','--reporter=append-only'],installed)
   const consumer=join(temporary,'relocated installed CLI');await rename(installed,consumer)
-  const cli=join(consumer,'node_modules/@longhorn/cli/dist/bin.js'),creator=join(consumer,'node_modules/create-longhorn/dist/bin.js')
+  const cli=join(consumer,'node_modules/@longhornjs/cli/dist/bin.js'),creator=join(consumer,'node_modules/create-longhorn/dist/bin.js')
   const first=join(temporary,'first command console'),created=join(temporary,'created console'),project=join(temporary,'longhorn-command-app')
   const output=await run(process.execPath,[cli,'create',first,'--runtime','node','--template','command-app','--name','first-console'],consumer)
   assert.ok(output.includes('docs/setup.md')&&!output.includes('then pnpm dev'))
@@ -72,7 +72,7 @@ try{
   }
   const occupied=join(temporary,'occupied');await mkdir(occupied);await writeFile(join(occupied,'.keep'),'retain')
   await run(process.execPath,[creator,occupied,'--runtime','node','--template','command-app'],consumer,{},1);assert.equal(await readFile(join(occupied,'.keep'),'utf8'),'retain')
-  const assets=await realpath(join(consumer,'node_modules/@longhorn/cli/dist/framework/templates/command-app'));assert.ok(assets.startsWith(await realpath(temporary)))
+  const assets=await realpath(join(consumer,'node_modules/@longhornjs/cli/dist/framework/templates/command-app'));assert.ok(assets.startsWith(await realpath(temporary)))
   const receiverFile=join(assets,'receiver/receiver.ts'),receiverBytes=await readFile(receiverFile)
   try{
     await writeFile(receiverFile,'damaged installed receipt receiver')

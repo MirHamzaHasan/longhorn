@@ -1,6 +1,6 @@
 # Memory cache adapter
 
-Owner: `MemoryCacheStore<T>` from `@longhorn/cache/memory`. Connects the typed
+Owner: `MemoryCacheStore<T>` from `@longhornjs/cache/memory`. Connects the typed
 [cache coordinator](cache.md) to a bounded in-process Map. No native API, network,
 background worker, interval, or per-entry timer is used.
 

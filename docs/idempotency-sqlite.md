@@ -1,6 +1,6 @@
 # SQLite idempotent producers
 
-Owner: `@longhorn/idempotency/sqlite`, SqliteIdempotencyStore and
+Owner: `@longhornjs/idempotency/sqlite`, SqliteIdempotencyStore and
 idempotencyMigrations. Connects [Node SQLite](sqlite.md), [transactional queues](sqlite-transaction-publishing.md),
 [retention/schema](idempotency-storage.md) and [Object SQL](idempotency-workers.md).
 

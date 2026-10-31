@@ -1,6 +1,6 @@
 # Explicit-context tracing
 
-Owner: `@longhorn/observability` (`TraceProvider`, `Tracer`, `SpanExporter`). Connects
+Owner: `@longhornjs/observability` (`TraceProvider`, `Tracer`, `SpanExporter`). Connects
 [HTTP instrumentation](http-telemetry.md), [memory export](memory-traces.md),
 [logging](logging.md), [lifecycle](lifecycle.md) and [report work](jobs-observability.md).
 

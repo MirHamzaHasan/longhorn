@@ -1,7 +1,7 @@
 # Transaction-authorized outgoing retry
 
 Owner: `Outbox.retryFailedAuthorized` and optional `OutboxAuthorizedStore` in
-`@longhorn/outbox`. Connects [conditional retry](outbox-deliberate-retry.md),
+`@longhornjs/outbox`. Connects [conditional retry](outbox-deliberate-retry.md),
 [audit atomicity](outbox-audit-atomicity.md), [transaction authentication](transaction-authentication.md)
 and [shared HTTP operations](outbox-hono.md).
 

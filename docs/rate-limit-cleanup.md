@@ -1,12 +1,12 @@
 # Owned expired-budget cleanup
 
-Owner: optional `@longhorn/ratelimit/cleanup`. Connects [RateLimiter](request-limits.md),
+Owner: optional `@longhornjs/ratelimit/cleanup`. Connects [RateLimiter](request-limits.md),
 the shared [prune worker](prune-worker.md), [retention](rate-limit-cleanup-retention.md),
 [lifecycle](rate-limit-cleanup-lifecycle.md), a [runnable app](rate-limit-cleanup-example.md)
 and [verification](rate-limit-cleanup-testing.md).
 
 ```ts
-import { RateLimitCleanup } from '@longhorn/ratelimit/cleanup'
+import { RateLimitCleanup } from '@longhornjs/ratelimit/cleanup'
 const cleanup = new RateLimitCleanup(limiter, {
   limit: 100, intervalMs: 60_000,
   onError: async () => { logger.warn('Expired request limit cleanup failed') },

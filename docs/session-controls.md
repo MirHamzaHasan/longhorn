@@ -1,7 +1,7 @@
 # Authenticated session controls
 
 Owner: `AuthService.revokeSessions` and the optional `AuthStore.sessionControls`
-capability from `@longhorn/auth`. This connects existing opaque tokens and SQL
+capability from `@longhornjs/auth`. This connects existing opaque tokens and SQL
 ownership to two explicit user actions, without accepting a client-selected user.
 
 ```ts

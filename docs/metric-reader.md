@@ -1,6 +1,6 @@
 # Owned periodic metric collection
 
-Owner: `PeriodicMetricReader` and `MetricReaderError` from `@longhorn/observability`.
+Owner: `PeriodicMetricReader` and `MetricReaderError` from `@longhornjs/observability`.
 Connects [cumulative collections](metrics.md), the structural `MetricSource` /
 `MetricExporter` contracts, [OTLP export](otlp-metrics.md) and application lifecycle.
 It imports no HTTP, native API or exporter implementation.

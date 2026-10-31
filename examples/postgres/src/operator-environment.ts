@@ -1,5 +1,5 @@
-import { loadConfig } from '@longhorn/config'
-import { readEnv } from '@longhorn/node/config'
+import { loadConfig } from '@longhornjs/config'
+import { readEnv } from '@longhornjs/node/config'
 import { operatorConfigSchema } from './operator-config.js'
 
 /** Native configuration acquisition, shared by the server and read-only checks. */

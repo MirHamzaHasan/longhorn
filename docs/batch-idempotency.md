@@ -1,12 +1,12 @@
 # Idempotent SQLite batch plans
 
 Owner: `BatchIdempotency`, `BatchIdempotencyPlan` and `BatchIdempotencyError` from
-`@longhorn/idempotency/batch-sqlite`. Connects [atomic batch SQL](batch-database.md),
+`@longhornjs/idempotency/batch-sqlite`. Connects [atomic batch SQL](batch-database.md),
 [strict JSON fingerprints](idempotency-json.md), [request records](batch-idempotency-storage.md)
 and [D1 HTTP](d1-idempotency-http.md).
 
 ```ts
-import { BatchIdempotency } from '@longhorn/idempotency/batch-sqlite'
+import { BatchIdempotency } from '@longhornjs/idempotency/batch-sqlite'
 
 const requests = new BatchIdempotency({ database })
 const id = crypto.randomUUID()

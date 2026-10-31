@@ -1,5 +1,5 @@
 import { expect,it,vi } from 'vitest'
-import { Longhorn } from '@longhorn/core'
+import { Longhorn } from '@longhornjs/core'
 import { createScheduledWorker } from './scheduled.js'
 import type { WorkerScheduledController } from './scheduled.js'
 import type { WorkerExecutionContext } from './index.js'

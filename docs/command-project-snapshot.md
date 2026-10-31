@@ -27,7 +27,7 @@ frameworkDirectory remains a trusted source of descriptors and compiled packages
 
 The generator selects the app's transitive framework graph plus the explicit
 Workers/runtime receiver dependencies. Bun/Deno packages are absent. Relative file
-overrides make every @longhorn dependency local to .longhorn/framework. Generated
+overrides make every @longhornjs dependency local to .longhorn/framework. Generated
 metadata records schemaVersion=1, runtime=node, framework=snapshot,
 template=command-app and application=commands. The application distribution record
 lists its framework packages; archive packaging additionally records a resolved

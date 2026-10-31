@@ -1,9 +1,9 @@
 import { afterEach, beforeEach, expect, it } from 'vitest'
 import { openPostgres } from './postgres.js'
-import type { Database } from '@longhorn/database'
-import { AuthService } from '@longhorn/auth'
-import { PostgresAuthStore } from '@longhorn/auth/postgres'
-import { checkPostgresSessionControls } from '@longhorn/auth/postgres-session-controls'
+import type { Database } from '@longhornjs/database'
+import { AuthService } from '@longhornjs/auth'
+import { PostgresAuthStore } from '@longhornjs/auth/postgres'
+import { checkPostgresSessionControls } from '@longhornjs/auth/postgres-session-controls'
 const passwords = { hash: async (value: string) => 'fixture:' + value, verify: async (value: string, hash: string | undefined) => hash === 'fixture:' + value }
 if (process.env.LONGHORN_PG_TEST_OWNED !== 'true' || !process.env.LONGHORN_PG_TEST_URL || !process.env.LONGHORN_PG_APP_URL) throw new Error('Use the owned session-control verifier')
 const handles: Database[] = [], password = 'a fixture session passphrase'

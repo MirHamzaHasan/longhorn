@@ -1,4 +1,4 @@
-import type { Database,SqlExecutor,SqlRow } from '@longhorn/database'
+import type { Database,SqlExecutor,SqlRow } from '@longhornjs/database'
 import { normalizeSavedSelection,normalizeViewName } from './history-view-values.js'
 import type { SavedHistoryView,SavedViewSelection } from './history-view-values.js'
 export type { SavedHistoryView } from './history-view-values.js'

@@ -1,6 +1,6 @@
 # PostgreSQL idempotent producers
 
-Owner: `@longhorn/idempotency/postgres`, PostgresIdempotencyStore and
+Owner: `@longhornjs/idempotency/postgres`, PostgresIdempotencyStore and
 postgresIdempotencyMigrations. Connects [provider transactions](postgres-transactions.md),
 [transactional queues](postgres-transaction-publishing.md), [roles](postgres-roles.md),
 [retention](idempotency-storage.md) and [HTTP integration](idempotency-http.md).

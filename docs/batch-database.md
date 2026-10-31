@@ -1,6 +1,6 @@
 # Atomic batch database capability
 
-Owner: `BatchDatabase` in `@longhorn/database`. Connects application repositories to
+Owner: `BatchDatabase` in `@longhornjs/database`. Connects application repositories to
 the [D1 provider](workers-d1.md), [batch migrations](batch-migrations.md) and shared
 SQL values/results without adding platform imports to core.
 
@@ -10,7 +10,7 @@ that list in order; a native SQL failure rolls back the batch. A provider must
 implement one atomic operation, not a loop of separately committed execute calls.
 
 ```ts
-import type { BatchDatabase } from '@longhorn/database'
+import type { BatchDatabase } from '@longhornjs/database'
 
 async function record(database: BatchDatabase, id: string) {
   return database.batch([

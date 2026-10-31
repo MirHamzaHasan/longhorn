@@ -1,7 +1,7 @@
 import type { ExecutionContext } from '@cloudflare/workers-types'
-import type { ContextualFetchApplication } from '@longhorn/runtime'
+import type { ContextualFetchApplication } from '@longhornjs/runtime'
 
-export const PACKAGE_NAME = '@longhorn/workers'
+export const PACKAGE_NAME = '@longhornjs/workers'
 export type WorkerExecutionContext = Pick<ExecutionContext, 'waitUntil' | 'passThroughOnException' | 'props'>
 export type WorkerHandler<Bindings extends object> = {
   fetch(request: Request, bindings: Bindings, context: WorkerExecutionContext): Promise<Response>

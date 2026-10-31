@@ -1,7 +1,7 @@
 import { scrypt, timingSafeEqual } from 'node:crypto'
-import { createScryptPasswordHasher as createPolicy } from '@longhorn/auth/scrypt'
-import type { PasswordHasher } from '@longhorn/auth'
-import type { ScryptOptions } from '@longhorn/auth/scrypt'
+import { createScryptPasswordHasher as createPolicy } from '@longhornjs/auth/scrypt'
+import type { PasswordHasher } from '@longhornjs/auth'
+import type { ScryptOptions } from '@longhornjs/auth/scrypt'
 
 /** Native derivation and comparison; the fixed format/admission policy is shared. */
 export function createScryptPasswordHasher(options: ScryptOptions = {}): PasswordHasher {

@@ -1,5 +1,5 @@
-import type { Database, Migration, SqlRow, SqlExecutor } from '@longhorn/database'
-import { assertTransactionExecutor } from '@longhorn/database/transactions'
+import type { Database, Migration, SqlRow, SqlExecutor } from '@longhornjs/database'
+import { assertTransactionExecutor } from '@longhornjs/database/transactions'
 import { SqliteSessionControlStore } from './sqlite-session-controls.js'
 import { normalizeUsername } from './credentials.js'
 import { SqlitePasswordStore } from './sqlite-passwords.js'

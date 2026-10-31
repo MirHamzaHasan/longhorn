@@ -1,7 +1,7 @@
-import { loadConfig } from '@longhorn/config'
-import { readEnv } from '@longhorn/node/config'
-import { openPostgres } from '@longhorn/node/postgres'
-import { migratePostgres } from '@longhorn/database/postgres'
+import { loadConfig } from '@longhornjs/config'
+import { readEnv } from '@longhornjs/node/config'
+import { openPostgres } from '@longhornjs/node/postgres'
+import { migratePostgres } from '@longhornjs/database/postgres'
 import { migrationConfigSchema } from './config.js'
 import { postgresOperationsMigrations } from './operations-migrations.js'
 let database

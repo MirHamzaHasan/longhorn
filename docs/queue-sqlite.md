@@ -1,12 +1,12 @@
 # SQLite queue storage
 
-Owner: `@longhorn/queue/sqlite`. Connects [queue contracts](queues.md) to
+Owner: `@longhornjs/queue/sqlite`. Connects [queue contracts](queues.md) to
 [database transactions](database.md), [migrations](migrations.md), and
 [Node SQLite](sqlite.md) or [Durable Object SQLite](workers-durable-sqlite.md).
 It imports portable SQL types, not a Node driver.
 
 ```ts
-import { queueMigrations, SqliteQueueStore } from '@longhorn/queue/sqlite'
+import { queueMigrations, SqliteQueueStore } from '@longhornjs/queue/sqlite'
 await migrate(database, [...existingApplicationMigrations, ...queueMigrations])
 const store = new SqliteQueueStore(database)
 ```
@@ -39,7 +39,7 @@ schema nor coordinator options and commits nothing itself. Queue.prepare supplie
 validated serialized payloads; integrations must supply valid IDs/times and own the
 transaction. The [scheduler provider](scheduler-sqlite.md) uses this primitive to
 pair queue insertion with durable cursor advancement, without nested transactions.
-Use `@longhorn/node/sqlite` for the verified local driver: WAL, FULL synchronous
+Use `@longhornjs/node/sqlite` for the verified local driver: WAL, FULL synchronous
 mode, write transactions, foreign keys and a busy timeout. Do not use this SQL
 adapter with a provider lacking SQLite syntax/transaction guarantees. No Redis,
 Postgres, remote SQLite, or platform queue provider is implemented here.
@@ -55,7 +55,7 @@ and high-volume scaling are outside this provider's verified boundary.
 `pnpm test:queues` checks two actual consumers, one persisted effect per job,
 SIGKILL recovery/exhaustion, long-handler heartbeats, SQLite integrity, and restart.
 
-`@longhorn/workers/durable-sqlite` also supplies a verified SQLite transaction
+`@longhornjs/workers/durable-sqlite` also supplies a verified SQLite transaction
 boundary, using Object SQL/input gates rather than Node file settings. The same
 store persists queue state privately per Object ID. `pnpm test:worker-storage`
 proves native claims/renewal/expiry/fencing, pending jobs across workerd restart

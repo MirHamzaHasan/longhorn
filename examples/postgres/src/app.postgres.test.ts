@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, expect, it } from 'vitest'
-import type { Longhorn } from '@longhorn/core'
-import { openPostgres } from '@longhorn/node/postgres'
+import type { Longhorn } from '@longhornjs/core'
+import { openPostgres } from '@longhornjs/node/postgres'
 import { createPostgresApp, PgDatabase } from './app.js'
 import { TaskReportQueue,TaskReportScheduler } from './background.js'
 import { taskReportHandler } from './reports.js'

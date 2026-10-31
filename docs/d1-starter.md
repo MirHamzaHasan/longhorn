@@ -1,6 +1,6 @@
 # Standalone D1 task starter
 
-Owner: @longhorn/cli template selection and the d1-tasks distribution assets.
+Owner: @longhornjs/cli template selection and the d1-tasks distribution assets.
 Connects [project generation](project-generation.md), [D1 tasks](d1-tasks.md),
 [source snapshots](d1-starter-snapshot.md), [development](d1-starter-development.md)
 and [independent verification](d1-starter-testing.md).

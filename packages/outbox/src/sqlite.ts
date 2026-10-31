@@ -1,5 +1,5 @@
-import type { Database, Migration } from '@longhorn/database'
-import { SqliteQueueStore } from '@longhorn/queue/sqlite'
+import type { Database, Migration } from '@longhornjs/database'
+import { SqliteQueueStore } from '@longhornjs/queue/sqlite'
 import type { OutboxAuthorizedStore, AuthorizedRetryRequest, TransactionAuthorizer, PruneRequest, DeliveryListRequest, RetryFailedRequest, AuditedRetryRequest, AuditHistoryRequest, AuditPruneRequest } from './index.js'
 import { SqlOutboxRecovery } from './recovery.js'
 import { SqlOutboxAudit } from './audit.js'

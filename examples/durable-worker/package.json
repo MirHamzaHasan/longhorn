@@ -2,11 +2,11 @@
   "name": "example-durable-worker", "private": true, "type": "module",
   "scripts": { "build": "node build.mjs", "typecheck": "tsc --noEmit" },
   "dependencies": {
-    "@longhorn/config": "workspace:*", "@longhorn/ratelimit": "workspace:*",
-    "@longhorn/core": "workspace:*", "@longhorn/container": "workspace:*",
-    "@longhorn/database": "workspace:*", "@longhorn/queue": "workspace:*", "@longhorn/observability": "workspace:*",
-    "@longhorn/scheduler": "workspace:*", "@longhorn/validation": "workspace:*",
-    "@longhorn/workers": "workspace:*", "hono": "^4.12.7", "zod": "^4.6.7"
+    "@longhornjs/config": "workspace:*", "@longhornjs/ratelimit": "workspace:*",
+    "@longhornjs/core": "workspace:*", "@longhornjs/container": "workspace:*",
+    "@longhornjs/database": "workspace:*", "@longhornjs/queue": "workspace:*", "@longhornjs/observability": "workspace:*",
+    "@longhornjs/scheduler": "workspace:*", "@longhornjs/validation": "workspace:*",
+    "@longhornjs/workers": "workspace:*", "hono": "^4.12.7", "zod": "^4.6.7"
   },
   "devDependencies": { "esbuild": "^0.28.2", "@cloudflare/workers-types": "^5.20261022.1" }
 }

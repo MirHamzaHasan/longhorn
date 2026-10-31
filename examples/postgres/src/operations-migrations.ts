@@ -1,14 +1,14 @@
-import { postgresSessionInventoryMigrations } from '@longhorn/auth/postgres-session-inventory'
+import { postgresSessionInventoryMigrations } from '@longhornjs/auth/postgres-session-inventory'
 import { postgresCommandLimitMigrations } from './command-limit-migrations.js'
-import type { Migration } from '@longhorn/database'
-import { postgresOutboxMigrations, postgresOutboxRecoveryMigrations, postgresOutboxAuditMigrations } from '@longhorn/outbox/postgres'
+import type { Migration } from '@longhornjs/database'
+import { postgresOutboxMigrations, postgresOutboxRecoveryMigrations, postgresOutboxAuditMigrations } from '@longhornjs/outbox/postgres'
 import { postgresExampleMigrations } from './migrations.js'
-import { postgresAuthTransactionMigrations } from '@longhorn/auth/postgres'
+import { postgresAuthTransactionMigrations } from '@longhornjs/auth/postgres'
 import { postgresCommandHistoryMigrations } from './command-history-migrations.js'
 import { postgresHistoryFilterMigrations } from './history-filter-migrations.js'
 import { postgresHistorySearchMigrations } from './history-search-migrations.js'
 import { postgresHistoryViewMigrations } from './history-view-migrations.js'
-import { postgresPasswordMigrations } from '@longhorn/auth/postgres-passwords'
+import { postgresPasswordMigrations } from '@longhornjs/auth/postgres-passwords'
 /** Explicit operations deployment profile; preserve the normal example's complete deployed history first. */
 export const postgresOperationsBaseMigrations: readonly Migration[] = [
   ...postgresExampleMigrations, ...postgresAuthTransactionMigrations, ...postgresOutboxMigrations, ...postgresOutboxRecoveryMigrations, ...postgresOutboxAuditMigrations,

@@ -1,9 +1,9 @@
 import { afterEach, expect, it } from 'vitest'
-import { openSqlite } from '@longhorn/node/sqlite'
-import { createLogger } from '@longhorn/logger'
+import { openSqlite } from '@longhornjs/node/sqlite'
+import { createLogger } from '@longhornjs/logger'
 import { createAuthApp } from './app.js'
 import { configSchema } from './config.js'
-import type { Longhorn } from '@longhorn/core'
+import type { Longhorn } from '@longhornjs/core'
 
 const applications: Longhorn[] = []
 afterEach(async () => { await Promise.all(applications.map((app) => app.close())); applications.length = 0 })

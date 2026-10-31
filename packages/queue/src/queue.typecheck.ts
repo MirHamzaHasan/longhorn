@@ -1,9 +1,9 @@
 import { Queue } from './queue.js'
 import type { JobHandler } from './types.js'
-import type { StandardSchemaV1 } from '@longhorn/validation'
+import type { StandardSchemaV1 } from '@longhornjs/validation'
 import { MemoryQueueStore } from './memory.js'
 import { enqueueInTransaction } from './transaction.js'
-import type { SqlExecutor } from '@longhorn/database'
+import type { SqlExecutor } from '@longhornjs/database'
 
 declare const schema: StandardSchemaV1<unknown, { count: number }>
 const queue = new Queue({ name: 'counts.v1', schema, store: new MemoryQueueStore() })

@@ -1,5 +1,5 @@
 import { expect, it, vi } from 'vitest'
-import type { RuntimeAdapter, ServerHandle } from '@longhorn/runtime'
+import type { RuntimeAdapter, ServerHandle } from '@longhornjs/runtime'
 import { Longhorn } from './application.js'
 
 function deferred<T>() {

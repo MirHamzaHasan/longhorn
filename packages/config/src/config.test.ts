@@ -1,7 +1,7 @@
 import { expect, expectTypeOf, it } from 'vitest'
 import { z } from 'zod'
-import { ValidationError } from '@longhorn/validation'
-import type { StandardSchemaV1 } from '@longhorn/validation'
+import { ValidationError } from '@longhornjs/validation'
+import type { StandardSchemaV1 } from '@longhornjs/validation'
 import { ConfigError, loadConfig } from './index.js'
 
 it('infers transformed settings and applies schema defaults', async () => {

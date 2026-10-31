@@ -1,5 +1,5 @@
 import { expect,it,vi } from 'vitest'
-import type { BatchDatabase,QueryResult } from '@longhorn/database'
+import type { BatchDatabase,QueryResult } from '@longhornjs/database'
 import { RateLimiter,RateLimitError } from './index.js'
 import { BatchSqliteRateLimitStore } from './batch-sqlite.js'
 const request={scope:'tasks.v1',key:'a'.repeat(64),limit:2,windowMs:1000},row={policy_limit:2,window_ms:1000,attempts:1,expires_at:2000,observed_at:1000}

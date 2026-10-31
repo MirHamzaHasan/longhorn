@@ -1,7 +1,7 @@
 # Bun asynchronous SQLite transaction ownership
 
-Owner: `@longhorn/bun/sqlite`, connected to
-[`@longhorn/database/transactions`](transaction-executors.md). A queued root
+Owner: `@longhornjs/bun/sqlite`, connected to
+[`@longhornjs/database/transactions`](transaction-executors.md). A queued root
 transaction opens native BEGIN IMMEDIATE, awaits application work, drains accepted
 participants, then commits. Application or participant failure drains and rolls back.
 The provider does not use Bun's synchronous transaction-wrapper API for async work.

@@ -1,6 +1,6 @@
 # Alarm consumer telemetry ownership
 
-Owner: application callback and `@longhorn/observability`. Connects
+Owner: application callback and `@longhornjs/observability`. Connects
 [alarm lifetime](workers-sqlite-alarms.md), [report DI](alarm-report-example.md),
 [explicit tracing](tracing.md) and [recovery](alarm-recovery.md).
 

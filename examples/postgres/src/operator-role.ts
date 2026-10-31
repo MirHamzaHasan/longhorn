@@ -1,7 +1,7 @@
-import { loadConfig } from '@longhorn/config'
-import { readEnv } from '@longhorn/node/config'
-import { openPostgres } from '@longhorn/node/postgres'
-import { PostgresAuthStore } from '@longhorn/auth/postgres'
+import { loadConfig } from '@longhornjs/config'
+import { readEnv } from '@longhornjs/node/config'
+import { openPostgres } from '@longhornjs/node/postgres'
+import { PostgresAuthStore } from '@longhornjs/auth/postgres'
 import { migrationConfigSchema } from './config.js'
 import { operatorRole } from './operation-contracts.js'
 const [action,username,...extra] = process.argv.slice(2)

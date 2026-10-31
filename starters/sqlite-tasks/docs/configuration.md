@@ -1,6 +1,6 @@
 # Configuration
 
-src/index.ts loads project .env then .env.local through @longhorn/node/config;
+src/index.ts loads project .env then .env.local through @longhornjs/node/config;
 defined process values win. loadConfig validates src/config.ts before opening the
 database/listener. APP_NAME defaults to LongHorn, HOST to 127.0.0.1, PORT to 3000
 (0 selects an available port), LOG_LEVEL to info and CACHE_TTL_MS to 5000 (0–3600000).

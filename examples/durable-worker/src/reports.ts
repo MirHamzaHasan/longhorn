@@ -1,7 +1,7 @@
-import type { Database, Migration } from '@longhorn/database'
-import type { JobHandler } from '@longhorn/queue'
-import { queueMigrations } from '@longhorn/queue/sqlite'
-import { schedulerMigrations } from '@longhorn/scheduler/sqlite'
+import type { Database, Migration } from '@longhornjs/database'
+import type { JobHandler } from '@longhornjs/queue'
+import { queueMigrations } from '@longhornjs/queue/sqlite'
+import { schedulerMigrations } from '@longhornjs/scheduler/sqlite'
 import { z } from 'zod'
 
 export const reportSchema = z.object({ numbers: z.array(z.number().finite().min(-1e12).max(1e12)).min(1).max(100) }).strict()

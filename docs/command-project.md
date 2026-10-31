@@ -1,6 +1,6 @@
 # Complete command applications through the CLI
 
-Owner: command-app profile in `@longhorn/cli`, shared with
+Owner: command-app profile in `@longhornjs/cli`, shared with
 [the independent archive](command-app-distribution.md). Connects
 [project generation](project-generation.md), [complete workflow](command-application.md),
 [checked source](command-project-snapshot.md), [script ownership](command-project-lifecycle.md)

@@ -1,4 +1,4 @@
-export const PACKAGE_NAME = '@longhorn/runtime'
+export const PACKAGE_NAME = '@longhornjs/runtime'
 
 /** The portable boundary between an application and a runtime adapter. */
 export type FetchApplication = {

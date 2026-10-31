@@ -4,8 +4,8 @@ import { dirname, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { createClient } from '@libsql/client/sqlite3'
 import type { InStatement, ResultSet } from '@libsql/client/sqlite3'
-import type { Database, QueryResult, SqlExecutor, SqlStatement, SqlValue } from '@longhorn/database'
-import { createTransactionScope } from '@longhorn/database/transactions'
+import type { Database, QueryResult, SqlExecutor, SqlStatement, SqlValue } from '@longhornjs/database'
+import { createTransactionScope } from '@longhornjs/database/transactions'
 
 export type SqliteOptions = { filename: string; busyTimeoutMs?: number }
 type Gate = { tail: Promise<void>; references: number }

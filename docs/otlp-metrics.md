@@ -1,15 +1,15 @@
 # OTLP/HTTP metric exporter
 
 Owner: `OtlpHttpMetricExporter` and `OtlpMetricExportError` from
-`@longhorn/observability/otlp-metrics`. Connects the existing [metric registry](metrics.md)
+`@longhornjs/observability/otlp-metrics`. Connects the existing [metric registry](metrics.md)
 and [reader](metric-reader.md) to a collector through Web Standard Fetch.
 [Encoding](otlp-metrics-json.md), [delivery](otlp-delivery.md),
 [report integration](jobs-metrics-export.md) and [native proof](otlp-metrics-testing.md)
 document the separate boundaries. No Node API or OpenTelemetry SDK is imported.
 
 ```ts
-import { MetricRegistry, PeriodicMetricReader } from '@longhorn/observability'
-import { OtlpHttpMetricExporter } from '@longhorn/observability/otlp-metrics'
+import { MetricRegistry, PeriodicMetricReader } from '@longhornjs/observability'
+import { OtlpHttpMetricExporter } from '@longhornjs/observability/otlp-metrics'
 
 const meter = new MetricRegistry()
 const exporter = new OtlpHttpMetricExporter({

@@ -1,10 +1,10 @@
-import type { Longhorn, LonghornEnv } from '@longhorn/core'
-import type { Database } from '@longhorn/database'
-import { provide, token } from '@longhorn/container'
-import type { Token } from '@longhorn/container'
-import { RateLimiter } from '@longhorn/ratelimit'
-import { SqliteRateLimitStore, rateLimitMigrations } from '@longhorn/ratelimit/sqlite'
-import { rateLimit } from '@longhorn/ratelimit/hono'
+import type { Longhorn, LonghornEnv } from '@longhornjs/core'
+import type { Database } from '@longhornjs/database'
+import { provide, token } from '@longhornjs/container'
+import type { Token } from '@longhornjs/container'
+import { RateLimiter } from '@longhornjs/ratelimit'
+import { SqliteRateLimitStore, rateLimitMigrations } from '@longhornjs/ratelimit/sqlite'
+import { rateLimit } from '@longhornjs/ratelimit/hono'
 import type { MiddlewareHandler } from 'hono'
 
 export type ReportLimitOptions = { readonly limit?: number; readonly windowMs?: number; readonly now?: () => number }

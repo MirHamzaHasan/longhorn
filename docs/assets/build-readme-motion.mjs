@@ -209,10 +209,10 @@ const ground = (W, H) => `<defs><pattern id="g" width="28" height="28" patternUn
   const W = 1280, H = 548, DUR = 16, REST = 1.6
   const f = film('hosts', W, H, 'The same LongHorn app on four hosts. Changing the import and the last line moves it from Node to Bun, Deno and Workers, and its health route reports each runtime.', DUR, REST)
   const hosts = [
-    { name: 'Node', imp: "import { nodeRuntime } from '@longhorn/node'", last: 'await app.listen(nodeRuntime)', rt: 'node' },
-    { name: 'Bun', imp: "import { bunRuntime } from '@longhorn/bun'", last: 'await app.listen(bunRuntime)', rt: 'bun' },
-    { name: 'Deno', imp: "import { denoRuntime } from '@longhorn/deno'", last: 'await app.listen(denoRuntime)', rt: 'deno' },
-    { name: 'Workers', imp: "import { createWorker } from '@longhorn/workers'", last: 'export default createWorker(app)', rt: 'workers' },
+    { name: 'Node', imp: "import { nodeRuntime } from '@longhornjs/node'", last: 'await app.listen(nodeRuntime)', rt: 'node' },
+    { name: 'Bun', imp: "import { bunRuntime } from '@longhornjs/bun'", last: 'await app.listen(bunRuntime)', rt: 'bun' },
+    { name: 'Deno', imp: "import { denoRuntime } from '@longhornjs/deno'", last: 'await app.listen(denoRuntime)', rt: 'deno' },
+    { name: 'Workers', imp: "import { createWorker } from '@longhornjs/workers'", last: 'export default createWorker(app)', rt: 'workers' },
   ]
   const SIZE = 29, LX = 64, step = 4, EX = 0.24, IN = 0.52
   const swap = (id, i, content) => {
@@ -232,7 +232,7 @@ const ground = (W, H) => `<defs><pattern id="g" width="28" height="28" patternUn
   f.write(`${ground(W, H)}
     ${text(display, 'Change the host. Keep the app.', 64, 66, 52, C.chalk)}
     <rect x="${LX}" y="${panelY}" width="${W - 128}" height="${rowH * 5 + 24}" rx="12" fill="${C.deep}" stroke="${C.faint}"/>
-    ${code("import { Longhorn } from '@longhorn/core'", y(0), C.muted)}
+    ${code("import { Longhorn } from '@longhornjs/core'", y(0), C.muted)}
     ${code('const app = new Longhorn()', y(2), C.muted)}
     ${code("app.http.get('/health', health)", y(3), C.muted)}
     <rect x="${LX}" y="350" width="${W - 128}" height="58" rx="12" fill="${C.ground}" stroke="${C.faint}"/>
@@ -253,7 +253,7 @@ const ground = (W, H) => `<defs><pattern id="g" width="28" height="28" patternUn
     { name: 'Command app', dir: 'postgres', hosts: ['Node'] },
   ].map((app) => {
     const pkg = JSON.parse(readFileSync(join(out, '../../examples', app.dir, 'package.json'), 'utf8'))
-    return { ...app, uses: new Set(Object.keys({ ...pkg.dependencies, ...pkg.devDependencies }).filter((k) => k.startsWith('@longhorn/')).map((k) => k.slice(10))) }
+    return { ...app, uses: new Set(Object.keys({ ...pkg.dependencies, ...pkg.devDependencies }).filter((k) => k.startsWith('@longhornjs/')).map((k) => k.slice(k.indexOf('/') + 1))) }
   })
   const f = film('stack', W, H, 'Four real example applications and the modules each one imports. A tasks API, accounts, a Worker on D1 and the command app each light up a different set of optional modules on top of the same core, on the hosts they run on.', DUR, REST)
   const optional = ['validation', 'config', 'database', 'auth', 'events', 'cache', 'queue', 'scheduler', 'idempotency', 'ratelimit', 'outbox', 'observability']
@@ -415,7 +415,7 @@ const ground = (W, H) => `<defs><pattern id="g" width="28" height="28" patternUn
   const W = 1280, H = 640, DUR = 20, REST = 19
   const f = film('firstapp', W, H, 'A code editor types a small LongHorn app with one route. A terminal then requests /hello/Ada and gets back the message Hello, Ada.', DUR, REST)
   const src = [
-    ["import { Longhorn } from '@longhorn/core'", C.muted], ["import { nodeRuntime } from '@longhorn/node'", C.muted], ['', C.muted],
+    ["import { Longhorn } from '@longhornjs/core'", C.muted], ["import { nodeRuntime } from '@longhornjs/node'", C.muted], ['', C.muted],
     ['const app = new Longhorn()', C.chalk], ['', C.muted],
     ["app.http.get('/hello/:name', (c) =>", C.chalk], ['  c.json({ message: `Hello, ${c.req.param("name")}` }))', C.iron], ['', C.muted],
     ['await app.listen(nodeRuntime, { port: 3000 })', C.chalk],

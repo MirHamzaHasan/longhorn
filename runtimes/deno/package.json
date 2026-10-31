@@ -1,5 +1,5 @@
 {
-  "name": "@longhorn/deno",
+  "name": "@longhornjs/deno",
   "version": "0.1.0",
   "description": "Native Deno host for LongHorn, with built-in SQLite.",
   "license": "MIT",
@@ -41,8 +41,8 @@
     "dist"
   ],
   "dependencies": {
-    "@longhorn/runtime": "workspace:*",
-    "@longhorn/database": "workspace:*",
-    "@longhorn/auth": "workspace:*"
+    "@longhornjs/runtime": "workspace:*",
+    "@longhornjs/database": "workspace:*",
+    "@longhornjs/auth": "workspace:*"
   }
 }

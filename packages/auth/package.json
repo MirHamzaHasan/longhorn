@@ -1,5 +1,5 @@
 {
-  "name": "@longhorn/auth",
+  "name": "@longhornjs/auth",
   "version": "0.1.0",
   "description": "Passwords, sessions and guards for LongHorn applications.",
   "license": "MIT",
@@ -73,7 +73,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@longhorn/database": "workspace:*",
+    "@longhornjs/database": "workspace:*",
     "hono": "^4.13.13"
   },
   "files": [

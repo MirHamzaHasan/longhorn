@@ -1,4 +1,4 @@
-import type { Database, SqlRow, SqlValue } from '@longhorn/database'
+import type { Database, SqlRow, SqlValue } from '@longhornjs/database'
 import type { AuditedRetryRequest, AuditedRetryResult, AuthorizedRetryRequest, TransactionAuthorizer, AuditHistoryRequest, AuditPruneRequest, RecoveryAudit, RecoveryAuditPage } from './index.js'
 import { SqlOutboxRecovery } from './recovery.js'
 

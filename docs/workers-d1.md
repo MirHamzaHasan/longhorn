@@ -1,12 +1,12 @@
 # Workers D1 provider
 
 Owner: `createD1`, `D1BatchDatabase`, `D1Binding`, `D1Options` and `D1Error` from
-`@longhorn/workers/d1`. Connects a supplied native D1 database/session to the
+`@longhornjs/workers/d1`. Connects a supplied native D1 database/session to the
 portable [batch contract](batch-database.md). Core and shared repositories import
 no Cloudflare types or native binding APIs.
 
 ```ts
-import { createD1 } from '@longhorn/workers/d1'
+import { createD1 } from '@longhornjs/workers/d1'
 
 const database = createD1(env.DB, { maxPending: 6 })
 const result = await database.execute({ sql: 'SELECT title FROM tasks WHERE id=?', args: [id] })

@@ -1,7 +1,7 @@
 # Object SQL transaction publishing and alarms
 
-Owner: existing SQLite QueueStore over `@longhorn/workers/durable-sqlite`, using
-`@longhorn/queue/transaction`. Connects [managed executors](transaction-executors.md),
+Owner: existing SQLite QueueStore over `@longhornjs/workers/durable-sqlite`, using
+`@longhornjs/queue/transaction`. Connects [managed executors](transaction-executors.md),
 [Object SQL](workers-durable-sqlite.md), [queue ownership](workers-durable-queues.md)
 and [atomic alarm projection](alarm-wakeup-planning.md).
 

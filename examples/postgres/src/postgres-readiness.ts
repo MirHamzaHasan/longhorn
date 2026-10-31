@@ -1,4 +1,4 @@
-import type { Database } from '@longhorn/database'
+import type { Database } from '@longhornjs/database'
 import { checkAccountTables } from './accounts.js'
 import type { AccountOptions } from './accounts.js'
 import { checkOperationTables } from './operations.js'

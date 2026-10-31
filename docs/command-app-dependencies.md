@@ -9,7 +9,7 @@ using lockfile-only mode with dependency hooks disabled. It explicitly permits
 creating the lock when packaging runs inside CI. No packages are installed in the
 staging application. The archive includes that lock, and .longhorn/distribution.json
 records its SHA-256 and package-manager identity. Paths remain relative to the
-archive, including every local @longhorn framework override. No workspace link or
+archive, including every local @longhornjs framework override. No workspace link or
 original absolute directory is allowed in the shipped lock.
 
 The recipient runs `pnpm install --frozen-lockfile` for the first installation

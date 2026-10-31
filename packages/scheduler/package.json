@@ -1,5 +1,5 @@
 {
-  "name": "@longhorn/scheduler",
+  "name": "@longhornjs/scheduler",
   "version": "0.1.0",
   "description": "Durable one-time, interval and cron runs for LongHorn.",
   "license": "MIT",
@@ -41,11 +41,11 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@longhorn/database": "workspace:*",
-    "@longhorn/queue": "workspace:*"
+    "@longhornjs/database": "workspace:*",
+    "@longhornjs/queue": "workspace:*"
   },
   "devDependencies": {
-    "@longhorn/validation": "workspace:*"
+    "@longhornjs/validation": "workspace:*"
   },
   "files": [
     "dist"

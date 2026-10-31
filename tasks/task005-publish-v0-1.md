@@ -42,7 +42,8 @@ None yet. Publishing is the owner's decision and hard to undo.
 
 - Package metadata: `license`, `repository`, `description` are absent on every package,
   and versions are a mix of 0.0.0 and 0.0.1.
-- Secure the `@longhorn` npm scope. On 31 October 2026 `@longhorn/core`,
+- Secure an npm scope. `longhorn` proved to be taken on 1 November 2026, so the scope became
+  `@longhornjs`. On 31 October 2026 `@longhorn/core`,
   `create-longhorn` and `longhorn` returned 404 from the registry, which does not prove
   the scope is free.
 - Release tooling and a changelog.
@@ -61,4 +62,4 @@ On a clean machine, `npm create longhorn@latest my-api` creates an app that star
 - `verify-npm-rehearsal` exit 0: 23 tarballs checked, then installed in an empty folder. A generated Node project built, started and returned `{"status":"ok","runtime":"node","ready":true}` from outside this repository.
 - The gate first failed on six `.env.example` templates. They hold default settings only and are meant to ship, so the rule now allows exactly that name. Its file and secret patterns were checked against good and bad samples.
 
-Blocked on the owner: the `@longhorn` npm organization, an npm login and the release itself. See [releasing](../docs/releasing.md). The acceptance check, `npm create longhorn@latest` on a clean machine, can only run after that. Only the Node template was rehearsed.
+Blocked on the owner: the `@longhornjs` npm organization, an npm login and the release itself. See [releasing](../docs/releasing.md). The acceptance check, `npm create longhorn@latest` on a clean machine, can only run after that. Only the Node template was rehearsed.

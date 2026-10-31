@@ -1,9 +1,9 @@
-import type { Longhorn } from '@longhorn/core'
-import { provide, token } from '@longhorn/container'
-import { MetricRegistry, Readiness, Tracer } from '@longhorn/observability'
-import { MemorySpanExporter } from '@longhorn/observability/memory'
-import { httpTelemetry, livenessHandler, readinessHandler, requestSpan } from '@longhorn/observability/hono'
-import { PROMETHEUS_CONTENT_TYPE, renderPrometheus } from '@longhorn/observability/prometheus'
+import type { Longhorn } from '@longhornjs/core'
+import { provide, token } from '@longhornjs/container'
+import { MetricRegistry, Readiness, Tracer } from '@longhornjs/observability'
+import { MemorySpanExporter } from '@longhornjs/observability/memory'
+import { httpTelemetry, livenessHandler, readinessHandler, requestSpan } from '@longhornjs/observability/hono'
+import { PROMETHEUS_CONTENT_TYPE, renderPrometheus } from '@longhornjs/observability/prometheus'
 
 const Diagnostics = token<{ meter: MetricRegistry; readiness: Readiness; tracer: Tracer }>('portable diagnostics')
 export function configureDiagnostics<Bindings extends object>(app: Longhorn<Bindings>, ready: () => boolean) {

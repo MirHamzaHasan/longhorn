@@ -1,13 +1,13 @@
 # Typed caching and shared loading
 
-Owner: `@longhorn/cache`. Runtime-neutral cache coordination over an exclusively
+Owner: `@longhornjs/cache`. Runtime-neutral cache coordination over an exclusively
 owned `CacheStore<T>`. It imports no HTTP, native, logger, database, or core package.
 The first adapter is [memory storage](memory-cache.md); [task summaries](task-cache.md)
 show DI, configuration, invalidation, error policy, and lifecycle integration.
 
 ```ts
-import { Cache } from '@longhorn/cache'
-import { MemoryCacheStore } from '@longhorn/cache/memory'
+import { Cache } from '@longhornjs/cache'
+import { MemoryCacheStore } from '@longhornjs/cache/memory'
 
 type Profile = { readonly name: string }
 const cache = new Cache<Profile>(new MemoryCacheStore<Profile>(), { ttlMs: 5000 })

@@ -1,6 +1,6 @@
 # Durable outgoing delivery
 
-Owner: src/operation-transport.ts, operations.ts and @longhorn/outbox. The dispatcher
+Owner: src/operation-transport.ts, operations.ts and @longhornjs/outbox. The dispatcher
 claims fenced leases, publishes a stable versioned message ID and tracks bounded
 cumulative attempts. The explicit HTTP publisher accepts only HTTP 200 with a
 matching accepted acknowledgement. Transport bytes, time and concurrency are

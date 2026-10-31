@@ -1,5 +1,5 @@
 import { expect, it } from 'vitest'
-import { nodeRuntime } from '@longhorn/node'
+import { nodeRuntime } from '@longhornjs/node'
 import { createTestApp as createApp } from './test-support.js'
 
 it('runs the tasks workflow through LongHorn and a real Node server', async () => {

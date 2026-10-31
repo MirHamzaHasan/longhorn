@@ -1,4 +1,4 @@
-import type { Database, Migration } from '@longhorn/database'
+import type { Database, Migration } from '@longhornjs/database'
 import { SqlSessionInventoryStore } from './sql-session-inventory.js'
 /** Append after the complete application history; existing functions/inserts use the native default. */
 export const postgresSessionInventoryMigrations: readonly Migration[] = [{ id: 'longhorn_postgres_auth/004_session_inventory', statements: [

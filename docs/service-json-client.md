@@ -1,6 +1,6 @@
 # Bounded authenticated JSON client
 
-Owner: createJsonClient from `@longhorn/http/client`. Connects
+Owner: createJsonClient from `@longhornjs/http/client`. Connects
 [HTTP delivery](outbox-http-publisher.md), [remote receipts](operator-receipt-transport.md)
 and [runtime portability](runtimes.md). This optional entry imports no Hono or Node APIs.
 

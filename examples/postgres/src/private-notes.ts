@@ -1,4 +1,4 @@
-import type { Database,Migration,SqlRow } from '@longhorn/database'
+import type { Database,Migration,SqlRow } from '@longhornjs/database'
 import { z } from 'zod'
 
 export const privateNoteMigrations: readonly Migration[]=[{ id: 'postgres_private/001_notes',statements: [

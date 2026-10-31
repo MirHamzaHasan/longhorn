@@ -1,5 +1,5 @@
 {
-  "name": "@longhorn/workers",
+  "name": "@longhornjs/workers",
   "version": "0.1.0",
   "description": "Cloudflare Workers host for LongHorn, with D1 and Durable Objects.",
   "license": "MIT",
@@ -49,15 +49,15 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@longhorn/database": "workspace:*",
+    "@longhornjs/database": "workspace:*",
     "@cloudflare/workers-types": "^5.20261022.1",
-    "@longhorn/runtime": "workspace:*"
+    "@longhornjs/runtime": "workspace:*"
   },
   "sideEffects": false,
   "files": [
     "dist"
   ],
   "devDependencies": {
-    "@longhorn/core": "workspace:*"
+    "@longhornjs/core": "workspace:*"
   }
 }

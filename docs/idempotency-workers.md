@@ -1,6 +1,6 @@
 # Object SQL idempotent producers
 
-Owner: SqliteIdempotencyStore with `@longhorn/workers/durable-sqlite`. Connects
+Owner: SqliteIdempotencyStore with `@longhornjs/workers/durable-sqlite`. Connects
 [Object transactions](durable-sqlite-transactions.md), [managed publishing](object-transaction-publishing.md),
 [alarm projection](alarm-wakeup-planning.md) and [record retention](idempotency-storage.md).
 

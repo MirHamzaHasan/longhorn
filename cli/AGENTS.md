@@ -1,6 +1,6 @@
 # cli and create-longhorn
 
-`@longhorn/cli` holds the commands and generator. `create-longhorn` is the
+`@longhornjs/cli` holds the commands and generator. `create-longhorn` is the
 creation-only entrypoint and shares its options. Guides: [docs/cli.md](../docs/cli.md)
 and [docs/project-generation.md](../docs/project-generation.md).
 

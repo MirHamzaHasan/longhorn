@@ -112,9 +112,9 @@ try {
     assert.equal(createHash('sha256').update(await readFile(archive)).digest('hex'), checksum)
     await run('tar', ['-xzf', archive, '-C', temporary]); const archived = join(temporary, 'relocated archived app'); await rename(join(temporary, 'longhorn-command-app'), archived)
     const cliPack = JSON.parse((await run('pnpm', ['pack', '--json', '--pack-destination', temporary], join(root, 'cli'))).output()), installed = join(temporary, 'installed CLI'); await mkdir(installed)
-    await writeFile(join(installed, 'package.json'), JSON.stringify({ private: true, packageManager: 'pnpm@12.6.0', dependencies: { '@longhorn/cli': 'file:../' + basename(cliPack.filename) } }))
+    await writeFile(join(installed, 'package.json'), JSON.stringify({ private: true, packageManager: 'pnpm@12.6.0', dependencies: { '@longhornjs/cli': 'file:../' + basename(cliPack.filename) } }))
     await run('pnpm', ['install', '--no-frozen-lockfile', '--reporter=append-only'], installed)
-    const cli = join(installed, 'node_modules/@longhorn/cli/dist/bin.js'), generated = join(temporary, 'relocated CLI app')
+    const cli = join(installed, 'node_modules/@longhornjs/cli/dist/bin.js'), generated = join(temporary, 'relocated CLI app')
     await run(process.execPath, [cli, 'create', generated, '--runtime', 'node', '--template', 'command-app', '--name', 'maintained-commands'], installed); await freezeCommandDependencies(generated)
     for (const [name, directory] of [['archive', archived], ['packed-cli', generated]]) {
       const frozen = await readFile(join(directory, 'pnpm-lock.yaml'), 'utf8'); await run('pnpm', ['install', '--frozen-lockfile', '--reporter=append-only'], directory, { CI: 'true' }); assert.equal(await readFile(join(directory, 'pnpm-lock.yaml'), 'utf8'), frozen)

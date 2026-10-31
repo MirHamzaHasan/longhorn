@@ -1,10 +1,10 @@
 # Hono request limit middleware
 
-Owner: rateLimit in @longhorn/ratelimit/hono. Connects an explicitly owned
+Owner: rateLimit in @longhornjs/ratelimit/hono. Connects an explicitly owned
 [RateLimiter](request-limits.md) to Hono without opening storage or changing its lifetime.
 
 ```ts
-import { rateLimit } from '@longhorn/ratelimit/hono'
+import { rateLimit } from '@longhornjs/ratelimit/hono'
 // Install the application's authentication middleware first.
 app.post('/reports', requireAccount,
   rateLimit(limiter, c => c.get('auth').user.id), handler)

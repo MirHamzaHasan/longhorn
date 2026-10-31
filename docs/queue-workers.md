@@ -1,6 +1,6 @@
 # Queue workers
 
-Owner: `@longhorn/queue` (`QueueWorker`). Connects to [queue coordination](queues.md),
+Owner: `@longhornjs/queue` (`QueueWorker`). Connects to [queue coordination](queues.md),
 [lifecycle](lifecycle.md), [logging](logging.md), and [the report example](jobs-example.md).
 
 ```ts

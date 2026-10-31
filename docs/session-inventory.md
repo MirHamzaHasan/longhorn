@@ -1,6 +1,6 @@
 # Active session inventory
 
-Owner: optional `@longhorn/auth/session-inventory`. Connects existing opaque
+Owner: optional `@longhornjs/auth/session-inventory`. Connects existing opaque
 [sessions](sessions.md), [SQLite](sqlite-session-inventory.md),
 [PostgreSQL](postgres-session-inventory.md), [HTTP](session-inventory-http.md),
 [Account controls](console-session-inventory.md) and [native proof](session-inventory-testing.md).
@@ -8,8 +8,8 @@ AuthStore, SessionStore, SessionManager, AuthService and their login/password AP
 retain their existing contracts. This is a separate explicitly acquired capability.
 
 ```ts
-import { SessionInventory } from '@longhorn/auth/session-inventory'
-import { SqliteSessionInventoryStore } from '@longhorn/auth/sqlite-session-inventory'
+import { SessionInventory } from '@longhornjs/auth/session-inventory'
+import { SqliteSessionInventoryStore } from '@longhornjs/auth/sqlite-session-inventory'
 const inventory = new SessionInventory(new SqliteSessionInventoryStore(database))
 const page = await inventory.list(currentToken, { limit: 10 })
 // {sessions:[{id, expiresAt, current}], nextCursor:string|null}

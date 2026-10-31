@@ -1,6 +1,6 @@
 # PostgreSQL transaction ownership
 
-Owner: `@longhorn/node/postgres`. Connects [pool leases](postgres.md),
+Owner: `@longhornjs/node/postgres`. Connects [pool leases](postgres.md),
 [SQL executors](database.md), [migrations](postgres-migrations.md) and [lifecycle](lifecycle.md).
 
 ```ts

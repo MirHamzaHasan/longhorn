@@ -1,7 +1,7 @@
 # Expired request cleanup
 
 Owner: src/request-cleanup.ts, operations.ts and operator-host.ts, using the local
-@longhorn/idempotency/cleanup framework export. Connects [commands](commands.md),
+@longhornjs/idempotency/cleanup framework export. Connects [commands](commands.md),
 [atomic writes](transactions.md), [named views](saved-views.md),
 [lifecycle](lifecycle.md) and [deployment](deployment.md).
 

@@ -1,5 +1,5 @@
 {
-  "name": "@longhorn/node",
+  "name": "@longhornjs/node",
   "version": "0.1.0",
   "description": "Native Node host for LongHorn, with SQLite and PostgreSQL.",
   "license": "MIT",
@@ -52,18 +52,18 @@
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@longhorn/queue": "workspace:*",
-    "@longhorn/scheduler": "workspace:*",
+    "@longhornjs/queue": "workspace:*",
+    "@longhornjs/scheduler": "workspace:*",
     "@types/node": "^22.13.10",
     "@types/pg": "8.23.1"
   },
   "dependencies": {
     "@hono/node-server": "^2.1.5",
     "@libsql/client": "^0.18.0",
-    "@longhorn/auth": "workspace:*",
-    "@longhorn/config": "workspace:*",
-    "@longhorn/database": "workspace:*",
-    "@longhorn/runtime": "workspace:*",
+    "@longhornjs/auth": "workspace:*",
+    "@longhornjs/config": "workspace:*",
+    "@longhornjs/database": "workspace:*",
+    "@longhornjs/runtime": "workspace:*",
     "@redis/client": "6.3.0",
     "pg": "8.23.1"
   },

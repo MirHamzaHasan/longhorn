@@ -1,5 +1,5 @@
 import { expect,it,vi } from 'vitest'
-import { createLogger } from '@longhorn/logger'
+import { createLogger } from '@longhornjs/logger'
 import { OtlpHttpLogExporter,OtlpLogExportError } from './otlp-logs.js'
 import type { OtlpHttpLogExporterOptions } from './otlp-logs.js'
 import type { LogEntry } from './logs.js'

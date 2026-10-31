@@ -2,8 +2,8 @@ import { mkdtemp, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, expect, it } from 'vitest'
-import { migrate } from '@longhorn/database'
-import type { Database, SqlExecutor } from '@longhorn/database'
+import { migrate } from '@longhornjs/database'
+import type { Database, SqlExecutor } from '@longhornjs/database'
 import { openSqlite } from './sqlite.js'
 
 const databases: Database[] = []

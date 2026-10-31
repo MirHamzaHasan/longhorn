@@ -1,7 +1,7 @@
-import { resolveServeOptions } from '@longhorn/runtime'
-import type { FetchApplication, RuntimeAdapter, ServerHandle, ServeOptions } from '@longhorn/runtime'
+import { resolveServeOptions } from '@longhornjs/runtime'
+import type { FetchApplication, RuntimeAdapter, ServerHandle, ServeOptions } from '@longhornjs/runtime'
 
-export const PACKAGE_NAME = '@longhorn/deno'
+export const PACKAGE_NAME = '@longhornjs/deno'
 
 export async function serve(application: FetchApplication, options: ServeOptions = {}): Promise<ServerHandle> {
   if (typeof Deno === 'undefined') throw new Error('The Deno adapter must run in Deno')

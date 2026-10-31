@@ -3,13 +3,13 @@ export const templates = ['api', 'd1-tasks', 'sqlite-tasks', 'sqlite-auth', 'com
 export type ProjectTemplate = typeof templates[number]
 export type ProjectRuntime = typeof runtimes[number]
 
-const app = `import { Longhorn } from '@longhorn/core'
-import { provide, token } from '@longhorn/container'
-import { EventBus, defineEvent } from '@longhorn/events'
-import { Cache } from '@longhorn/cache'
-import { MemoryCacheStore } from '@longhorn/cache/memory'
-import type { Logger } from '@longhorn/logger'
-import { validate } from '@longhorn/validation/hono'
+const app = `import { Longhorn } from '@longhornjs/core'
+import { provide, token } from '@longhornjs/container'
+import { EventBus, defineEvent } from '@longhornjs/events'
+import { Cache } from '@longhornjs/cache'
+import { MemoryCacheStore } from '@longhornjs/cache/memory'
+import type { Logger } from '@longhornjs/logger'
+import { validate } from '@longhornjs/validation/hono'
 import { z } from 'zod'
 import { configureDiagnostics } from './diagnostics.js'
 
@@ -62,12 +62,12 @@ export function createApp(runtime: string, greeting = 'Hello from LongHorn', log
 }
 `
 
-const diagnostics = `import type { Longhorn } from '@longhorn/core'
-import { provide, token } from '@longhorn/container'
-import { MetricRegistry, Readiness, Tracer } from '@longhorn/observability'
-import { MemorySpanExporter } from '@longhorn/observability/memory'
-import { httpTelemetry, livenessHandler, readinessHandler, requestSpan } from '@longhorn/observability/hono'
-import { PROMETHEUS_CONTENT_TYPE, renderPrometheus } from '@longhorn/observability/prometheus'
+const diagnostics = `import type { Longhorn } from '@longhornjs/core'
+import { provide, token } from '@longhornjs/container'
+import { MetricRegistry, Readiness, Tracer } from '@longhornjs/observability'
+import { MemorySpanExporter } from '@longhornjs/observability/memory'
+import { httpTelemetry, livenessHandler, readinessHandler, requestSpan } from '@longhornjs/observability/hono'
+import { PROMETHEUS_CONTENT_TYPE, renderPrometheus } from '@longhornjs/observability/prometheus'
 
 export const Diagnostics = token<{ meter: MetricRegistry; readiness: Readiness; tracer: Tracer }>('portable diagnostics')
 export function configureDiagnostics<Bindings extends object>(app: Longhorn<Bindings>, ready: () => boolean) {
@@ -117,9 +117,9 @@ function nativeEntry(runtime: Exclude<ProjectRuntime, 'workers'>): string {
   const cleanup = runtime === 'deno'
     ? " finally {\n    Deno.removeSignalListener('SIGINT', shutdown)\n    Deno.removeSignalListener('SIGTERM', shutdown)\n  }"
     : ''
-  return `import { loadConfig } from '@longhorn/config'
-import { ${runtime}Runtime } from '@longhorn/${runtime}'
-${runtime === 'node' ? "import { readEnv } from '@longhorn/node/config'\n" : ''}import { createLogger } from '@longhorn/logger'
+  return `import { loadConfig } from '@longhornjs/config'
+import { ${runtime}Runtime } from '@longhornjs/${runtime}'
+${runtime === 'node' ? "import { readEnv } from '@longhornjs/node/config'\n" : ''}import { createLogger } from '@longhornjs/logger'
 import { createApp } from './app.js'
 import { serverConfig } from './config.js'
 
@@ -144,8 +144,8 @@ ${signals}
 `
 }
 
-const workerEntry = `import { createScheduledWorker } from '@longhorn/workers/scheduled'
-import { createLogger } from '@longhorn/logger'
+const workerEntry = `import { createScheduledWorker } from '@longhornjs/workers/scheduled'
+import { createLogger } from '@longhornjs/logger'
 import { createApp } from './app.js'
 import type { Bindings } from './app.js'
 import { Diagnostics } from './diagnostics.js'
@@ -169,8 +169,8 @@ export default createScheduledWorker<Bindings>(app, { handle: async ({ controlle
 
 const workerHost = `import { Miniflare, Log, LogLevel } from 'miniflare'
 import { context } from 'esbuild'
-import { createLogger } from '@longhorn/logger'
-import { resolveServeOptions } from '@longhorn/runtime'
+import { createLogger } from '@longhornjs/logger'
+import { resolveServeOptions } from '@longhornjs/runtime'
 import { fileURLToPath } from 'node:url'
 import { buildOptions } from './build.config.mjs'
 
@@ -310,25 +310,25 @@ export function projectFiles(
     'src/index.ts': workers ? workerEntry : nativeEntry(runtime),
     'src/app.test.ts': appTest,
     'README.md': readme(name, runtime),
-    'docs/features.md': `# Feature connections\n\nThe host creates an application; HTTP handlers use the application container.\n\n| Feature | Guide | Owner | Connects to |\n| --- | --- | --- | --- |\n| HTTP | [HTTP](http.md) | @longhorn/core and Hono | Runtime, DI, validation, request logs |\n| DI | [Dependency injection](dependency-injection.md) | @longhorn/container | Application state, lifecycle, route handlers |\n| Lifecycle | [Lifecycle](lifecycle.md) | @longhorn/core | Startup state, host shutdown |\n| Logging | [Logging](logging.md) | @longhorn/logger | Host records, request IDs, HTTP errors |\n| Validation | [Validation](validation.md) | @longhorn/validation | Zod Standard Schema, /echo |\n| Events | [Events](events.md) | @longhorn/events | Typed echo event, DI, scoped listeners, lifecycle, /events |\n| Cache | [Cache](cache.md) | @longhorn/cache | Typed public profile, TTL, shared loads, invalidation, lifecycle |\n| Readiness | [Readiness](readiness.md) | @longhorn/observability | Explicit application check, /livez, /readyz, lifecycle |\n| Metrics | [Metrics](metrics.md) | @longhorn/observability | Bounded HTTP counters/gauges/histograms, /metrics |\n| Tracing | [Tracing](tracing.md) | @longhorn/observability | Explicit context, bounded memory exporter, /traces, safe route templates |\n| Runtime | [Runtime](runtime.md) | @longhorn/${runtime} | Host entrypoint and Fetch |\n${workers ? '' : '| Configuration | [Configuration](configuration.md) | @longhorn/config | Environment, schema, native listener |\n'}`,
+    'docs/features.md': `# Feature connections\n\nThe host creates an application; HTTP handlers use the application container.\n\n| Feature | Guide | Owner | Connects to |\n| --- | --- | --- | --- |\n| HTTP | [HTTP](http.md) | @longhornjs/core and Hono | Runtime, DI, validation, request logs |\n| DI | [Dependency injection](dependency-injection.md) | @longhornjs/container | Application state, lifecycle, route handlers |\n| Lifecycle | [Lifecycle](lifecycle.md) | @longhornjs/core | Startup state, host shutdown |\n| Logging | [Logging](logging.md) | @longhornjs/logger | Host records, request IDs, HTTP errors |\n| Validation | [Validation](validation.md) | @longhornjs/validation | Zod Standard Schema, /echo |\n| Events | [Events](events.md) | @longhornjs/events | Typed echo event, DI, scoped listeners, lifecycle, /events |\n| Cache | [Cache](cache.md) | @longhornjs/cache | Typed public profile, TTL, shared loads, invalidation, lifecycle |\n| Readiness | [Readiness](readiness.md) | @longhornjs/observability | Explicit application check, /livez, /readyz, lifecycle |\n| Metrics | [Metrics](metrics.md) | @longhornjs/observability | Bounded HTTP counters/gauges/histograms, /metrics |\n| Tracing | [Tracing](tracing.md) | @longhornjs/observability | Explicit context, bounded memory exporter, /traces, safe route templates |\n| Runtime | [Runtime](runtime.md) | @longhornjs/${runtime} | Host entrypoint and Fetch |\n${workers ? '' : '| Configuration | [Configuration](configuration.md) | @longhornjs/config | Environment, schema, native listener |\n'}`,
     'docs/http.md': '# HTTP\n\n`src/app.ts` owns routes on the real Hono application at `app.http`.\n`GET /health` reads ready state from DI; `GET /` returns the greeting; `POST /echo`\nvalidates and trims JSON. Missing routes return JSON 404. Request IDs and child\nloggers come from core middleware. `pnpm test` exercises Fetch without a socket.\n',
     'docs/dependency-injection.md': '# Dependency injection\n\n`State` is an application-owned typed token in `src/app.ts`. Its provider resolves\none shared state object. Handlers use `c.get("container").resolve(State)`.\nThe startup hook initializes that object; its cleanup resets readiness.\nCreate a new application for an independent container and lifecycle.\n',
     'docs/lifecycle.md': `# Lifecycle\n\nCore runs startup before accepting Fetch dispatch or binding a native listener.\nHooks may return cleanup; core drains handlers/listeners before cleanup runs.\n${workers ? 'Workers owns isolate lifetime. Keep the module-scoped app between requests; do not call app.close() per request. Use c.executionCtx.waitUntil() for platform-owned background work. The local serve.mjs host disposes workerd on signals.' : 'The native entrypoint owns SIGINT/SIGTERM and awaits app.close(). Repeated shutdown signals are ignored during cleanup. A closed application is single-use; create another to restart.'}\n`,
     'docs/logging.md': '# Logging\n\nThe host supplies a structured JSON logger to core. Request logs include status,\nduration, and request ID; unexpected errors use the same correlation ID. Bodies,\nheaders, and query values are not logged by request middleware. Use\n`c.get("logger")` inside routes. The X-Request-Id response header connects a response\nto its logs. Tests use the default silent logger.\n',
-    'docs/validation.md': '# Validation\n\n`validate("json", schema)` uses Standard Schema through Hono. Zod is an application\ndependency. `/echo` accepts a trimmed message of 1–200 characters and reads typed\noutput through `c.req.valid("json")`. Schema failures return 400 with normalized\nissues. Non-HTTP data can use parse/safeParse from @longhorn/validation.\n',
-    'docs/events.md': '# Application events\n\nThe typed app.echoed definition is a symbol identity from @longhorn/events. The\napplication owns one EventBus through DI. Startup registers a scoped async observer;\nPOST /echo awaits dispatch before returning. GET /events reports this process/isolate\necho count and the last request ID. Message bodies are not kept by the observer.\n\nListeners run in registration order within one emission; independent emissions may\noverlap. emit rejects with EventDispatchError after attempting later listeners when\na listener fails. Subscriptions return an unsubscribe function, once reserves one\ndelivery, and scopes/AbortSignal control ownership. EventContext.emit supports\ncorrelated follow-ups while an accepted dispatch drains.\n\nThe lifecycle cleanup closes the bus before resetting readiness. Close stops new\nroot dispatches and waits for accepted work, then removes listeners. Scope close\nunsubscribes first and drains callbacks already running. Call these drain methods\nfrom outside the listeners they wait for. Return/await all listener work.\n\nEvents are in-process delivery, without persistence, retries, or cross-isolate\ntransport. Counts reset on restart. This starter publishes before its response and\nlets failures reach HTTP error handling; it has no committed database write to\nprotect. For durable post-commit delivery, choose a deliberate application error\npolicy and an appropriate outbox/queue design. pnpm test verifies awaited dispatch\nand request correlation through Fetch.\n',
+    'docs/validation.md': '# Validation\n\n`validate("json", schema)` uses Standard Schema through Hono. Zod is an application\ndependency. `/echo` accepts a trimmed message of 1–200 characters and reads typed\noutput through `c.req.valid("json")`. Schema failures return 400 with normalized\nissues. Non-HTTP data can use parse/safeParse from @longhornjs/validation.\n',
+    'docs/events.md': '# Application events\n\nThe typed app.echoed definition is a symbol identity from @longhornjs/events. The\napplication owns one EventBus through DI. Startup registers a scoped async observer;\nPOST /echo awaits dispatch before returning. GET /events reports this process/isolate\necho count and the last request ID. Message bodies are not kept by the observer.\n\nListeners run in registration order within one emission; independent emissions may\noverlap. emit rejects with EventDispatchError after attempting later listeners when\na listener fails. Subscriptions return an unsubscribe function, once reserves one\ndelivery, and scopes/AbortSignal control ownership. EventContext.emit supports\ncorrelated follow-ups while an accepted dispatch drains.\n\nThe lifecycle cleanup closes the bus before resetting readiness. Close stops new\nroot dispatches and waits for accepted work, then removes listeners. Scope close\nunsubscribes first and drains callbacks already running. Call these drain methods\nfrom outside the listeners they wait for. Return/await all listener work.\n\nEvents are in-process delivery, without persistence, retries, or cross-isolate\ntransport. Counts reset on restart. This starter publishes before its response and\nlets failures reach HTTP error handling; it has no committed database write to\nprotect. For durable post-commit delivery, choose a deliberate application error\npolicy and an appropriate outbox/queue design. pnpm test verifies awaited dispatch\nand request correlation through Fetch.\n',
     'docs/cache.md': '# Public profile cache\n\nGET /cached uses Cache<Profile> over a MemoryCacheStore, owned through DI. A cached\npublic runtime profile retains its generatedAt timestamp for five seconds. It never\ncontains request bindings, account identity, credentials, or echo bodies. The root\ngreeting and private data are not cached by this starter. POST /cached/invalidate\ndeletes this instance key; the next read loads a fresh profile. HTTP no-store keeps\nbrowser/proxy caches from obscuring the application-cache behavior.\n\nCache values have one declared type per instance. get returns a hit/miss union, so\na cached undefined is different from a miss. getOrLoad shares concurrent work for\none key. delete, clear, and explicit set fence older loads from repopulating it;\nalready waiting callers can still receive their earlier source result. Provider\nerrors reject as CacheStoreError, while loader errors propagate without caching.\n\nThe default copy policy uses structuredClone on input/output. Cache plain data;\nprovide a suitable custom copy if your value type needs other semantics. The raw\nstore is exclusively owned by its Cache; use the manager for reads and mutations.\n\nLifecycle cleanup drains events, then accepted cache work, then resets readiness.\nDo not await cache.close or recursively load the same key from its own loader.\nMemory entries and load sharing are process/isolate-local, without distributed\ninvalidation or persistence. Counts/data reset on restart.\n',
     "docs/readiness.md": "# Readiness and liveness\n\nThe diagnostics provider in src/diagnostics.ts owns Readiness, MetricRegistry and\nTracer through DI. /livez describes application liveness; /readyz awaits the explicit\napplication-state check, returning 200 or 503 with no-store. Add real dependency\nchecks before start when adding storage or external resources. Checks share active\nwork, have bounded response deadlines, and keep a busy slot until underlying work\nsettles. Close drains underlying work, so checks should honor their AbortSignal.\nReadiness cleanup runs before state reset; final telemetry closes onStop.\n",
     "docs/metrics.md": "# Request metrics\n\nhttpTelemetry records fixed method/status labels and registered route templates.\nUnknown URLs share _unmatched; IDs, bodies, query values and headers are omitted.\n/metrics serves counters, active handlers and cumulative latency histograms in\nPrometheus 0.0.4 text. Definitions and time series are bounded. Recording failures\ndo not replace business responses. /metrics and /traces exclude themselves. These\nare per-process/isolate values, reset on restart, with no remote metrics backend.\n",
     "docs/tracing.md": "# Request tracing\n\nThe explicit-context Tracer accepts validated traceparent headers and returns\na current traceparent. Request logs include trace/span IDs. Names use registered\nroute templates, and default attributes omit payloads, raw URLs and errors. Use\nrequestSpan(context) and tracer.startSpan(name,{parent:span.context}) for children.\nNo implicit global async context or automatic outbound request instrumentation is\ninstalled. /traces shows a bounded local memory buffer; it is a demo diagnostic\nendpoint, not an OTLP collector. Export is serial/best-effort, bounded under load,\nand isolated from requests. Native shutdown flushes accepted recording spans;\nWorkers isolate disposal is platform-owned, so final export is not guaranteed.\n",
     'docs/runtime.md': runtimeGuide(runtime),
-    '.longhorn/README.md': '# Framework snapshot\n\nThese built packages were copied from the generator distribution. They are real\npackage exports and declarations, not source links to the original monorepo.\nThe root pnpm-workspace.yaml overrides every @longhorn dependency to these local\nfolders, including transitive dependencies. Keep this directory in version control.\nThird-party packages still install through pnpm. To adopt a newer framework build,\nregenerate a separate project and review the snapshot changes. No automatic updater\nor published package release is implied.\n',
+    '.longhorn/README.md': '# Framework snapshot\n\nThese built packages were copied from the generator distribution. They are real\npackage exports and declarations, not source links to the original monorepo.\nThe root pnpm-workspace.yaml overrides every @longhornjs dependency to these local\nfolders, including transitive dependencies. Keep this directory in version control.\nThird-party packages still install through pnpm. To adopt a newer framework build,\nregenerate a separate project and review the snapshot changes. No automatic updater\nor published package release is implied.\n',
   }
-  files['docs/features.md'] = files['docs/features.md']! + '| Managed application work | [Application work](application-work.md) | @longhorn/core | app.run startup and non-HTTP drain |\n'
+  files['docs/features.md'] = files['docs/features.md']! + '| Managed application work | [Application work](application-work.md) | @longhornjs/core | app.run startup and non-HTTP drain |\n'
   files['docs/application-work.md'] = '# Managed application work\n\napp.run(callback) starts the shared lifecycle and keeps resources alive until the\nactual callback settles. Await/return child work. close stops root admission, drains\nHTTP and managed work, then releases resources. Do not await close from work it is\nwaiting for. Platform waitUntil extensions not awaited by the callback are separately\nowned by the platform. This API does not add persistence, retries or a global context.\n'
   if (workers) {
     files['serve.mjs'] = workerHost
-    files['docs/features.md'] += '| Scheduled events | [Worker scheduled events](worker-scheduled.md) | @longhorn/workers/scheduled | Platform controller, app.run, waitUntil, tracing |\n'
+    files['docs/features.md'] += '| Scheduled events | [Worker scheduled events](worker-scheduled.md) | @longhornjs/workers/scheduled | Platform controller, app.run, waitUntil, tracing |\n'
     files['docs/worker-scheduled.md'] = '# Worker scheduled events\n\nThe default export adds scheduled(controller,env,ctx) through createScheduledWorker.\nIt shares application startup with Fetch, passes each event context unchanged, and\nregisters/returns one completion Promise. The sample updates an isolate-local counter\nat GET /scheduled and exports a consumer span before completing. There is no durable\nschedule/queue state and no automatic deployment/cron configuration.\n\nLocal pinned Miniflare exposes /cdn-cgi/mf/scheduled?cron=*+*+*+*+*&time=123000 for\nmanual workerd dispatch. A deployed Worker needs application-owned Cron Triggers.\nDefault admission is one event per isolate, with a cooperative 30000-ms budget.\nSignal abort does not forcibly stop JavaScript; the invocation retains its slot and\nresources until the callback settles. Failures propagate to the platform; noRetry\nis forwarded and never called automatically. Keep effects idempotent for replay.\nDo not close a shared app per event. Native/remote storage and platform-final flush\nguarantees are separate integration choices.\n'
   }
   else {

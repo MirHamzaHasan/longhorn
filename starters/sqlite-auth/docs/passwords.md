@@ -1,8 +1,8 @@
 # Native passwords
 
-Owner: `@longhorn/<selected runtime>/passwords`, injected once in `src/index.ts`.
+Owner: `@longhornjs/<selected runtime>/passwords`, injected once in `src/index.ts`.
 The adapter uses native asynchronous `scrypt` and timing-safe comparison through
-the runtime's crypto API. Shared `@longhorn/auth/scrypt` supplies policy, not a KDF.
+the runtime's crypto API. Shared `@longhornjs/auth/scrypt` supplies policy, not a KDF.
 
 The existing fixed v1 encoding has `N=131072`, `r=8`, `p=1`, a random 16-byte salt
 and a 64-byte derived key. Node, Bun and Deno adapters share the format; passwords

@@ -1,7 +1,7 @@
-import{Longhorn}from'@longhorn/core'
-import{loadConfig}from'@longhorn/config'
-import{createWorker}from'@longhorn/workers'
-import type{D1Binding}from'@longhorn/workers/d1'
+import{Longhorn}from'@longhornjs/core'
+import{loadConfig}from'@longhornjs/config'
+import{createWorker}from'@longhornjs/workers'
+import type{D1Binding}from'@longhornjs/workers/d1'
 import{createD1TasksApp}from'./app.js'
 import{configSchema}from'./config.js'
 type Bindings={DB:D1Binding;D1_MAX_PENDING?:string;D1_REQUEST_RETENTION_MS?:string;D1_CREATE_LIMIT_ENABLED?:string;D1_CREATE_LIMIT_REQUESTS?:string;D1_CREATE_LIMIT_WINDOW_MS?:string}

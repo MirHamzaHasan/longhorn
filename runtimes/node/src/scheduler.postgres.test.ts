@@ -1,9 +1,9 @@
 import { expect,it } from 'vitest'
-import type { Database } from '@longhorn/database'
-import { Queue } from '@longhorn/queue'
-import { PostgresQueueStore } from '@longhorn/queue/postgres'
-import { Scheduler } from '@longhorn/scheduler'
-import { PostgresSchedulerStore } from '@longhorn/scheduler/postgres'
+import type { Database } from '@longhornjs/database'
+import { Queue } from '@longhornjs/queue'
+import { PostgresQueueStore } from '@longhornjs/queue/postgres'
+import { Scheduler } from '@longhornjs/scheduler'
+import { PostgresSchedulerStore } from '@longhornjs/scheduler/postgres'
 import { backgroundFixture,dataSchema,deferred } from './background-test-helpers.js'
 const { open,resources }=backgroundFixture()
 async function setup(time=200) {

@@ -1,6 +1,6 @@
 # Development CLI
 
-Owner: `@longhorn/cli`, with `create-longhorn` as the creation-only entrypoint.
+Owner: `@longhornjs/cli`, with `create-longhorn` as the creation-only entrypoint.
 Both are Node development tools; generated applications select their own runtime.
 Core and the runtime adapters never import the CLI.
 
@@ -67,7 +67,7 @@ termination and still needs native CI coverage.
 ## Connections
 
 ```text
-create-longhorn binary -> @longhorn/cli argument handling -> createProject()
+create-longhorn binary -> @longhornjs/cli argument handling -> createProject()
   -> selected template + bundled built framework snapshot -> independent project
 longhorn build/dev/start/test/typecheck -> project scripts -> selected runtime host
 ```

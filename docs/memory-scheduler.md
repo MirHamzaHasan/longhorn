@@ -1,6 +1,6 @@
 # Memory schedule storage
 
-Owner: `@longhorn/scheduler/memory` (`MemorySchedulerStore`). Connects
+Owner: `@longhornjs/scheduler/memory` (`MemorySchedulerStore`). Connects
 [schedules](scheduler.md) to the [memory queue](memory-queue.md).
 
 ```ts

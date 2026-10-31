@@ -1,6 +1,6 @@
 import type { DurableObjectId, DurableObjectState } from '@cloudflare/workers-types'
-import { Longhorn } from '@longhorn/core'
-import { createScheduledWorker } from '@longhorn/workers/scheduled'
+import { Longhorn } from '@longhornjs/core'
+import { createScheduledWorker } from '@longhornjs/workers/scheduled'
 import { createReportApp } from './app.js'
 import { parseReportConfig } from './config.js'
 import type { ReportLimitBindings } from './config.js'

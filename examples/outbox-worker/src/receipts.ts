@@ -1,8 +1,8 @@
 import type { DurableObjectState } from '@cloudflare/workers-types'
-import { Longhorn } from '@longhorn/core'
-import { migrate } from '@longhorn/database'
-import { createDurableSqlite } from '@longhorn/workers/durable-sqlite'
-import { validate } from '@longhorn/validation/hono'
+import { Longhorn } from '@longhornjs/core'
+import { migrate } from '@longhornjs/database'
+import { createDurableSqlite } from '@longhornjs/workers/durable-sqlite'
+import { validate } from '@longhornjs/validation/hono'
 import { bodyLimit } from 'hono/body-limit'
 import { receipt } from './contracts.js'
 export class ReceiptStore {

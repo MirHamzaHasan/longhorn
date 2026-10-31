@@ -1,7 +1,7 @@
 # PostgreSQL transaction authentication locks
 
 Owner: `PostgresAuthStore` and `postgresAuthTransactionMigrations` from
-`@longhorn/auth/postgres`. Connects [transaction authentication](transaction-authentication.md),
+`@longhornjs/auth/postgres`. Connects [transaction authentication](transaction-authentication.md),
 [migration history](postgres-migrations.md), [runtime roles](postgres-roles.md)
 and [operations provisioning](operator-provisioning.md).
 

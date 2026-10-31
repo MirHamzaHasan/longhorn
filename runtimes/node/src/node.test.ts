@@ -1,5 +1,5 @@
 import { afterEach, expect, it } from 'vitest'
-import type { ServerHandle } from '@longhorn/runtime'
+import type { ServerHandle } from '@longhornjs/runtime'
 import { serve } from './index.js'
 
 const servers: ServerHandle[] = []

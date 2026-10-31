@@ -1,7 +1,7 @@
-import { createWorker } from '@longhorn/workers'
+import { createWorker } from '@longhornjs/workers'
 import { createPortableApp } from './app.js'
 import type { PortableBindings } from './app.js'
-import { createLogger } from '@longhorn/logger'
+import { createLogger } from '@longhornjs/logger'
 
 const app = createPortableApp('workers', createLogger({ bindings: { runtime: 'workers' } }))
 app.http.get('/background', (c) => {

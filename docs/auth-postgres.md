@@ -1,16 +1,16 @@
 # PostgreSQL credential storage
 
-Owner: PostgresAuthStore and postgresAuthMigrations from `@longhorn/auth/postgres`.
+Owner: PostgresAuthStore and postgresAuthMigrations from `@longhornjs/auth/postgres`.
 Connects [AuthService](authentication.md), [PostgreSQL](postgres.md),
 [sessions](postgres-sessions.md), [login attempts](postgres-login-attempts.md),
 and [the account example](postgres-accounts.md). The entrypoint imports no native
 driver, Hono implementation or Node APIs. Core does not enable authentication.
 
 ```ts
-import { migratePostgres } from '@longhorn/database/postgres'
-import { PostgresAuthStore, postgresAuthMigrations } from '@longhorn/auth/postgres'
-import { AuthService } from '@longhorn/auth'
-import { createScryptPasswordHasher } from '@longhorn/node/passwords'
+import { migratePostgres } from '@longhornjs/database/postgres'
+import { PostgresAuthStore, postgresAuthMigrations } from '@longhornjs/auth/postgres'
+import { AuthService } from '@longhornjs/auth'
+import { createScryptPasswordHasher } from '@longhornjs/node/passwords'
 
 await migratePostgres(owner, [...deployedMigrations, ...postgresAuthMigrations], { schema: 'app_history' })
 const store = new PostgresAuthStore(runtimeDatabase)

@@ -1,4 +1,4 @@
-import type { Database } from '@longhorn/database'
+import type { Database } from '@longhornjs/database'
 import type { OperatorConfig } from './operator-config.js'
 import { checkPostgresTables } from './postgres-readiness.js'
 import { checkOperatorRuntimeRole } from './operator-runtime.js'

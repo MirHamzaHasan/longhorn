@@ -1,5 +1,5 @@
 import{expect,it,vi}from'vitest'
-import type{BatchDatabase,SqlStatement,QueryResult,SqlRow}from'@longhorn/database'
+import type{BatchDatabase,SqlStatement,QueryResult,SqlRow}from'@longhornjs/database'
 import{BatchIdempotency}from'./batch-sqlite.js'
 const empty:QueryResult={rows:[],rowsAffected:0,lastInsertId:undefined}
 const request={scope:'tasks:create:v1',key:'request-1',input:{title:'original'}}

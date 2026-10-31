@@ -1,7 +1,7 @@
 # PostgreSQL transaction publishing
 
 Owner: `PostgresQueueStore.enqueueInTransaction` through
-`@longhorn/queue/transaction`. Connects [PostgreSQL transactions](postgres-transactions.md),
+`@longhornjs/queue/transaction`. Connects [PostgreSQL transactions](postgres-transactions.md),
 [queue storage](queue-postgres.md), [executor provenance](transaction-executors.md)
 and restricted application repositories.
 

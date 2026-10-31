@@ -1,12 +1,12 @@
 # Owned expired-request cleanup
 
-Owner: optional `@longhorn/idempotency/cleanup`. Connects the existing
+Owner: optional `@longhornjs/idempotency/cleanup`. Connects the existing
 [request API](idempotency.md), [retention policy](request-cleanup-retention.md),
 [lifecycle](idempotency-cleanup-lifecycle.md), [operator host](request-cleanup-host.md)
 and [native proof](request-cleanup-testing.md).
 
 ```ts
-import { IdempotencyCleanup } from '@longhorn/idempotency/cleanup'
+import { IdempotencyCleanup } from '@longhornjs/idempotency/cleanup'
 
 // requests is the existing Idempotency instance, with its store and clock.
 const cleanup = new IdempotencyCleanup(requests, {

@@ -1,5 +1,5 @@
-import type { Database,SqlExecutor,SqlRow,SqlValue } from '@longhorn/database'
-import { assertTransactionExecutor } from '@longhorn/database/transactions'
+import type { Database,SqlExecutor,SqlRow,SqlValue } from '@longhornjs/database'
+import { assertTransactionExecutor } from '@longhornjs/database/transactions'
 import { z } from 'zod'
 import { operationTopic } from './operation-contracts.js'
 

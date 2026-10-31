@@ -1,5 +1,5 @@
-import { parse } from '@longhorn/validation'
-import type { StandardSchemaV1 } from '@longhorn/validation'
+import { parse } from '@longhornjs/validation'
+import type { StandardSchemaV1 } from '@longhornjs/validation'
 import { jobInfo } from './types.js'
 import type { JobHandler, JobInfo, QueueStore, RunResult } from './types.js'
 import type { NewJob, StoredJob } from './types.js'

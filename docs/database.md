@@ -1,6 +1,6 @@
 # Database contracts
 
-Owner: `@longhorn/database`. Connects [runtime adapters](runtimes.md) to application
+Owner: `@longhornjs/database`. Connects [runtime adapters](runtimes.md) to application
 repositories without importing native drivers, filesystem APIs, or a schema vendor.
 Concrete implementations are [Node SQLite](sqlite.md), [Bun SQLite](bun-sqlite.md),
 [Deno SQLite](deno-sqlite.md), [Node PostgreSQL](postgres.md)
@@ -79,7 +79,7 @@ The optional [batch idempotency helper](batch-idempotency.md) separately stages
 known JSON responses with business SQL without introducing a callback transaction.
 
 Workers can borrow a SQLite-backed Durable Object through
-`createDurableSqlite` from `@longhorn/workers/durable-sqlite`. The same migration,
+`createDurableSqlite` from `@longhornjs/workers/durable-sqlite`. The same migration,
 SQLite queue and SQLite scheduler implementations run above it. Worker SQL returns
 numbers and rejects unsafe integers; it cannot reproduce Node's bigint integer
 mode. Input-gate/transaction ownership, admission and local-handle close differ

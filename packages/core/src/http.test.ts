@@ -1,7 +1,7 @@
 import { expect, it, vi } from 'vitest'
-import { provide, token } from '@longhorn/container'
-import { Hono } from '@longhorn/http'
-import type { RuntimeAdapter, ServerHandle } from '@longhorn/runtime'
+import { provide, token } from '@longhornjs/container'
+import { Hono } from '@longhornjs/http'
+import type { RuntimeAdapter, ServerHandle } from '@longhornjs/runtime'
 import { Longhorn } from './application.js'
 
 it('shares application services with handlers through the Hono context', async () => {

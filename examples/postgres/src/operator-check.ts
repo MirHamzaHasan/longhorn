@@ -1,4 +1,4 @@
-import { openPostgres } from '@longhorn/node/postgres'
+import { openPostgres } from '@longhornjs/node/postgres'
 import { loadOperatorConfiguration } from './operator-environment.js'
 import { loadConsoleAssets } from './console-assets.js'
 import { checkOperatorApplication } from './operator-preflight.js'

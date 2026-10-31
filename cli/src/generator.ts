@@ -49,7 +49,7 @@ export async function createProject(options: CreateProjectOptions): Promise<Crea
   const framework = options.frameworkDirectory ?? fileURLToPath(new URL('./framework/', import.meta.url))
   let manifest: FrameworkManifest
   try { manifest = JSON.parse(await readFile(join(framework, 'manifest.json'), 'utf8')) as FrameworkManifest } catch {
-    throw new Error('Built framework snapshot is unavailable. Build @longhorn/cli and its dependencies first')
+    throw new Error('Built framework snapshot is unavailable. Build @longhornjs/cli and its dependencies first')
   }
   const selected = new Set<string>()
   function include(name: string): void {
@@ -58,17 +58,17 @@ export async function createProject(options: CreateProjectOptions): Promise<Crea
     if (!entry || !/^[a-z]+$/.test(entry.directory)) throw new Error(`Framework snapshot is missing ${name}`)
     selected.add(name)
     for (const dependency of Object.keys(entry.dependencies)) {
-      if (dependency.startsWith('@longhorn/')) include(dependency)
+      if (dependency.startsWith('@longhornjs/')) include(dependency)
     }
   }
   const application = template === 'd1-tasks' ? await readD1Template(framework)
     : template === 'sqlite-tasks' ? await readSqliteTemplate(framework, options.runtime as 'node'|'bun'|'deno')
     : template === 'sqlite-auth' ? await readAuthTemplate(framework, options.runtime as 'node'|'bun'|'deno')
     : template === 'command-app' ? await readCommandTemplate(framework) : undefined
-  const direct = application ? Object.keys(application.dependencies).filter(name => name.startsWith('@longhorn/')) : ['@longhorn/core', '@longhorn/container', '@longhorn/logger', '@longhorn/validation', '@longhorn/events', '@longhorn/cache', '@longhorn/observability', `@longhorn/${options.runtime}`]
+  const direct = application ? Object.keys(application.dependencies).filter(name => name.startsWith('@longhornjs/')) : ['@longhornjs/core', '@longhornjs/container', '@longhornjs/logger', '@longhornjs/validation', '@longhornjs/events', '@longhornjs/cache', '@longhornjs/observability', `@longhornjs/${options.runtime}`]
   if (!application) {
-    if (options.runtime !== 'workers') direct.push('@longhorn/config')
-    else direct.push('@longhorn/runtime')
+    if (options.runtime !== 'workers') direct.push('@longhornjs/config')
+    else direct.push('@longhornjs/runtime')
   }
   for (const name of direct) include(name)
   const packageNames = [...selected].sort()

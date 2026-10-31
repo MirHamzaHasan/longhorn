@@ -38,17 +38,17 @@ caching. See [cache](cache.md) and [memory storage](memory-cache.md).
 Core provides JSON
 404/500 behavior, request IDs, and correlated request/error logs.
 
-Native hosts validate HOST, PORT, GREETING, and LOG_LEVEL with `@longhorn/config`.
+Native hosts validate HOST, PORT, GREETING, and LOG_LEVEL with `@longhornjs/config`.
 They use loopback port 3000 by default; PORT=0 selects an available port. The host
 prints the actual URL. Invalid configuration fails before listening. Signal handlers
 await `app.close()` and ignore repeated shutdown requests during cleanup.
 
 | Runtime | Host | Development behavior | Environment and lifetime |
 | --- | --- | --- | --- |
-| Node | `@longhorn/node` | tsx watches source | Optional .env/.env.local, process values win; host owns signals |
-| Bun | `@longhorn/bun` | Bun native watch | Bun.env and Bun's environment-file behavior; native listener drain |
-| Deno | `@longhorn/deno` | Deno native watch | Explicit loopback and named environment permissions; native shutdown |
-| Workers | `@longhorn/workers` | esbuild watches and reloads successful builds | Per-request GREETING binding, platform execution context, local workerd host |
+| Node | `@longhornjs/node` | tsx watches source | Optional .env/.env.local, process values win; host owns signals |
+| Bun | `@longhornjs/bun` | Bun native watch | Bun.env and Bun's environment-file behavior; native listener drain |
+| Deno | `@longhornjs/deno` | Deno native watch | Explicit loopback and named environment permissions; native shutdown |
+| Workers | `@longhornjs/workers` | esbuild watches and reloads successful builds | Per-request GREETING binding, platform execution context, local workerd host |
 
 All starters use pnpm 12.6.0 and Node 20.19+ development tooling. Bun 1.4.4 and Deno
 2.9.6 are local aliased dev dependencies, preserving pnpm as package manager. Deno
@@ -104,8 +104,8 @@ development watcher. It has its own [asset](d1-starter-snapshot.md),
 [lifetime](d1-starter-development.md) and [verification](d1-starter-testing.md) guides;
 it has a separate route set from the generic greeting/diagnostics profile above.
 
-Snapshots now include the optional `@longhorn/cache/json`, `@longhorn/cache/redis`
-and Node-only `@longhorn/node/redis` exports. Starters continue to select memory;
+Snapshots now include the optional `@longhornjs/cache/json`, `@longhornjs/cache/redis`
+and Node-only `@longhornjs/node/redis` exports. Starters continue to select memory;
 no Redis service/credentials are created by generation. The
 [Redis task profile](redis-tasks-example.md) shows explicit provider selection.
 The snapshots also retain the optional metric reader and `/otlp-metrics` export.
@@ -115,11 +115,11 @@ selection without adding collector credentials or a background reader to starter
 Snapshots retain the optional log processor, sink helpers and `/otlp-logs` export
 as well. Default starters keep local logging; [the reports profile](jobs-logs-export.md)
 shows explicit remote configuration and final processor ownership.
-Snapshots also include optional `@longhorn/database/batch` and
-`@longhorn/workers/d1`. Generic starters still add no persistent database or
+Snapshots also include optional `@longhornjs/database/batch` and
+`@longhornjs/workers/d1`. Generic starters still add no persistent database or
 schema deployment. The [D1 task example](d1-tasks.md) shows that explicit binding,
 batch repository and trusted deployment profile.
-Snapshots retain optional `@longhorn/idempotency/batch-sqlite` when idempotency is
+Snapshots retain optional `@longhornjs/idempotency/batch-sqlite` when idempotency is
 selected through the graph. Generic starters enable no persistence/request keys;
 the [D1 replay profile](d1-idempotency-http.md) supplies explicit DI, deployment
 and response retention policy.

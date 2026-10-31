@@ -1,6 +1,6 @@
 import { z } from 'zod'
-import { loadConfig } from '@longhorn/config'
-import { readEnv } from '@longhorn/node/config'
+import { loadConfig } from '@longhornjs/config'
+import { readEnv } from '@longhornjs/node/config'
 import { postgresUrl } from './config.js'
 const integer = (fallback: string, min: number, max: number) => z.string().regex(/^\d+$/).default(fallback).transform(Number).pipe(z.number().int().min(min).max(max))
 export const limitMaintenanceConfigSchema = z.object({

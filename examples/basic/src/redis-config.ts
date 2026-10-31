@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { redisConnectionUrl } from '@longhorn/node/redis'
+import { redisConnectionUrl } from '@longhornjs/node/redis'
 import { appConfig, configInputSchema } from './config.js'
 export const redisConfigSchema = configInputSchema.extend({
   PORT: z.string().trim().regex(/^\d+$/).default('3013').transform(Number).pipe(z.number().int().min(0).max(65535)),

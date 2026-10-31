@@ -1,5 +1,5 @@
 import { expect,it } from 'vitest'
-import type { Database } from '@longhorn/database'
+import type { Database } from '@longhornjs/database'
 import { PostgresAuthStore } from './postgres.js'
 it('rejects known non-PostgreSQL databases and invalid throttle/maintenance bounds before SQL',async () => {
   const database: Database={ dialect: 'sqlite',execute: async () => { throw new Error('SQL must not run') },transaction: async () => { throw new Error('Transaction must not run') },close: async () => {} }

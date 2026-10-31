@@ -1,4 +1,4 @@
-import type { Database,Migration } from '@longhorn/database'
+import type { Database,Migration } from '@longhornjs/database'
 import { SqlRateLimitStore } from './sql.js'
 export const postgresRateLimitMigrations:readonly Migration[]=[{id:'longhorn_rate_limit/001_buckets',statements:[
   'CREATE SCHEMA longhorn_rate_limit','REVOKE ALL ON SCHEMA longhorn_rate_limit FROM PUBLIC',
