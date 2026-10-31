@@ -1,7 +1,7 @@
 ---
 id: task014
 title: Stop a clean Deno shutdown reporting a failed cleanup
-status: backlog
+status: done
 paths:
   - starters/deno-sqlite-tasks/host.mjs
 shared:
@@ -43,3 +43,5 @@ A Deno host ended by the SIGTERM its launcher asked for counts as stopped. Force
 - macOS ARM64, real gate with this change, three runs: exit 0 each time. The failure never appeared in eight runs on macOS without the change, so these runs don't show the fix working.
 
 What sent the second signal wasn't observed. A signal to the process group plus the launcher's own SIGTERM would explain it. A host killed by SIGTERM part way through closing would also now count as stopped; the gate separately requires `Application stopped`.
+
+Hosted run 41222595193 on `c10abe7`, with this fix: `source-and-runtimes` passed 6 of 6 attempts. The job failed in 3 of 7 runs that reached this step before, and on attempt 5 of 5 with logging, so this makes the fix likely but does not prove it.
