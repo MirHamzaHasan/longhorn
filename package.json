@@ -16,6 +16,8 @@
   },
   "scripts": {
     "task": "node scripts/task.mjs",
+    "test:npm-rehearsal": "pnpm build && node scripts/verify-npm-rehearsal.mjs",
+    "release:npm": "pnpm test:npm-rehearsal && pnpm -r --filter './packages/*' --filter './runtimes/*' --filter ./cli --filter ./create-longhorn publish --access public",
     "test:tasks": "node --test scripts/task.test.mjs",
     "test:sqlite-project": "pnpm build && node scripts/verify-sqlite-project.mjs",
     "test:d1-project": "pnpm build && node scripts/verify-d1-project.mjs",

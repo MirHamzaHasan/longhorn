@@ -1,6 +1,18 @@
 {
   "name": "@longhorn/queue",
-  "version": "0.0.1",
+  "version": "0.1.0",
+  "description": "Persistent jobs, leases and retries for LongHorn.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MirHamzaHasan/longhorn.git",
+    "directory": "packages/queue"
+  },
+  "homepage": "https://mirhamzahasan.github.io/longhorn/",
+  "bugs": "https://github.com/MirHamzaHasan/longhorn/issues",
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "exports": {
     "./transaction": {
@@ -32,6 +44,8 @@
     "@longhorn/database": "workspace:*",
     "@longhorn/validation": "workspace:*"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "sideEffects": false
 }

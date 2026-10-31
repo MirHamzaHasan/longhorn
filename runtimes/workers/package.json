@@ -1,10 +1,28 @@
 {
   "name": "@longhorn/workers",
-  "version": "0.0.1",
+  "version": "0.1.0",
+  "description": "Cloudflare Workers host for LongHorn, with D1 and Durable Objects.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MirHamzaHasan/longhorn.git",
+    "directory": "runtimes/workers"
+  },
+  "homepage": "https://mirhamzahasan.github.io/longhorn/",
+  "bugs": "https://github.com/MirHamzaHasan/longhorn/issues",
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "exports": {
-    "./d1": { "types": "./dist/d1.d.ts", "import": "./dist/d1.js" },
-    "./outbox": { "types": "./dist/outbox.d.ts", "import": "./dist/outbox.js" },
+    "./d1": {
+      "types": "./dist/d1.d.ts",
+      "import": "./dist/d1.js"
+    },
+    "./outbox": {
+      "types": "./dist/outbox.d.ts",
+      "import": "./dist/outbox.js"
+    },
     "./sqlite-alarms": {
       "types": "./dist/sqlite-alarms.d.ts",
       "import": "./dist/sqlite-alarms.js"

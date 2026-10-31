@@ -7,7 +7,7 @@ Connects [SpanRecord](tracing.md), [HTTP export](otlp-http.md) and
 One request contains resourceSpans -> resource and scopeSpans -> instrumentation
 scope and spans. Resource service.name is required; service.version is optional.
 Extra resource attributes cannot replace those reserved keys. The fixed scope is
-@longhorn/observability version 0.0.1, matching this package version.
+@longhorn/observability version 0.1.0, matching this package version.
 
 | Framework value | OTLP/JSON value |
 | --- | --- |

@@ -1,6 +1,18 @@
 {
   "name": "@longhorn/logger",
-  "version": "0.0.1",
+  "version": "0.1.0",
+  "description": "Structured logs, redaction and request IDs for LongHorn.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MirHamzaHasan/longhorn.git",
+    "directory": "packages/logger"
+  },
+  "homepage": "https://mirhamzahasan.github.io/longhorn/",
+  "bugs": "https://github.com/MirHamzaHasan/longhorn/issues",
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "exports": {
     ".": {

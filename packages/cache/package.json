@@ -1,6 +1,18 @@
 {
   "name": "@longhorn/cache",
-  "version": "0.0.1",
+  "version": "0.1.0",
+  "description": "Memory or Redis caching with shared loads for LongHorn.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MirHamzaHasan/longhorn.git",
+    "directory": "packages/cache"
+  },
+  "homepage": "https://mirhamzahasan.github.io/longhorn/",
+  "bugs": "https://github.com/MirHamzaHasan/longhorn/issues",
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "exports": {
     ".": {

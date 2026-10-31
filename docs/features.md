@@ -724,4 +724,5 @@ additional implementation must add its guide and native verification evidence.
 | Website and README animations | [Website](website.md) | site/ and docs/assets | Runtime matrix, handoff and feature guides |
 | Examples walkthrough | [Examples tour](examples-tour.md) | docs | Every runnable example |
 | Parallel agent tasks | [Task protocol](../tasks/README.md) | scripts/task.mjs and AGENTS.md | Git worktrees, per-area context and shared-file rules |
+| npm release rehearsal | [Releasing](releasing.md) | scripts/verify-npm-rehearsal.mjs | Every public package, create-longhorn |
 | Open source repository rules | [Repository settings](repository-settings.md) | .github and repository settings | Contributing, security reporting, CI and branch protection |
