@@ -1,7 +1,7 @@
 ---
 id: task011
 title: Let the prune gate start from an empty pnpm cache
-status: backlog
+status: review
 paths:
   - scripts/verify-prune-packages.mjs
 shared:
@@ -35,3 +35,5 @@ The gate exits 0 with `XDG_CACHE_HOME` set to an empty folder, and the step pass
 ## Evidence
 
 31 October 2026, macOS ARM64, Node 20.19.4. With an empty `XDG_CACHE_HOME`, the unchanged gate exited 1 with `ERR_PNPM_BAD_CONFIG_DEP`, the same error as CI. With this change it exited 0. That run used a scratch copy of the gate against this repository's existing build.
+
+Hosted CI run 41195228530 on `d4c5657`: all 8 jobs passed, including this step.
