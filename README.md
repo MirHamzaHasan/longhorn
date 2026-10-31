@@ -263,7 +263,7 @@ The [examples tour](docs/examples-tour.md) has ports, curl commands and settings
 | Run for real | Not claimed |
 | --- | --- |
 | 749 source tests, and 66 gates that start real engines, processes and browsers | Published packages: nothing is on npm |
-| Processes killed with SIGKILL during and after commits | Every gate on Linux: hosted CI runs 49 of the 66 |
+| Processes killed with SIGKILL during and after commits | Every gate on Linux: hosted CI reaches about 50 of the 66 |
 | Real PostgreSQL 18, Redis, D1, Durable Objects and OpenTelemetry Collector | Production or cloud deployment, failover or replication |
 | Lost HTTP replies, concurrent writers and failed schema upgrades | Exactly-once delivery across systems |
 | Generated projects, moved out of the repository and installed fresh | Password reset, account recovery or MFA |

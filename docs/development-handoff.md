@@ -69,7 +69,8 @@ ran them.
 The first full run on `main`, on commit `55a85bb`, passed seven jobs on Ubuntu 24.04.
 `source-and-runtimes` stopped at `verify-prune-packages`, whose first install could not start
 from an empty pnpm cache. With that fixed, all eight jobs passed on `d4c5657`, the head of PR
-#56. CI runs 49 of the 66 gates, so the rest have still only run on macOS. See
+#56. CI reaches about 50 of the 66 gates. The rest, including the outbox and
+PostgreSQL gates, have only run on macOS. See
 `tasks/task004-hosted-ci.md`.
 
 ## Continuing
