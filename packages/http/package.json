@@ -1,9 +1,24 @@
 {
   "name": "@longhorn/http",
-  "version": "0.0.1",
+  "version": "0.1.0",
+  "description": "A real Hono app with error defaults for LongHorn.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MirHamzaHasan/longhorn.git",
+    "directory": "packages/http"
+  },
+  "homepage": "https://mirhamzahasan.github.io/longhorn/",
+  "bugs": "https://github.com/MirHamzaHasan/longhorn/issues",
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "exports": {
-    "./client": { "types": "./dist/client.d.ts", "import": "./dist/client.js" },
+    "./client": {
+      "types": "./dist/client.d.ts",
+      "import": "./dist/client.js"
+    },
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"

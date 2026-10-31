@@ -1,19 +1,51 @@
 {
   "name": "@longhorn/idempotency",
-  "version": "0.0.1",
+  "version": "0.1.0",
+  "description": "Safe retries with saved replies for LongHorn.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MirHamzaHasan/longhorn.git",
+    "directory": "packages/idempotency"
+  },
+  "homepage": "https://mirhamzahasan.github.io/longhorn/",
+  "bugs": "https://github.com/MirHamzaHasan/longhorn/issues",
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "exports": {
-    "./cleanup": { "types": "./dist/cleanup.d.ts", "import": "./dist/cleanup.js" },
-    "./batch-sqlite": { "types": "./dist/batch-sqlite.d.ts", "import": "./dist/batch-sqlite.js" },
-    ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" },
-    "./sqlite": { "types": "./dist/sqlite.d.ts", "import": "./dist/sqlite.js" },
-    "./postgres": { "types": "./dist/postgres.d.ts", "import": "./dist/postgres.js" }
+    "./cleanup": {
+      "types": "./dist/cleanup.d.ts",
+      "import": "./dist/cleanup.js"
+    },
+    "./batch-sqlite": {
+      "types": "./dist/batch-sqlite.d.ts",
+      "import": "./dist/batch-sqlite.js"
+    },
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./sqlite": {
+      "types": "./dist/sqlite.d.ts",
+      "import": "./dist/sqlite.js"
+    },
+    "./postgres": {
+      "types": "./dist/postgres.d.ts",
+      "import": "./dist/postgres.js"
+    }
   },
   "scripts": {
     "build": "tsup src/index.ts src/sqlite.ts src/postgres.ts src/batch-sqlite.ts src/cleanup.ts --format esm --dts --clean",
     "typecheck": "tsc --noEmit"
   },
-  "dependencies": { "@longhorn/database": "workspace:*", "@longhorn/runtime": "workspace:*" },
-  "files": ["dist"],
+  "dependencies": {
+    "@longhorn/database": "workspace:*",
+    "@longhorn/runtime": "workspace:*"
+  },
+  "files": [
+    "dist"
+  ],
   "sideEffects": false
 }

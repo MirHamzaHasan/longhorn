@@ -1,6 +1,18 @@
 {
   "name": "@longhorn/scheduler",
-  "version": "0.0.1",
+  "version": "0.1.0",
+  "description": "Durable one-time, interval and cron runs for LongHorn.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MirHamzaHasan/longhorn.git",
+    "directory": "packages/scheduler"
+  },
+  "homepage": "https://mirhamzahasan.github.io/longhorn/",
+  "bugs": "https://github.com/MirHamzaHasan/longhorn/issues",
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "exports": {
     ".": {
@@ -32,7 +44,11 @@
     "@longhorn/database": "workspace:*",
     "@longhorn/queue": "workspace:*"
   },
-  "devDependencies": { "@longhorn/validation": "workspace:*" },
-  "files": ["dist"],
+  "devDependencies": {
+    "@longhorn/validation": "workspace:*"
+  },
+  "files": [
+    "dist"
+  ],
   "sideEffects": false
 }

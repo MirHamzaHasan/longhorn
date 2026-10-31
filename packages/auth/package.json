@@ -1,6 +1,18 @@
 {
   "name": "@longhorn/auth",
-  "version": "0.0.1",
+  "version": "0.1.0",
+  "description": "Passwords, sessions and guards for LongHorn applications.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MirHamzaHasan/longhorn.git",
+    "directory": "packages/auth"
+  },
+  "homepage": "https://mirhamzahasan.github.io/longhorn/",
+  "bugs": "https://github.com/MirHamzaHasan/longhorn/issues",
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "exports": {
     "./bearer": {

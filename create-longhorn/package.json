@@ -1,6 +1,18 @@
 {
   "name": "create-longhorn",
-  "version": "0.0.1",
+  "version": "0.1.0",
+  "description": "Create a new LongHorn backend project.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MirHamzaHasan/longhorn.git",
+    "directory": "create-longhorn"
+  },
+  "homepage": "https://mirhamzahasan.github.io/longhorn/",
+  "bugs": "https://github.com/MirHamzaHasan/longhorn/issues",
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "exports": {
     ".": {

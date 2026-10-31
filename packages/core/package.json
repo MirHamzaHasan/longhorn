@@ -1,6 +1,18 @@
 {
   "name": "@longhorn/core",
-  "version": "0.0.0",
+  "version": "0.1.0",
+  "description": "The LongHorn application: start, listen, drain and close.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MirHamzaHasan/longhorn.git",
+    "directory": "packages/core"
+  },
+  "homepage": "https://mirhamzahasan.github.io/longhorn/",
+  "bugs": "https://github.com/MirHamzaHasan/longhorn/issues",
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "sideEffects": false,
   "exports": {

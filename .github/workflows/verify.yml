@@ -237,6 +237,7 @@ jobs:
       - run: sudo apt-get update && sudo apt-get install -y build-essential bison flex perl
       - run: node scripts/prepare-postgres-clients.mjs
       - run: pnpm build
+      - run: node scripts/verify-npm-rehearsal.mjs
       - id: verify-application
         run: |
           node scripts/verify-command-app.mjs

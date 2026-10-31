@@ -1,6 +1,18 @@
 {
   "name": "@longhorn/runtime",
-  "version": "0.0.1",
+  "version": "0.1.0",
+  "description": "Fetch and listener contracts for LongHorn hosts.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MirHamzaHasan/longhorn.git",
+    "directory": "packages/runtime"
+  },
+  "homepage": "https://mirhamzahasan.github.io/longhorn/",
+  "bugs": "https://github.com/MirHamzaHasan/longhorn/issues",
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "exports": {
     ".": {
