@@ -44,8 +44,8 @@ gh workflow run "Website" --repo MirHamzaHasan/longhorn
 
 ## Required status checks
 
-Not in the ruleset yet, on purpose. The workflow has not fully passed on hosted runners, so
-requiring it now would block every merge. After `verify.yml` first passes on `main`, add
+Not in the ruleset yet, on purpose. `verify.yml` has passed on a pull request but not yet on `main`, and
+requiring it before then would block merges. After it first passes on `main`, add
 its eight jobs as required checks. That work is `tasks/task004-hosted-ci.md`.
 
 ## Check made before going public

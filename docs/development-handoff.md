@@ -13,7 +13,7 @@ framework is on `main` and the repository is public. Start with the
 | Repository visibility | Public |
 | Branch protection | Active on `main`, without required checks yet. See [repository settings](repository-settings.md) |
 | Website | Live at https://mirhamzahasan.github.io/longhorn/. See [website](website.md) |
-| Hosted CI | 7 of 8 jobs pass. See below |
+| Hosted CI | All 8 jobs passed on the fix in PR #56. See below |
 | Packages | Not published |
 | Cloud deployment | None performed |
 
@@ -66,10 +66,11 @@ ran them.
 
 ## Hosted review status
 
-The first full run on `main` was on commit `55a85bb`, after the repository went public. Seven
-jobs passed on Ubuntu 24.04. `source-and-runtimes` passed install, build, typecheck,
-`pnpm test` and `pnpm test:tasks`, then stopped at `verify-prune-packages`, so its later gates
-did not run. See `tasks/task004-hosted-ci.md`.
+The first full run on `main`, on commit `55a85bb`, passed seven jobs on Ubuntu 24.04.
+`source-and-runtimes` stopped at `verify-prune-packages`, whose first install could not start
+from an empty pnpm cache. With that fixed, all eight jobs passed on `d4c5657`, the head of PR
+#56. CI runs 49 of the 66 gates, so the rest have still only run on macOS. See
+`tasks/task004-hosted-ci.md`.
 
 ## Continuing
 

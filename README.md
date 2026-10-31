@@ -12,6 +12,7 @@
   <a href="https://github.com/MirHamzaHasan/longhorn/discussions"><b>Discussions</b></a>
 </p>
 
+[![Verification](https://github.com/MirHamzaHasan/longhorn/actions/workflows/verify.yml/badge.svg?branch=main)](https://github.com/MirHamzaHasan/longhorn/actions/workflows/verify.yml)
 ![MIT license](https://img.shields.io/badge/license-MIT-0f3a5e)
 ![Status: pre-release](https://img.shields.io/badge/status-pre--release-ffc14d)
 ![Node 20.19 or newer](https://img.shields.io/badge/node-%E2%89%A520.19-0f3a5e)
@@ -262,15 +263,15 @@ The [examples tour](docs/examples-tour.md) has ports, curl commands and settings
 | Run for real | Not claimed |
 | --- | --- |
 | 749 source tests, and 66 gates that start real engines, processes and browsers | Published packages: nothing is on npm |
-| Processes killed with SIGKILL during and after commits | A complete hosted CI pass: 7 of 8 jobs passed on the first full run |
+| Processes killed with SIGKILL during and after commits | Every gate on Linux: hosted CI runs 49 of the 66 |
 | Real PostgreSQL 18, Redis, D1, Durable Objects and OpenTelemetry Collector | Production or cloud deployment, failover or replication |
 | Lost HTTP replies, concurrent writers and failed schema upgrades | Exactly-once delivery across systems |
 | Generated projects, moved out of the repository and installed fresh | Password reset, account recovery or MFA |
 | Backup, restore into empty storage, then a new command | Other browser engines, or VoiceOver and TalkBack on real devices |
 | Console screens with axe in Chromium, in both themes and at phone width | Native PostgreSQL on anything other than Node |
 
-Most gates have only run on macOS ARM64 so far. Source tests, typecheck and 7 of 8 jobs have
-also passed on hosted Ubuntu. The [runtime matrix](docs/supported-runtimes.md) has the
+Local checks ran on macOS ARM64, and all 8 CI jobs have passed on hosted Ubuntu 24.04.
+Nothing has run on Windows. The [runtime matrix](docs/supported-runtimes.md) has the
 exact versions, and the [handoff](docs/development-handoff.md) has the current state.
 
 ## Where it's going
@@ -279,7 +280,6 @@ Feature development is paused while the project opens up. These come next:
 
 | Next | Why it matters | Track it |
 | --- | --- | --- |
-| Green CI on hosted runners | One job still stops early, so its gates haven't run on Linux | [task004](tasks/task004-hosted-ci.md) |
 | A real deployment guide | Every proof so far runs locally | [task006](tasks/task006-deployment-guide.md) |
 | Publish v0.1 to npm | So `npm create longhorn@latest` works without a checkout | [task005](tasks/task005-publish-v0-1.md) |
 | Account recovery | Auth has no password reset or recovery yet | [task008](tasks/task008-account-recovery.md) |
@@ -296,7 +296,7 @@ know the whole codebase. Most changes touch one package and one guide.
 
 - **Try the quickstart and say where you got stuck.** A fresh pair of eyes is the
   thing this project has least of. [Start a discussion](https://github.com/MirHamzaHasan/longhorn/discussions).
-- **Run it on your platform.** Most gates have only run on macOS ARM64, and
+- **Run it on your platform.** Checks have run on macOS ARM64 and hosted Ubuntu, and
   nothing has run on Windows. A report of what happened is useful, even if it just failed.
 - **Fix a doc.** If a guide is wrong or confusing, a small pull request is welcome.
 - **Pick up an open issue.** See
