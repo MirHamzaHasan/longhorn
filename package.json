@@ -12,7 +12,7 @@
     "miniflare": "3.20250718.3",
     "tsup": "^8.5.1",
     "typescript": "^5.8.2",
-    "vitest": "^3.1.1"
+    "vitest": "^4.1.11"
   },
   "scripts": {
     "task": "node scripts/task.mjs",
