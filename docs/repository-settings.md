@@ -58,11 +58,11 @@ This does not let anyone push to `main`. Only the maintainer can merge.
 
 Active since 31 October 2026, after all eight `verify.yml` jobs passed on `main` at `6977d4e`
 (run 41215461094). A pull request needs `account-operations`, `browser`, `d1-storage`,
-`independent-distribution`, `redis-cache`, `rust-reports`, `source-and-runtimes` and `telemetry`
-to pass. Branches don't have to be up to date with `main`. An admin merge can still bypass the
+`independent-distribution`, `redis-cache`, `rust-reports`, `source-and-runtimes`, `telemetry`,
+`durable-delivery` and `worker-runtime` to pass. Branches don't have to be up to date with `main`. An admin merge can still bypass the
 checks. If you rename a job in `verify.yml`, update the ruleset too, or pull requests wait
-for a check that never reports. `durable-delivery` and `worker-runtime` run on every pull
-request but are not required yet, because they have not passed on `main`.
+for a check that never reports. `durable-delivery` and `worker-runtime` were added to the required
+checks on 1 November 2026, after passing on `main` at `a013896`, so all 10 jobs are required.
 
 ## Check made before going public
 

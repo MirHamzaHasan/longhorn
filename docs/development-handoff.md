@@ -11,10 +11,10 @@ framework is on `main` and the repository is public. Start with the
 | --- | --- |
 | Code | On `main`, including live command history, the agent workflow and the website |
 | Repository visibility | Public |
-| Branch protection | Active on `main`, with the eight CI jobs required. See [repository settings](repository-settings.md) |
+| Branch protection | Active on `main`, with all 10 CI jobs required. See [repository settings](repository-settings.md) |
 | Website | Live at https://mirhamzahasan.github.io/longhorn/. See [website](website.md) |
 | Hosted CI | All 10 jobs, reaching all 66 gates, passed at `6bd18eb`. See below |
-| Packages | Not published |
+| Packages | 0.1.0 on npm as `@longhornjs/*` and `create-longhorn`, published 31 October 2026 UTC. Only the default API template generates from it; see [releasing](releasing.md) |
 | Cloud deployment | None performed |
 
 The [task board](../tasks/README.md) lists what comes next. Run `pnpm task list`.

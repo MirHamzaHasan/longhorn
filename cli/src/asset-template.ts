@@ -8,6 +8,8 @@ export type AssetProfile={
   readonly requiredFiles:readonly string[];readonly requiredDependencies:readonly string[]
   readonly scripts:Readonly<Record<string,string>>;readonly allowBuilds:readonly string[]
 }
+/** npm renames .gitignore to .npmignore when it installs a package, so assets keep it under another name. */
+const assetPath=(path:string)=>path.split('/').map(part=>part==='.gitignore'?'gitignore.asset':part).join('/')
 /** Read a named trusted local distribution; hashes are corruption checks, not signatures. */
 export async function readAssetTemplate(framework:string,profile:AssetProfile){
   const directory=join(framework,'templates',profile.assetName??profile.name),files:Record<string,string>=Object.create(null)
@@ -23,7 +25,7 @@ export async function readAssetTemplate(framework:string,profile:AssetProfile){
     let bytes=0
     for(const[path,hash]of entries){
       if(!/^[A-Za-z0-9_./-]+$/.test(path)||path.startsWith('/')||path.split('/').some(part=>!part||part==='.'||part==='..')||path.startsWith('.longhorn/')||['package.json','pnpm-workspace.yaml'].includes(path)||typeof hash!=='string'||!/^[a-f0-9]{64}$/.test(hash))throw new Error()
-      const content=await readFile(join(directory,path));bytes+=content.byteLength
+      const content=await readFile(join(directory,assetPath(path)));bytes+=content.byteLength
       if(bytes>2097152||content.byteLength>524288||createHash('sha256').update(content).digest('hex')!==hash)throw new Error()
       files[path]=new TextDecoder('utf-8',{fatal:true}).decode(content)
     }

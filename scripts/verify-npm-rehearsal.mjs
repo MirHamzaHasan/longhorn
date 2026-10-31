@@ -2,7 +2,7 @@
 // install them in an empty folder, generate a project with create-longhorn and start it.
 import assert from 'node:assert/strict'
 import { execFile,spawn } from 'node:child_process'
-import { mkdir,mkdtemp,readFile,readdir,rm,writeFile } from 'node:fs/promises'
+import { access,mkdir,mkdtemp,readFile,readdir,rm,writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -50,6 +50,17 @@ try{
   await writeFile(join(stranger,'package.json'),'{"name":"stranger","private":true}\n')
   await run('npm',['install','--no-audit','--no-fund','--silent',...files.map(file=>join(tarballs,file))],{cwd:stranger,shell,maxBuffer:16777216})
   await run('npx',['--no-install','create-longhorn','my-api','--runtime','node'],{cwd:stranger,shell})
+  // npm, unlike pnpm, renames some files on install, so every template has to be generated from this install.
+  const templates=[['bun'],['deno'],['workers'],['node','sqlite-tasks'],['bun','sqlite-tasks'],['deno','sqlite-tasks'],['node','sqlite-auth'],['bun','sqlite-auth'],['deno','sqlite-auth'],['workers','d1-tasks'],['node','command-app']]
+  for(const[runtime,template]of templates){
+    const name=[runtime,template].filter(Boolean).join('-')
+    await run('npx',['--no-install','create-longhorn',name,'--runtime',runtime,...(template?['--template',template]:[])],{cwd:stranger,shell})
+    await access(join(stranger,name,'package.json'))
+    if(template)await access(join(stranger,name,'.gitignore'))
+  }
+  console.log(`npm rehearsal: all ${templates.length+1} runtime and template choices generate from the npm-installed packages.`)
+  await run('pnpm',['install'],{cwd:join(stranger,'node-sqlite-tasks'),shell,maxBuffer:16777216,env:{...process.env,CI:'',npm_config_frozen_lockfile:'false'}})
+  await run('pnpm',['build'],{cwd:join(stranger,'node-sqlite-tasks'),shell})
   const project=join(stranger,'my-api')
   await run('pnpm',['install'],{cwd:project,shell,maxBuffer:16777216,env:{...process.env,CI:'',npm_config_frozen_lockfile:'false'}})
   await run('pnpm',['build'],{cwd:project,shell})

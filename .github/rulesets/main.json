@@ -78,6 +78,14 @@
           {
             "context": "telemetry",
             "integration_id": 15368
+          },
+          {
+            "context": "durable-delivery",
+            "integration_id": 15368
+          },
+          {
+            "context": "worker-runtime",
+            "integration_id": 15368
           }
         ]
       }

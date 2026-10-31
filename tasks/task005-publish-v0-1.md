@@ -1,7 +1,7 @@
 ---
 id: task005
 title: Publish v0.1 to npm
-status: blocked
+status: done
 paths:
   - packages/
   - runtimes/
@@ -63,3 +63,5 @@ On a clean machine, `npm create longhorn@latest my-api` creates an app that star
 - The gate first failed on six `.env.example` templates. They hold default settings only and are meant to ship, so the rule now allows exactly that name. Its file and secret patterns were checked against good and bad samples.
 
 Blocked on the owner: the `@longhornjs` npm organization, an npm login and the release itself. See [releasing](../docs/releasing.md). The acceptance check, `npm create longhorn@latest` on a clean machine, can only run after that. Only the Node template was rehearsed.
+
+31 October 2026 UTC: the owner published all 23 packages at 0.1.0. From a clean folder and a fresh npm cache, `npm create longhorn@latest my-api -- --runtime node` created a project, which then installed, built and answered `{"status":"ok","runtime":"node","ready":true}`. Bun, Deno and Workers default projects also generated. Every `--template` choice failed; see [releasing](../docs/releasing.md).

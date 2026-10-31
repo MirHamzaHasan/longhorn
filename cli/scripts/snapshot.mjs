@@ -1,4 +1,4 @@
-import { cp, mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises'
+import { cp, mkdir, readFile, readdir, rename, rm, writeFile } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
 import { join, basename } from 'node:path'
 import { createHash } from 'node:crypto'
@@ -239,3 +239,8 @@ const commandExample=JSON.parse(await readFile(join(root,'examples/postgres/pack
 await record(command,'',commandHashes)
 if(Object.keys(commandHashes).length>160)throw new Error('Command template exceeds the shared asset bound')
 await writeFile(join(command,'template.json'),JSON.stringify({schemaVersion:1,dependencies:{...commandExample.dependencies,'@longhornjs/workers':'workspace:*','@longhornjs/runtime':'workspace:*',miniflare:'3.20250718.3'},devDependencies:{'@types/node':'^22.13.10','@cloudflare/workers-types':'^5.20261022.1',esbuild:'^0.28.2',typescript:'^5.8.2',vitest:'^3.1.1'},files:commandHashes},null,2)+'\n')
+
+// npm renames .gitignore to .npmignore when it installs a package, which would break the template hashes.
+for(const entry of await readdir(join(output,'templates'),{withFileTypes:true,recursive:true})){
+  if(entry.isFile()&&entry.name==='.gitignore')await rename(join(entry.parentPath??entry.path,entry.name),join(entry.parentPath??entry.path,'gitignore.asset'))
+}

@@ -37,9 +37,10 @@ my-api/
   .longhorn/README.md      # Snapshot ownership and update policy
 ```
 
-LongHorn is still unpublished. The CLI build copies the implemented packages'
+The CLI build copies the implemented packages'
 actual JavaScript, declarations, exports, and production dependency manifests into
-its distribution. Internal `workspace:*` versions are replaced with actual package
+its distribution, so a generated project never needs the registry for framework packages.
+Internal `workspace:*` versions are replaced with actual package
 versions. No repository source paths, node_modules, or development dependencies are
 copied into framework packages.
 
