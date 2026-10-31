@@ -19,5 +19,5 @@
     "@longhorn/validation": "workspace:*",
     "zod": "^4.6.7"
   },
-  "devDependencies": { "@types/bun": "^1.4.3" }
+  "devDependencies": { "@types/bun": "^1.4.4" }
 }

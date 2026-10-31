@@ -42,7 +42,7 @@
   "devDependencies": {
     "@longhorn/queue": "workspace:*",
     "@longhorn/scheduler": "workspace:*",
-    "@types/node": "^22.13.10",
+    "@types/node": "^26.6.5",
     "@types/pg": "8.23.1"
   },
   "dependencies": {

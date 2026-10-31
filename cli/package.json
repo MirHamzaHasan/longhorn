@@ -26,7 +26,7 @@
     "@longhorn/outbox": "workspace:*",
     "@longhorn/ratelimit": "workspace:*",
     "@longhorn/idempotency": "workspace:*",
-    "@types/node": "^22.13.10",
+    "@types/node": "^26.6.5",
     "@longhorn/container": "workspace:*",
     "@longhorn/runtime": "workspace:*",
     "@longhorn/http": "workspace:*",

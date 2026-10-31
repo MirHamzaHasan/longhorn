@@ -21,6 +21,6 @@
   },
   "devDependencies": {
     "@types/deno": "^2.7.0",
-    "@types/node": "^22.13.10"
+    "@types/node": "^26.6.5"
   }
 }

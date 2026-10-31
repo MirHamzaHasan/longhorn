@@ -22,7 +22,7 @@
     "@longhorn/cache": "workspace:*"
   },
   "devDependencies": {
-    "@types/node": "^22.13.10",
+    "@types/node": "^26.6.5",
     "tsx": "^4.20.0"
   }
 }
