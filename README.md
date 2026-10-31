@@ -1,29 +1,62 @@
 <picture>
-  <source media="(prefers-reduced-motion: reduce)" srcset="./docs/assets/hero-still.svg">
-  <img src="./docs/assets/hero.svg" width="100%" alt="LongHorn. Write the backend once. Keep the work when the process dies. One app on Node, Bun, Deno and Workers.">
+  <source media="(prefers-reduced-motion: reduce)" srcset="./docs/assets/film-still.svg">
+  <img src="./docs/assets/film.svg" width="100%" alt="One continuous animation. A command for the numbers 4, 8 and 15 is saved with its message in one transaction. The process is killed, and both survive. After a restart, two delivery attempts fail while the receiver is down. The receiver comes back, the third attempt lands, and one receipt prints: count 3, sum 27, minimum 4, maximum 15. Write the backend once. Keep the work when the process dies.">
 </picture>
 
 <p>
   <a href="https://mirhamzahasan.github.io/longhorn/"><b>Website</b></a> &nbsp;|&nbsp;
-  <a href="docs/project-guide.md"><b>Architecture</b></a> &nbsp;|&nbsp;
+  <a href="#start-in-a-minute"><b>Quickstart</b></a> &nbsp;|&nbsp;
+  <a href="#how-it-fits-together"><b>How it works</b></a> &nbsp;|&nbsp;
   <a href="docs/features.md"><b>All features</b></a> &nbsp;|&nbsp;
-  <a href="docs/examples-tour.md"><b>Examples tour</b></a>
+  <a href="#contribute"><b>Contribute</b></a> &nbsp;|&nbsp;
+  <a href="https://github.com/MirHamzaHasan/longhorn/discussions"><b>Discussions</b></a>
 </p>
 
+[![Verification](https://github.com/MirHamzaHasan/longhorn/actions/workflows/verify.yml/badge.svg?branch=main)](https://github.com/MirHamzaHasan/longhorn/actions/workflows/verify.yml)
 ![MIT license](https://img.shields.io/badge/license-MIT-0f3a5e)
 ![Status: pre-release](https://img.shields.io/badge/status-pre--release-ffc14d)
 ![Node 20.19 or newer](https://img.shields.io/badge/node-%E2%89%A520.19-0f3a5e)
 ![Runtimes: Node, Bun, Deno, Workers](https://img.shields.io/badge/runtimes-node%20%7C%20bun%20%7C%20deno%20%7C%20workers-0f3a5e)
+[![Pull requests welcome](https://img.shields.io/badge/pull%20requests-welcome-0f3a5e)](CONTRIBUTING.md)
 
 LongHorn is a modular TypeScript backend framework on [Hono](https://hono.dev) and Web
-Standards. Your app runs on Node, Bun, Deno or Cloudflare Workers, using each
-platform's own server. Add only the modules you use: database, auth, queues, schedules,
-outbox delivery, rate limits, caching and observability.
+Standards. Your app runs on Node, Bun, Deno or Cloudflare Workers, using each platform's
+own server. Add only the modules you use: database, auth, queues, schedules, outbox
+delivery, rate limits, caching and observability.
 
 > [!IMPORTANT]
-> **Pre-release.** Nothing is on npm yet, so you run LongHorn from a checkout. It has
-> been tested locally on macOS. It has not been deployed to production.
+> **Pre-release.** Nothing is on npm yet, so you run LongHorn from a checkout, and it has
+> not been deployed to production. APIs can still change.
 > See [what is and isn't tested](#what-is-and-isnt-tested).
+
+## Why LongHorn exists
+
+Most backends are fine until something fails at the wrong moment. The database commits,
+then the process dies before the message goes out. A client times out and retries, and
+the payment runs twice. A deploy kills a job halfway through. These bugs are hard to
+reproduce, so they tend to be found in production.
+
+LongHorn makes that failure handling part of the framework, and tests it by actually
+causing the failure: killing processes, dropping replies and running concurrent writers
+against real databases.
+
+It is built on three decisions:
+
+- **Nothing happens implicitly.** Core installs no database, auth or queue. Your
+  application imports each module and wires it, so you can read how your app starts.
+- **Portable where it can be, native where it counts.** Shared code uses `Request` and
+  `Response`. Each host uses its own server, SQLite and crypto instead of an imitation.
+- **The application owns its lifetime.** Resources start in order. On shutdown, accepted
+  work finishes before the resources it borrowed are released.
+
+### Is it right for you?
+
+| Worth trying if you | Wait if you need |
+| --- | --- |
+| Want to read and shape a backend framework early | A stable API, or packages from npm |
+| Care about what happens when a process dies mid-request | A framework already proven in production |
+| Already like Hono and want structure around it | Password reset or MFA out of the box |
+| Want one app model across Node, Bun, Deno and Workers | Generated CRUD, an admin panel or an ORM |
 
 ## Start in a minute
 
@@ -88,6 +121,11 @@ console.log(server.url)
 `app.http` is the real Hono app, so Hono routers and middleware work directly. To change
 host, change the import and the last line:
 
+<picture>
+  <source media="(prefers-reduced-motion: reduce)" srcset="./docs/assets/hosts-still.svg">
+  <img src="./docs/assets/hosts.svg" width="100%" alt="The same LongHorn app on four hosts. Changing the import and the last line moves it from Node to Bun, Deno and Workers, and its health route reports each runtime.">
+</picture>
+
 | Host | Import | Start with | Storage |
 | --- | --- | --- | --- |
 | [Node](docs/runtimes.md) | `nodeRuntime` from `@longhorn/node` | `app.listen(nodeRuntime)` | SQLite, PostgreSQL, Redis |
@@ -98,15 +136,52 @@ host, change the import and the last line:
 Not every module runs everywhere. The [runtime matrix](docs/supported-runtimes.md) lists
 exactly what was verified on each host.
 
+## How it fits together
+
+Your application sits on top. It picks modules, and it picks one host to run on.
+
+```mermaid
+flowchart LR
+    App["Your application<br/>routes and wiring"] --> Modules["Optional modules<br/>database, auth, queue,<br/>scheduler, outbox, cache"]
+    App --> Core["Core<br/>lifecycle, DI, Hono, logs"]
+    Modules --> Core
+    Core --> Host["One host<br/>Node, Bun, Deno, Workers"]
+    Modules --> Storage["Native storage<br/>SQLite, PostgreSQL, Redis,<br/>D1, Durable Objects"]
+```
+
+A command in the complete example application takes this path:
+
+1. The console sends a command to a Hono route, which authenticates and validates it.
+2. Idempotency makes a retried request return the original reply instead of running again.
+3. One SQL transaction saves the command and its outgoing message together.
+4. A dispatcher delivers the message over HTTP, and retries until it lands or attempts run out.
+5. The receiver stores one result per message ID, however many times it is delivered.
+6. The console shows the receipt. An operator can inspect and retry failed deliveries,
+   and each retry goes in an audit log.
+
+The [architecture guide](docs/project-guide.md) covers this in depth, and the
+[walkthrough](docs/command-application.md) follows it through the code.
+
+### Where things live
+
+```text
+packages/     17 portable modules, free of Node APIs
+runtimes/     Native hosts for Node, Bun, Deno and Workers
+examples/     14 runnable apps, including the PostgreSQL command app and its console
+starters/     Templates copied into the projects that `pnpm create:app` generates
+cli/          The CLI, with create-longhorn/ as its project generator
+native/rust/  Optional Rust report service behind a typed, authenticated protocol
+scripts/      66 verify-* gates that run real engines, processes and browsers
+docs/         One guide per feature, indexed in docs/features.md
+site/         The website, plain HTML, CSS and JavaScript
+tasks/        The work board and task files that keep parallel work apart
+```
+
 ## Work that survives failure
 
-This is what LongHorn is built around. A command is saved together with its outgoing
-message in one transaction, then delivered until it lands.
-
-<picture>
-  <source media="(prefers-reduced-motion: reduce)" srcset="./docs/assets/flow-still.svg">
-  <img src="./docs/assets/flow.svg" width="100%" alt="A command is saved in one transaction. The receiver goes down and two delivery attempts fail while the message stays saved. The receiver returns, the third attempt lands, and one receipt prints: count 3, sum 27, minimum 4, maximum 15.">
-</picture>
+This is what LongHorn is built around, and what the animation at the top of this page
+follows. A command is saved together with its outgoing message in one transaction, then
+delivered until it lands. Each failure below is caused for real in a test:
 
 | What goes wrong | What happens | Tested in |
 | --- | --- | --- |
@@ -188,30 +263,96 @@ The [examples tour](docs/examples-tour.md) has ports, curl commands and settings
 | Run for real | Not claimed |
 | --- | --- |
 | 749 source tests, and 66 gates that start real engines, processes and browsers | Published packages: nothing is on npm |
-| Processes killed with SIGKILL during and after commits | A hosted CI pass on the latest code, because recent runs never started |
+| Processes killed with SIGKILL during and after commits | Every gate on Linux: hosted CI reaches about 50 of the 66 |
 | Real PostgreSQL 18, Redis, D1, Durable Objects and OpenTelemetry Collector | Production or cloud deployment, failover or replication |
 | Lost HTTP replies, concurrent writers and failed schema upgrades | Exactly-once delivery across systems |
 | Generated projects, moved out of the repository and installed fresh | Password reset, account recovery or MFA |
 | Backup, restore into empty storage, then a new command | Other browser engines, or VoiceOver and TalkBack on real devices |
 | Console screens with axe in Chromium, in both themes and at phone width | Native PostgreSQL on anything other than Node |
 
-Local checks ran on macOS ARM64. The [runtime matrix](docs/supported-runtimes.md) has the
+Local checks ran on macOS ARM64, and all 8 CI jobs have passed on hosted Ubuntu 24.04.
+Nothing has run on Windows. The [runtime matrix](docs/supported-runtimes.md) has the
 exact versions, and the [handoff](docs/development-handoff.md) has the current state.
 
-## Contributing
+## Where it's going
+
+Feature development is paused while the project opens up. These come next:
+
+| Next | Why it matters | Track it |
+| --- | --- | --- |
+| A real deployment guide | Every proof so far runs locally | [task006](tasks/task006-deployment-guide.md) |
+| Publish v0.1 to npm | So `npm create longhorn@latest` works without a checkout | [task005](tasks/task005-publish-v0-1.md) |
+| Account recovery | Auth has no password reset or recovery yet | [task008](tasks/task008-account-recovery.md) |
+
+Run `pnpm task list` for the live board. The [handoff](docs/development-handoff.md) has the
+current state.
+
+## Contribute
+
+The project is early, so your feedback can still change its direction. You don't need to
+know the whole codebase. Most changes touch one package and one guide.
+
+### Good ways to start
+
+- **Try the quickstart and say where you got stuck.** A fresh pair of eyes is the
+  thing this project has least of. [Start a discussion](https://github.com/MirHamzaHasan/longhorn/discussions).
+- **Run it on your platform.** Checks have run on macOS ARM64 and hosted Ubuntu, and
+  nothing has run on Windows. A report of what happened is useful, even if it just failed.
+- **Fix a doc.** If a guide is wrong or confusing, a small pull request is welcome.
+- **Pick up an open issue.** See
+  [good first issues](https://github.com/MirHamzaHasan/longhorn/labels/good%20first%20issue)
+  and [help wanted](https://github.com/MirHamzaHasan/longhorn/labels/help%20wanted).
+
+Planning a new feature or a large change? Open an issue first, so nobody spends time on
+something that doesn't fit.
+
+### Set up
 
 ```sh
+git clone https://github.com/MirHamzaHasan/longhorn.git
+cd longhorn
 pnpm install --frozen-lockfile
 pnpm build       # required before typecheck and before scripts/verify-* gates
 pnpm typecheck
-pnpm test
+pnpm test        # source tests; they need no build
 ```
 
-Each feature has its own guide that records its API, what connects to it, how it was
-verified and what it doesn't do. Find them in the [feature index](docs/features.md).
+Then run the narrowest check for what you changed:
 
-Working with coding agents? Read [AGENTS.md](AGENTS.md). Each agent claims one task from
-[tasks/](tasks/README.md) in its own worktree, so parallel work doesn't collide.
+| You changed | Run |
+| --- | --- |
+| One package | `pnpm vitest run packages/<name>` |
+| A runtime adapter | `pnpm test:runtimes` |
+| A SQL provider | `pnpm test:postgres` or `pnpm test:persistence` |
+| The console | `pnpm test:console` |
+| The CLI or a starter | `pnpm test:projects` |
+| Outbox and delivery | `pnpm test:outbox` |
+
+### How a change gets in
+
+1. Fork the repository and branch from `main`.
+2. Make the change and match the file you are in. There is no linter or formatter.
+3. Update the feature's guide. Docs here say only what was really run.
+4. Open a pull request, and say which checks you ran and on which platform.
+5. CI runs and the maintainer reviews. It's fine to say you couldn't run a gate.
+
+[CONTRIBUTING.md](CONTRIBUTING.md) has the details and the rules the code depends on.
+
+### Working with coding agents
+
+Coding agents are welcome, and you stay responsible for what you submit. Start them at
+[AGENTS.md](AGENTS.md). Each agent claims one task from [tasks/](tasks/README.md) in its
+own worktree, and a claim refuses files that another active task owns, so agents working
+in parallel don't overwrite each other.
+
+### Get help
+
+| You want to | Go to |
+| --- | --- |
+| Ask a question or suggest an idea | [Discussions](https://github.com/MirHamzaHasan/longhorn/discussions) |
+| Report a bug or request a feature | [Issues](https://github.com/MirHamzaHasan/longhorn/issues/new/choose) |
+| Report a vulnerability, privately | [Security policy](SECURITY.md) |
+| Read the community rules | [Code of conduct](CODE_OF_CONDUCT.md) |
 
 ## License
 

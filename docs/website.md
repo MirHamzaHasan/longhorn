@@ -22,23 +22,32 @@ that guide. With reduced motion, a scenario shows its finished state straight aw
 
 ## Publishing the site
 
-Nothing is live yet, and these steps belong to the repository owner:
-
-1. Make the repository public, or move to a paid plan. Pages on a private repository
-   needs a paid plan, and Actions has been refusing jobs on this repository's budget.
-2. Follow [repository settings](repository-settings.md), which also enables Pages.
-
-The address will be https://mirhamzahasan.github.io/longhorn/.
+The site is live at https://mirhamzahasan.github.io/longhorn/.
+`.github/workflows/pages.yml` deploys it. See [repository settings](repository-settings.md).
 
 ## README animations
 
-`docs/assets/{hero,flow,quickstart}.svg` animate with CSS and SMIL only, which GitHub
-allows in images. All text is converted to paths, so no font has to load.
+`docs/assets/film.svg` is one continuous take: one command, a crash, an outage and a
+receipt. `docs/assets/hosts.svg` shows the same app moving between hosts, and
+`docs/assets/quickstart.svg` is the terminal session. They animate with CSS only, which
+GitHub allows in images. All text is converted to paths, so no font has to load.
 
-Each has a `-still.svg` twin. The README's `<picture>` picks it with
-`media="(prefers-reduced-motion: reduce)"`. Do not put that media query inside the SVG:
-inside an image, Chromium reports reduced motion as on, which stops the animation for
-everyone.
+`docs/assets/build-readme-motion.mjs` builds the film and the hosts piece, and its header
+gives the command. Edit the generator, not the SVGs:
+
+- The world stays put and a camera moves over it. The chip is one object, on screen
+  from the first beat to the receipt, and it lands on its own row.
+- Each object has one timeline, using transforms and opacity only.
+- Words change in one slot, so the eye doesn't have to find them again.
+- Anything the film shows must match the guide that tests it. The kill is in
+  [transaction publishing testing](transaction-publishing-testing.md), and the outage in
+  [persistent operations testing](persistent-operations-testing.md). Three attempts is
+  an example, not a limit.
+
+Each piece has a `-still.svg` twin, its settled frame. The README's `<picture>` picks it
+with `media="(prefers-reduced-motion: reduce)"`. Do not put that media query inside the
+SVG: inside an image, Chromium reports reduced motion as on, which stops the animation
+for everyone.
 
 ## Keeping it true
 

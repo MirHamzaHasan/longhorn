@@ -1,12 +1,17 @@
 # Contributing to LongHorn
 
-Thanks for helping. LongHorn is pre-release, so APIs can still change.
+Thanks for helping. LongHorn is pre-release, so APIs can still change. It's maintained by
+one person, so a reply can take a few days.
 
 ## Before you start
 
 - Bugs and small fixes: open a pull request directly, or an issue if you are unsure.
 - New features or large changes: open an issue first, so nobody spends time on
-  something that doesn't fit.
+  something that doesn't fit. New framework features are paused for now, so most will
+  wait. See the [roadmap](README.md#where-its-going).
+- Not sure where to start: try the quickstart and report where you got stuck, or see
+  [good first issues](https://github.com/MirHamzaHasan/longhorn/labels/good%20first%20issue)
+  and [help wanted](https://github.com/MirHamzaHasan/longhorn/labels/help%20wanted).
 - Security problems: do not open an issue. Follow [SECURITY.md](SECURITY.md).
 
 ## Set up
@@ -34,12 +39,13 @@ run them at the same time, because a build replaces the output they read.
 
 ## Make a change
 
-1. Branch from `main`.
+1. Fork the repository and branch from `main`.
 2. Match the file you are in. There is no linter or formatter.
 3. Add or update tests.
 4. Run the narrowest gate that exercises your change. `AGENTS.md` lists them.
 5. Update the feature's guide, and `docs/features.md` if you added a feature.
-6. Open a pull request and fill in the template.
+6. Open a pull request and fill in the template. CI runs on it, and the maintainer
+   reviews it. `main` is protected, so every change arrives this way.
 
 Commit messages follow `feat(scope): ...`, `fix: ...` or `test(scope): ...`.
 

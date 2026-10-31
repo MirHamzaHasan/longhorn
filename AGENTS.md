@@ -12,6 +12,13 @@ command application exercises the modules together. It is unpublished.
 
 Newest first. Say what a new direction supersedes.
 
+### Public repository · owner direction, 31 October 2026
+
+"Make it public create once nice readme which explain proper understanding of project
+completely ready for collaboration." The repository is public and `main` is protected.
+The README's motion pieces follow the Ungenerated skills; see `docs/website.md`.
+Supersedes the note below that going public was still undecided.
+
 ### Open source · owner direction, 31 October 2026
 
 "Push it to main, set all GitHub rules as this is going to be opensource project."
