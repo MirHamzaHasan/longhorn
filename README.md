@@ -348,21 +348,21 @@ There's one guide per feature, so you only read what you need.
 
 <picture>
   <source media="(prefers-reduced-motion: reduce)" srcset="./docs/assets/gates-still.svg">
-  <img src="./docs/assets/gates.svg" width="100%" alt="Sixty-six squares, one per verification gate, light up in a wave. About fifty are in the hosted CI workflow and the rest run locally on macOS. The caption cycles through what they cause: processes killed during commits, lost replies, concurrent writers, failed schema upgrades, and restore into empty storage.">
+  <img src="./docs/assets/gates.svg" width="100%" alt="Sixty-six squares, one per verification gate, light up in a wave. All of them are reached by the hosted CI workflow on Ubuntu. The caption cycles through what they cause: processes killed during commits, lost replies, concurrent writers, failed schema upgrades, and restore into empty storage.">
 </picture>
 
 | Run for real | Not claimed |
 | --- | --- |
 | 749 source tests, and 66 gates that start real engines, processes and browsers | Published packages: nothing is on npm |
-| Processes killed with SIGKILL during and after commits | Every gate on Linux: hosted CI reaches about 50 of the 66 |
+| Processes killed with SIGKILL during and after commits | Anything on Windows: nothing has run there |
 | Real PostgreSQL 18, Redis, D1, Durable Objects and OpenTelemetry Collector | Production or cloud deployment, failover or replication |
 | Lost HTTP replies, concurrent writers and failed schema upgrades | Exactly-once delivery across systems |
 | Generated projects, moved out of the repository and installed fresh | Password reset, account recovery or MFA |
 | Backup, restore into empty storage, then a new command | Other browser engines, or VoiceOver and TalkBack on real devices |
 | Console screens with axe in Chromium, in both themes and at phone width | Native PostgreSQL on anything other than Node |
 
-Local checks ran on macOS ARM64, and all 8 CI jobs have passed on hosted Ubuntu 24.04.
-Nothing has run on Windows. The [runtime matrix](docs/supported-runtimes.md) has the
+Local checks ran on macOS ARM64, and all 10 CI jobs have passed on hosted Ubuntu 24.04,
+which reaches all 66 gates. Nothing has run on Windows. The [runtime matrix](docs/supported-runtimes.md) has the
 exact versions, and the [handoff](docs/development-handoff.md) has the current state.
 
 <picture>

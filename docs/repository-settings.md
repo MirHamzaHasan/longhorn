@@ -42,6 +42,18 @@ gh workflow run "Website" --repo MirHamzaHasan/longhorn
 - Repository admins can bypass the pull request rule. A solo maintainer can't approve
   their own pull request, so without this every merge would be stuck.
 
+## Who can open pull requests
+
+Outside contributors can only open pull requests when `pull_request_creation_policy` is `all`.
+It was found set to `collaborators_only` on 31 October 2026, which blocks them. Check or set it with:
+
+```sh
+gh api repos/MirHamzaHasan/longhorn --jq .pull_request_creation_policy
+gh api -X PATCH repos/MirHamzaHasan/longhorn -f pull_request_creation_policy=all
+```
+
+This does not let anyone push to `main`. Only the maintainer can merge.
+
 ## Required status checks
 
 Active since 31 October 2026, after all eight `verify.yml` jobs passed on `main` at `6977d4e`
@@ -49,7 +61,8 @@ Active since 31 October 2026, after all eight `verify.yml` jobs passed on `main`
 `independent-distribution`, `redis-cache`, `rust-reports`, `source-and-runtimes` and `telemetry`
 to pass. Branches don't have to be up to date with `main`. An admin merge can still bypass the
 checks. If you rename a job in `verify.yml`, update the ruleset too, or pull requests wait
-for a check that never reports.
+for a check that never reports. `durable-delivery` and `worker-runtime` run on every pull
+request but are not required yet, because they have not passed on `main`.
 
 ## Check made before going public
 

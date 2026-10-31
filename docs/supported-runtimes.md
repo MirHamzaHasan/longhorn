@@ -50,7 +50,8 @@ historical runs do not prove the current revision.
 | Hosted CI baseline | Ubuntu 24.04, Node/pnpm pinned as above | Four v0.1 paths executed, including restore; artifact quota limits downloads |
 | Hosted CI Redis revision | Five jobs configured on Ubuntu 24.04 | Actions budget rejected every job before runner allocation; no Ubuntu execution evidence for this revision; current PR checks/logs govern exact-head results |
 | Hosted verification configuration | Eight jobs including native Rust, D1 storage and native telemetry, pinned Linux x64 Collector 0.163.2 | Rust/tool versions and archive checksum are pinned; an available runner and successful exact-head execution are still required |
-| Hosted pass on `main` | All eight jobs on Ubuntu 24.04 at `6977d4e`, run 41215461094 | About 50 of the 66 gates; the outbox and PostgreSQL gates have only run on macOS |
+| Hosted pass with every gate | Ten jobs on Ubuntu 24.04 at `6bd18eb`, run 41228077257, on a pull request | All 66 gates reached, 64 named in the workflow and 2 inside `verify-command-app` |
+| Hosted pass on `main` | All eight jobs on Ubuntu 24.04 at `6977d4e`, run 41215461094 | About 50 of the 66 gates at that commit |
 | Hosted D1 revision | Seven jobs configured on Ubuntu 24.04 | First run rejected before any runner/step by the Actions budget; no Ubuntu D1 execution evidence; current PR checks govern the current head |
 
 The command application distribution is deliberately the Node/PostgreSQL profile.
