@@ -716,3 +716,12 @@ See [route semantics](command-request-limits.md) and [store lifetime](rate-limit
 
 See [the roadmap](roadmap.md) for remaining integrations and product work. Every
 additional implementation must add its guide and native verification evidence.
+
+## Project website and agent workflow
+
+| Feature | Guide | Implementation owner | Connects to |
+| --- | --- | --- | --- |
+| Website and README animations | [Website](website.md) | site/ and docs/assets | Runtime matrix, handoff and feature guides |
+| Examples walkthrough | [Examples tour](examples-tour.md) | docs | Every runnable example |
+| Parallel agent tasks | [Task protocol](../tasks/README.md) | scripts/task.mjs and AGENTS.md | Git worktrees, per-area context and shared-file rules |
+| Open source repository rules | [Repository settings](repository-settings.md) | .github and repository settings | Contributing, security reporting, CI and branch protection |

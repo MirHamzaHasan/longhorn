@@ -96,6 +96,7 @@ jobs:
       - run: pnpm build
       - run: pnpm typecheck
       - run: pnpm test
+      - run: pnpm test:tasks
       - run: node scripts/verify-prune-packages.mjs
       - name: Retain packed prune proof
         if: always()
