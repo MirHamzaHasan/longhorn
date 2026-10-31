@@ -75,7 +75,7 @@ const ground = (W, H) => `<defs><pattern id="g" width="48" height="48" patternUn
   const cam = (cx, z = 1) => ({ x: +(640 - cx * z).toFixed(1), y: +(LINE - LINE * z - (1 - z) * 70).toFixed(1), s: z })
 
   f.track('all', [[0, { o: 1 }], [29.6, { o: 0 }, 0.28, 'exit']])
-  f.track('cam', [[0, cam(560)], [3.9, cam(760, 0.85), 1, 'emph'], [7.3, cam(1060), 0.9, 'emph'], [11.9, cam(1660), 1.1, 'emph'], [22.9, cam(1090, 0.56), 1.3, 'emph']])
+  f.track('cam', [[0, cam(560)], [3.9, cam(760, 0.85), 1, 'emph'], [7.3, cam(1060), 0.9, 'emph'], [11.9, cam(1660), 1.1, 'emph'], [22.9, cam(1590), 1.3, 'emph']])
 
   // The hero. Its pose is in world space, so it travels with the world.
   const chip = (cls) => `<g class="${cls}"><rect x="-82" y="-27" width="164" height="54" rx="9" fill="${C.iron}"/>${text(mono, '4, 8, 15', -width(mono, '4, 8, 15', 30) / 2, 10, 30, C.ink)}</g>`
