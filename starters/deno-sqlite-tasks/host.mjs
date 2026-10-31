@@ -68,6 +68,8 @@ export async function stopHost(owned) {
   }, 10000)
   try {
     const outcome = await owned.ended
-    if (forced || outcome.code !== 0 || outcome.signal !== null) throw new Error('Deno SQLite host did not close successfully')
+    // A process group signal can land as Deno exits, after the app closed. Our own SIGTERM ending the host is a stop.
+    const stopped = outcome.code === 0 || (outcome.code === null && outcome.signal === 'SIGTERM')
+    if (forced || !stopped) throw new Error('Deno SQLite host did not close successfully')
   } finally { clearTimeout(timer) }
 }
