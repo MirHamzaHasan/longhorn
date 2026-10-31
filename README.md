@@ -140,14 +140,12 @@ exactly what was verified on each host.
 Your application sits on top. It picks modules, and it picks one host to run on.
 
 ```mermaid
-flowchart TD
-    App[Your application: routes, services, wiring]
-    App --> Core[Core: lifecycle, DI container, Hono, logging]
-    App --> Modules[Optional modules: database, auth, queue, scheduler, outbox, cache, limits, observability]
+flowchart LR
+    App["Your application<br/>routes and wiring"] --> Modules["Optional modules<br/>database, auth, queue,<br/>scheduler, outbox, cache"]
+    App --> Core["Core<br/>lifecycle, DI, Hono, logs"]
     Modules --> Core
-    Core --> Host[One host: Node, Bun, Deno or Workers]
-    Modules --> Storage[Native storage: SQLite, PostgreSQL, Redis, D1, Durable Objects]
-    Host --> Storage
+    Core --> Host["One host<br/>Node, Bun, Deno, Workers"]
+    Modules --> Storage["Native storage<br/>SQLite, PostgreSQL, Redis,<br/>D1, Durable Objects"]
 ```
 
 A command in the complete example application takes this path:

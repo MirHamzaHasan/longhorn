@@ -46,3 +46,9 @@ Local links resolve, and motion frames are checked at exact times. The animation
 checked as GitHub really serves them.
 
 ## Evidence
+
+31 October 2026. Chromium on macOS: film frames scrubbed at exact times, plus real-time capture
+inside `<img>`. The README was loaded from github.com on this branch at 1280 and 390 wide:
+`film.svg`, `hosts.svg` and `quickstart.svg` were chosen and served as `image/svg+xml`, the
+film's frames changed over time, the Mermaid diagram rendered, and there was no overflow.
+Firefox, Safari and the GitHub mobile app were not checked.
