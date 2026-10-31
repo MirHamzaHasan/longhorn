@@ -53,7 +53,7 @@ it('cancels startup and waits until the actual entered child is gone', async () 
   const startup = startProcess({ executable: process.execPath, args: [fixture, 'wait'], env: { PROCESS_FIXTURE_PID_FILE: path }, ready, signal: controller.signal })
   const observed = startup.catch(error => error)
   let pid: number | undefined
-  for (let i = 0; i < 200 && pid === undefined; i++) { try { pid = Number(await readFile(path, 'utf8')) } catch { await new Promise(resolve => setTimeout(resolve, 5)) } }
+  for (let i = 0; i < 200 && !pid; i++) { try { pid = Number(await readFile(path, 'utf8')) } catch { /* Not created yet. */ } if (!pid) await new Promise(resolve => setTimeout(resolve, 5)) }
   expect(pid).toBeGreaterThan(0); controller.abort()
   expect(await observed).toMatchObject({ code: 'aborted' }); gone(pid!)
 })
