@@ -5,12 +5,14 @@ import { createServer } from 'node:net'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { randomBytes } from 'node:crypto'
+import { pathToFileURL } from 'node:url'
 import { openPostgres } from '../runtimes/node/dist/postgres.js'
 
 async function binaries() {
   if (process.env.LONGHORN_PG_BIN) return { initdb: join(process.env.LONGHORN_PG_BIN, 'initdb'), postgres: join(process.env.LONGHORN_PG_BIN, 'postgres') }
   const require = createRequire(import.meta.url), native = createRequire(require.resolve('embedded-postgres'))
-  return import(native.resolve(`@embedded-postgres/${process.platform}-${process.arch}`))
+  const platform = process.platform === 'win32' ? 'windows' : process.platform
+  return import(pathToFileURL(native.resolve(`@embedded-postgres/${platform}-${process.arch}`)).href)
 }
 function launch(binary, args) {
   const child = spawn(binary, args, { detached: true, stdio: ['ignore', 'pipe', 'pipe'] })
@@ -56,7 +58,7 @@ export async function startPostgresCluster() {
     while (true) {
       if (server.child.exitCode !== null || server.child.signalCode !== null) throw new Error(`Native PostgreSQL exited: ${server.output()}`)
       try {
-        const database = await openPostgres({ connectionString, connectionTimeoutMs: 300 })
+        const database = await openPostgres({ connectionString, connectionTimeoutMs: 5000 })
         const version = String((await database.execute('SHOW server_version')).rows[0].server_version)
         await database.close()
         return { connectionString, version, directory, stop }

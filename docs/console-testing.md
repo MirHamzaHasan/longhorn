@@ -7,6 +7,14 @@ pnpm exec playwright install chromium
 pnpm test:console
 ```
 
+Cross-browser verification can also target Firefox and WebKit (Safari engine):
+
+```sh
+pnpm exec playwright install firefox webkit
+pnpm test:console:firefox
+pnpm test:console:webkit
+```
+
 The gate owns a temporary native PostgreSQL cluster, restricted runtime account,
 actual scrypt passwords, local broker and production receipt Object. Chromium
 uses the built browser assets over an actual TCP listener with matching Origin.
@@ -29,10 +37,10 @@ navigation, account cookie properties, browser secret storage and page errors.
 Reduced motion is enabled; no functional feedback depends on animation.
 
 The current captures were visually reviewed for readable text, wrapping, focus,
-form controls, data rows and responsive navigation. This verifies Chromium on the
-development machine; real-device VoiceOver/TalkBack, other browser engines and
-physical-device touch sizing still require manual verification. Artifacts contain
-test account IDs only and are ignored by source control.
+form controls, data rows and responsive navigation across Chromium, Firefox and WebKit (Safari).
+Styles normalize Firefox button inner padding (`::-moz-focus-inner`), search input appearance,
+and cross-platform monospace stacks. Real-device VoiceOver/TalkBack and physical-device touch
+sizing still require manual verification. Artifacts contain test account IDs only and are ignored by source control.
 
 `pnpm test:console` also runs the separate [account gate](console-account-testing.md),
 with 58 additional screenshots under `.artifacts/console/account`, real password

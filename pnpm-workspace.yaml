@@ -12,6 +12,7 @@ allowBuilds:
   deno: true
   '@embedded-postgres/darwin-arm64': true
   '@embedded-postgres/linux-x64': true
+  '@embedded-postgres/windows-x64': true
 
 minimumReleaseAgeExclude:
   - '@types/bun@1.4.4'
