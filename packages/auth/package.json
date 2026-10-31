@@ -62,7 +62,7 @@
   },
   "dependencies": {
     "@longhorn/database": "workspace:*",
-    "hono": "^4.13.13"
+    "hono": "^4.13.14"
   },
   "files": [
     "dist"

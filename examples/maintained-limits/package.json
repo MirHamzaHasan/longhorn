@@ -15,7 +15,7 @@
     "@longhorn/ratelimit": "workspace:*",
     "@longhorn/node": "workspace:*",
     "@longhorn/validation": "workspace:*",
-    "hono": "^4.13.13",
+    "hono": "^4.13.14",
     "zod": "^4.6.7",
     "@longhorn/auth": "workspace:*"
   },
