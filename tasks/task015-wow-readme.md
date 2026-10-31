@@ -1,7 +1,7 @@
 ---
 id: task015
 title: README motion that explains the framework
-status: review
+status: done
 paths:
   - README.md
   - docs/assets/

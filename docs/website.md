@@ -31,7 +31,8 @@ The site is live at https://mirhamzahasan.github.io/longhorn/.
 left and the database on the right: one command, a kill, an outage and a receipt. `docs/assets/hosts.svg` shows the same app moving between hosts,
 `docs/assets/stack.svg` shows which modules real examples import,
 `docs/assets/failures.svg` plays the four tested failures in turn, and
-`docs/assets/quickstart.svg` is the terminal session. They animate with CSS only, which
+`docs/assets/quickstart.svg` is the terminal session. `stats`, `firstapp`, `journey`, `repo`,
+`gates`, `agents` and `divider` carry the rest of the page. They animate with CSS only, which
 GitHub allows in images. All text is converted to paths, so no font has to load.
 
 `docs/assets/build-readme-motion.mjs` builds all of them, and its header
@@ -46,8 +47,9 @@ gives the command. Edit the generator, not the SVGs:
   [transaction publishing testing](transaction-publishing-testing.md), and the outage in
   [persistent operations testing](persistent-operations-testing.md). Three attempts is
   an example, not a limit.
-- `stack` reads each example's `package.json` at build time, so rebuild it when an example's
-  dependencies change. `failures` follows the failure table in the README and its guides.
+- `stack` reads each example's `package.json`, `stats` reads the test count, gates and packages,
+  and `gates` reads `scripts/` and `verify.yml`, all at build time. Rebuild when those change.
+- The code in `firstapp` must run and return what it shows. `agents` uses example task numbers. `failures` follows the failure table in the README and its guides.
 
 Each piece has a `-still.svg` twin, its settled frame. The README's `<picture>` picks it
 with `media="(prefers-reduced-motion: reduce)"`. Do not put that media query inside the

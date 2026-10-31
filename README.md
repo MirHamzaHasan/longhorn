@@ -3,6 +3,11 @@
   <img src="./docs/assets/film.svg" width="100%" alt="One continuous animation of an app window, with a server log on the left and the database on the right. A command for the numbers 4, 8 and 15 is saved with its message in one transaction. kill -9 ends the process and the log goes dark, while both database rows stay. After a restart, two delivery attempts fail while the receiver is down. The third lands, the message is marked delivered and one receipt prints: count 3, sum 27, minimum 4, maximum 15. Write the backend once. Keep the work when the process dies.">
 </picture>
 
+<picture>
+  <source media="(prefers-reduced-motion: reduce)" srcset="./docs/assets/stats-still.svg">
+  <img src="./docs/assets/stats.svg" width="100%" alt="749 source tests, 66 verification gates, 17 modules and 4 native hosts.">
+</picture>
+
 <p>
   <a href="https://mirhamzahasan.github.io/longhorn/"><b>Website</b></a> &nbsp;|&nbsp;
   <a href="#start-in-a-minute"><b>Quickstart</b></a> &nbsp;|&nbsp;
@@ -58,6 +63,11 @@ It is built on three decisions:
 | Already like Hono and want structure around it | Password reset or MFA out of the box |
 | Want one app model across Node, Bun, Deno and Workers | Generated CRUD, an admin panel or an ORM |
 
+<picture>
+  <source media="(prefers-reduced-motion: reduce)" srcset="./docs/assets/divider-still.svg">
+  <img src="./docs/assets/divider.svg" width="100%" alt="">
+</picture>
+
 ## Start in a minute
 
 You need Node 20.19 or newer and [pnpm](https://pnpm.io) 12.6.
@@ -95,7 +105,19 @@ and it works outside this repository.
 | A Worker with storage | `--runtime workers --template d1-tasks` | [D1 starter](docs/d1-starter.md) |
 | The complete console | `--runtime node --template command-app`, which needs PostgreSQL | [Command project](docs/command-project.md) |
 
+<picture>
+  <source media="(prefers-reduced-motion: reduce)" srcset="./docs/assets/divider-still.svg">
+  <img src="./docs/assets/divider.svg" width="100%" alt="">
+</picture>
+
 ## Your first app
+
+<picture>
+  <source media="(prefers-reduced-motion: reduce)" srcset="./docs/assets/firstapp-still.svg">
+  <img src="./docs/assets/firstapp.svg" width="100%" alt="A code editor types a small LongHorn app with one route. A terminal then requests /hello/Ada and gets back the message Hello, Ada.">
+</picture>
+
+Here's a slightly bigger one, with a service in the container:
 
 ```ts
 import { Longhorn } from '@longhorn/core'
@@ -136,6 +158,11 @@ host, change the import and the last line:
 Not every module runs everywhere. The [runtime matrix](docs/supported-runtimes.md) lists
 exactly what was verified on each host.
 
+<picture>
+  <source media="(prefers-reduced-motion: reduce)" srcset="./docs/assets/divider-still.svg">
+  <img src="./docs/assets/divider.svg" width="100%" alt="">
+</picture>
+
 ## How it fits together
 
 Your application sits on top. It picks modules, and it picks a host to run on.
@@ -150,6 +177,14 @@ app imports.
 
 A command in the complete example application takes this path:
 
+<picture>
+  <source media="(prefers-reduced-motion: reduce)" srcset="./docs/assets/journey-still.svg">
+  <img src="./docs/assets/journey.svg" width="100%" alt="One command travels through six steps. The route authenticates and validates it. Idempotency makes a retry return the original reply. One transaction saves the command and its message. The dispatcher delivers and retries until it lands. The receiver stores one result per message ID. The console shows the receipt.">
+</picture>
+
+<details>
+<summary>Read the path as text</summary>
+
 1. The console sends a command to a Hono route, which authenticates and validates it.
 2. Idempotency makes a retried request return the original reply instead of running again.
 3. One SQL transaction saves the command and its outgoing message together.
@@ -158,10 +193,20 @@ A command in the complete example application takes this path:
 6. The console shows the receipt. An operator can inspect and retry failed deliveries,
    and each retry goes in an audit log.
 
+</details>
+
 The [architecture guide](docs/project-guide.md) covers this in depth, and the
 [walkthrough](docs/command-application.md) follows it through the code.
 
 ### Where things live
+
+<picture>
+  <source media="(prefers-reduced-motion: reduce)" srcset="./docs/assets/repo-still.svg">
+  <img src="./docs/assets/repo.svg" width="100%" alt="A tour of the repository. A highlight walks through packages, runtimes, examples, starters, cli, native, scripts, docs, site and tasks, and a panel says what each one holds.">
+</picture>
+
+<details>
+<summary>Read the layout as text</summary>
 
 ```text
 packages/     17 portable modules, free of Node APIs
@@ -175,6 +220,13 @@ docs/         One guide per feature, indexed in docs/features.md
 site/         The website, plain HTML, CSS and JavaScript
 tasks/        The work board and task files that keep parallel work apart
 ```
+
+</details>
+
+<picture>
+  <source media="(prefers-reduced-motion: reduce)" srcset="./docs/assets/divider-still.svg">
+  <img src="./docs/assets/divider.svg" width="100%" alt="">
+</picture>
 
 ## Work that survives failure
 
@@ -209,6 +261,11 @@ demo starts its own temporary PostgreSQL and removes it on Ctrl+C.
 <img src="docs/assets/console-receipt.png" width="720" alt="The LongHorn console showing a delivered command for the numbers 4, 8 and 15, with a computed receipt of count 3, sum 27, minimum 4 and maximum 15.">
 
 The [walkthrough](docs/command-application.md) explains how the parts connect.
+
+<picture>
+  <source media="(prefers-reduced-motion: reduce)" srcset="./docs/assets/divider-still.svg">
+  <img src="./docs/assets/divider.svg" width="100%" alt="">
+</picture>
 
 ## Modules
 
@@ -262,6 +319,11 @@ The [examples tour](docs/examples-tour.md) has ports, curl commands and settings
 
 </details>
 
+<picture>
+  <source media="(prefers-reduced-motion: reduce)" srcset="./docs/assets/divider-still.svg">
+  <img src="./docs/assets/divider.svg" width="100%" alt="">
+</picture>
+
 ## Find your way around the docs
 
 There's one guide per feature, so you only read what you need.
@@ -277,7 +339,17 @@ There's one guide per feature, so you only read what you need.
 | See how it's verified | [Release verification](docs/release-verification.md) |
 | See where things stand today | [Development handoff](docs/development-handoff.md) |
 
+<picture>
+  <source media="(prefers-reduced-motion: reduce)" srcset="./docs/assets/divider-still.svg">
+  <img src="./docs/assets/divider.svg" width="100%" alt="">
+</picture>
+
 ## What is and isn't tested
+
+<picture>
+  <source media="(prefers-reduced-motion: reduce)" srcset="./docs/assets/gates-still.svg">
+  <img src="./docs/assets/gates.svg" width="100%" alt="Sixty-six squares, one per verification gate, light up in a wave. About fifty are in the hosted CI workflow and the rest run locally on macOS. The caption cycles through what they cause: processes killed during commits, lost replies, concurrent writers, failed schema upgrades, and restore into empty storage.">
+</picture>
 
 | Run for real | Not claimed |
 | --- | --- |
@@ -293,6 +365,11 @@ Local checks ran on macOS ARM64, and all 8 CI jobs have passed on hosted Ubuntu 
 Nothing has run on Windows. The [runtime matrix](docs/supported-runtimes.md) has the
 exact versions, and the [handoff](docs/development-handoff.md) has the current state.
 
+<picture>
+  <source media="(prefers-reduced-motion: reduce)" srcset="./docs/assets/divider-still.svg">
+  <img src="./docs/assets/divider.svg" width="100%" alt="">
+</picture>
+
 ## Where it's going
 
 Feature development is paused while the project opens up. These come next:
@@ -305,6 +382,11 @@ Feature development is paused while the project opens up. These come next:
 
 Run `pnpm task list` for the live board. The [handoff](docs/development-handoff.md) has the
 current state.
+
+<picture>
+  <source media="(prefers-reduced-motion: reduce)" srcset="./docs/assets/divider-still.svg">
+  <img src="./docs/assets/divider.svg" width="100%" alt="">
+</picture>
 
 ## Contribute
 
@@ -359,6 +441,11 @@ Then run the narrowest check for what you changed:
 
 ### Working with coding agents
 
+<picture>
+  <source media="(prefers-reduced-motion: reduce)" srcset="./docs/assets/agents-still.svg">
+  <img src="./docs/assets/agents.svg" width="100%" alt="Three coding agents claim tasks. The first takes packages/queue/ and the second takes docs/guide.md, each in its own worktree. The third asks for packages/queue/ too and is refused, because that path is owned by the first task.">
+</picture>
+
 Coding agents are welcome, and you stay responsible for what you submit. Start them at
 [AGENTS.md](AGENTS.md). Each agent claims one task from [tasks/](tasks/README.md) in its
 own worktree, and a claim refuses files that another active task owns, so agents working
@@ -372,6 +459,11 @@ in parallel don't overwrite each other.
 | Report a bug or request a feature | [Issues](https://github.com/MirHamzaHasan/longhorn/issues/new/choose) |
 | Report a vulnerability, privately | [Security policy](SECURITY.md) |
 | Read the community rules | [Code of conduct](CODE_OF_CONDUCT.md) |
+
+<picture>
+  <source media="(prefers-reduced-motion: reduce)" srcset="./docs/assets/divider-still.svg">
+  <img src="./docs/assets/divider.svg" width="100%" alt="">
+</picture>
 
 ## License
 
