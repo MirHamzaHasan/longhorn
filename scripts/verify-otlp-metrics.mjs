@@ -56,8 +56,9 @@ try{
       if(fault==='/permanent'||rejectMetrics){response.writeHead(500);response.end('private collector detail');return}
       if(fault==='/redirect'){response.writeHead(302,{Location:collector.metricsEndpoint});response.end();return}
       const payload=Buffer.concat(chunks).toString('utf8'),name=JSON.parse(payload).resourceMetrics[0].resource.attributes.find(a=>a.key==='service.name').value.stringValue
-      if(!first.has(name)){first.set(name,payload);response.writeHead(503,{'Retry-After':'0'});response.end('private transient');return}
-      if(typeof first.get(name)==='string'){assert.equal(payload,first.get(name));first.set(name,true)}
+      // A batch that outlived its deadline is never retried, so the next batch gets its own rejection. Changed retry bytes keep being refused.
+      if(first.get(name)!==true&&first.get(name)!==payload){first.set(name,payload);response.writeHead(503,{'Retry-After':'0'});response.end('private transient');return}
+      first.set(name,true)
       const forwarded=await fetch(collector.metricsEndpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:payload,signal:AbortSignal.timeout(5000)})
       response.writeHead(forwarded.status,{'Content-Type':'application/json'});response.end(await forwarded.text())
     }catch{if(!response.headersSent)response.writeHead(500);response.end()}
