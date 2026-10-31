@@ -17,7 +17,7 @@ try{
   const archive=join(directory,'source.tar.bz2');await writeFile(archive,data);await run('tar',['-xjf',archive,'-C',directory],directory)
   await run('./configure',['--prefix='+prefix,'--without-icu','--without-readline','--without-zlib','--without-lz4','--without-zstd','--without-openssl'])
   await run('make',['-C','src/backend','generated-headers'])
-  await run('make',['-j4','-C','src/bin/pg_dump']);await run('make',['-C','src/interfaces/libpq','install']);await run('make',['-C','src/bin/pg_dump','install'])
+  await run('make',['-C','src/bin/pg_dump']);await run('make',['-C','src/interfaces/libpq','install']);await run('make',['-C','src/bin/pg_dump','install'])
   await mkdir(join(root,'.artifacts'),{recursive:true})
   const value={directory:join(prefix,'bin'),version:'18.4',source:'https://ftp.postgresql.org/pub/source/v18.4/',sha256:'81a81ec695fb0c7901407defaa1d2f7973617154cf27ba74e3a7ab8e64436094'}
   await writeFile(record,JSON.stringify(value,null,2)+'\n');console.log(JSON.stringify(value))
