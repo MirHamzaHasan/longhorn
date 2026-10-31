@@ -1,0 +1,38 @@
+name: Bug report
+description: Something doesn't work as its guide says
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: Include the error output. Remove any secrets first.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+    validations:
+      required: true
+  - type: dropdown
+    id: runtime
+    attributes:
+      label: Runtime
+      options: [Node, Bun, Deno, Cloudflare Workers, Not runtime-specific]
+    validations:
+      required: true
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      description: OS, and the runtime and pnpm versions
+      placeholder: macOS 15, Node 20.19.4, pnpm 12.6.0
+    validations:
+      required: true

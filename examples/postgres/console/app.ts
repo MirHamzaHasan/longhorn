@@ -1,4 +1,5 @@
 import './app.css'
+import { createHistoryList } from './history-list.js'
 import { createSessionInventoryPanel } from './session-inventory.js'
 import { normalizeSavedSelection,normalizeViewName } from '../src/history-view-values.js'
 import type { SavedHistoryView } from '../src/history-view-values.js'
@@ -226,7 +227,7 @@ function newCommand(source?:{id:string;numbers:number[]}){
     void api<{command:{id:string}}>('/commands',{id:key,numbers:parsed}).then(result=>{if(current!==version)return;announce('Command saved.',false,'#/commands/'+result.command.id);location.hash='#/commands/'+result.command.id}).catch(reason=>{if(current!==version)return;error.textContent=reason instanceof Error?reason.message:'Could not create the command.';error.hidden=false;submit.textContent='Try again'}).finally(()=>{submit.disabled=false;numbers.disabled=false;if(submit.textContent==='Creating…')submit.textContent='Create command'})
   });panel.append(form);value.append(panel);return value
 }
-function commandRow(command:Command){const row=node('li',undefined,'row'),name=node('div');name.append(link('Command '+command.id.slice(0,8),'#/commands/'+command.id),node('div',command.id,'row-id'));row.append(name,cell('Created',time(command.createdAt)),cell('Delivery',status(command.delivery?.state??'unknown')),cell('Attempts',command.delivery?command.delivery.attempts+' / '+command.delivery.maxAttempts:'—'));return row}
+function commandRow(command:Command){const row=node('li',undefined,'row'),name=node('div');row.dataset.commandId=command.id;name.append(link('Command '+command.id.slice(0,8),'#/commands/'+command.id),node('div',command.id,'row-id'));row.append(name,cell('Created',time(command.createdAt)),cell('Delivery',status(command.delivery?.state??'unknown')),cell('Attempts',command.delivery?command.delivery.attempts+' / '+command.delivery.maxAttempts:'—'));return row}
 type ExportResult=Awaited<ReturnType<typeof collectHistoryExport>>
 type FileExportView={choice?:string;label:string;description:string;action:string;noun:string;singular:string;filename:string;reset:string;more:string;collect:(after:string|null,signal:AbortSignal,progress:(count:number,pages:number)=>void)=>Promise<ExportResult>}
 function fileExportControls(initial:FileExportView,current:number,route:string,choices:FileExportView[]=[]){
@@ -332,13 +333,13 @@ async function commandsPage(view:HistoryView){
   search.append(field('Command ID starts with',term,'Use at least 4 characters. Search is kept in this view link.'),searchActions,searchError)
   search.addEventListener('submit',event=>{event.preventDefault();try{const q=normalizeHistorySearch(term.value);openHistoryView({scope:inputScope,state:inputState,...(q?{q}:{})})}catch(error){searchError.textContent=error instanceof Error?error.message:'Enter a command ID prefix.';searchError.hidden=false;term.setAttribute('aria-invalid','true');term.setAttribute('aria-errormessage',searchError.id);term.focus()}})
   const saved=await savedViewsPanel(view,current,route);if(current!==version||location.hash!==route)throw new DOMException('Navigation canceled','AbortError');value.append(saved,search,historyExportControls(inputScope,inputState,current,route,inputSearch))
-  if(!data.commands.length){value.append(inputState==='all'&&!inputSearch?empty('No commands yet',inputScope==='all'?'Submitted commands will appear here.':'Create a command to start your history.',link('Create command','#/new','button primary')):empty('No matching commands',inputSearch?'Change the command ID or delivery status and try again.':'Choose another delivery status or refresh this list.',inputState==='all'?undefined:button('Show all',()=>openHistoryView({...view,state:'all'}))));return value}
-  const rows=node('ul',undefined,'rows');rows.setAttribute('aria-label','Command history');rows.append(...data.commands.map(commandRow));value.append(rows)
-  let cursor=data.nextCursor
-  const more=button('Load older commands',()=>{
-    if(!cursor)return;more.disabled=true;const current=version
-    void api<Page<{commands:Command[]}>>('/commands?'+query+'&after='+encodeURIComponent(cursor)).then(next=>{if(current!==version)return;rows.append(...next.commands.map(commandRow));cursor=next.nextCursor;more.hidden=!cursor;announce('Loaded '+next.commands.length+' older commands.')}).catch(reason=>{if(current!==version||(reason instanceof DOMException&&reason.name==='AbortError'))return;announce((reason as Error).message,true)}).finally(()=>{more.disabled=false})
-  },'more');more.hidden=!cursor;value.append(more);return value
+  value.append(createHistoryList({initial:data,active:()=>current===version&&location.hash===route,own:ownPageWork,
+    read:input=>{const selected=new URLSearchParams(query);selected.set('limit',String(input.limit));if(input.after)selected.set('after',input.after);return api('/commands?'+selected,undefined,{signal:input.signal})},
+    row:commandRow,update:(row,command)=>{const cells=row.querySelectorAll('dd');cells[0]!.textContent=time(command.createdAt);const label=cells[1]!.querySelector<HTMLElement>('.state')!;label.textContent=stateLabels[command.delivery?.state??'unknown']!;label.dataset.state=command.delivery?.state??'unknown';cells[2]!.textContent=command.delivery?command.delivery.attempts+' / '+command.delivery.maxAttempts:'—'},
+    empty:()=>inputState==='all'&&!inputSearch?empty('No commands yet',inputScope==='all'?'Submitted commands will appear here.':'Create a command to start your history.',link('Create command','#/new','button primary')):empty('No matching commands',inputSearch?'Change the command ID or delivery status and try again.':'Choose another delivery status or refresh this list.',inputState==='all'?undefined:button('Show all',()=>openHistoryView({...view,state:'all'}))),
+    denied:error=>error instanceof RequestError&&error.status===403?empty('Access unavailable','This view needs operator access. Open your own commands to continue.',link('Your commands',historyViewHash({...view,scope:'mine'}),'button')):undefined,
+    announce:message=>announce(message),refresh:()=>{void render()},
+  }));return value
 }
 function deliveryDetails(delivery:Delivery){return details({'Delivery ID':node('code',delivery.id),'Status':status(delivery.state),'Attempts':delivery.attempts+' of '+delivery.maxAttempts,'Updated':time(delivery.updatedAt),'Available':time(delivery.availableAt),'Last failure':delivery.lastFailure??'None'})}
 type CommandDetail={command:{id:string;numbers:number[]};history:Command}

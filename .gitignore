@@ -19,3 +19,37 @@ examples/outbox-worker/data/
 .artifacts/
 .maintenance.env
 .maintenance.env.local
+
+# Operating system and editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
+
+# Test and tool output
+*.log
+coverage/
+test-results/
+playwright-report/
+.eslintcache
+.vitest/
+.wrangler/
+.mf/
+target/
+
+# Private material and backups
+.env.local
+*.pem
+*.key
+*.p12
+*.dump
+*.pgdump
+
+# Agent working state. AGENTS.md, CLAUDE.md and tasks/ are shared and committed.
+.claude/settings.local.json
+.claude/worktrees/
+.worktrees/
+CLAUDE.local.md
+AGENTS.local.md

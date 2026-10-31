@@ -1,0 +1,26 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      development:
+        dependency-type: development
+    # Verified versions. Changing one means rerunning its native gates.
+    ignore:
+      - dependency-name: bun-runtime
+      - dependency-name: deno-runtime
+      - dependency-name: miniflare
+      - dependency-name: embedded-postgres
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+  - package-ecosystem: cargo
+    directory: /native/rust
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 3

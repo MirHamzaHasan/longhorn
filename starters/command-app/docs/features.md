@@ -54,3 +54,7 @@ record actual drain and private aggregate output.
 and end one selected sign-in. [Appended reference schema](session-inventory-schema.md)
 preserves old writers and backups; [page/request lifetime](session-inventory-lifecycle.md)
 keeps native ownership and stale-viewer protection.
+
+[Live command history](history-updates.md) checks the complete loaded window through
+the existing protected API. [Read ownership](history-update-lifecycle.md) bounds
+checks, cancellation and deeper manual browsing while preserving input/focus.

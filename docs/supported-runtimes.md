@@ -7,13 +7,17 @@ is linked through [release verification](release-verification.md); source/runtim
 account and browser jobs passed there. Package engines allow Node
 20.19+, but other Node versions/OS combinations need their own gate execution.
 
+Hosted passes below are historical profile evidence. The [current handoff](development-handoff.md)
+records the current state and the Actions-budget failures before runner allocation;
+historical runs do not prove the current revision.
+
 | Profile | Locally verified versions | Boundary |
 | --- | --- | --- |
 | Shared Fetch/core/DI/validation/config/logging | Node 20.19.4, Bun 1.4.4, Deno 2.9.6, workerd 1.20250718.0 | Shared packages and native/generic starter gates; runtime-specific entries remain explicit |
 | Generic CLI starters | All four runtime profiles above | Generated/relocated install, types/tests/build, native start/watch/shutdown |
 | Native passwords and retained auth | Node 20.19.4, Bun 1.4.4, Deno 2.9.6 on macOS ARM64 | Independent raw crypto/legacy/peer scrypt vectors, actual SIGTERM drain, same-file accounts/sessions/current roles and bounded private-note HTTP; [native proof](native-password-testing.md) |
 | Password replacement and login fencing | Same three native SQLite profiles; Node/PostgreSQL 18.4 with READ COMMITTED | Stale-verifier/concurrent mutation rejection, actual lock-wait expiry, SQL/SIGKILL rollback, active KDF drain, retained cross-host revocation and isolation denial; [proof](password-change-testing.md) |
-| Independent native auth projects | Same three native profiles plus Node/pnpm tooling | Packed/relocated/frozen selected snapshots, seven native app cases, retained HTTP/password/session checks and owned development; [project gate](auth-starter-testing.md) |
+| Independent native auth projects | Same three native profiles plus Node/pnpm tooling | Packed/relocated/frozen selected snapshots, eight native app cases, retained HTTP/password/session checks and owned development; [project gate](auth-starter-testing.md) |
 | Node SQLite task starter | Node 20.19.4, native libSQL SQLite on macOS ARM64 | Packed/frozen relocated install, real two-process HTTP, retained task/integrity, environment/source-watch/schema checks; activity/cache stay local |
 | Native Bun SQLite/task starter | Bun 1.4.4 on macOS ARM64 | Native callback ownership, packed/frozen relocated app, bun:test, retained HTTP and owned reloads; see [Bun storage](bun-sqlite.md) and [project proof](bun-sqlite-starter-testing.md) |
 | Native Deno SQLite/tasks | Deno 2.9.6, built-in SQLite 3.53.2 on macOS ARM64 | Exact binding slots/int64, callback ownership, permission/crash/lock tests and retained task HTTP; Node/Bun native file interoperability; [proof](deno-sqlite-testing.md) |
@@ -40,6 +44,7 @@ account and browser jobs passed there. Package engines allow Node
 | Persistent command console host | Node 20.19.4, PostgreSQL 18.4 | Native pg pool, scrypt, complete schema, fixed built assets and restricted role |
 | Local durable receiver | Miniflare 3.20250718.3, workerd 1.20250718.0, compatibility date 2025-07-18 | Retained single-host Object SQLite directory; no managed cloud failover evidence |
 | D1 provider and persistent tasks | Same pinned Miniflare/workerd, each worker at compatibility date 2025-07-18 | Actual local batches, guarded schema, revision/activity atomicity, numeric/int64 pages, replay after dropped HTTP reply and retained restart; no cloud replication/failover evidence |
+| Live command history | Same Node/PostgreSQL/Chromium profile | 38 accessible captures and independent restored-app observations; see the [handoff](development-handoff.md) for the last run |
 | Browser console | Playwright 1.64.1 Chromium, axe 4.14.0 | Both themes, desktop/phone widths, keyboard/scaled text; other engines and real-device AT remain manual |
 | Offline restore | PostgreSQL 18.4 pg_dump/pg_restore and retained local workerd storage | Stopped writers, fresh database/storage, explicit grants; not online/PITR replication |
 | Hosted CI baseline | Ubuntu 24.04, Node/pnpm pinned as above | Four v0.1 paths executed, including restore; artifact quota limits downloads |

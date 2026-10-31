@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LongHorn: a TypeScript backend framework that keeps its work</title>
+  <meta name="description" content="A modular TypeScript backend framework on Hono and Web Standards. One application model across Node, Bun, Deno and Cloudflare Workers, with durable delivery tested against real crashes.">
+  <meta name="theme-color" content="#0f3a5e">
+  <meta property="og:title" content="LongHorn">
+  <meta property="og:description" content="Write the backend once. Keep the work when the process dies.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
+  <link rel="preload" href="fonts/league-gothic-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="styles.css">
+  <script src="main.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="trail" aria-hidden="true"><span class="trail-run"></span><span class="trail-head"></span></div>
+
+  <header class="top">
+    <a class="brand" href="#main">
+      <svg class="mark" viewBox="0 0 120 64" aria-hidden="true"><path class="horn" pathLength="1" d="M46 27C33 29 19 27 11 19 7 15 4 9 3 3"/><path class="horn" pathLength="1" d="M74 27C87 29 101 27 109 19 113 15 116 9 117 3"/><path class="horn" pathLength="1" d="M46 27Q60 20 74 27L68 54Q60 62 52 54Z"/></svg>
+      LongHorn
+    </a>
+    <nav aria-label="Main">
+      <a href="#break-it">Break it</a>
+      <a href="#runtimes">Runtimes</a>
+      <a href="#modules">Modules</a>
+      <a href="#start">Start</a>
+      <a href="https://github.com/MirHamzaHasan/longhorn">GitHub</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero">
+      <h1><span class="rise"><span>Write the backend once.</span></span> <span class="rise"><span>Keep the work when the process dies.</span></span></h1>
+      <div class="hero-foot">
+        <p class="lede">LongHorn is a modular TypeScript framework on Hono and Web Standards. Your app runs on Node, Bun, Deno or Cloudflare Workers, and a saved command still reaches its result through crashes, outages and lost replies.</p>
+        <div class="actions">
+          <a class="button primary" href="#start">Create an app</a>
+          <a class="button" href="https://github.com/MirHamzaHasan/longhorn/blob/main/docs/project-guide.md">Read the architecture</a>
+        </div>
+      </div>
+      <p class="status"><strong>Pre-release.</strong> Nothing is on npm yet, so you run LongHorn from a checkout. Tested locally on macOS; see <a href="#limits">what is not claimed</a>.</p>
+    </section>
+
+    <section class="stage" id="break-it" aria-labelledby="stage-title">
+      <h2 id="stage-title">Break it yourself</h2>
+      <p class="stage-intro">Follow one command, the numbers 4, 8 and 15, from request to receipt. Then pick something to go wrong.</p>
+
+      <ol class="line" id="line">
+        <li class="stop" data-stop="client"><span class="node"></span><strong>Client</strong><span class="note" data-note>Waiting</span></li>
+        <li class="stop" data-stop="tx"><span class="node"></span><strong>Transaction</strong><span class="note" data-note>Waiting</span></li>
+        <li class="stop" data-stop="dispatch"><span class="node"></span><strong>Dispatcher</strong><span class="note" data-note>Waiting</span></li>
+        <li class="stop" data-stop="receiver"><span class="node"></span><strong>Receiver</strong><span class="note" data-note>Waiting</span></li>
+      </ol>
+
+      <div class="bench">
+        <div class="controls">
+          <fieldset class="scenarios">
+            <legend>What goes wrong?</legend>
+            <label><input type="radio" name="scenario" value="normal" checked><span>Nothing</span></label>
+            <label><input type="radio" name="scenario" value="down"><span>The receiver goes down</span></label>
+            <label><input type="radio" name="scenario" value="ack"><span>The delivery reply is lost</span></label>
+            <label><input type="radio" name="scenario" value="crash"><span>The process is killed mid-commit</span></label>
+            <label><input type="radio" name="scenario" value="replay"><span>The client never hears back</span></label>
+          </fieldset>
+          <button class="button" id="replay" type="button">Run it again</button>
+        </div>
+
+        <div class="story">
+          <ol class="log" id="log"></ol>
+          <p class="outcome" id="outcome" role="status"></p>
+          <p class="proof" id="proof"></p>
+        </div>
+
+        <div class="printer">
+          <dl class="tally">
+            <div><dt>Commands saved</dt><dd id="count-commands">0</dd></div>
+            <div><dt>Send attempts</dt><dd id="count-attempts">0</dd></div>
+            <div><dt>Receipts</dt><dd id="count-receipts">0</dd></div>
+          </dl>
+          <div class="slot"></div>
+          <div class="paper-well">
+            <div class="paper" id="paper">
+              <p class="paper-title">Computed receipt</p>
+              <dl>
+                <div><dt>Numbers</dt><dd>4, 8, 15</dd></div>
+                <div><dt>Count</dt><dd>3</dd></div>
+                <div><dt>Sum</dt><dd>27</dd></div>
+                <div><dt>Minimum</dt><dd>4</dd></div>
+                <div><dt>Maximum</dt><dd>15</dd></div>
+              </dl>
+              <p class="paper-foot" id="paper-foot"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="fineprint">This is an animation of tested behaviour, not a live server. Delivery is at-least-once with deduplication, not exactly-once across systems. To run the real one: <code>pnpm demo:operator-accounts</code></p>
+    </section>
+
+    <section class="band" id="runtimes" aria-labelledby="runtimes-title">
+      <h2 id="runtimes-title">Same app, your host</h2>
+      <p class="section-lede">Routes, services and lifecycle are shared. Only the host changes, and each host uses its platform's own server, not a compatibility layer.</p>
+      <div class="tabs">
+        <div role="tablist" aria-label="Runtime" id="runtime-tabs">
+          <button role="tab" type="button" id="tab-node" aria-controls="runtime-panel" aria-selected="true" data-runtime="node">Node</button>
+          <button role="tab" type="button" id="tab-bun" aria-controls="runtime-panel" aria-selected="false" tabindex="-1" data-runtime="bun">Bun</button>
+          <button role="tab" type="button" id="tab-deno" aria-controls="runtime-panel" aria-selected="false" tabindex="-1" data-runtime="deno">Deno</button>
+          <button role="tab" type="button" id="tab-workers" aria-controls="runtime-panel" aria-selected="false" tabindex="-1" data-runtime="workers">Workers</button>
+        </div>
+        <div class="runtime-body" role="tabpanel" id="runtime-panel" aria-labelledby="tab-node" tabindex="0">
+          <pre class="code" tabindex="0"><code id="runtime-code"></code></pre>
+          <dl class="runtime-facts">
+            <div><dt>Storage</dt><dd id="fact-storage"></dd></div>
+            <div><dt>Passwords</dt><dd id="fact-passwords"></dd></div>
+            <div><dt>Keep in mind</dt><dd id="fact-limit"></dd></div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <section class="band" id="modules" aria-labelledby="modules-title">
+      <h2 id="modules-title">Take only the parts you use</h2>
+      <p class="section-lede">Core needs four small packages. Everything else is imported and wired by your application, so nothing starts behind your back.</p>
+      <dl class="parts">
+        <div class="part-core"><dt><a href="https://github.com/MirHamzaHasan/longhorn/blob/main/docs/lifecycle.md">core</a></dt><dd>The application: start, listen, drain, close</dd></div>
+        <div class="part-core"><dt><a href="https://github.com/MirHamzaHasan/longhorn/blob/main/docs/dependency-injection.md">container</a></dt><dd>Typed tokens and application singletons</dd></div>
+        <div class="part-core"><dt><a href="https://github.com/MirHamzaHasan/longhorn/blob/main/docs/http.md">http</a></dt><dd>A real Hono app with error defaults</dd></div>
+        <div class="part-core"><dt><a href="https://github.com/MirHamzaHasan/longhorn/blob/main/docs/runtimes.md">runtime</a></dt><dd>Fetch and listener contracts</dd></div>
+        <div class="part-core"><dt><a href="https://github.com/MirHamzaHasan/longhorn/blob/main/docs/logging.md">logger</a></dt><dd>Structured logs, redaction, request IDs</dd></div>
+        <div><dt><a href="https://github.com/MirHamzaHasan/longhorn/blob/main/docs/validation.md">validation</a></dt><dd>Standard Schema parsing and Hono input</dd></div>
+        <div><dt><a href="https://github.com/MirHamzaHasan/longhorn/blob/main/docs/configuration.md">config</a></dt><dd>Validated configuration records</dd></div>
+        <div><dt><a href="https://github.com/MirHamzaHasan/longhorn/blob/main/docs/database.md">database</a></dt><dd>SQL, transactions and migrations</dd></div>
+        <div><dt><a href="https://github.com/MirHamzaHasan/longhorn/blob/main/docs/authentication.md">auth</a></dt><dd>Passwords, sessions and guards</dd></div>
+        <div><dt><a href="https://github.com/MirHamzaHasan/longhorn/blob/main/docs/events.md">events</a></dt><dd>Awaited in-process notifications</dd></div>
+        <div><dt><a href="https://github.com/MirHamzaHasan/longhorn/blob/main/docs/cache.md">cache</a></dt><dd>Memory or Redis, with shared loads</dd></div>
+        <div><dt><a href="https://github.com/MirHamzaHasan/longhorn/blob/main/docs/queues.md">queue</a></dt><dd>Persistent jobs, leases and retries</dd></div>
+        <div><dt><a href="https://github.com/MirHamzaHasan/longhorn/blob/main/docs/scheduler.md">scheduler</a></dt><dd>Durable one-time, interval and cron runs</dd></div>
+        <div><dt><a href="https://github.com/MirHamzaHasan/longhorn/blob/main/docs/idempotency.md">idempotency</a></dt><dd>Safe retries with saved replies</dd></div>
+        <div><dt><a href="https://github.com/MirHamzaHasan/longhorn/blob/main/docs/request-limits.md">ratelimit</a></dt><dd>Request budgets per subject</dd></div>
+        <div><dt><a href="https://github.com/MirHamzaHasan/longhorn/blob/main/docs/outbox.md">outbox</a></dt><dd>Transactional delivery, recovery and audit</dd></div>
+        <div><dt><a href="https://github.com/MirHamzaHasan/longhorn/blob/main/docs/observability.md">observability</a></dt><dd>Health, metrics, traces and OTLP export</dd></div>
+      </dl>
+    </section>
+
+    <section class="band" id="start" aria-labelledby="start-title">
+      <h2 id="start-title">Create an app</h2>
+      <p class="section-lede">Each project is independent. It gets its own copy of the framework and works outside this repository.</p>
+      <div class="picker">
+        <fieldset class="templates">
+          <legend>What are you building?</legend>
+          <label><input type="radio" name="template" value="api" checked><span><strong>An HTTP API</strong>Routes, validation, events, cache and health checks</span></label>
+          <label><input type="radio" name="template" value="sqlite-tasks"><span><strong>An app with a database</strong>Tasks on SQLite, kept across restarts</span></label>
+          <label><input type="radio" name="template" value="sqlite-auth"><span><strong>An app with accounts</strong>Passwords, sessions and private notes</span></label>
+          <label><input type="radio" name="template" value="d1-tasks"><span><strong>A Cloudflare Worker with storage</strong>Tasks on D1 with safe request replay</span></label>
+          <label><input type="radio" name="template" value="command-app"><span><strong>The complete console</strong>PostgreSQL, browser UI and receipt receiver</span></label>
+        </fieldset>
+        <div class="terminal">
+          <div class="runtime-choice" id="runtime-choice" role="radiogroup" aria-label="Runtime"></div>
+          <pre class="code" tabindex="0"><code id="start-code"></code></pre>
+          <button class="button copy" id="copy" type="button">Copy commands</button>
+          <p class="start-note" id="start-note"></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="band console" aria-labelledby="console-title">
+      <div>
+        <h2 id="console-title">A finished app to read</h2>
+        <p class="section-lede">The command console puts the modules to work: accounts, history, receipts, operator recovery and an audit log. Copy it, or read it to see how the parts connect.</p>
+        <pre class="code" tabindex="0"><code>pnpm install
+pnpm demo:operator-accounts</code></pre>
+        <p class="start-note">Then open <code>http://127.0.0.1:3010/console</code>. The demo starts its own temporary PostgreSQL and removes it on Ctrl+C.</p>
+      </div>
+      <figure>
+        <img src="assets/console-receipt.png" width="1360" height="1211" loading="lazy" alt="The LongHorn console showing a delivered command for the numbers 4, 8 and 15, with a computed receipt of count 3, sum 27, minimum 4 and maximum 15.">
+        <figcaption>A real capture from the browser test, not a mock-up.</figcaption>
+      </figure>
+    </section>
+
+    <section class="band" id="limits" aria-labelledby="limits-title">
+      <h2 id="limits-title">What has been tested, and what has not</h2>
+      <div class="ledger">
+        <div>
+          <h3>Run for real</h3>
+          <ul>
+            <li>749 source tests, and 66 gates that start real engines, processes and browsers</li>
+            <li><a href="https://github.com/MirHamzaHasan/longhorn/blob/main/docs/outbox-testing.md">Processes killed with SIGKILL</a> during and after commits</li>
+            <li>Real PostgreSQL 18, Redis, D1, Durable Objects and OpenTelemetry Collector</li>
+            <li>Lost HTTP replies, concurrent writers and failed schema upgrades</li>
+            <li>Generated projects, moved out of the repository and installed fresh</li>
+            <li>Backup, restore into empty storage, then a new command</li>
+            <li>Console screens with axe in Chromium, in both themes and at phone width</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Not claimed</h3>
+          <ul>
+            <li>Published packages: nothing is on npm</li>
+            <li>A hosted CI pass on the latest code, because recent runs never started</li>
+            <li>Production or cloud deployment, failover or replication</li>
+            <li>Exactly-once delivery across systems</li>
+            <li>Password reset, account recovery or MFA</li>
+            <li>Other browser engines, or VoiceOver and TalkBack on real devices</li>
+            <li>Native PostgreSQL on anything other than Node</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <p><strong>LongHorn</strong> is MIT licensed.</p>
+    <nav aria-label="Documentation">
+      <a href="https://github.com/MirHamzaHasan/longhorn/blob/main/docs/project-guide.md">Architecture guide</a>
+      <a href="https://github.com/MirHamzaHasan/longhorn/blob/main/docs/features.md">Feature index</a>
+      <a href="https://github.com/MirHamzaHasan/longhorn/blob/main/docs/examples-tour.md">Examples tour</a>
+      <a href="https://github.com/MirHamzaHasan/longhorn/blob/main/docs/supported-runtimes.md">Runtime matrix</a>
+      <a href="https://github.com/MirHamzaHasan/longhorn">GitHub</a>
+    </nav>
+  </footer>
+</body>
+</html>

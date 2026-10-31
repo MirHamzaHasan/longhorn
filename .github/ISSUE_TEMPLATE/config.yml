@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question or idea
+    url: https://github.com/MirHamzaHasan/longhorn/discussions
+    about: Ask how something works, or talk through an idea.
+  - name: Security problem
+    url: https://github.com/MirHamzaHasan/longhorn/security/advisories/new
+    about: Report vulnerabilities privately, not in an issue.

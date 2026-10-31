@@ -5,7 +5,21 @@ feature has its own guide. When changing a feature, update its guide, this index
 and the example that exercises it. Guides record ownership, APIs, upstream and
 downstream connections, verification, and current limits.
 
-## Implemented
+## Live command history
+
+See the [handoff](development-handoff.md) for verification and publication state. The
+[architecture guide](project-guide.md) explains the whole system.
+
+| Feature | Guide | Implementation owner | Connects to |
+| --- | --- | --- | --- |
+| Live history window | [List updates](command-history-updates.md) | Existing history GET and public metadata projection | Complete loaded windows, bounded keysets and atomic browser publication |
+| History update ownership | [Read lifecycle](history-update-lifecycle.md) | Existing follow timer and page lifetime | Serial cycles, time/count/depth budgets, cancellation and manual paging |
+| Live history controls | [Console updates](console-history-updates.md) | Existing native controls and keyed list | Focus/scroll, empty/filter states and preserved forms/exports |
+| History update verification | [Native proof](history-update-testing.md) | Actual SQL/HTTP/broker/browser and independent apps | Public ownership, results, lifetimes, complete window and restored assets |
+
+## Implemented baseline
+
+The rows below describe implemented capabilities on `main`, not a published release.
 
 | Feature | Guide | Implementation owner | Connects to |
 | --- | --- | --- | --- |
@@ -529,6 +543,9 @@ flowchart TD
   ManagedLimit --> DurableSql
   LimitCleanup[Optional rate limit cleanup] --> LimitCoordinator[Portable RateLimiter.prune]
   LimitCleanup --> PruneOwner[Shared owned prune worker]
+  HistoryLive[Bounded history windows] --> CommandHistory
+  HistoryList[Keyed Commands list] --> HistoryLive
+  HistoryList --> CommandFollow
   SessionInventory[Optional active-session service] --> SessionInventoryStore[Native session inventory stores]
   SessionInventoryStore --> Database
   AccountSessions[Account active sessions] --> SessionInventory

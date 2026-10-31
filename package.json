@@ -29,7 +29,7 @@
     "package:command-app": "pnpm build && node scripts/package-command-app.mjs",
     "test:command-app": "pnpm build && node scripts/verify-command-app.mjs",
     "test:command-project": "pnpm build && node scripts/verify-command-project.mjs",
-    "test:console": "pnpm build && node scripts/verify-console.mjs && node scripts/verify-history-search-console.mjs && node scripts/verify-history-views-console.mjs && node scripts/verify-history-view-links.mjs && node scripts/verify-history-export.mjs && node scripts/verify-audit-export.mjs && node scripts/verify-receipt-export.mjs && node scripts/verify-command-follow.mjs && node scripts/verify-console-account.mjs && node scripts/verify-session-inventory-console.mjs",
+    "test:console": "pnpm build && node scripts/verify-console.mjs && node scripts/verify-history-search-console.mjs && node scripts/verify-history-views-console.mjs && node scripts/verify-history-view-links.mjs && node scripts/verify-history-export.mjs && node scripts/verify-audit-export.mjs && node scripts/verify-receipt-export.mjs && node scripts/verify-command-follow.mjs && node scripts/verify-console-account.mjs && node scripts/verify-session-inventory-console.mjs && node scripts/verify-history-live.mjs",
     "test:history-views": "pnpm build && node scripts/verify-history-views.mjs && node scripts/verify-history-views-console.mjs",
     "test:history-search": "pnpm build && node scripts/verify-history-search.mjs && node scripts/verify-history-search-console.mjs",
     "test:history-view-links": "pnpm build && node scripts/verify-history-view-links.mjs",
@@ -120,6 +120,7 @@
     "maintain:command-limits": "pnpm --filter example-postgres... build && node examples/postgres/dist/maintain-limits.js",
     "test:command-limit-maintenance": "pnpm build && node scripts/verify-command-limit-maintenance.mjs",
     "provision:command-limit-maintenance": "pnpm --filter example-postgres... build && node examples/postgres/dist/provision-limit-maintenance.js",
+    "test:history-live": "pnpm build && node scripts/verify-history-live.mjs",
     "test:session-inventory": "pnpm build && node scripts/verify-session-inventory.mjs && node scripts/verify-session-inventory-console.mjs"
   },
   "packageManager": "pnpm@12.6.0"

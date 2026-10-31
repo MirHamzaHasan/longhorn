@@ -29,6 +29,7 @@ Thirty cycles permit at most sixty follow GETs, in addition to the initial view'
 detail and receipt reads. Errors or terminal results usually stop sooner.
 
 These are bounded browser reads, not server push or a guarantee that delivery
-finishes within the budget. History lists, outgoing lists, recovery forms and audit
-pages retain explicit refresh. No private command state is persisted in browser
+finishes within the budget. [History lists](command-history-updates.md) now own
+separate bounded window updates; outgoing lists, recovery forms and audit pages
+retain explicit refresh. No private command state is persisted in browser
 storage, and no additional runtime package or database permission is required.

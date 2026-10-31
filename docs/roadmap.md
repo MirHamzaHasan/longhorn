@@ -1,6 +1,9 @@
 # Development roadmap
 
 The [feature index](features.md) records implemented behavior and package connections.
+Feature development is paused at the owner's request. The [handoff](development-handoff.md)
+records the current state; the [architecture guide](project-guide.md) is the system-level
+reading path. No roadmap item authorizes automatic continuation.
 This roadmap retains the wider framework direction from [the architecture](architecture.md).
 An exported package name alone is a scaffold, not a finished feature.
 The agreed [v0.1 delivery plan](v0.1-plan.md) prioritizes history, the web console,
@@ -388,8 +391,9 @@ repairs function ACLs, reapplies minimal grants and processes a new command.
 
 ## Hosted release review
 
-[Draft PR #1](https://github.com/MirHamzaHasan/longhorn/pull/1) tracks the source
-review branch and its actual hosted checks. The initial run passed source/runtime,
+[Draft PR #1](https://github.com/MirHamzaHasan/longhorn/pull/1) records the original
+v0.1 review and its hosted checks. The [handoff](development-handoff.md) identifies
+the later review stack and paused local work. The initial run passed source/runtime,
 account-operation and browser jobs on Ubuntu, including 434 tests and the four
 independent CLI starters. Current checks/logs remain authoritative for the current
 head, including distribution/restore. [Locked dependencies](command-app-dependencies.md)
@@ -660,7 +664,8 @@ checksums and require owner maintenance deployment. The [console](console-histor
 resets pages on selection and isolates canceled continuations. [Native proof](history-filter-testing.md)
 covers real queue transitions, DDL interruption/concurrency, saved cursors, restricted
 grants, actual index plans, 117 command captures and filtering in the restored app.
-Arbitrary text/payload search and automated history-list refresh remain separate work.
+Arbitrary text/payload search remains separate work. Bounded live history refresh is
+implemented below.
 
 ## Command delivery and receipt following implemented
 
@@ -898,6 +903,20 @@ adds real expiry/current rows with [owned lifecycle](session-inventory-lifecycle
 [Proof](session-inventory-testing.md) covers native engines, Object SQL, commit death,
 real browser interactions and independently restored application references.
 Device/IP/creation metadata, credential recovery/reset and MFA remain separate work.
+
+## Live command history implemented
+
+See the [handoff](development-handoff.md) for evidence.
+
+[Loaded-window updates](command-history-updates.md) now connect fresh existing
+owner/operator/filter/search admission to the Commands list, including empty views.
+[Page ownership](history-update-lifecycle.md) bounds serial cycles, cancellation,
+manual paging and deep browsing. [Native controls](console-history-updates.md)
+preserve keyed links, focus/scroll and saved/search/export inputs. [Proof](history-update-testing.md)
+covers actual PostgreSQL/HTTP/broker results, 200-row atomic windows, permissions,
+real wall-clock expiry, browser lifetime and independently restored apps.
+Server push, snapshot history, other operator lists and automatic recovery remain
+separate capabilities.
 
 ## Subsequent framework modules
 

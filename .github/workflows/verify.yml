@@ -203,6 +203,7 @@ jobs:
           node scripts/verify-command-follow.mjs
           node scripts/verify-console-account.mjs
           node scripts/verify-session-inventory-console.mjs
+          node scripts/verify-history-live.mjs
       - name: Retain console review captures
         id: console-artifact
         if: always()
@@ -214,6 +215,7 @@ jobs:
             .artifacts/console/**/*.png
             .artifacts/console/**/accessibility.json
             .artifacts/session-inventory-console-proof.json
+            .artifacts/history-live-proof.json
           include-hidden-files: true
           if-no-files-found: warn
           retention-days: 14
@@ -252,6 +254,8 @@ jobs:
             .artifacts/command-project-proof.json
             .artifacts/session-inventory-distribution-proof-archive.json
             .artifacts/session-inventory-distribution-proof-cli.json
+            .artifacts/history-live-distribution-proof-archive.json
+            .artifacts/history-live-distribution-proof-cli.json
             .artifacts/command-development-proof.json
             .artifacts/operator-preflight-proof-archive.json
             .artifacts/operator-preflight-proof-cli.json

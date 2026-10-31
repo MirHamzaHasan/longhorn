@@ -1,6 +1,12 @@
 # Longhorn Framework Architecture
 
 ## Overview
+
+For a complete system map and reading order, begin with the [architecture guide](project-guide.md).
+This file expands each subsystem in implementation order. The [development handoff](development-handoff.md)
+records the current state.
+See [feature connections](features.md) for API/provider/lifetime/testing guides.
+
 Longhorn is a modern, modular, TypeScript-first application framework designed to provide a batteries-included developer experience while remaining runtime-portable, lightweight, and extensible.
 
 The framework builds higher-level capabilities around **Web Standards** and **Hono** as its HTTP foundation.
@@ -1850,3 +1856,24 @@ boundary. The independent command workflow also checks restored references and
 selected revocation. See [API](session-inventory.md), [schema](session-inventory-schema.md),
 [HTTP](session-inventory-http.md), [console](console-session-inventory.md),
 [lifetime](session-inventory-lifecycle.md) and [proof](session-inventory-testing.md).
+
+---
+
+## 73. Bounded live command history
+
+See the [handoff](development-handoff.md) for the last verification.
+
+The console's [history list](command-history-updates.md) reuses the existing
+CommandFollow timer and protected history GETs. Each serial cycle replaces one
+complete loaded window (up to 200 rows/two native pages), using opaque server
+keysets and public metadata projection. It does not infer insertion order from
+IDs/dates or publish successful first pages after a later failure.
+
+[Ownership](history-update-lifecycle.md) bounds five-second settled intervals,
+24 checks/two minutes, hidden/offline/navigation cancellation and manual paging.
+[Keyed DOM reconciliation](console-history-updates.md) preserves links, focus,
+visible anchors and unrelated form/export state. Fresh role denial removes the
+old private list; current cookie/viewer checks retain their existing policy.
+No server API, schema, runtime grant or mutation changes are introduced.
+[Verification](history-update-testing.md) uses actual PostgreSQL, HTTP/broker
+computations, native browser lifetimes and independently restored distributions.

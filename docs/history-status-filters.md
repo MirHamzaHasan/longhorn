@@ -37,4 +37,5 @@ many rows. The [index guide](history-filter-migrations.md) records measured scop
 
 Membership is live. Dispatch, retry and pruning can move a command between
 filters between requests. Refresh starts at the newest matching position; there
-is no snapshot, total count, automatic polling or cross-page completeness claim.
+is no snapshot, total count or cross-page completeness claim. The console now owns
+[bounded list polling](command-history-updates.md) above this unchanged API.

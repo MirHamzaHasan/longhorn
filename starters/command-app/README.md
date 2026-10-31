@@ -45,3 +45,6 @@ its existing grants and does not acquire this identity.
 and end one selected sign-in. [Appended reference schema](docs/session-inventory-schema.md)
 preserves old writers and backups; [page/request lifetime](docs/session-inventory-lifecycle.md)
 keeps native ownership and stale-viewer protection.
+
+Commands now shows [live history updates](docs/history-updates.md), including
+arrivals and changed delivery filters, with [bounded page ownership](docs/history-update-lifecycle.md).
