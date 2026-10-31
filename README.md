@@ -1,13 +1,13 @@
 <picture>
   <source media="(prefers-reduced-motion: reduce)" srcset="./docs/assets/film-still.svg">
-  <img src="./docs/assets/film.svg" width="100%" alt="One continuous animation. A command for the numbers 4, 8 and 15 is saved with its message in one transaction. The process is killed, and both survive. After a restart, two delivery attempts fail while the receiver is down. The receiver comes back, the third attempt lands, and one receipt prints: count 3, sum 27, minimum 4, maximum 15. Write the backend once. Keep the work when the process dies.">
+  <img src="./docs/assets/film.svg" width="100%" alt="One continuous animation of an app window, with a server log on the left and the database on the right. A command for the numbers 4, 8 and 15 is saved with its message in one transaction. kill -9 ends the process and the log goes dark, while both database rows stay. After a restart, two delivery attempts fail while the receiver is down. The third lands, the message is marked delivered and one receipt prints: count 3, sum 27, minimum 4, maximum 15. Write the backend once. Keep the work when the process dies.">
 </picture>
 
 <p>
   <a href="https://mirhamzahasan.github.io/longhorn/"><b>Website</b></a> &nbsp;|&nbsp;
   <a href="#start-in-a-minute"><b>Quickstart</b></a> &nbsp;|&nbsp;
   <a href="#how-it-fits-together"><b>How it works</b></a> &nbsp;|&nbsp;
-  <a href="docs/features.md"><b>All features</b></a> &nbsp;|&nbsp;
+  <a href="#find-your-way-around-the-docs"><b>Docs</b></a> &nbsp;|&nbsp;
   <a href="#contribute"><b>Contribute</b></a> &nbsp;|&nbsp;
   <a href="https://github.com/MirHamzaHasan/longhorn/discussions"><b>Discussions</b></a>
 </p>
@@ -138,16 +138,15 @@ exactly what was verified on each host.
 
 ## How it fits together
 
-Your application sits on top. It picks modules, and it picks one host to run on.
+Your application sits on top. It picks modules, and it picks a host to run on.
 
-```mermaid
-flowchart LR
-    App["Your application<br/>routes and wiring"] --> Modules["Optional modules<br/>database, auth, queue,<br/>scheduler, outbox, cache"]
-    App --> Core["Core<br/>lifecycle, DI, Hono, logs"]
-    Modules --> Core
-    Core --> Host["One host<br/>Node, Bun, Deno, Workers"]
-    Modules --> Storage["Native storage<br/>SQLite, PostgreSQL, Redis,<br/>D1, Durable Objects"]
-```
+<picture>
+  <source media="(prefers-reduced-motion: reduce)" srcset="./docs/assets/stack-still.svg">
+  <img src="./docs/assets/stack.svg" width="100%" alt="Four real example applications and the modules each imports. A tasks API, accounts, a Worker on D1 and the command app each light up a different set of optional modules on top of the same core, on the hosts they run on.">
+</picture>
+
+The animation reads each example's real `package.json`, so what lights up is what that
+app imports.
 
 A command in the complete example application takes this path:
 
@@ -182,6 +181,11 @@ tasks/        The work board and task files that keep parallel work apart
 This is what LongHorn is built around, and what the animation at the top of this page
 follows. A command is saved together with its outgoing message in one transaction, then
 delivered until it lands. Each failure below is caused for real in a test:
+
+<picture>
+  <source media="(prefers-reduced-motion: reduce)" srcset="./docs/assets/failures-still.svg">
+  <img src="./docs/assets/failures.svg" width="100%" alt="Four failures, one after another. The receiver is down: the message stays saved and lands on a later attempt. A delivery reply is lost: it is sent twice and stored once. The process dies mid-commit: the transaction rolls back and leaves no partial writes. The client never hears back: it retries with the same key and gets the original reply.">
+</picture>
 
 | What goes wrong | What happens | Tested in |
 | --- | --- | --- |
@@ -257,6 +261,21 @@ protocol.
 The [examples tour](docs/examples-tour.md) has ports, curl commands and settings for each.
 
 </details>
+
+## Find your way around the docs
+
+There's one guide per feature, so you only read what you need.
+
+| You want to | Read |
+| --- | --- |
+| Understand the whole system | [Project guide](docs/project-guide.md) |
+| Follow one command through the code | [Command walkthrough](docs/command-application.md) |
+| Run every example | [Examples tour](docs/examples-tour.md) |
+| Pick a project template | [Starter templates](docs/starter-templates.md) |
+| Look up one feature | [Feature index](docs/features.md) |
+| See what runs on each host | [Runtime matrix](docs/supported-runtimes.md) |
+| See how it's verified | [Release verification](docs/release-verification.md) |
+| See where things stand today | [Development handoff](docs/development-handoff.md) |
 
 ## What is and isn't tested
 

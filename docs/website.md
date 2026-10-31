@@ -27,22 +27,27 @@ The site is live at https://mirhamzahasan.github.io/longhorn/.
 
 ## README animations
 
-`docs/assets/film.svg` is one continuous take: one command, a crash, an outage and a
-receipt. `docs/assets/hosts.svg` shows the same app moving between hosts, and
+`docs/assets/film.svg` is one continuous take in one app window, with the server log on the
+left and the database on the right: one command, a kill, an outage and a receipt. `docs/assets/hosts.svg` shows the same app moving between hosts,
+`docs/assets/stack.svg` shows which modules real examples import,
+`docs/assets/failures.svg` plays the four tested failures in turn, and
 `docs/assets/quickstart.svg` is the terminal session. They animate with CSS only, which
 GitHub allows in images. All text is converted to paths, so no font has to load.
 
-`docs/assets/build-readme-motion.mjs` builds the film and the hosts piece, and its header
+`docs/assets/build-readme-motion.mjs` builds all of them, and its header
 gives the command. Edit the generator, not the SVGs:
 
-- The world stays put and a camera moves over it. The chip is one object, on screen
-  from the first beat to the receipt, and it lands on its own row.
+- Show the working surface, not an abstract diagram. The numbers leave the log, become
+  database rows and land on the receipt's first line. When the log dies, the rows stay lit.
+- The film's log lines are an illustration of the sequence, not captured output.
 - Each object has one timeline, using transforms and opacity only.
 - Words change in one slot, so the eye doesn't have to find them again.
 - Anything the film shows must match the guide that tests it. The kill is in
   [transaction publishing testing](transaction-publishing-testing.md), and the outage in
   [persistent operations testing](persistent-operations-testing.md). Three attempts is
   an example, not a limit.
+- `stack` reads each example's `package.json` at build time, so rebuild it when an example's
+  dependencies change. `failures` follows the failure table in the README and its guides.
 
 Each piece has a `-still.svg` twin, its settled frame. The README's `<picture>` picks it
 with `media="(prefers-reduced-motion: reduce)"`. Do not put that media query inside the
