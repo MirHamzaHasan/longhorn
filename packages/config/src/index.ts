@@ -1,7 +1,7 @@
-import { safeParse, ValidationError } from '@longhorn/validation'
-import type { StandardSchemaV1, ValidationIssue } from '@longhorn/validation'
+import { safeParse, ValidationError } from '@longhornjs/validation'
+import type { StandardSchemaV1, ValidationIssue } from '@longhornjs/validation'
 
-export const PACKAGE_NAME = '@longhorn/config'
+export const PACKAGE_NAME = '@longhornjs/config'
 
 export type ConfigSource = Readonly<Record<string, unknown>>
 export type Environment = Readonly<Record<string, string | undefined>>

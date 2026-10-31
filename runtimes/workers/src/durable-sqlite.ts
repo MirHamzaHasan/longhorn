@@ -1,6 +1,6 @@
 import type { DurableObjectState, DurableObjectStorage, SqlStorageValue } from '@cloudflare/workers-types'
-import type { Database, QueryResult, SqlExecutor, SqlStatement, SqlValue } from '@longhorn/database'
-import { createTransactionScope } from '@longhorn/database/transactions'
+import type { Database, QueryResult, SqlExecutor, SqlStatement, SqlValue } from '@longhornjs/database'
+import { createTransactionScope } from '@longhornjs/database/transactions'
 import { beforeCommit, rememberOwner } from './durable-commit.js'
 
 export type DurableSqliteState = Pick<DurableObjectState, 'blockConcurrencyWhile'> & {

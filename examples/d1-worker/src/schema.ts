@@ -1,6 +1,6 @@
-import{batchRateLimitMigrations}from'@longhorn/ratelimit/batch-sqlite'
-import type { Migration } from '@longhorn/database'
-import{batchIdempotencyMigrations}from'@longhorn/idempotency/batch-sqlite'
+import{batchRateLimitMigrations}from'@longhornjs/ratelimit/batch-sqlite'
+import type { Migration } from '@longhornjs/database'
+import{batchIdempotencyMigrations}from'@longhornjs/idempotency/batch-sqlite'
 export const migrations:readonly Migration[]=[
   {id:'d1-tasks/001',statements:[`CREATE TABLE d1_tasks(
     position INTEGER PRIMARY KEY AUTOINCREMENT,id TEXT NOT NULL UNIQUE,title TEXT NOT NULL CHECK(length(trim(title)) BETWEEN 1 AND 200),

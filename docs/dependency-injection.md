@@ -1,11 +1,11 @@
 # Dependency injection
 
-Owner: `@longhorn/container`. No HTTP or runtime dependencies. Core creates one
+Owner: `@longhornjs/container`. No HTTP or runtime dependencies. Core creates one
 container per application and exposes it to [HTTP handlers](http.md). Configuration,
 resource startup, and application services can register providers in that container.
 
 ```ts
-import { Container, token, provide } from '@longhorn/container'
+import { Container, token, provide } from '@longhornjs/container'
 
 const Database = token<{ query(): string }>('database')
 const Users = token<{ list(): string }>('users')

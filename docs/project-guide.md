@@ -70,23 +70,23 @@ An application imports those optional modules and wires them together.
 
 | Package | What it owns | Connects to |
 | --- | --- | --- |
-| @longhorn/core | Longhorn, managed Fetch/background admission, start/listen/close | [Lifecycle](lifecycle.md), [managed work](application-work.md) |
-| @longhorn/container | Typed tokens, factories and application singleton resolution | [DI](dependency-injection.md) |
-| @longhorn/http | Hono creation and HTTP error/not-found defaults | [HTTP](http.md) |
-| @longhorn/runtime | Fetch/listener contracts and optional shared pruning ownership | [Runtimes](runtimes.md), [pruning](prune-worker.md) |
-| @longhorn/validation | Standard Schema parsing and Hono input adapters | [Validation](validation.md) |
-| @longhorn/config | Validated configuration records and merge rules | [Configuration](configuration.md) |
-| @longhorn/logger | Structured records, redaction, Hono correlation and owned export | [Logging](logging.md), [buffering](log-processing.md) |
-| @longhorn/database | SQL values/executors, transaction provenance, schema runners and batch contracts | [Database](database.md), [transactions](transaction-executors.md) |
-| @longhorn/auth | Credentials, password/session policy, guards and explicit account capabilities | [Authentication](authentication.md), [sessions](sessions.md) |
-| @longhorn/events | Awaited process-local typed notifications | [Events](events.md), [subscriptions](event-subscriptions.md) |
-| @longhorn/cache | Memory caching/coalescing/fences and explicit Redis storage/codec | [Cache](cache.md), [Redis](redis-cache.md) |
-| @longhorn/queue | Persistent jobs, claims, leases, retries and consumer workers | [Queues](queues.md), [workers](queue-workers.md) |
-| @longhorn/scheduler | Durable occurrence cursors and atomic queue dispatch | [Scheduling](scheduler.md), [cron](cron.md) |
-| @longhorn/idempotency | Scoped request ownership, input fingerprints and saved JSON results | [Request replay](idempotency.md), [cleanup](idempotency-cleanup.md) |
-| @longhorn/ratelimit | Explicit subject budgets and native reservations | [Limits](request-limits.md), [cleanup](rate-limit-cleanup.md) |
-| @longhorn/outbox | Transactional outgoing jobs, delivery inspection/recovery and audit | [Outbox](outbox.md), [recovery](outbox-deliberate-retry.md) |
-| @longhorn/observability | Readiness/liveness, metrics, explicit trace context and collector export | [Observability](observability.md), [OTLP](otlp-http.md) |
+| @longhornjs/core | Longhorn, managed Fetch/background admission, start/listen/close | [Lifecycle](lifecycle.md), [managed work](application-work.md) |
+| @longhornjs/container | Typed tokens, factories and application singleton resolution | [DI](dependency-injection.md) |
+| @longhornjs/http | Hono creation and HTTP error/not-found defaults | [HTTP](http.md) |
+| @longhornjs/runtime | Fetch/listener contracts and optional shared pruning ownership | [Runtimes](runtimes.md), [pruning](prune-worker.md) |
+| @longhornjs/validation | Standard Schema parsing and Hono input adapters | [Validation](validation.md) |
+| @longhornjs/config | Validated configuration records and merge rules | [Configuration](configuration.md) |
+| @longhornjs/logger | Structured records, redaction, Hono correlation and owned export | [Logging](logging.md), [buffering](log-processing.md) |
+| @longhornjs/database | SQL values/executors, transaction provenance, schema runners and batch contracts | [Database](database.md), [transactions](transaction-executors.md) |
+| @longhornjs/auth | Credentials, password/session policy, guards and explicit account capabilities | [Authentication](authentication.md), [sessions](sessions.md) |
+| @longhornjs/events | Awaited process-local typed notifications | [Events](events.md), [subscriptions](event-subscriptions.md) |
+| @longhornjs/cache | Memory caching/coalescing/fences and explicit Redis storage/codec | [Cache](cache.md), [Redis](redis-cache.md) |
+| @longhornjs/queue | Persistent jobs, claims, leases, retries and consumer workers | [Queues](queues.md), [workers](queue-workers.md) |
+| @longhornjs/scheduler | Durable occurrence cursors and atomic queue dispatch | [Scheduling](scheduler.md), [cron](cron.md) |
+| @longhornjs/idempotency | Scoped request ownership, input fingerprints and saved JSON results | [Request replay](idempotency.md), [cleanup](idempotency-cleanup.md) |
+| @longhornjs/ratelimit | Explicit subject budgets and native reservations | [Limits](request-limits.md), [cleanup](rate-limit-cleanup.md) |
+| @longhornjs/outbox | Transactional outgoing jobs, delivery inspection/recovery and audit | [Outbox](outbox.md), [recovery](outbox-deliberate-retry.md) |
+| @longhornjs/observability | Readiness/liveness, metrics, explicit trace context and collector export | [Observability](observability.md), [OTLP](otlp-http.md) |
 
 The table is a responsibility map, not a claim that every package depends on all
 the others. For example, queue uses database/validation, scheduler adds queue,
@@ -123,7 +123,7 @@ Node integration.
 
 | Runtime/provider | Implemented shape | Important boundary |
 | --- | --- | --- |
-| Node | Fetch listener; native SQLite/PostgreSQL; native passwords; Redis connection; optional owned processes | Native I/O stays in @longhorn/node subpaths |
+| Node | Fetch listener; native SQLite/PostgreSQL; native passwords; Redis connection; optional owned processes | Native I/O stays in @longhornjs/node subpaths |
 | Bun | Native listener, SQLite and password provider | Uses Bun ownership/crypto, not a Node SQLite alias |
 | Deno | Native listener, SQLite and password provider | Launchers supply explicit file/network/environment permissions |
 | Workers D1 | Predeclared batch database and task/replay/budget protocols | Does not emulate arbitrary async callback transactions |

@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import type { Database } from '@longhorn/database'
+import type { Database } from '@longhornjs/database'
 
 const maximum = 9223372036854775807n
 export const noteListQuery = z.object({

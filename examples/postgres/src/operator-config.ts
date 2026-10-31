@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { serviceBaseUrl } from '@longhorn/http/client'
+import { serviceBaseUrl } from '@longhornjs/http/client'
 import { configInputSchema } from './config.js'
 
 export const operatorConfigSchema=configInputSchema.omit({WORKER_ENABLED:true,SCHEDULER_ENABLED:true}).extend({

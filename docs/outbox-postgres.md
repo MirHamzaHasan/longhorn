@@ -1,6 +1,6 @@
 # PostgreSQL outbox records and maintenance
 
-Owner: `@longhorn/outbox/postgres`, PostgresOutboxStore and
+Owner: `@longhornjs/outbox/postgres`, PostgresOutboxStore and
 postgresOutboxMigrations. Connects [PostgreSQL queues](queue-postgres.md),
 [managed producers](postgres-transaction-publishing.md), [roles](postgres-roles.md),
 [retention](outbox-retention.md) and [dispatching](outbox-dispatcher.md).

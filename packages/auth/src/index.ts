@@ -1,4 +1,4 @@
-export const PACKAGE_NAME = '@longhorn/auth'
+export const PACKAGE_NAME = '@longhornjs/auth'
 export { AuthService, AuthError, normalizeUsername } from './credentials.js'
 export { SessionManager } from './sessions.js'
 export type { AuthUser, CredentialUser, CredentialStore, LoginAttemptStore, PasswordHasher, AuthStore } from './types.js'

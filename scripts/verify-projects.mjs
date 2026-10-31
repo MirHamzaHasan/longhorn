@@ -230,10 +230,10 @@ try {
   await mkdir(consumer)
   await writeFile(join(consumer, 'package.json'), JSON.stringify({
     private: true, packageManager: 'pnpm@12.6.0', dependencies: {
-      '@longhorn/cli': `file:../${cliArchive}`, 'create-longhorn': `file:../${creatorArchive}`,
+      '@longhornjs/cli': `file:../${cliArchive}`, 'create-longhorn': `file:../${creatorArchive}`,
     },
   }))
-  await writeFile(join(consumer, 'pnpm-workspace.yaml'), `overrides:\n  '@longhorn/cli': 'file:../${cliArchive}'\n`)
+  await writeFile(join(consumer, 'pnpm-workspace.yaml'), `overrides:\n  '@longhornjs/cli': 'file:../${cliArchive}'\n`)
   await run('pnpm', ['install', '--reporter=append-only'], consumer)
   assert.equal((await run('pnpm', ['exec', 'longhorn', '--version'], consumer)).trim(), cliPack.version)
   const packedProject = join(temporary, 'from-packed-generator')

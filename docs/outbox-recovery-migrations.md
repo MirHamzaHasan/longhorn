@@ -1,7 +1,7 @@
 # Outbox inspection indexes and upgrade ownership
 
-Owner: outboxRecoveryMigrations from `@longhorn/outbox/sqlite` and
-postgresOutboxRecoveryMigrations from `@longhorn/outbox/postgres`. Connects
+Owner: outboxRecoveryMigrations from `@longhornjs/outbox/sqlite` and
+postgresOutboxRecoveryMigrations from `@longhornjs/outbox/postgres`. Connects
 [base storage](outbox-sqlite.md), [PostgreSQL storage](outbox-postgres.md),
 [migration rules](migrations.md) and [inspection](outbox-inspection.md).
 

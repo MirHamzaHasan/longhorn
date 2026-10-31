@@ -1,5 +1,5 @@
 import { expect,it } from 'vitest'
-import { loadConfig } from '@longhorn/config'
+import { loadConfig } from '@longhornjs/config'
 import { redisLimitsConfig } from './config.js'
 const environment={API_TOKEN:'a'.repeat(64),REDIS_URL:'rediss://default:private@redis.example/0'}
 it('validates explicit Redis transport, stable subject and bounded request policy',async()=>{

@@ -1,7 +1,7 @@
 # Durable queues inside a Worker Object
 
-Owner: existing `@longhorn/queue/sqlite` (`SqliteQueueStore`) over
-`@longhorn/workers/durable-sqlite`. Connects [typed queue coordination](queues.md),
+Owner: existing `@longhornjs/queue/sqlite` (`SqliteQueueStore`) over
+`@longhornjs/workers/durable-sqlite`. Connects [typed queue coordination](queues.md),
 [SQL transactions](durable-sqlite-transactions.md), [migrations](durable-sqlite-migrations.md)
 and [scheduled dispatch](workers-durable-scheduler.md). No second queue protocol is added.
 

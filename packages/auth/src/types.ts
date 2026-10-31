@@ -1,4 +1,4 @@
-import type { SqlExecutor } from '@longhorn/database'
+import type { SqlExecutor } from '@longhornjs/database'
 export type AuthUser = { readonly id: string; readonly username: string; readonly roles: readonly string[] }
 export type CredentialUser = AuthUser & { readonly passwordHash: string }
 export interface PasswordHasher {

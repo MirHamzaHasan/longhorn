@@ -1,14 +1,14 @@
 # Configuration
 
-`@longhorn/config` validates supplied records with Standard Schema. It does not read
+`@longhornjs/config` validates supplied records with Standard Schema. It does not read
 files, access environment globals, or choose a schema vendor. Node environment access
-lives in `@longhorn/node/config`.
+lives in `@longhornjs/node/config`.
 
 ## Typed settings
 
 ```ts
-import { loadConfig } from '@longhorn/config'
-import { readEnv } from '@longhorn/node/config'
+import { loadConfig } from '@longhornjs/config'
+import { readEnv } from '@longhornjs/node/config'
 import { z } from 'zod'
 
 const schema = z.object({
@@ -59,7 +59,7 @@ const environment = await readEnv({ env: { HOST: '127.0.0.1', PORT: '0' } })
 Schema failures throw `ConfigError`, which extends `ValidationError`:
 
 ```ts
-import { ConfigError, loadConfig } from '@longhorn/config'
+import { ConfigError, loadConfig } from '@longhornjs/config'
 
 try {
   const config = await loadConfig(schema, environment)
@@ -81,8 +81,8 @@ code remain application errors rather than becoming configuration failures.
 Keep configuration in an application-owned DI provider:
 
 ```ts
-import { Longhorn } from '@longhorn/core'
-import { provide, token } from '@longhorn/container'
+import { Longhorn } from '@longhornjs/core'
+import { provide, token } from '@longhornjs/container'
 
 const Settings = token<typeof config>('settings')
 const app = new Longhorn()

@@ -1,7 +1,7 @@
 # Managed SQL request limits
 
 Owners: SqliteRateLimitStore and PostgresRateLimitStore, exported from
-@longhorn/ratelimit/sqlite and /postgres. Both borrow a matching managed Database;
+@longhornjs/ratelimit/sqlite and /postgres. Both borrow a matching managed Database;
 [limiter close](rate-limit-lifecycle.md) never closes that database.
 
 Deploy rateLimitMigrations (SQLite) or postgresRateLimitMigrations (PostgreSQL)

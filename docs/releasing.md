@@ -7,7 +7,8 @@ Nothing has been published yet. This guide records how the first release is mean
 Every package in `packages/` and `runtimes/`, plus `cli/` and `create-longhorn/`: 23 in all, on one
 shared version. `pnpm publish` rewrites `workspace:*` dependencies to that version.
 `npm create longhorn` needs the unscoped `create-longhorn` name, and the other 22 need the
-`@longhorn` npm organization.
+`@longhornjs` npm organization. The `longhorn` organization was already taken on npm, so the
+scope differs from the project's name.
 
 ## Before publishing
 

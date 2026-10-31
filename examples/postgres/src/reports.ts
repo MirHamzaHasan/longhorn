@@ -1,5 +1,5 @@
-import type { Database, Migration } from '@longhorn/database'
-import type { JobHandler } from '@longhorn/queue'
+import type { Database, Migration } from '@longhornjs/database'
+import type { JobHandler } from '@longhornjs/queue'
 import { z } from 'zod'
 
 export const taskReportQueueName = 'postgres.task-reports.v1'

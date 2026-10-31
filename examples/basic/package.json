@@ -9,17 +9,17 @@
     "start": "node dist/index.js"
   },
   "dependencies": {
-    "@longhorn/container": "workspace:*",
-    "@longhorn/core": "workspace:*",
-    "@longhorn/http": "workspace:*",
-    "@longhorn/node": "workspace:*",
-    "@longhorn/validation": "workspace:*",
+    "@longhornjs/container": "workspace:*",
+    "@longhornjs/core": "workspace:*",
+    "@longhornjs/http": "workspace:*",
+    "@longhornjs/node": "workspace:*",
+    "@longhornjs/validation": "workspace:*",
     "zod": "^4.6.7",
-    "@longhorn/config": "workspace:*",
-    "@longhorn/logger": "workspace:*",
-    "@longhorn/database": "workspace:*",
-    "@longhorn/events": "workspace:*",
-    "@longhorn/cache": "workspace:*"
+    "@longhornjs/config": "workspace:*",
+    "@longhornjs/logger": "workspace:*",
+    "@longhornjs/database": "workspace:*",
+    "@longhornjs/events": "workspace:*",
+    "@longhornjs/cache": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.13.10",

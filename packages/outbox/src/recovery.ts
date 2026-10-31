@@ -1,5 +1,5 @@
-import type { Database, SqlExecutor, SqlRow, SqlValue } from '@longhorn/database'
-import type { JobInfo } from '@longhorn/queue'
+import type { Database, SqlExecutor, SqlRow, SqlValue } from '@longhornjs/database'
+import type { JobInfo } from '@longhornjs/queue'
 import type { DeliveryListRequest, DeliveryPage, RetryFailedRequest, RetryFailedResult } from './index.js'
 
 // Explicit projection: inspection/recovery never fetch stored payloads or lease tokens.

@@ -1,12 +1,12 @@
 # Worker scheduled-event adapter
 
-Owner: `@longhorn/workers/scheduled`. Connects the platform scheduled handler to
+Owner: `@longhornjs/workers/scheduled`. Connects the platform scheduled handler to
 [managed application work](application-work.md), [Workers Fetch](workers.md),
 [invocation limits](scheduled-invocations.md) and [tracing](scheduled-telemetry.md).
 
 ```ts
-import { Longhorn } from '@longhorn/core'
-import { createScheduledWorker } from '@longhorn/workers/scheduled'
+import { Longhorn } from '@longhornjs/core'
+import { createScheduledWorker } from '@longhornjs/workers/scheduled'
 
 type Bindings = { REPORTS: { write(time: number): Promise<void> } }
 const app = new Longhorn<Bindings>()

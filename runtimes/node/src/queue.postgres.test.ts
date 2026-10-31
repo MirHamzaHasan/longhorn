@@ -1,6 +1,6 @@
 import { expect,it } from 'vitest'
-import { Queue } from '@longhorn/queue'
-import { insertPostgresJob,PostgresQueueStore } from '@longhorn/queue/postgres'
+import { Queue } from '@longhornjs/queue'
+import { insertPostgresJob,PostgresQueueStore } from '@longhornjs/queue/postgres'
 import { backgroundFixture,dataSchema,deferred } from './background-test-helpers.js'
 const { open,resources }=backgroundFixture(),name='native.queue.v1'
 const input=(id: string=crypto.randomUUID(),maxAttempts=3) => ({ id,queue: name,payload: '{"value":1}',maxAttempts,availableAt: 1000,now: 1000 })

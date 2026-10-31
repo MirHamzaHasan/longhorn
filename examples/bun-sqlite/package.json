@@ -7,16 +7,16 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@longhorn/bun": "workspace:*",
-    "@longhorn/config": "workspace:*",
-    "@longhorn/container": "workspace:*",
-    "@longhorn/core": "workspace:*",
-    "@longhorn/database": "workspace:*",
-    "@longhorn/events": "workspace:*",
-    "@longhorn/cache": "workspace:*",
-    "@longhorn/http": "workspace:*",
-    "@longhorn/logger": "workspace:*",
-    "@longhorn/validation": "workspace:*",
+    "@longhornjs/bun": "workspace:*",
+    "@longhornjs/config": "workspace:*",
+    "@longhornjs/container": "workspace:*",
+    "@longhornjs/core": "workspace:*",
+    "@longhornjs/database": "workspace:*",
+    "@longhornjs/events": "workspace:*",
+    "@longhornjs/cache": "workspace:*",
+    "@longhornjs/http": "workspace:*",
+    "@longhornjs/logger": "workspace:*",
+    "@longhornjs/validation": "workspace:*",
     "zod": "^4.6.7"
   },
   "devDependencies": { "@types/bun": "^1.4.3" }

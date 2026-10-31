@@ -1,7 +1,7 @@
 # Atomic PostgreSQL task and report request
 
 Owner: `examples/postgres/src/app.ts`, PostgresTasksStore.createIn and
-`@longhorn/queue/transaction`. Connects [tasks](postgres-example.md),
+`@longhornjs/queue/transaction`. Connects [tasks](postgres-example.md),
 [report queue/worker](postgres-reports.md), [transaction ownership](transaction-executors.md)
 and [PostgreSQL publishing](postgres-transaction-publishing.md).
 

@@ -1,4 +1,4 @@
-import type { Database, SqlExecutor, SqlRow } from '@longhorn/database'
+import type { Database, SqlExecutor, SqlRow } from '@longhornjs/database'
 import { AuthError } from './credentials.js'
 import { sessionControlTime } from './session-control.js'
 import { validSessionPosition, validSessionReference } from './session-inventory.js'

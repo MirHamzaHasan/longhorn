@@ -1,14 +1,14 @@
 # OTLP/HTTP trace exporter
 
-Owner: OtlpHttpSpanExporter from `@longhorn/observability/otlp`. Connects the existing
+Owner: OtlpHttpSpanExporter from `@longhornjs/observability/otlp`. Connects the existing
 [Tracer](tracing.md) and SpanExporter contract to a collector through Web Standard
 Fetch. [Encoding](otlp-json.md), [delivery](otlp-delivery.md), [configuration](otlp-configuration.md),
 [report integration](jobs-otlp.md) and [native verification](otlp-native.md) have separate guides.
 The entrypoint imports no Node APIs, native driver or OpenTelemetry SDK.
 
 ```ts
-import { Tracer } from '@longhorn/observability'
-import { OtlpHttpSpanExporter } from '@longhorn/observability/otlp'
+import { Tracer } from '@longhornjs/observability'
+import { OtlpHttpSpanExporter } from '@longhornjs/observability/otlp'
 
 const exporter = new OtlpHttpSpanExporter({
   endpoint: 'http://127.0.0.1:4318/v1/traces',

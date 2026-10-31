@@ -1,5 +1,5 @@
-import type { Database, Migration, SqlRow } from '@longhorn/database'
-import { insertSqliteJob } from '@longhorn/queue/sqlite'
+import type { Database, Migration, SqlRow } from '@longhornjs/database'
+import { insertSqliteJob } from '@longhornjs/queue/sqlite'
 import { occurrence } from './occurrence.js'
 import type { NewSchedule, ScheduleState, ScheduleTiming, SchedulerStore, StoredSchedule, TickResult } from './types.js'
 

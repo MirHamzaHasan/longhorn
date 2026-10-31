@@ -1,4 +1,4 @@
-import type { LogRecord,LogSink } from '@longhorn/logger'
+import type { LogRecord,LogSink } from '@longhornjs/logger'
 import type { SpanContext } from './tracing.js'
 import { snapshotLogEntry } from './log-record.js'
 import type { LogEntry } from './log-record.js'

@@ -1,13 +1,13 @@
 # Project generation and framework snapshots
 
-Owner: `@longhorn/cli` (`cli/src/generator.ts`, `cli/scripts/snapshot.mjs`).
+Owner: `@longhornjs/cli` (`cli/src/generator.ts`, `cli/scripts/snapshot.mjs`).
 The [CLI](cli.md) and `create-longhorn` call one generator implementation.
 The output is an independent application, not another monorepo workspace.
 
 ## Programmatic API
 
 ```ts
-import { createProject } from '@longhorn/cli'
+import { createProject } from '@longhornjs/cli'
 
 const project = await createProject({
   directory: '../my-api',
@@ -43,7 +43,7 @@ its distribution. Internal `workspace:*` versions are replaced with actual packa
 versions. No repository source paths, node_modules, or development dependencies are
 copied into framework packages.
 
-Generation walks the selected starter's transitive `@longhorn/*` dependency graph
+Generation walks the selected starter's transitive `@longhornjs/*` dependency graph
 and copies only that graph. Direct dependencies and root pnpm overrides point to
 `file:./.longhorn/framework/<package>`. Overrides cover transitive dependencies too,
 so they resolve to the same snapshot rather than a registry package with that name.
@@ -51,7 +51,7 @@ This uses [pnpm's root override mechanism](https://pnpm.io/settings#overrides).
 Third-party dependencies still install normally through pnpm; this is not a complete
 offline package cache. The pnpm version remains 12.6.0 for every runtime.
 
-Workers snapshots include the `@longhorn/workers/scheduled` JavaScript/declarations
+Workers snapshots include the `@longhornjs/workers/scheduled` JavaScript/declarations
 and the core managed-work API. The generated host consumes that export directly;
 its scheduled handler records isolate-local observations and awaits consumer
 tracing. Separate generated guides explain managed work and scheduled events.

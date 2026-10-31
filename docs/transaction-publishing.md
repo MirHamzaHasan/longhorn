@@ -1,12 +1,12 @@
 # Atomic business writes and job publishing
 
-Owner: `@longhorn/queue/transaction`. Connects [typed queues](queues.md),
+Owner: `@longhornjs/queue/transaction`. Connects [typed queues](queues.md),
 [managed transaction executors](transaction-executors.md),
 [SQLite](sqlite-transaction-publishing.md), [PostgreSQL](postgres-transaction-publishing.md)
 and [Object SQL/alarm projection](object-transaction-publishing.md).
 
 ```ts
-import { enqueueInTransaction } from '@longhorn/queue/transaction'
+import { enqueueInTransaction } from '@longhornjs/queue/transaction'
 
 const result = await database.transaction(async (tx) => {
   const record = await repository.createIn(tx, input)

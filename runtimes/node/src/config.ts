@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises'
 import { env as processEnv } from 'node:process'
 import { parseEnv } from 'node:util'
-import type { Environment } from '@longhorn/config'
+import type { Environment } from '@longhornjs/config'
 
 export type ReadEnvOptions = {
   /** Files are read in order; later files override earlier files. */

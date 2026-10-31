@@ -1,4 +1,4 @@
-export const PACKAGE_NAME = '@longhorn/queue'
+export const PACKAGE_NAME = '@longhornjs/queue'
 export { Queue, QueueClosedError, QueueStoreError } from './queue.js'
 export type { QueueOptions, EnqueueOptions, PreparedJob, RunOptions } from './queue.js'
 export { QueueWorker } from './worker.js'

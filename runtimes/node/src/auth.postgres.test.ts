@@ -1,7 +1,7 @@
 import { afterEach,beforeEach,expect,it } from 'vitest'
-import { AuthService,SessionManager } from '@longhorn/auth'
-import { PostgresAuthStore } from '@longhorn/auth/postgres'
-import type { Database } from '@longhorn/database'
+import { AuthService,SessionManager } from '@longhornjs/auth'
+import { PostgresAuthStore } from '@longhornjs/auth/postgres'
+import type { Database } from '@longhornjs/database'
 import { openPostgres } from './postgres.js'
 import type { PostgresDatabase } from './postgres.js'
 if (process.env.LONGHORN_PG_TEST_OWNED!=='true' || !process.env.LONGHORN_PG_TEST_URL || !process.env.LONGHORN_PG_APP_URL) throw new Error('Use pnpm test:postgres with its owned native database')

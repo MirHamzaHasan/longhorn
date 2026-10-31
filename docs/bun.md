@@ -1,13 +1,13 @@
 # Bun runtime adapter
 
-Owner: `@longhorn/bun`. Connects [portable Fetch contracts](runtimes.md) to native
+Owner: `@longhornjs/bun`. Connects [portable Fetch contracts](runtimes.md) to native
 `Bun.serve`. It imports no Node server module and does not route traffic through the
 Node adapter. Its public declarations use shared runtime types, not Bun-specific
 types. Bun's development types are confined to the adapter's TypeScript project.
 
 ```ts
-import { Longhorn } from '@longhorn/core'
-import { bunRuntime } from '@longhorn/bun'
+import { Longhorn } from '@longhornjs/core'
+import { bunRuntime } from '@longhornjs/bun'
 
 const app = new Longhorn()
 app.http.get('/health', (c) => c.json({ status: 'ok' }))

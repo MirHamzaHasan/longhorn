@@ -1,12 +1,12 @@
 # SQLite batch schema history
 
 Owner: `migrateSqliteBatch`, `verifySqliteBatchMigrations` and `BatchMigrationError`
-from `@longhorn/database/batch`. Connects the shared `Migration` manifest to an
+from `@longhornjs/database/batch`. Connects the shared `Migration` manifest to an
 atomic [BatchDatabase](batch-database.md). The [D1 deployment worker](d1-deployment.md)
 uses it separately from application startup.
 
 ```ts
-import { migrateSqliteBatch, verifySqliteBatchMigrations } from '@longhorn/database/batch'
+import { migrateSqliteBatch, verifySqliteBatchMigrations } from '@longhornjs/database/batch'
 
 // Trusted deployment phase; database is an atomic SQLite BatchDatabase.
 const appliedIds = await migrateSqliteBatch(database, migrations)

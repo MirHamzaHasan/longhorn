@@ -1,5 +1,5 @@
-import { createJsonClient, JsonClientError } from '@longhorn/http/client'
-import type { JsonClientOptions } from '@longhorn/http/client'
+import { createJsonClient, JsonClientError } from '@longhornjs/http/client'
+import type { JsonClientOptions } from '@longhornjs/http/client'
 import { z } from 'zod'
 import { reportSchema } from './reports.js'
 import type { ReportInput, ReportResult } from './reports.js'

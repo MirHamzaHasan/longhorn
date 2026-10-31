@@ -1,6 +1,6 @@
 # SQLite and Object SQL outbox records
 
-Owner: `@longhorn/outbox/sqlite`, SqliteOutboxStore and outboxMigrations. Connects
+Owner: `@longhornjs/outbox/sqlite`, SqliteOutboxStore and outboxMigrations. Connects
 [SQLite queue storage](queue-sqlite.md), [transactions](sqlite-transaction-publishing.md),
 [Object SQL](workers-durable-sqlite.md), [retention](outbox-retention.md) and
 [alarm pipeline](outbox-worker-example.md).

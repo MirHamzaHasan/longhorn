@@ -1,6 +1,6 @@
 # Durable queues
 
-Owner: `@longhorn/queue`. Connects to [validation](validation.md), [workers](queue-workers.md),
+Owner: `@longhornjs/queue`. Connects to [validation](validation.md), [workers](queue-workers.md),
 [SQLite storage](queue-sqlite.md), [memory storage](memory-queue.md), and [the report example](jobs-example.md).
 The [PostgreSQL provider](queue-postgres.md) connects the same coordinator/worker contracts.
 The root module has no Node, HTTP, DI, or database implementation imports. SQL is a separate entrypoint.
@@ -8,8 +8,8 @@ The root module has no Node, HTTP, DI, or database implementation imports. SQL i
 ## Typed queue
 
 ```ts
-import { Queue } from '@longhorn/queue'
-import { SqliteQueueStore } from '@longhorn/queue/sqlite'
+import { Queue } from '@longhornjs/queue'
+import { SqliteQueueStore } from '@longhornjs/queue/sqlite'
 import { z } from 'zod'
 
 const reports = new Queue({
@@ -142,7 +142,7 @@ broker batches with [ack/retry decisions](queue-message-decisions.md) and
 messages into SQL leases. See [the receipt example](queue-worker-example.md) and
 [native broker/event verification](workers-queue-testing.md).
 
-`enqueueInTransaction` from `@longhorn/queue/transaction` now publishes through
+`enqueueInTransaction` from `@longhornjs/queue/transaction` now publishes through
 an active executor belonging to the queue store's database. Business writes and
 the validated job commit together; accepted preparation/insertion is joined before
 commit. This uses the SQL queue's existing tables, not an external broker outbox.

@@ -1,4 +1,4 @@
-import { openPostgres } from '@longhorn/node/postgres'
+import { openPostgres } from '@longhornjs/node/postgres'
 import { grantOperatorRuntime } from '../dist/runtime-grants.js'
 const [role,...extra]=process.argv.slice(2)
 let database

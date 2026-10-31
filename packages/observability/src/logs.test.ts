@@ -1,6 +1,6 @@
 import { expect,it,vi } from 'vitest'
-import { createLogger } from '@longhorn/logger'
-import type { LogRecord } from '@longhorn/logger'
+import { createLogger } from '@longhornjs/logger'
+import type { LogRecord } from '@longhornjs/logger'
 import { BufferedLogProcessor } from './logs.js'
 import type { LogEntry } from './logs.js'
 const record=(message='event'):LogRecord=>({timestamp:'2026-10-23T12:00:00.000Z',level:'info',message,fields:{value:1}})

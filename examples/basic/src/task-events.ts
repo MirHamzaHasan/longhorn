@@ -1,7 +1,7 @@
-import { provide, token } from '@longhorn/container'
-import { EventBus, defineEvent } from '@longhorn/events'
-import type { EventContext } from '@longhorn/events'
-import type { Longhorn } from '@longhorn/core'
+import { provide, token } from '@longhornjs/container'
+import { EventBus, defineEvent } from '@longhornjs/events'
+import type { EventContext } from '@longhornjs/events'
+import type { Longhorn } from '@longhornjs/core'
 import type { Task } from './tasks.js'
 
 export const TaskCreated = defineEvent<{ readonly task: Task }>('task.created')

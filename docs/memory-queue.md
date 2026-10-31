@@ -1,6 +1,6 @@
 # Memory queue storage
 
-Owner: `@longhorn/queue/memory` (`MemoryQueueStore`). Connects to [queues](queues.md)
+Owner: `@longhornjs/queue/memory` (`MemoryQueueStore`). Connects to [queues](queues.md)
 and [workers](queue-workers.md). This reference provider implements the same claim,
 retry, expiry and token-fencing contract with a process-local Map.
 

@@ -1,4 +1,4 @@
-import type { Database } from '@longhorn/database'
+import type { Database } from '@longhornjs/database'
 import type { SessionControlInput, SessionControlStore } from './types.js'
 import { sessionControlTime, snapshotSessionControl } from './session-control.js'
 

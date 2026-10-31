@@ -1,13 +1,13 @@
 # Cookie authentication for Hono
 
-Owner: `cookieAuth` from `@longhorn/auth/hono`. Connects an application-resolved
+Owner: `cookieAuth` from `@longhornjs/auth/hono`. Connects an application-resolved
 [AuthService](authentication.md), browser cookies, origin checks, and
 [authorization](authorization.md). The root auth package has no HTTP imports.
 
 ```ts
 import { Hono } from 'hono'
-import type { AuthEnv } from '@longhorn/auth/hono'
-import { cookieAuth } from '@longhorn/auth/hono'
+import type { AuthEnv } from '@longhornjs/auth/hono'
+import { cookieAuth } from '@longhornjs/auth/hono'
 
 const routes = new Hono<AuthEnv>()
 const cookies = cookieAuth<AuthEnv>({

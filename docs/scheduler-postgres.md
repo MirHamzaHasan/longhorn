@@ -1,12 +1,12 @@
 # PostgreSQL schedule dispatch
 
-Owner: `@longhorn/scheduler/postgres`. Connects [Scheduler](scheduler.md), [UTC cron](cron.md),
+Owner: `@longhornjs/scheduler/postgres`. Connects [Scheduler](scheduler.md), [UTC cron](cron.md),
 [timing hosts](scheduler-runner.md), [PostgreSQL queues](queue-postgres.md), and
 [task reports](postgres-reports.md). No Node APIs or timer are imported by the store.
 
 ```ts
-import { postgresQueueMigrations } from '@longhorn/queue/postgres'
-import { PostgresSchedulerStore, postgresSchedulerMigrations } from '@longhorn/scheduler/postgres'
+import { postgresQueueMigrations } from '@longhornjs/queue/postgres'
+import { PostgresSchedulerStore, postgresSchedulerMigrations } from '@longhornjs/scheduler/postgres'
 
 await migratePostgres(owner, [
   ...existingMigrations, ...postgresQueueMigrations, ...postgresSchedulerMigrations,

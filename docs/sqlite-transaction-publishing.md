@@ -1,7 +1,7 @@
 # SQLite transaction publishing
 
 Owner: `SqliteQueueStore.enqueueInTransaction` through
-`@longhorn/queue/transaction`. Connects [typed producer coordination](queues.md),
+`@longhornjs/queue/transaction`. Connects [typed producer coordination](queues.md),
 [Node SQLite](sqlite.md), [executor ownership](transaction-executors.md) and
 application repositories.
 

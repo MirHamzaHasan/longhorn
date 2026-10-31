@@ -2,8 +2,8 @@ import { AsyncLocalStorage } from 'node:async_hooks'
 import { Buffer } from 'node:buffer'
 import { Pool } from 'pg'
 import type { CustomTypesConfig, PoolClient, QueryArrayConfig, QueryArrayResult } from 'pg'
-import type { Database, QueryResult, SqlExecutor, SqlStatement, SqlValue } from '@longhorn/database'
-import { createTransactionScope } from '@longhorn/database/transactions'
+import type { Database, QueryResult, SqlExecutor, SqlStatement, SqlValue } from '@longhornjs/database'
+import { createTransactionScope } from '@longhornjs/database/transactions'
 
 export type PostgresOptions = {
   readonly connectionString: string

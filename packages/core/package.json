@@ -1,5 +1,5 @@
 {
-  "name": "@longhorn/core",
+  "name": "@longhornjs/core",
   "version": "0.1.0",
   "description": "The LongHorn application: start, listen, drain and close.",
   "license": "MIT",
@@ -29,9 +29,9 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@longhorn/container": "workspace:*",
-    "@longhorn/http": "workspace:*",
-    "@longhorn/runtime": "workspace:*",
-    "@longhorn/logger": "workspace:*"
+    "@longhornjs/container": "workspace:*",
+    "@longhornjs/http": "workspace:*",
+    "@longhornjs/runtime": "workspace:*",
+    "@longhornjs/logger": "workspace:*"
   }
 }

@@ -1,14 +1,14 @@
 # Atomic SQLite batch request limits
 
-Owner: BatchSqliteRateLimitStore from @longhorn/ratelimit/batch-sqlite. Connects the
+Owner: BatchSqliteRateLimitStore from @longhornjs/ratelimit/batch-sqlite. Connects the
 [limiter](request-limits.md), [server-time port](rate-limit-server-clock.md),
 [D1 adapter](workers-d1.md), [schema](d1-limit-schema.md), [app](d1-request-limits.md)
 and [native proof](d1-limit-testing.md). The package imports no Cloudflare/native module.
 
 ```ts
-import { RateLimiter } from '@longhorn/ratelimit'
-import { BatchSqliteRateLimitStore } from '@longhorn/ratelimit/batch-sqlite'
-import { createD1 } from '@longhorn/workers/d1'
+import { RateLimiter } from '@longhornjs/ratelimit'
+import { BatchSqliteRateLimitStore } from '@longhornjs/ratelimit/batch-sqlite'
+import { createD1 } from '@longhornjs/workers/d1'
 const database = createD1(env.DB) // binding or explicit D1 session
 const limiter = new RateLimiter({
   scope: 'reports.submit.v1', limit: 20, windowMs: 60_000,

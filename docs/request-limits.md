@@ -1,13 +1,13 @@
 # Request attempt limits
 
-Owner: @longhorn/ratelimit. Connects the [memory provider](rate-limit-memory.md),
+Owner: @longhornjs/ratelimit. Connects the [memory provider](rate-limit-memory.md),
 [SQL providers](rate-limit-sql.md), [Redis provider](redis-rate-limits.md), [native batch provider](batch-rate-limits.md), [Hono middleware](rate-limit-http.md),
 [command application](command-request-limits.md) and [native proof](rate-limit-testing.md).
 Authentication's login throttle remains separate and unchanged.
 
 ```ts
-import { RateLimiter } from '@longhorn/ratelimit'
-import { MemoryRateLimitStore } from '@longhorn/ratelimit/memory'
+import { RateLimiter } from '@longhornjs/ratelimit'
+import { MemoryRateLimitStore } from '@longhornjs/ratelimit/memory'
 const limiter = new RateLimiter({
   scope: 'reports.submit.v1', limit: 20, windowMs: 60_000,
   store: new MemoryRateLimitStore({ maxEntries: 10_000 }),

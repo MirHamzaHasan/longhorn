@@ -1,6 +1,6 @@
 # Explicit bearer service capabilities
 
-Owner: createBearerVerifier from `@longhorn/auth/bearer`. Connects
+Owner: createBearerVerifier from `@longhornjs/auth/bearer`. Connects
 [service operations](outbox-operations-authorization.md),
 [HTTP receiver](http-message-receiver.md) and the existing Web Crypto auth boundary.
 

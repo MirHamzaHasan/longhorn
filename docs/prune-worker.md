@@ -1,6 +1,6 @@
 # Owned periodic pruning
 
-Owner: optional `@longhorn/runtime/prune-worker`. Connects the existing application
+Owner: optional `@longhornjs/runtime/prune-worker`. Connects the existing application
 [lifecycle](lifecycle.md), [request-ledger cleanup](idempotency-cleanup.md) and
 [request-budget cleanup](rate-limit-cleanup.md). The runtime root export stays unchanged.
 

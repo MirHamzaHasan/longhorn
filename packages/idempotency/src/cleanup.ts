@@ -1,6 +1,6 @@
 import type { Idempotency } from './index.js'
-import { PruneWorker } from '@longhorn/runtime/prune-worker'
-import type { PruneWorkerOptions, PruneWorkerSnapshot } from '@longhorn/runtime/prune-worker'
+import { PruneWorker } from '@longhornjs/runtime/prune-worker'
+import type { PruneWorkerOptions, PruneWorkerSnapshot } from '@longhornjs/runtime/prune-worker'
 
 export type IdempotencyCleanupOptions = PruneWorkerOptions
 export type IdempotencyCleanupSnapshot = PruneWorkerSnapshot

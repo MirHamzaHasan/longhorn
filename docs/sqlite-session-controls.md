@@ -1,6 +1,6 @@
 # Native SQLite session controls
 
-Owner: `SqliteSessionControlStore` from `@longhorn/auth/sqlite-session-controls`,
+Owner: `SqliteSessionControlStore` from `@longhornjs/auth/sqlite-session-controls`,
 also exposed as `SqliteAuthStore.sessionControls`. It borrows the same managed
 Database as the account store and uses the original auth tables/indexes.
 No schema migration, session metadata column or additional connection is needed.

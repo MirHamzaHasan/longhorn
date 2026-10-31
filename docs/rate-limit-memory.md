@@ -1,6 +1,6 @@
 # Bounded memory request limits
 
-Owner: MemoryRateLimitStore in @longhorn/ratelimit/memory. Implements
+Owner: MemoryRateLimitStore in @longhornjs/ratelimit/memory. Implements
 [RateLimitStore](request-limits.md) using a Map and an indexed minimum heap.
 
 maxEntries defaults to 10000 and accepts 1..100000. One entry represents one

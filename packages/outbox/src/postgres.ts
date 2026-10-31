@@ -1,5 +1,5 @@
-import type { Database, Migration } from '@longhorn/database'
-import { PostgresQueueStore } from '@longhorn/queue/postgres'
+import type { Database, Migration } from '@longhornjs/database'
+import { PostgresQueueStore } from '@longhornjs/queue/postgres'
 import type { OutboxAuthorizedStore, AuthorizedRetryRequest, TransactionAuthorizer, PruneRequest, DeliveryListRequest, RetryFailedRequest, AuditedRetryRequest, AuditHistoryRequest, AuditPruneRequest } from './index.js'
 import { SqlOutboxRecovery } from './recovery.js'
 import { SqlOutboxAudit } from './audit.js'

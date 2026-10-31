@@ -1,6 +1,6 @@
 # Durable Object alarm timing host
 
-Owner: `@longhorn/workers/sqlite-alarms`. Connects [Object SQL](workers-durable-sqlite.md),
+Owner: `@longhornjs/workers/sqlite-alarms`. Connects [Object SQL](workers-durable-sqlite.md),
 [managed work](application-work.md), existing SQLite queue/scheduler tables,
 [wakeup planning](alarm-wakeup-planning.md), [recovery](alarm-recovery.md) and
 [consumer telemetry](alarm-telemetry.md).

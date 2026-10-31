@@ -1,4 +1,4 @@
-import { token } from '@longhorn/container'
+import { token } from '@longhornjs/container'
 import { z } from 'zod'
 
 export const configInputSchema = z.object({

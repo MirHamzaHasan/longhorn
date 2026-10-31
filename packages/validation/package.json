@@ -1,5 +1,5 @@
 {
-  "name": "@longhorn/validation",
+  "name": "@longhornjs/validation",
   "version": "0.1.0",
   "description": "Standard Schema parsing and Hono input for LongHorn.",
   "license": "MIT",
@@ -34,7 +34,7 @@
     "hono": "^4.13.13"
   },
   "devDependencies": {
-    "@longhorn/http": "workspace:*",
+    "@longhornjs/http": "workspace:*",
     "zod": "^4.6.7"
   },
   "sideEffects": false,

@@ -1,4 +1,4 @@
-import type { Database } from '@longhorn/database'
+import type { Database } from '@longhornjs/database'
 import { checkLimitMaintenanceAccess } from './limit-maintenance-access.js'
 
 /** Trusted deployment tool: grants one pre-existing role, never creates roles or repairs excess authority. */

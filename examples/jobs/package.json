@@ -9,24 +9,24 @@
     "start": "node dist/index.js"
   },
   "dependencies": {
-    "@longhorn/outbox": "workspace:*",
-    "@longhorn/idempotency": "workspace:*",
-    "@longhorn/config": "workspace:*",
-    "@longhorn/container": "workspace:*",
-    "@longhorn/core": "workspace:*",
-    "@longhorn/database": "workspace:*",
-    "@longhorn/logger": "workspace:*",
-    "@longhorn/node": "workspace:*",
-    "@longhorn/observability": "workspace:*",
-    "@longhorn/queue": "workspace:*",
-    "@longhorn/scheduler": "workspace:*",
-    "@longhorn/validation": "workspace:*",
+    "@longhornjs/outbox": "workspace:*",
+    "@longhornjs/idempotency": "workspace:*",
+    "@longhornjs/config": "workspace:*",
+    "@longhornjs/container": "workspace:*",
+    "@longhornjs/core": "workspace:*",
+    "@longhornjs/database": "workspace:*",
+    "@longhornjs/logger": "workspace:*",
+    "@longhornjs/node": "workspace:*",
+    "@longhornjs/observability": "workspace:*",
+    "@longhornjs/queue": "workspace:*",
+    "@longhornjs/scheduler": "workspace:*",
+    "@longhornjs/validation": "workspace:*",
     "hono": "^4.13.13",
     "zod": "^4.6.7",
-    "@longhorn/http": "workspace:*"
+    "@longhornjs/http": "workspace:*"
   },
   "devDependencies": {
-    "@longhorn/auth": "workspace:*",
+    "@longhornjs/auth": "workspace:*",
     "@types/node": "^22.13.10",
     "tsx": "^4.20.0"
   }

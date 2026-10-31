@@ -1,5 +1,5 @@
 import type { MiddlewareHandler } from 'hono'
-import type { AuthEnv } from '@longhorn/auth/hono'
+import type { AuthEnv } from '@longhornjs/auth/hono'
 
 /** Optional consistency claim, never an authentication or ownership credential. */
 export function bindAccountViewer<E extends AuthEnv>():MiddlewareHandler<E>{

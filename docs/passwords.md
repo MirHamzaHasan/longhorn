@@ -1,7 +1,7 @@
 # Node password hashing
 
-Owner: `createScryptPasswordHasher` from `@longhorn/node/passwords`. Implements the
-runtime-neutral `PasswordHasher` contract from `@longhorn/auth` through the
+Owner: `createScryptPasswordHasher` from `@longhornjs/node/passwords`. Implements the
+runtime-neutral `PasswordHasher` contract from `@longhornjs/auth` through the
 [shared scrypt policy](scrypt-password-policy.md). Native crypto stays
 in the Node runtime entrypoint; importing core or shared auth does not import it.
 

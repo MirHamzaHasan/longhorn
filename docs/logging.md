@@ -1,13 +1,13 @@
 # Structured and request logging
 
-Owner: `@longhorn/logger`. The root entrypoint imports no HTTP or Node APIs.
-`@longhorn/logger/hono` supplies request middleware. Core connects both to the
+Owner: `@longhornjs/logger`. The root entrypoint imports no HTTP or Node APIs.
+`@longhornjs/logger/hono` supplies request middleware. Core connects both to the
 [HTTP application](http.md) and the example connects them to [lifecycle](lifecycle.md).
 
 ## Logger API
 
 ```ts
-import { createLogger } from '@longhorn/logger'
+import { createLogger } from '@longhornjs/logger'
 
 const logger = createLogger({ level: 'info', bindings: { app: 'LongHorn' } })
 logger.info('Worker ready', { queue: 'mail' })
@@ -78,7 +78,7 @@ retain their intended response and are represented in the completion record.
 Applications replacing `app.http.onError()` own their error diagnostics.
 
 For a standalone Hono application, use `requestLogger(logger)` from
-`@longhorn/logger/hono`. The middleware follows [Hono's execution model](https://hono.dev/docs/guides/middleware).
+`@longhornjs/logger/hono`. The middleware follows [Hono's execution model](https://hono.dev/docs/guides/middleware).
 It reports handler completion; it does not measure the full transmission time of a
 streaming response.
 

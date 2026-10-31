@@ -1,12 +1,12 @@
 # Native Bun SQLite provider
 
-Owner: `@longhorn/bun/sqlite`. Implements the existing [Database](database.md)
+Owner: `@longhornjs/bun/sqlite`. Implements the existing [Database](database.md)
 contract with native `bun:sqlite`, independently of the Node libSQL adapter.
 The optional entrypoint contains filesystem and async-context imports; the Bun
 HTTP entrypoint and shared packages do not import the native driver.
 
 ```ts
-import { openSqlite } from '@longhorn/bun/sqlite'
+import { openSqlite } from '@longhornjs/bun/sqlite'
 
 const database = await openSqlite({ filename: './data/app.sqlite' })
 try {

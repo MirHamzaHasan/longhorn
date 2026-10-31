@@ -1,7 +1,7 @@
 # Deno asynchronous SQLite transaction ownership
 
-Owner: `@longhorn/deno/sqlite`, connected to
-[`@longhorn/database/transactions`](transaction-executors.md). A queued root
+Owner: `@longhornjs/deno/sqlite`, connected to
+[`@longhornjs/database/transactions`](transaction-executors.md). A queued root
 transaction opens native BEGIN IMMEDIATE, awaits application work, drains accepted
 participants, then commits. Application or participant failure drains and rolls back.
 Native BEGIN/COMMIT calls do not own the JavaScript callback by themselves.

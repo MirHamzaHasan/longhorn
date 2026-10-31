@@ -1,6 +1,6 @@
-import { bunRuntime } from '@longhorn/bun'
-import { loadConfig } from '@longhorn/config'
-import { createLogger } from '@longhorn/logger'
+import { bunRuntime } from '@longhornjs/bun'
+import { loadConfig } from '@longhornjs/config'
+import { createLogger } from '@longhornjs/logger'
 import { createPortableApp } from './app.js'
 import { serverConfig } from './config.js'
 

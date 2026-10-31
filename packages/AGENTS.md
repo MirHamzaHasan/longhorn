@@ -4,7 +4,7 @@ Runtime-neutral contracts and feature services. The responsibility of each packa
 is in the module table of [docs/project-guide.md](../docs/project-guide.md).
 
 - No Node, Bun, Deno or Workers APIs in portable entrypoints. Native code goes in
-  `runtimes/`, or in an optional subpath such as `@longhorn/ratelimit/redis`.
+  `runtimes/`, or in an optional subpath such as `@longhornjs/ratelimit/redis`.
 - A new subpath needs three things together: the package's `exports` and build entry,
   an alias in the root `vitest.config.ts`, and a mention in its guide.
 - A package used by generated apps must also be in `directories` in

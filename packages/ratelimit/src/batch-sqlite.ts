@@ -1,4 +1,4 @@
-import type { BatchDatabase,Migration,SqlValue } from '@longhorn/database'
+import type { BatchDatabase,Migration,SqlValue } from '@longhornjs/database'
 import type { RateLimitReservation,ServerTimedRateLimit,ServerTimedRateLimitStore } from './types.js'
 import { bounded,RateLimitError,reservation } from './protocol.js'
 /** Separate schema from callback stores; this row is always complete after one native statement. */

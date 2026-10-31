@@ -1,6 +1,6 @@
 # UTC cron expressions
 
-Owner: `@longhorn/scheduler/cron` (`CronExpression`). Connects to [durable schedules](scheduler.md).
+Owner: `@longhornjs/scheduler/cron` (`CronExpression`). Connects to [durable schedules](scheduler.md).
 This is a numeric five-field subset: minute, hour, day of month, month, weekday.
 It evaluates UTC fields only and never executes commands or reads the host timezone.
 

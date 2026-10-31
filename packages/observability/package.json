@@ -1,5 +1,5 @@
 {
-  "name": "@longhorn/observability",
+  "name": "@longhornjs/observability",
   "version": "0.1.0",
   "description": "Health, metrics, traces and OTLP export for LongHorn.",
   "license": "MIT",
@@ -50,7 +50,7 @@
   },
   "dependencies": {
     "hono": "^4.13.13",
-    "@longhorn/logger": "workspace:*"
+    "@longhornjs/logger": "workspace:*"
   },
   "files": [
     "dist"

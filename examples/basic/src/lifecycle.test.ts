@@ -1,6 +1,6 @@
 import { expect, it } from 'vitest'
-import { Longhorn } from '@longhorn/core'
-import { nodeRuntime } from '@longhorn/node'
+import { Longhorn } from '@longhornjs/core'
+import { nodeRuntime } from '@longhornjs/node'
 
 it('drains an active HTTP request before releasing application resources', async () => {
   let enter!: () => void

@@ -1,5 +1,5 @@
 import { expect,it } from 'vitest'
-import { loadConfig } from '@longhorn/config'
+import { loadConfig } from '@longhornjs/config'
 import { parseReportConfig,reportConfigSchema } from './config.js'
 it('shares optional bounded submission configuration between host and Object',async()=>{
   expect(await loadConfig(reportConfigSchema,{})).toEqual({});expect(parseReportConfig({})).toEqual({})

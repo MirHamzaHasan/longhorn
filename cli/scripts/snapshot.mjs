@@ -19,7 +19,7 @@ await mkdir(output, { recursive: true })
 const packages = {}
 for (const entry of entries) {
   const { name, version, type, sideEffects, exports, engines } = entry.package
-  const directory = name.slice('@longhorn/'.length)
+  const directory = name.slice('@longhornjs/'.length)
   const destination = join(output, directory)
   const dependencies = Object.fromEntries(Object.entries(entry.package.dependencies ?? {}).map(([name, spec]) => [
     name, String(spec).startsWith('workspace:') ? versions[name] : spec,
@@ -42,8 +42,8 @@ await cp(join(root,'examples/d1-worker/wrangler.example.toml'),join(template,'wr
 await cp(join(root,'LICENSE'),join(template,'LICENSE'))
 let host=await readFile(join(root,'scripts/serve-d1-worker.mjs'),'utf8')
 for(const[from,to]of[
-  ["'../packages/runtime/dist/index.js'","'@longhorn/runtime'"],
-  ["'../packages/config/dist/index.js'","'@longhorn/config'"],
+  ["'../packages/runtime/dist/index.js'","'@longhornjs/runtime'"],
+  ["'../packages/config/dist/index.js'","'@longhornjs/config'"],
   ["'../examples/d1-worker/dist/config.js'","'./dist/config.js'"],
   ["'../examples/d1-worker/dist/index.js'","'./dist/index.js'"],
   ["'../examples/d1-worker/dist/deploy.js'","'./dist/deploy.js'"],
@@ -62,7 +62,7 @@ async function record(directory,prefix='',target=hashes){
   }
 }
 await record(template)
-await writeFile(join(template,'template.json'),JSON.stringify({schemaVersion:1,dependencies:{...example.dependencies,'@longhorn/runtime':'workspace:*'},devDependencies:{...example.devDependencies,'@types/node':'^22.13.10',typescript:'^5.8.2',vitest:'^3.1.1',miniflare:'3.20250718.3'},files:hashes},null,2)+'\n')
+await writeFile(join(template,'template.json'),JSON.stringify({schemaVersion:1,dependencies:{...example.dependencies,'@longhornjs/runtime':'workspace:*'},devDependencies:{...example.devDependencies,'@types/node':'^22.13.10',typescript:'^5.8.2',vitest:'^3.1.1',miniflare:'3.20250718.3'},files:hashes},null,2)+'\n')
 
 const sqlite=join(output,'templates/sqlite-tasks')
 await cp(join(root,'starters/sqlite-tasks'),sqlite,{recursive:true})
@@ -70,7 +70,7 @@ await cp(join(root,'examples/basic/src'),join(sqlite,'src'),{recursive:true,filt
 await cp(join(root,'examples/basic/.env.example'),join(sqlite,'.env.example'))
 await cp(join(root,'LICENSE'),join(sqlite,'LICENSE'))
 let persistence=await readFile(join(root,'scripts/verify-persistence.mjs'),'utf8')
-for(const[from,to]of[["'../runtimes/node/dist/sqlite.js'","'@longhorn/node/sqlite'"],["'examples/basic/dist/index.js'","'dist/index.js'"]]){
+for(const[from,to]of[["'../runtimes/node/dist/sqlite.js'","'@longhornjs/node/sqlite'"],["'examples/basic/dist/index.js'","'dist/index.js'"]]){
   if(persistence.split(from).length!==2)throw new Error('SQLite persistence gate changed; review template mapping')
   persistence=persistence.replace(from,to)
 }
@@ -90,13 +90,13 @@ for(const entry of await readdir(join(root,'examples/basic/src'),{withFileTypes:
   if(entry.name.endsWith('.test.ts')){
     if(source.split("from 'vitest'").length!==2)throw new Error('Basic test runner changed; review Bun template mapping')
     source=source.replace("from 'vitest'","from 'bun:test'")
-    source=source.replaceAll("'@longhorn/node/sqlite'","'@longhorn/bun/sqlite'").replaceAll("'@longhorn/node'","'@longhorn/bun'").replaceAll('nodeRuntime','bunRuntime').replaceAll('real Node server','real Bun server')
+    source=source.replaceAll("'@longhornjs/node/sqlite'","'@longhornjs/bun/sqlite'").replaceAll("'@longhornjs/node'","'@longhornjs/bun'").replaceAll('nodeRuntime','bunRuntime').replaceAll('real Node server','real Bun server')
     if(entry.name==='cache.test.ts'){
       if(source.split('vi.mocked(store.counts)').length!==4)throw new Error('Cache test mocks changed; review Bun template mapping')
       source="import type { Mock } from 'bun:test'\n"+source.replaceAll('vi.mocked(store.counts)','mockedCounts(store)')+"\nfunction mockedCounts(store:TasksStore):Mock<TasksStore['counts']>{return store.counts as Mock<TasksStore['counts']>}\n"
     }
   }
-  if(source.includes('@longhorn/node')||source.includes("from 'vitest'"))throw new Error('Unexpected Node-only import in Bun task source')
+  if(source.includes('@longhornjs/node')||source.includes("from 'vitest'"))throw new Error('Unexpected Node-only import in Bun task source')
   await writeFile(join(bunSqlite,'src',entry.name),source)
 }
 for(const entry of['index.ts','storage.ts']){
@@ -109,7 +109,7 @@ for(const entry of['index.ts','storage.ts']){
 await cp(join(root,'examples/basic/.env.example'),join(bunSqlite,'.env.example'))
 await cp(join(root,'LICENSE'),join(bunSqlite,'LICENSE'))
 await mkdir(join(bunSqlite,'tests'),{recursive:true})
-await writeFile(join(bunSqlite,'tests/persistence.mjs'),persistence.replace("'@longhorn/node/sqlite'","'@longhorn/bun/sqlite'"))
+await writeFile(join(bunSqlite,'tests/persistence.mjs'),persistence.replace("'@longhornjs/node/sqlite'","'@longhornjs/bun/sqlite'"))
 const bunExample=JSON.parse(await readFile(join(root,'examples/bun-sqlite/package.json'),'utf8')),bunHashes={}
 await record(bunSqlite,'',bunHashes)
 await writeFile(join(bunSqlite,'template.json'),JSON.stringify({schemaVersion:1,dependencies:bunExample.dependencies,devDependencies:{'@types/bun':'1.4.4','bun-runtime':'npm:bun@1.4.4',typescript:'^5.8.2',esbuild:'^0.28.2'},files:bunHashes},null,2)+'\n')
@@ -126,14 +126,14 @@ for(const entry of await readdir(join(root,'examples/basic/src'),{withFileTypes:
     denoTestCount++
     if(source.split("from 'vitest'").length!==2)throw new Error('Basic test runner changed; review Deno template mapping')
     source=source.replace("from 'vitest'","from '../tests/runner.js'")
-    source=source.replaceAll("'@longhorn/node/sqlite'","'@longhorn/deno/sqlite'").replaceAll("'@longhorn/node'","'@longhorn/deno'").replaceAll('nodeRuntime','denoRuntime').replaceAll('real Node server','real Deno server')
+    source=source.replaceAll("'@longhornjs/node/sqlite'","'@longhornjs/deno/sqlite'").replaceAll("'@longhornjs/node'","'@longhornjs/deno'").replaceAll('nodeRuntime','denoRuntime').replaceAll('real Node server','real Deno server')
     if(entry.name==='cache.test.ts'){
       const before='create: vi.fn(async (title)'
       if(source.split(before).length!==2)throw new Error('Cache mock signature changed; review Deno template mapping')
       source=source.replace(before,"create: vi.fn<TasksStore['create']>(async (title)")
     }
   }
-  if(source.includes('@longhorn/node')||source.includes("from 'vitest'"))throw new Error('Unexpected Node adapter/test runner import in Deno task source')
+  if(source.includes('@longhornjs/node')||source.includes("from 'vitest'"))throw new Error('Unexpected Node adapter/test runner import in Deno task source')
   await writeFile(join(denoSqlite,'src',entry.name),source)
 }
 if(denoTestCount!==6)throw new Error('Deno application test set changed; review template mapping')
@@ -150,7 +150,7 @@ for(const entry of['index.ts','storage.ts']){
 }
 await cp(join(root,'examples/basic/.env.example'),join(denoSqlite,'.env.example'))
 await cp(join(root,'LICENSE'),join(denoSqlite,'LICENSE'))
-let denoPersistence=persistence.replace("'@longhorn/node/sqlite'","'@longhorn/deno/sqlite'")
+let denoPersistence=persistence.replace("'@longhornjs/node/sqlite'","'@longhornjs/deno/sqlite'")
 for(const declaration of ["import { spawn } from 'node:child_process'\n","import { once } from 'node:events'\n","import { createInterface } from 'node:readline'\n"]){
   if(denoPersistence.split(declaration).length!==2)throw new Error('Deno persistence imports changed; review mapping')
   denoPersistence=denoPersistence.replace(declaration,'')
@@ -177,16 +177,16 @@ for (const runtime of ['node', 'bun', 'deno']) {
   for (const name of ['app.ts', 'config.ts', 'notes.ts', 'app.test.ts']) {
     let source = await readFile(join(root, 'examples/auth/src', name), 'utf8')
     if (name === 'app.test.ts' && runtime !== 'node') {
-      if (source.split("from 'vitest'").length !== 2 || source.split("'@longhorn/node/sqlite'").length !== 2) throw new Error('Auth test source changed; review native mapping')
+      if (source.split("from 'vitest'").length !== 2 || source.split("'@longhornjs/node/sqlite'").length !== 2) throw new Error('Auth test source changed; review native mapping')
       source = source.replace("from 'vitest'", runtime === 'bun' ? "from 'bun:test'" : "from '../tests/runner.js'")
-        .replace("'@longhorn/node/sqlite'", "'@longhorn/" + runtime + "/sqlite'")
+        .replace("'@longhornjs/node/sqlite'", "'@longhornjs/" + runtime + "/sqlite'")
     }
-    if (runtime !== 'node' && (source.includes('@longhorn/node') || source.includes("from 'vitest'"))) throw new Error('Unexpected Node-only import in native auth source')
+    if (runtime !== 'node' && (source.includes('@longhornjs/node') || source.includes("from 'vitest'"))) throw new Error('Unexpected Node-only import in native auth source')
     await writeFile(join(target, 'src', name), source)
   }
   const entry = runtime === 'node' ? 'index.ts' : runtime + '.ts'
   const host = await readFile(join(root, 'examples/auth/src', entry), 'utf8')
-  if (!host.includes("'@longhorn/" + runtime + "/passwords'") || !host.includes("'@longhorn/" + runtime + "/sqlite'")) throw new Error('Auth native host changed; review mapping')
+  if (!host.includes("'@longhornjs/" + runtime + "/passwords'") || !host.includes("'@longhornjs/" + runtime + "/sqlite'")) throw new Error('Auth native host changed; review mapping')
   await writeFile(join(target, 'src/index.ts'), host)
   await cp(join(root, 'examples/auth/.env.example'), join(target, '.env.example'))
   await cp(join(root, 'LICENSE'), join(target, 'LICENSE'))
@@ -204,7 +204,7 @@ for (const runtime of ['node', 'bun', 'deno']) {
     await cp(join(root, 'starters/deno-sqlite-tasks/tests/permissions.mjs'), join(target, 'tests/permissions.mjs'))
   }
   const dependencies = Object.fromEntries(Object.entries(authExample.dependencies).filter(([name]) =>
-    !['@longhorn/node', '@longhorn/bun', '@longhorn/deno'].includes(name) || name === '@longhorn/' + runtime))
+    !['@longhornjs/node', '@longhornjs/bun', '@longhornjs/deno'].includes(name) || name === '@longhornjs/' + runtime))
   const hashes = {}; await record(target, '', hashes)
   await writeFile(join(target, 'template.json'), JSON.stringify({ schemaVersion: 1, dependencies, devDependencies, files: hashes }, null, 2) + '\n')
 }
@@ -221,8 +221,8 @@ await mkdir(join(command,'receiver'),{recursive:true})
 for(const name of ['receiver.ts','receipts.ts','contracts.ts','message-effect.ts'])await cp(join(root,'examples/outbox-worker/src',name),join(command,'receiver',name))
 let receiver=await readFile(join(root,'scripts/serve-message-receiver.mjs'),'utf8')
 for(const[from,to]of[
-  ["'../packages/auth/dist/bearer.js'","'@longhorn/auth/bearer'"],
-  ["'../packages/runtime/dist/index.js'","'@longhorn/runtime'"],
+  ["'../packages/auth/dist/bearer.js'","'@longhornjs/auth/bearer'"],
+  ["'../packages/runtime/dist/index.js'","'@longhornjs/runtime'"],
   ["'../examples/outbox-worker/data/receiver'","'../data/receiver'"],
   ["'../examples/outbox-worker/dist/receiver.js'","'../dist/receiver/receiver.js'"],
 ]){
@@ -238,4 +238,4 @@ await writeFile(join(command,'.gitignore'),'node_modules/\ndist/\ndata/\n.env\n.
 const commandExample=JSON.parse(await readFile(join(root,'examples/postgres/package.json'),'utf8')),commandHashes={}
 await record(command,'',commandHashes)
 if(Object.keys(commandHashes).length>160)throw new Error('Command template exceeds the shared asset bound')
-await writeFile(join(command,'template.json'),JSON.stringify({schemaVersion:1,dependencies:{...commandExample.dependencies,'@longhorn/workers':'workspace:*','@longhorn/runtime':'workspace:*',miniflare:'3.20250718.3'},devDependencies:{'@types/node':'^22.13.10','@cloudflare/workers-types':'^5.20261022.1',esbuild:'^0.28.2',typescript:'^5.8.2',vitest:'^3.1.1'},files:commandHashes},null,2)+'\n')
+await writeFile(join(command,'template.json'),JSON.stringify({schemaVersion:1,dependencies:{...commandExample.dependencies,'@longhornjs/workers':'workspace:*','@longhornjs/runtime':'workspace:*',miniflare:'3.20250718.3'},devDependencies:{'@types/node':'^22.13.10','@cloudflare/workers-types':'^5.20261022.1',esbuild:'^0.28.2',typescript:'^5.8.2',vitest:'^3.1.1'},files:commandHashes},null,2)+'\n')

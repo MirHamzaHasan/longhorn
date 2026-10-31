@@ -230,17 +230,17 @@ setTimeout(() => play(selected()), reduced.matches ? 0 : 1300)
 
 /* Runtime tabs: only the host lines change, and those are what gets marked. */
 const runtimes = {
-  node: { from: '@longhorn/node', name: 'nodeRuntime', storage: 'SQLite, PostgreSQL and Redis', passwords: 'Native scrypt', limit: 'The complete console is verified on this profile only.' },
-  bun: { from: '@longhorn/bun', name: 'bunRuntime', storage: 'Native bun:sqlite', passwords: 'Native scrypt', limit: 'SQL calls run synchronously.' },
-  deno: { from: '@longhorn/deno', name: 'denoRuntime', storage: 'Built-in SQLite', passwords: 'Native scrypt', limit: 'Launchers grant explicit file, network and environment permissions.' },
+  node: { from: '@longhornjs/node', name: 'nodeRuntime', storage: 'SQLite, PostgreSQL and Redis', passwords: 'Native scrypt', limit: 'The complete console is verified on this profile only.' },
+  bun: { from: '@longhornjs/bun', name: 'bunRuntime', storage: 'Native bun:sqlite', passwords: 'Native scrypt', limit: 'SQL calls run synchronously.' },
+  deno: { from: '@longhornjs/deno', name: 'denoRuntime', storage: 'Built-in SQLite', passwords: 'Native scrypt', limit: 'Launchers grant explicit file, network and environment permissions.' },
   workers: { storage: 'D1 and Durable Object SQLite', passwords: 'No Worker scrypt provider yet', limit: 'Workers owns sockets and lifetime, so you export a handler instead of listening. D1 uses predeclared batches, not callback transactions.' },
 }
 function esc(text) { return text.replace(/&/g, '&amp;').replace(/</g, '&lt;') }
 function showRuntime(name, focus) {
   const runtime = runtimes[name], worker = name === 'workers'
-  const importLine = worker ? "import { createWorker } from '@longhorn/workers'" : `import { ${runtime.name} } from '${runtime.from}'`
+  const importLine = worker ? "import { createWorker } from '@longhornjs/workers'" : `import { ${runtime.name} } from '${runtime.from}'`
   const hostLine = worker ? 'export default createWorker(app)' : `await app.listen(${runtime.name}, { port: 3000 })`
-  $('#runtime-code').innerHTML = `import { Longhorn } from '@longhorn/core'\n<span class="changed">${esc(importLine)}</span>\nconst app = new Longhorn()\n\napp.http.get('/health', (c) =&gt; c.json({ status: 'ok' }))\n\n<span class="changed">${esc(hostLine)}</span>`
+  $('#runtime-code').innerHTML = `import { Longhorn } from '@longhornjs/core'\n<span class="changed">${esc(importLine)}</span>\nconst app = new Longhorn()\n\napp.http.get('/health', (c) =&gt; c.json({ status: 'ok' }))\n\n<span class="changed">${esc(hostLine)}</span>`
   $('#fact-storage').textContent = runtime.storage
   $('#fact-passwords').textContent = runtime.passwords
   $('#fact-limit').textContent = runtime.limit

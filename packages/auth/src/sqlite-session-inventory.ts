@@ -1,4 +1,4 @@
-import type { Database, Migration } from '@longhorn/database'
+import type { Database, Migration } from '@longhornjs/database'
 import { SqlSessionInventoryStore } from './sql-session-inventory.js'
 /** Append after the complete application profile; legacy session writers need no new argument. */
 export const sqliteSessionInventoryMigrations: readonly Migration[] = [{ id: 'longhorn_auth/002_session_inventory', statements: [

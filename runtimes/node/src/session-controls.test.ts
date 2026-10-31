@@ -3,10 +3,10 @@ import { mkdtemp, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { openSqlite } from './sqlite.js'
-import { migrate } from '@longhorn/database'
-import type { Database } from '@longhorn/database'
-import { authMigrations, SqliteAuthStore } from '@longhorn/auth/sqlite'
-import { SqliteSessionControlStore } from '@longhorn/auth/sqlite-session-controls'
+import { migrate } from '@longhornjs/database'
+import type { Database } from '@longhornjs/database'
+import { authMigrations, SqliteAuthStore } from '@longhornjs/auth/sqlite'
+import { SqliteSessionControlStore } from '@longhornjs/auth/sqlite-session-controls'
 const current = 'a'.repeat(64), other = 'b'.repeat(64), peer = 'c'.repeat(64), expired = 'd'.repeat(64)
 const deferred = () => { let resolve!: () => void; const promise = new Promise<void>(yes => { resolve = yes }); return { promise, resolve } }
 async function seed(database: Database) {

@@ -1,4 +1,4 @@
-import type { Database } from '@longhorn/database'
+import type { Database } from '@longhornjs/database'
 /** Reuses the existing request ledger and runtime grants; startup never grants or prunes. */
 export async function checkRequestCleanupAccess(database:Database):Promise<void>{
   await database.execute('SELECT scope,request_key,expires_at FROM longhorn_idempotency.requests LIMIT 0')

@@ -1,6 +1,6 @@
 import { expect,it } from 'vitest'
 import { commandHistoryPosition,commandHistoryQuery,PostgresCommandHistory } from './command-history.js'
-import type { Database,SqlStatement } from '@longhorn/database'
+import type { Database,SqlStatement } from '@longhornjs/database'
 
 const encoded=(value:unknown)=>btoa(JSON.stringify(value)).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')
 const valid={v:1,viewer:'alice',scope:'mine',queue:'outbox.command.numbers.v1',before:'9007199254740993'}

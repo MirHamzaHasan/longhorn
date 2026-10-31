@@ -3,10 +3,10 @@ import { mkdtemp, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { openSqlite } from './sqlite.js'
-import { migrate } from '@longhorn/database'
-import type { Database } from '@longhorn/database'
-import { authMigrations, SqliteAuthStore } from '@longhorn/auth/sqlite'
-import { SqlitePasswordStore } from '@longhorn/auth/sqlite-passwords'
+import { migrate } from '@longhornjs/database'
+import type { Database } from '@longhornjs/database'
+import { authMigrations, SqliteAuthStore } from '@longhornjs/auth/sqlite'
+import { SqlitePasswordStore } from '@longhornjs/auth/sqlite-passwords'
 
 const token = 'a'.repeat(64), other = 'b'.repeat(64), key = 'c'.repeat(64)
 const change = { userId: 'alice-id', tokenHash: token, expectedPasswordHash: 'old-encoded', nextPasswordHash: 'new-encoded', attemptKey: key }

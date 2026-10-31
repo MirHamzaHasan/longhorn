@@ -1,4 +1,4 @@
-import type { Database,Migration } from '@longhorn/database'
+import type { Database,Migration } from '@longhornjs/database'
 
 /** Append after the complete deployed profile; regular index builds commit with the ledger. */
 export const postgresHistorySearchMigrations:readonly Migration[]=[{

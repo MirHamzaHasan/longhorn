@@ -1,6 +1,6 @@
 # Shared SQLite statement boundary
 
-Owner: optional `@longhorn/database/sqlite-statement`, used by
+Owner: optional `@longhornjs/database/sqlite-statement`, used by
 [Bun SQLite](bun-sqlite.md), [Deno SQLite](deno-sqlite.md) and [Workers D1](workers-d1.md). The helper
 `assertSqliteStatement(sql)` checks statement boundaries without a native import.
 It is the former D1 scanner moved intact into the shared database package;

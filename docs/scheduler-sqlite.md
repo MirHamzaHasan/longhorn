@@ -1,6 +1,6 @@
 # SQLite schedule dispatch
 
-Owner: `@longhorn/scheduler/sqlite`. Connects [schedules](scheduler.md),
+Owner: `@longhornjs/scheduler/sqlite`. Connects [schedules](scheduler.md),
 [queue SQLite storage](queue-sqlite.md), [transactions](database.md) and [migrations](migrations.md).
 It imports portable SQL contracts and the queue insertion primitive, not a Node driver.
 

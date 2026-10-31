@@ -10,7 +10,7 @@ async function checksum(statements: readonly string[]): Promise<string> {
 
 /** Ordered, forward-only migrations. The adapter must supply a write transaction. */
 export async function migrate(database: Database, migrations: readonly Migration[]): Promise<readonly string[]> {
-  if (database.dialect === 'postgres') throw new Error('Use migratePostgres from @longhorn/database/postgres for PostgreSQL')
+  if (database.dialect === 'postgres') throw new Error('Use migratePostgres from @longhornjs/database/postgres for PostgreSQL')
   const ids = new Set<string>()
   for (const migration of migrations) {
     if (!migration.id.trim() || ids.has(migration.id)) throw new Error('Migration IDs must be nonempty and unique')

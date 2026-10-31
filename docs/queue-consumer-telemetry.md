@@ -1,6 +1,6 @@
 # Queue consumer telemetry and completion
 
-Owner: application handler/afterBatch and `@longhorn/observability`. Connects
+Owner: application handler/afterBatch and `@longhornjs/observability`. Connects
 [explicit tracing](tracing.md), [batch lifetime](queue-batch-lifecycle.md),
 [message decisions](queue-message-decisions.md), DI and exporter ownership.
 

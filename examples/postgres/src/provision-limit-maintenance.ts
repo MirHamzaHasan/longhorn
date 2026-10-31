@@ -1,6 +1,6 @@
-import { openPostgres } from '@longhorn/node/postgres'
+import { openPostgres } from '@longhornjs/node/postgres'
 import { grantLimitMaintenance } from './limit-maintenance-grants.js'
-import type { Database } from '@longhorn/database'
+import type { Database } from '@longhornjs/database'
 const [role, ...extra] = process.argv.slice(2)
 let database: Database | undefined
 try {

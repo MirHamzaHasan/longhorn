@@ -1,4 +1,4 @@
-import type { Database, Migration } from '@longhorn/database'
+import type { Database, Migration } from '@longhornjs/database'
 import { SqlIdempotencyStore } from './sql.js'
 
 /** Owned migration credentials apply this; runtime borrows SELECT/INSERT/UPDATE/DELETE only. */

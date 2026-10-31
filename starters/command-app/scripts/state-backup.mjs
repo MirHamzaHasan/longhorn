@@ -3,7 +3,7 @@ import { createReadStream } from 'node:fs'
 import { cp, lstat, mkdir, mkdtemp, readFile, readdir, rename, rm, writeFile } from 'node:fs/promises'
 import { dirname, join, resolve, sep } from 'node:path'
 import { spawn } from 'node:child_process'
-import { openPostgres } from '@longhorn/node/postgres'
+import { openPostgres } from '@longhornjs/node/postgres'
 
 const [mode,destination,offline,...extra]=process.argv.slice(2)
 let database,staging

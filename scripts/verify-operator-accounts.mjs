@@ -39,7 +39,7 @@ try{
   assert.match(await archive('outbox/dist/index.d.ts'),/retryFailedAuthorized/)
   assert.match(await archive('outbox/dist/hono.d.ts'),/createOutboxOperations/)
   const packed=JSON.parse(await archive('outbox/package.json'))
-  assert.ok(packed.exports['./hono']);assert.ok(packed.dependencies['@longhorn/validation']);assert.ok(packed.dependencies.hono)
+  assert.ok(packed.exports['./hono']);assert.ok(packed.dependencies['@longhornjs/validation']);assert.ok(packed.dependencies.hono)
   sandbox=await startAccountOperationsSandbox()
   const db=await connect({connectionString:sandbox.appUrl}),owner=await connect({connectionString:sandbox.ownerUrl}),admin=await connect({connectionString:sandbox.connectionString})
   const store=new PostgresAuthStore(owner),accounts=new AuthService(new PostgresAuthStore(db),createScryptPasswordHasher())

@@ -1,7 +1,7 @@
 # Batch request records and retention
 
 Owner: `batchIdempotencyMigrations` and `BatchIdempotency` from
-`@longhorn/idempotency/batch-sqlite`. Connects [plans](batch-idempotency.md),
+`@longhornjs/idempotency/batch-sqlite`. Connects [plans](batch-idempotency.md),
 [schema history](batch-migrations.md) and [D1 upgrades](d1-idempotency-upgrades.md).
 
 The separate STRICT table longhorn_batch_idempotency_requests has a composite

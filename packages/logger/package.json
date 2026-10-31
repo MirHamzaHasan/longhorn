@@ -1,5 +1,5 @@
 {
-  "name": "@longhorn/logger",
+  "name": "@longhornjs/logger",
   "version": "0.1.0",
   "description": "Structured logs, redaction and request IDs for LongHorn.",
   "license": "MIT",

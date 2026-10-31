@@ -1,7 +1,7 @@
 # Restricted PostgreSQL session controls
 
 Owner: `PostgresSessionControlStore` and `checkPostgresSessionControls` from
-`@longhorn/auth/postgres-session-controls`, also exposed through PostgresAuthStore.
+`@longhornjs/auth/postgres-session-controls`, also exposed through PostgresAuthStore.
 Uses the existing session table/user index, SELECT/DELETE session privileges and
 owner-deployed `longhorn_auth.lock_session_user(text)` function. The runtime does
 not need direct UPDATE on users, roles, passwords or session expiries. This feature

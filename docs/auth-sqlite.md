@@ -1,13 +1,13 @@
 # SQLite authentication storage
 
-Owner: `SqliteAuthStore` and `authMigrations` from `@longhorn/auth/sqlite`. Connects
+Owner: `SqliteAuthStore` and `authMigrations` from `@longhornjs/auth/sqlite`. Connects
 the portable [database contract](database.md) to credential, session, and login-attempt
 stores. It imports no native driver. The verified connection provider is
-[`@longhorn/node/sqlite`](sqlite.md).
+[`@longhornjs/node/sqlite`](sqlite.md).
 
 ```ts
-import { migrate } from '@longhorn/database'
-import { authMigrations, SqliteAuthStore } from '@longhorn/auth/sqlite'
+import { migrate } from '@longhornjs/database'
+import { authMigrations, SqliteAuthStore } from '@longhornjs/auth/sqlite'
 
 await migrate(database, [...authMigrations, ...applicationMigrations])
 const store = new SqliteAuthStore(database)

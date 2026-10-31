@@ -1,7 +1,7 @@
-import type { Longhorn } from '@longhorn/core'
-import type { Outbox } from '@longhorn/outbox'
-import { createOutboxOperations } from '@longhorn/outbox/hono'
-import { createBearerVerifier } from '@longhorn/auth/bearer'
+import type { Longhorn } from '@longhornjs/core'
+import type { Outbox } from '@longhornjs/outbox'
+import { createOutboxOperations } from '@longhornjs/outbox/hono'
+import { createBearerVerifier } from '@longhornjs/auth/bearer'
 
 /** Explicit service-credential policy; the shared routes can also use verified account principals. */
 export function configureOperations<T>(app: Longhorn, resolve: () => Outbox<T>, token: string | undefined, actor = 'service:outbox-operations'): void {

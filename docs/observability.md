@@ -1,6 +1,6 @@
 # Observability
 
-Owner: `@longhorn/observability`. Connects [health checks](health-checks.md),
+Owner: `@longhornjs/observability`. Connects [health checks](health-checks.md),
 [metrics](metrics.md), [Prometheus text](prometheus.md), [tracing](tracing.md),
 [memory span export](memory-traces.md), [HTTP telemetry](http-telemetry.md),
 [logging](logging.md), [lifecycle](lifecycle.md), and [report diagnostics](jobs-observability.md).
@@ -14,7 +14,7 @@ Core does not depend on observability: applications opt in through DI/middleware
 
 | Entry point | Provides | Ownership |
 | --- | --- | --- |
-| `@longhorn/observability` | Readiness, Meter/MetricRegistry, TraceProvider/Tracer, context helpers | Explicit application services |
+| `@longhornjs/observability` | Readiness, Meter/MetricRegistry, TraceProvider/Tracer, context helpers | Explicit application services |
 | `/hono` | HTTP metrics/spans, readiness/liveness handlers, requestSpan | Application HTTP middleware |
 | `/prometheus` | Exposition renderer and content type | Pull from registry snapshots |
 | `/memory` | Bounded MemorySpanExporter | Exclusively owned by one Tracer |

@@ -1,5 +1,5 @@
 import { expect, it } from 'vitest'
-import { loadConfig } from '@longhorn/config'
+import { loadConfig } from '@longhornjs/config'
 import { limitMaintenanceConfigSchema } from './limit-maintenance-config.js'
 import { operatorConfigSchema } from './operator-config.js'
 const url = 'postgres://maintenance:private@127.0.0.1/example'

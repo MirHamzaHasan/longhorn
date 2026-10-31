@@ -1,5 +1,5 @@
 {
-  "name": "@longhorn/container",
+  "name": "@longhornjs/container",
   "version": "0.1.0",
   "description": "Typed tokens and application singletons for LongHorn.",
   "license": "MIT",

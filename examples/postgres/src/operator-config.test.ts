@@ -1,5 +1,5 @@
 import { expect,it } from 'vitest'
-import { loadConfig } from '@longhorn/config'
+import { loadConfig } from '@longhornjs/config'
 import { operatorConfigSchema } from './operator-config.js'
 const environment={DATABASE_URL:'postgres://app:owned-secret@127.0.0.1:5432/app',MESSAGE_SERVICE_URL:'https://receiver.example/',MESSAGE_SERVICE_TOKEN:'a'.repeat(64)}
 it('validates a separate runtime profile with explicit transport and cookie settings',async()=>{

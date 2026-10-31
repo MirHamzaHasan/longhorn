@@ -1,5 +1,5 @@
 {
-  "name": "@longhorn/queue",
+  "name": "@longhornjs/queue",
   "version": "0.1.0",
   "description": "Persistent jobs, leases and retries for LongHorn.",
   "license": "MIT",
@@ -41,8 +41,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@longhorn/database": "workspace:*",
-    "@longhorn/validation": "workspace:*"
+    "@longhornjs/database": "workspace:*",
+    "@longhornjs/validation": "workspace:*"
   },
   "files": [
     "dist"

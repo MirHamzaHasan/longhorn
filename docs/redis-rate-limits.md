@@ -1,14 +1,14 @@
 # Redis request attempt limits
 
-Owner: RedisRateLimitStore in @longhorn/ratelimit/redis. Connects the existing
+Owner: RedisRateLimitStore in @longhornjs/ratelimit/redis. Connects the existing
 [RateLimiter](request-limits.md), [server clock contract](rate-limit-server-clock.md),
 [Node connection](redis-node.md), [Hono](rate-limit-http.md) and
 [working API](redis-rate-limit-example.md). It imports no native/network module.
 
 ```ts
-import { RateLimiter } from '@longhorn/ratelimit'
-import { RedisRateLimitStore } from '@longhorn/ratelimit/redis'
-import { openRedis } from '@longhorn/node/redis'
+import { RateLimiter } from '@longhornjs/ratelimit'
+import { RedisRateLimitStore } from '@longhornjs/ratelimit/redis'
+import { openRedis } from '@longhornjs/node/redis'
 const client = await openRedis({ url: redisUrl })
 try {
   const limiter = new RateLimiter({

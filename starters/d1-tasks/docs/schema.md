@@ -1,7 +1,7 @@
 # Schema deployment
 
 src/schema.ts holds the complete ordered task/activity/request ledger manifest.
-Never edit an applied migration. @longhorn/database/batch verifies checksums and
+Never edit an applied migration. @longhornjs/database/batch verifies checksums and
 guards the observed prefix before applying all missing SQL/history in one native
 batch. Failed or competing stale upgrades roll back; rerun explicitly.
 

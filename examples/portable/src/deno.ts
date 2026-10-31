@@ -1,6 +1,6 @@
-import { denoRuntime } from '@longhorn/deno'
-import { loadConfig } from '@longhorn/config'
-import { createLogger } from '@longhorn/logger'
+import { denoRuntime } from '@longhornjs/deno'
+import { loadConfig } from '@longhornjs/config'
+import { createLogger } from '@longhornjs/logger'
 import { createPortableApp } from './app.js'
 import { serverConfig } from './config.js'
 

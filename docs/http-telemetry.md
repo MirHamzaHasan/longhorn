@@ -1,6 +1,6 @@
 # HTTP telemetry middleware
 
-Owner: `@longhorn/observability/hono`. Connects Hono to the portable [Meter](metrics.md),
+Owner: `@longhornjs/observability/hono`. Connects Hono to the portable [Meter](metrics.md),
 [TraceProvider](tracing.md), [health handlers](health-checks.md) and [request logs](logging.md).
 It imports Hono directly, without a core dependency.
 

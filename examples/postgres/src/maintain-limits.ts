@@ -1,4 +1,4 @@
-import { openPostgres } from '@longhorn/node/postgres'
+import { openPostgres } from '@longhornjs/node/postgres'
 import { loadLimitMaintenanceConfiguration } from './limit-maintenance-config.js'
 import { runLimitMaintenance } from './limit-maintenance.js'
 import type { LimitMaintenanceMode } from './limit-maintenance.js'

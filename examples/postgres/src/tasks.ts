@@ -1,4 +1,4 @@
-import type { Database, Migration, SqlExecutor, SqlRow, SqlValue } from '@longhorn/database'
+import type { Database, Migration, SqlExecutor, SqlRow, SqlValue } from '@longhornjs/database'
 import { z } from 'zod'
 export const exampleSchema = 'longhorn_pg_example'
 export const taskMigrations: readonly Migration[] = [{ id: 'postgres_tasks/001_tasks', statements: [

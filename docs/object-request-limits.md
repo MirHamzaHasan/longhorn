@@ -1,16 +1,16 @@
 # Durable Object SQLite request limits
 
-Owner: the existing `SqliteRateLimitStore` from `@longhorn/ratelimit/sqlite`, over
-`createDurableSqlite` from `@longhorn/workers/durable-sqlite`. Connects the
+Owner: the existing `SqliteRateLimitStore` from `@longhornjs/ratelimit/sqlite`, over
+`createDurableSqlite` from `@longhornjs/workers/durable-sqlite`. Connects the
 [portable limiter](request-limits.md), [managed SQL protocol](rate-limit-sql.md),
 [report policy](object-report-limits.md) and [native proof](object-limit-testing.md).
 No additional provider or platform-specific limiter port is needed.
 
 ```ts
-import { RateLimiter } from '@longhorn/ratelimit'
-import { SqliteRateLimitStore, rateLimitMigrations } from '@longhorn/ratelimit/sqlite'
-import { createDurableSqlite } from '@longhorn/workers/durable-sqlite'
-import { migrate } from '@longhorn/database'
+import { RateLimiter } from '@longhornjs/ratelimit'
+import { SqliteRateLimitStore, rateLimitMigrations } from '@longhornjs/ratelimit/sqlite'
+import { createDurableSqlite } from '@longhornjs/workers/durable-sqlite'
+import { migrate } from '@longhornjs/database'
 const database = createDurableSqlite(state)
 await migrate(database, rateLimitMigrations) // standalone limiter-only Object
 const limiter = new RateLimiter({

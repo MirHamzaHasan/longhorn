@@ -1,10 +1,10 @@
 import { afterEach, describe, expect, it } from 'vitest'
-import { migrate } from '@longhorn/database'
-import type { Database } from '@longhorn/database'
-import { openSqlite } from '@longhorn/node/sqlite'
-import { MemoryQueueStore } from '@longhorn/queue/memory'
-import { queueMigrations, SqliteQueueStore } from '@longhorn/queue/sqlite'
-import type { QueueStore } from '@longhorn/queue'
+import { migrate } from '@longhornjs/database'
+import type { Database } from '@longhornjs/database'
+import { openSqlite } from '@longhornjs/node/sqlite'
+import { MemoryQueueStore } from '@longhornjs/queue/memory'
+import { queueMigrations, SqliteQueueStore } from '@longhornjs/queue/sqlite'
+import type { QueueStore } from '@longhornjs/queue'
 
 const databases: Database[] = []
 afterEach(async () => { await Promise.all(databases.map((database) => database.close())); databases.length = 0 })

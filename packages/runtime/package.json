@@ -1,5 +1,5 @@
 {
-  "name": "@longhorn/runtime",
+  "name": "@longhornjs/runtime",
   "version": "0.1.0",
   "description": "Fetch and listener contracts for LongHorn hosts.",
   "license": "MIT",

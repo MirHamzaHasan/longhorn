@@ -1,5 +1,5 @@
 import { expect,it } from 'vitest'
-import { loadConfig } from '@longhorn/config'
+import { loadConfig } from '@longhornjs/config'
 import { configSchema } from './config.js'
 it('keeps D1 task creation limits optional with bounded explicit policy',async()=>{
   expect((await loadConfig(configSchema,{})).createLimits).toBeUndefined()

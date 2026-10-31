@@ -1,6 +1,6 @@
 # D1 database
 
-@longhorn/workers/d1 borrows env.DB through BatchDatabase. Each complete statement
+@longhornjs/workers/d1 borrows env.DB through BatchDatabase. Each complete statement
 plan is one native atomic batch. There is no async JavaScript callback transaction;
 existing callback-based auth/queue stores cannot be substituted here.
 

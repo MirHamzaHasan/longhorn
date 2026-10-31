@@ -7,18 +7,18 @@
     "typecheck": "tsc --noEmit && tsc -p tsconfig.bun.json --noEmit && tsc -p tsconfig.deno.json --noEmit"
   },
   "dependencies": {
-    "@longhorn/bun": "workspace:*",
-    "@longhorn/config": "workspace:*",
-    "@longhorn/container": "workspace:*",
-    "@longhorn/core": "workspace:*",
-    "@longhorn/deno": "workspace:*",
-    "@longhorn/logger": "workspace:*",
-    "@longhorn/validation": "workspace:*",
-    "@longhorn/workers": "workspace:*",
+    "@longhornjs/bun": "workspace:*",
+    "@longhornjs/config": "workspace:*",
+    "@longhornjs/container": "workspace:*",
+    "@longhornjs/core": "workspace:*",
+    "@longhornjs/deno": "workspace:*",
+    "@longhornjs/logger": "workspace:*",
+    "@longhornjs/validation": "workspace:*",
+    "@longhornjs/workers": "workspace:*",
     "zod": "^4.6.7",
-    "@longhorn/events": "workspace:*",
-    "@longhorn/cache": "workspace:*",
-    "@longhorn/observability": "workspace:*"
+    "@longhornjs/events": "workspace:*",
+    "@longhornjs/cache": "workspace:*",
+    "@longhornjs/observability": "workspace:*"
   },
   "devDependencies": {
     "@types/bun": "^1.4.4",

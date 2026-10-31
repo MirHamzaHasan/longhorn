@@ -1,5 +1,5 @@
 import type { D1Database,D1DatabaseSession,D1PreparedStatement } from '@cloudflare/workers-types'
-import type { BatchDatabase,QueryResult,SqlStatement,SqlValue } from '@longhorn/database'
+import type { BatchDatabase,QueryResult,SqlStatement,SqlValue } from '@longhornjs/database'
 import { d1Sql } from './d1-sql.js'
 export type D1Binding=Pick<D1Database|D1DatabaseSession,'prepare'|'batch'>
 export type D1Options={readonly maxPending?:number;readonly maxBatchStatements?:number;readonly maxSqlBytes?:number;readonly maxInputBytes?:number;readonly maxResultRows?:number;readonly maxResultBytes?:number}

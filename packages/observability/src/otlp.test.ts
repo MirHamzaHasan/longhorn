@@ -18,7 +18,7 @@ it('encodes OTLP JSON IDs/enums/exact timestamp strings/scalars and snapshots re
   const request=calls[0]!,json=JSON.parse(String(request.body)),rs=json.resourceSpans[0],scope=rs.scopeSpans[0],span=scope.spans[0]
   expect(rs.resource.attributes).toContainEqual({ key: 'service.name',value: { stringValue: 'native-test' } })
   expect(rs.resource.attributes).toContainEqual({ key: 'deployment.environment.name',value: { stringValue: 'test' } })
-  expect(scope.scope.name).toBe('@longhorn/observability')
+  expect(scope.scope.name).toBe('@longhornjs/observability')
   expect(span).toMatchObject({ name: 'GET /items/:id',traceId: '1'.repeat(32),spanId: '2'.repeat(16),parentSpanId: '3'.repeat(16),kind: 2,flags: 1,
     startTimeUnixNano: '1792760000000000000',endTimeUnixNano: '1792760000001000000',status: { code: 1 } })
   expect(span.attributes).toContainEqual({ key: 'integer',value: { intValue: '42' } })

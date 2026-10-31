@@ -1,6 +1,6 @@
 # Memory span exporter
 
-Owner: `@longhorn/observability/memory` (`MemorySpanExporter`). Connects the
+Owner: `@longhornjs/observability/memory` (`MemorySpanExporter`). Connects the
 [Tracer exporter contract](tracing.md) to bounded local diagnostic snapshots.
 
 ```ts

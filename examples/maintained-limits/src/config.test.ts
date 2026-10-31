@@ -1,5 +1,5 @@
 import { expect, it } from 'vitest'
-import { loadConfig } from '@longhorn/config'
+import { loadConfig } from '@longhornjs/config'
 import { maintainedLimitsConfig } from './config.js'
 const token = 'a'.repeat(32)
 it('keeps cleanup opt-in and validates disabled settings before acquisition', async () => {

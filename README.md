@@ -120,9 +120,9 @@ and it works outside this repository.
 Here's a slightly bigger one, with a service in the container:
 
 ```ts
-import { Longhorn } from '@longhorn/core'
-import { provide, token } from '@longhorn/container'
-import { nodeRuntime } from '@longhorn/node'
+import { Longhorn } from '@longhornjs/core'
+import { provide, token } from '@longhornjs/container'
+import { nodeRuntime } from '@longhornjs/node'
 
 const Greeting = token<{ say(name: string): string }>('greeting')
 const app = new Longhorn()
@@ -150,10 +150,10 @@ host, change the import and the last line:
 
 | Host | Import | Start with | Storage |
 | --- | --- | --- | --- |
-| [Node](docs/runtimes.md) | `nodeRuntime` from `@longhorn/node` | `app.listen(nodeRuntime)` | SQLite, PostgreSQL, Redis |
-| [Bun](docs/bun.md) | `bunRuntime` from `@longhorn/bun` | `app.listen(bunRuntime)` | Native `bun:sqlite` |
-| [Deno](docs/deno.md) | `denoRuntime` from `@longhorn/deno` | `app.listen(denoRuntime)` | Built-in SQLite |
-| [Workers](docs/workers.md) | `createWorker` from `@longhorn/workers` | `export default createWorker(app)` | D1, Durable Object SQLite |
+| [Node](docs/runtimes.md) | `nodeRuntime` from `@longhornjs/node` | `app.listen(nodeRuntime)` | SQLite, PostgreSQL, Redis |
+| [Bun](docs/bun.md) | `bunRuntime` from `@longhornjs/bun` | `app.listen(bunRuntime)` | Native `bun:sqlite` |
+| [Deno](docs/deno.md) | `denoRuntime` from `@longhornjs/deno` | `app.listen(denoRuntime)` | Built-in SQLite |
+| [Workers](docs/workers.md) | `createWorker` from `@longhornjs/workers` | `export default createWorker(app)` | D1, Durable Object SQLite |
 
 Not every module runs everywhere. The [runtime matrix](docs/supported-runtimes.md) lists
 exactly what was verified on each host.
@@ -274,23 +274,23 @@ and wired by your application, so nothing starts behind your back.
 
 | Package | What it gives you |
 | --- | --- |
-| [`@longhorn/core`](docs/lifecycle.md) | The application: start, listen, drain, close |
-| [`@longhorn/container`](docs/dependency-injection.md) | Typed tokens and application singletons |
-| [`@longhorn/http`](docs/http.md) | A real Hono app with error defaults |
-| [`@longhorn/runtime`](docs/runtimes.md) | Fetch and listener contracts |
-| [`@longhorn/logger`](docs/logging.md) | Structured logs, redaction, request IDs |
-| [`@longhorn/validation`](docs/validation.md) | Standard Schema parsing and Hono input |
-| [`@longhorn/config`](docs/configuration.md) | Validated configuration |
-| [`@longhorn/database`](docs/database.md) | SQL, transactions and checksummed migrations |
-| [`@longhorn/auth`](docs/authentication.md) | Passwords, sessions and guards |
-| [`@longhorn/events`](docs/events.md) | Awaited in-process notifications |
-| [`@longhorn/cache`](docs/cache.md) | Memory or Redis, with shared loads |
-| [`@longhorn/queue`](docs/queues.md) | Persistent jobs, leases and retries |
-| [`@longhorn/scheduler`](docs/scheduler.md) | Durable one-time, interval and cron runs |
-| [`@longhorn/idempotency`](docs/idempotency.md) | Safe retries with saved replies |
-| [`@longhorn/ratelimit`](docs/request-limits.md) | Request budgets per subject |
-| [`@longhorn/outbox`](docs/outbox.md) | Transactional delivery, recovery and audit |
-| [`@longhorn/observability`](docs/observability.md) | Health, metrics, traces and OTLP export |
+| [`@longhornjs/core`](docs/lifecycle.md) | The application: start, listen, drain, close |
+| [`@longhornjs/container`](docs/dependency-injection.md) | Typed tokens and application singletons |
+| [`@longhornjs/http`](docs/http.md) | A real Hono app with error defaults |
+| [`@longhornjs/runtime`](docs/runtimes.md) | Fetch and listener contracts |
+| [`@longhornjs/logger`](docs/logging.md) | Structured logs, redaction, request IDs |
+| [`@longhornjs/validation`](docs/validation.md) | Standard Schema parsing and Hono input |
+| [`@longhornjs/config`](docs/configuration.md) | Validated configuration |
+| [`@longhornjs/database`](docs/database.md) | SQL, transactions and checksummed migrations |
+| [`@longhornjs/auth`](docs/authentication.md) | Passwords, sessions and guards |
+| [`@longhornjs/events`](docs/events.md) | Awaited in-process notifications |
+| [`@longhornjs/cache`](docs/cache.md) | Memory or Redis, with shared loads |
+| [`@longhornjs/queue`](docs/queues.md) | Persistent jobs, leases and retries |
+| [`@longhornjs/scheduler`](docs/scheduler.md) | Durable one-time, interval and cron runs |
+| [`@longhornjs/idempotency`](docs/idempotency.md) | Safe retries with saved replies |
+| [`@longhornjs/ratelimit`](docs/request-limits.md) | Request budgets per subject |
+| [`@longhornjs/outbox`](docs/outbox.md) | Transactional delivery, recovery and audit |
+| [`@longhornjs/observability`](docs/observability.md) | Health, metrics, traces and OTLP export |
 
 Optional [Rust computation](docs/rust-reports.md) sits behind a typed, authenticated
 protocol.

@@ -50,8 +50,8 @@ try{
   const cliPack=JSON.parse(await command('pnpm',['pack','--json','--pack-destination',temporary],join(root,'cli'))),creatorPack=JSON.parse(await command('pnpm',['pack','--json','--pack-destination',temporary],join(root,'create-longhorn')))
   assert.ok(cliPack.files.some(file=>file.path==='dist/framework/templates/'+(runtime==='node'?'sqlite-tasks':runtime+'-sqlite-tasks')+'/template.json'))
   const consumer=join(temporary,'installed cli');await mkdir(consumer)
-  await writeFile(join(consumer,'package.json'),JSON.stringify({private:true,packageManager:'pnpm@12.6.0',dependencies:{'@longhorn/cli':'file:../'+basename(cliPack.filename),'create-longhorn':'file:../'+basename(creatorPack.filename)}}))
-  await writeFile(join(consumer,'pnpm-workspace.yaml'),"overrides:\n  '@longhorn/cli': "+JSON.stringify('file:../'+basename(cliPack.filename))+'\n')
+  await writeFile(join(consumer,'package.json'),JSON.stringify({private:true,packageManager:'pnpm@12.6.0',dependencies:{'@longhornjs/cli':'file:../'+basename(cliPack.filename),'create-longhorn':'file:../'+basename(creatorPack.filename)}}))
+  await writeFile(join(consumer,'pnpm-workspace.yaml'),"overrides:\n  '@longhornjs/cli': "+JSON.stringify('file:../'+basename(cliPack.filename))+'\n')
   await command('pnpm',['install','--reporter=append-only'],consumer)
   const generated=join(temporary,'packed-created')
   await command('pnpm',['exec','create-longhorn',generated,'--runtime='+runtime,'--template=sqlite-tasks','--name=local-tasks','--install'],consumer)
@@ -61,7 +61,7 @@ try{
   if(runtime!=='node'){
     const packages=await readdir(join(directory,'.longhorn/framework'))
     assert.ok(packages.includes(runtime));assert.ok(!packages.includes('node'));assert.ok(!packages.includes('workers'));assert.ok(!packages.includes(runtime==='bun'?'deno':'bun'))
-    for(const entry of await readdir(join(directory,'src')))assert.ok(!(await readFile(join(directory,'src',entry),'utf8')).includes('@longhorn/node'))
+    for(const entry of await readdir(join(directory,'src')))assert.ok(!(await readFile(join(directory,'src',entry),'utf8')).includes('@longhornjs/node'))
   }
   const lock=await readFile(join(directory,'pnpm-lock.yaml'),'utf8');await command('pnpm',['install','--frozen-lockfile','--reporter=append-only'],directory,{CI:'true'});assert.equal(await readFile(join(directory,'pnpm-lock.yaml'),'utf8'),lock)
   for(const action of['typecheck','test','build']){
@@ -75,7 +75,7 @@ try{
   await writeFile(join(directory,'.env'),'APP_NAME=base-file\nDATABASE_PATH=./wrong.sqlite\n')
   const dataRelative=runtime==='deno'?'./retained, files/tasks #1.sqlite':'./retained/tasks #1.sqlite'
   await writeFile(join(directory,'.env.local'),'APP_NAME=local-file\nDATABASE_PATH='+JSON.stringify(dataRelative)+'\n')
-  const cli=join(consumer,'node_modules/@longhorn/cli/dist/bin.js'),start=environment=>launch(process.execPath,[cli,'start','--cwd',directory],consumer,environment)
+  const cli=join(consumer,'node_modules/@longhornjs/cli/dist/bin.js'),start=environment=>launch(process.execPath,[cli,'start','--cwd',directory],consumer,environment)
   let first=start(),url=await listening(first)
   if(runtime==='deno'){
     const policies=(await readdir(directory)).filter(name=>name.startsWith('.longhorn-permissions-'));assert.equal(policies.length,1)

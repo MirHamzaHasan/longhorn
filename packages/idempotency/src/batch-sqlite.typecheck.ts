@@ -1,4 +1,4 @@
-import type{BatchDatabase}from'@longhorn/database'
+import type{BatchDatabase}from'@longhornjs/database'
 import{BatchIdempotency}from'./batch-sqlite.js'
 declare const database:BatchDatabase
 const requests=new BatchIdempotency({database}),request={scope:'tasks:create:v1',key:'one',input:{title:'one'}}

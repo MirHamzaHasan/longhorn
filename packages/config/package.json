@@ -1,5 +1,5 @@
 {
-  "name": "@longhorn/config",
+  "name": "@longhornjs/config",
   "version": "0.1.0",
   "description": "Validated configuration for LongHorn applications.",
   "license": "MIT",
@@ -25,7 +25,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@longhorn/validation": "workspace:*"
+    "@longhornjs/validation": "workspace:*"
   },
   "files": [
     "dist"

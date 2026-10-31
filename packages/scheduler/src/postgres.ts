@@ -1,5 +1,5 @@
-import type { Database, Migration, SqlRow } from '@longhorn/database'
-import { insertPostgresJob } from '@longhorn/queue/postgres'
+import type { Database, Migration, SqlRow } from '@longhornjs/database'
+import { insertPostgresJob } from '@longhornjs/queue/postgres'
 import { occurrence } from './occurrence.js'
 import type { NewSchedule, ScheduleState, ScheduleTiming, SchedulerStore, StoredSchedule, TickResult } from './types.js'
 

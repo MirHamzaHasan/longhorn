@@ -1,11 +1,11 @@
 # Workers queue publisher adapter
 
-Owner: `@longhorn/workers/outbox`, createQueuePublisher. Connects the
+Owner: `@longhornjs/workers/outbox`, createQueuePublisher. Connects the
 [portable publisher port](outbox.md), [queue consumer adapter](workers-queue-events.md),
 [Object alarms](workers-sqlite-alarms.md) and [working pipeline](outbox-worker-example.md).
 
 ```ts
-import { createQueuePublisher } from '@longhorn/workers/outbox'
+import { createQueuePublisher } from '@longhornjs/workers/outbox'
 const publisher = createQueuePublisher<Payload>(env.MESSAGES)
 await outgoing.dispatchOnce(publisher)
 ```

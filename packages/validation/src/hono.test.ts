@@ -1,5 +1,5 @@
 import { afterEach, expect, expectTypeOf, it, vi } from 'vitest'
-import { createHttpApp, HTTPException } from '@longhorn/http'
+import { createHttpApp, HTTPException } from '@longhornjs/http'
 import { z } from 'zod'
 import type { StandardSchemaV1 } from './index.js'
 import { validate } from './hono.js'

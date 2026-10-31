@@ -1,4 +1,4 @@
-import type { Queue } from '@longhorn/queue'
+import type { Queue } from '@longhornjs/queue'
 import { Scheduler } from './scheduler.js'
 declare const scheduler: Scheduler
 declare const queue: Queue<{ numbers: number[] }>

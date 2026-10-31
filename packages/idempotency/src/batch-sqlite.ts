@@ -1,4 +1,4 @@
-import type { BatchDatabase, Migration, SqlStatement, SqlValue } from '@longhorn/database'
+import type { BatchDatabase, Migration, SqlStatement, SqlValue } from '@longhornjs/database'
 import { IdempotencyConflictError, IdempotencyInputError, idempotencyTime, validIdempotencyKey } from './index.js'
 import type { JsonValue } from './index.js'
 import { jsonSnapshot } from './json.js'

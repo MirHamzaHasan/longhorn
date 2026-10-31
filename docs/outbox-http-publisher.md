@@ -1,6 +1,6 @@
 # Acknowledged HTTP outgoing delivery
 
-Owner: createHttpPublisher from `@longhorn/outbox/http`. Connects the existing
+Owner: createHttpPublisher from `@longhornjs/outbox/http`. Connects the existing
 [Outbox dispatcher](outbox-dispatcher.md), [JSON client](service-json-client.md)
 and a compatible [durable receiver](http-message-receiver.md).
 

@@ -1,12 +1,12 @@
 # Deno runtime adapter
 
-Owner: `@longhorn/deno`. Connects [portable Fetch contracts](runtimes.md) to native
+Owner: `@longhornjs/deno`. Connects [portable Fetch contracts](runtimes.md) to native
 `Deno.serve`. It imports no Node server module. Deno development globals are confined
 to this adapter's TypeScript project; its published declarations use shared types.
 
 ```ts
-import { Longhorn } from '@longhorn/core'
-import { denoRuntime } from '@longhorn/deno'
+import { Longhorn } from '@longhornjs/core'
+import { denoRuntime } from '@longhornjs/deno'
 
 const app = new Longhorn()
 app.http.get('/health', (c) => c.json({ status: 'ok' }))

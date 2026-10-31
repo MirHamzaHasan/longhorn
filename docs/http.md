@@ -1,6 +1,6 @@
 # HTTP application
 
-Owners: `@longhorn/http` and `@longhorn/core`. Hono provides routing, middleware,
+Owners: `@longhornjs/http` and `@longhornjs/core`. Hono provides routing, middleware,
 request parsing, response helpers, and router composition. LongHorn composes it with
 [DI](dependency-injection.md), [lifecycle](lifecycle.md), and [logging](logging.md).
 
@@ -9,7 +9,7 @@ explicitly authenticated outbound requests through a separate /client entrypoint
 It imports no Hono and connects HTTP publishing and protected receipt readers.
 
 ```ts
-import { Longhorn } from '@longhorn/core'
+import { Longhorn } from '@longhornjs/core'
 
 const app = new Longhorn<{ GREETING: string }>()
 app.http.get('/hello/:name', (c) => c.json({
@@ -39,7 +39,7 @@ request middleware receives `X-Request-Id`.
 
 ## Default errors
 
-`createHttpApp()` from `@longhorn/http` returns a standalone Hono app with:
+`createHttpApp()` from `@longhornjs/http` returns a standalone Hono app with:
 
 - JSON 404: `{ "error": "Not Found" }`.
 - Generic JSON 500 for unexpected errors.

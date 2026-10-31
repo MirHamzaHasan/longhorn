@@ -1,4 +1,4 @@
-import { MemoryQueueStore } from '@longhorn/queue/memory'
+import { MemoryQueueStore } from '@longhornjs/queue/memory'
 import { initialSchedule, occurrence } from './occurrence.js'
 import type { NewSchedule, SchedulerStore, StoredSchedule, TickResult } from './types.js'
 

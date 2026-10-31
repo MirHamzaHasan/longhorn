@@ -1,5 +1,5 @@
 {
-  "name": "@longhorn/ratelimit",
+  "name": "@longhornjs/ratelimit",
   "version": "0.1.0",
   "description": "Request budgets per subject for LongHorn.",
   "license": "MIT",
@@ -53,9 +53,9 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@longhorn/database": "workspace:*",
+    "@longhornjs/database": "workspace:*",
     "hono": "^4.13.13",
-    "@longhorn/runtime": "workspace:*"
+    "@longhornjs/runtime": "workspace:*"
   },
   "files": [
     "dist"

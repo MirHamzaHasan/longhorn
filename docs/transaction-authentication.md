@@ -1,6 +1,6 @@
 # Authentication within a business transaction
 
-Owner: `AuthService.authenticateInTransaction` in `@longhorn/auth`. Connects
+Owner: `AuthService.authenticateInTransaction` in `@longhornjs/auth`. Connects
 [sessions](sessions.md), [managed executors](transaction-executors.md),
 [SQLite auth](auth-sqlite.md), [PostgreSQL locking](postgres-transaction-auth.md)
 and [authorized recovery](outbox-authorized-retry.md).

@@ -1,10 +1,10 @@
 import { afterEach, beforeEach, expect, it } from 'vitest'
-import { migrate } from '@longhorn/database'
-import type { Database } from '@longhorn/database'
-import { openSqlite } from '@longhorn/node/sqlite'
-import { Outbox } from '@longhorn/outbox'
-import { SqliteOutboxStore, outboxMigrations, outboxRecoveryMigrations, outboxAuditMigrations } from '@longhorn/outbox/sqlite'
-import { queueMigrations } from '@longhorn/queue/sqlite'
+import { migrate } from '@longhornjs/database'
+import type { Database } from '@longhornjs/database'
+import { openSqlite } from '@longhornjs/node/sqlite'
+import { Outbox } from '@longhornjs/outbox'
+import { SqliteOutboxStore, outboxMigrations, outboxRecoveryMigrations, outboxAuditMigrations } from '@longhornjs/outbox/sqlite'
+import { queueMigrations } from '@longhornjs/queue/sqlite'
 import { z } from 'zod'
 let database: Database, outgoing: Outbox<{ secret: string }>
 const schema = z.object({ secret: z.string() }), reject = { async publish() { throw new Error('owned publisher error') } }

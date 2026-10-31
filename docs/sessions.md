@@ -1,6 +1,6 @@
 # Opaque sessions
 
-Owner: `SessionManager` from `@longhorn/auth`. Connects Web Crypto, a `SessionStore`,
+Owner: `SessionManager` from `@longhornjs/auth`. Connects Web Crypto, a `SessionStore`,
 [credentials](authentication.md), and [cookie delivery](auth-http.md). It does not
 read cookies or own HTTP, timers, database connections, or process signals.
 

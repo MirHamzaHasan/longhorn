@@ -1,13 +1,13 @@
 # OTLP trace JSON mapping
 
-Owner: the internal otlp-json encoder used by `@longhorn/observability/otlp`.
+Owner: the internal otlp-json encoder used by `@longhornjs/observability/otlp`.
 Connects [SpanRecord](tracing.md), [HTTP export](otlp-http.md) and
 [collector roundtrip proofs](otlp-native.md).
 
 One request contains resourceSpans -> resource and scopeSpans -> instrumentation
 scope and spans. Resource service.name is required; service.version is optional.
 Extra resource attributes cannot replace those reserved keys. The fixed scope is
-@longhorn/observability version 0.1.0, matching this package version.
+@longhornjs/observability version 0.1.0, matching this package version.
 
 | Framework value | OTLP/JSON value |
 | --- | --- |

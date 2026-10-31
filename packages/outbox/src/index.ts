@@ -1,8 +1,8 @@
-import type { SqlExecutor } from '@longhorn/database'
-import { Queue, QueueWorker } from '@longhorn/queue'
-import type { EnqueueOptions, JobContext, JobInfo, JobState, QueueOptions, RunOptions, RunResult, WorkerOptions } from '@longhorn/queue'
-import { enqueueInTransaction } from '@longhorn/queue/transaction'
-import type { TransactionalQueueStore } from '@longhorn/queue/transaction'
+import type { SqlExecutor } from '@longhornjs/database'
+import { Queue, QueueWorker } from '@longhornjs/queue'
+import type { EnqueueOptions, JobContext, JobInfo, JobState, QueueOptions, RunOptions, RunResult, WorkerOptions } from '@longhornjs/queue'
+import { enqueueInTransaction } from '@longhornjs/queue/transaction'
+import type { TransactionalQueueStore } from '@longhornjs/queue/transaction'
 
 export type OutboundMessage<T> = { readonly id: string; readonly topic: string; readonly data: T }
 export type PublishContext = Pick<JobContext, 'attempt' | 'maxAttempts' | 'signal'>

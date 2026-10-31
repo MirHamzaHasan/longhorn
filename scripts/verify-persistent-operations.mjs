@@ -41,7 +41,7 @@ async function startReceiver(port='0'){
 }
 try{
   const packed=JSON.parse(await readFile(new URL('../cli/dist/framework/outbox/package.json',import.meta.url),'utf8'))
-  assert.ok(packed.exports['./http']);assert.ok(packed.dependencies['@longhorn/http'])
+  assert.ok(packed.exports['./http']);assert.ok(packed.dependencies['@longhornjs/http'])
   assert.match(await readFile(new URL('../cli/dist/framework/http/dist/client.d.ts',import.meta.url),'utf8'),/createJsonClient/)
   assert.match(await readFile(new URL('../cli/dist/framework/auth/dist/bearer.d.ts',import.meta.url),'utf8'),/createBearerVerifier/)
   sandbox=await startAccountOperationsSandbox();secrets.push(sandbox.ownerUrl,sandbox.appUrl)

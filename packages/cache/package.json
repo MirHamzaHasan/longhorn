@@ -1,5 +1,5 @@
 {
-  "name": "@longhorn/cache",
+  "name": "@longhornjs/cache",
   "version": "0.1.0",
   "description": "Memory or Redis caching with shared loads for LongHorn.",
   "license": "MIT",

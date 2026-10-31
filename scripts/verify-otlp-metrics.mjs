@@ -31,7 +31,7 @@ async function stop(instance){if(instance.child.exitCode===null&&instance.child.
 const service=item=>item.resource.attributes.find(a=>a.key==='service.name')?.value.stringValue
 function verifyWire(result){
   const records=collector.metricsSnapshot().filter(item=>service(item)==='longhorn-metrics-'+result.runtime);assert.equal(records.length,14)
-  for(const item of records){assert.equal(item.scope.name,'@longhorn/observability');assert.equal(item.scope.version,'0.1.0');assert.ok(item.resource.attributes.some(a=>a.key==='service.instance.id'&&a.value.stringValue===result.runtime+'-native'))}
+  for(const item of records){assert.equal(item.scope.name,'@longhornjs/observability');assert.equal(item.scope.version,'0.1.0');assert.ok(item.resource.attributes.some(a=>a.key==='service.instance.id'&&a.value.stringValue===result.runtime+'-native'))}
   const sums=records.filter(item=>item.metric.name==='fixture_requests_total')
   const root=sums.filter(item=>item.metric.sum.dataPoints[0].attributes.some(a=>a.key==='route'&&a.value.stringValue==='/template/0'))
   assert.deepEqual(root.map(item=>item.metric.sum.dataPoints[0].asDouble),[1,11])

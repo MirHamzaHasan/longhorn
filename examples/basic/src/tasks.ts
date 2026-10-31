@@ -1,10 +1,10 @@
-import { token } from '@longhorn/container'
-import { EventDispatchError } from '@longhorn/events'
-import type { EventBus, EventType } from '@longhorn/events'
-import type { Logger } from '@longhorn/logger'
+import { token } from '@longhornjs/container'
+import { EventDispatchError } from '@longhornjs/events'
+import type { EventBus, EventType } from '@longhornjs/events'
+import type { Logger } from '@longhornjs/logger'
 import { TaskCreated, TaskDeleted, TaskUpdated } from './task-events.js'
-import { CacheClosedError, CacheStoreError } from '@longhorn/cache'
-import type { Cache } from '@longhorn/cache'
+import { CacheClosedError, CacheStoreError } from '@longhornjs/cache'
+import type { Cache } from '@longhornjs/cache'
 
 export type Task = {
   readonly id: string

@@ -1,5 +1,5 @@
 import { expect, it } from 'vitest'
-import { loadConfig } from '@longhorn/config'
+import { loadConfig } from '@longhornjs/config'
 import { createApp } from './app.js'
 import { AppSettings, configSchema } from './config.js'
 

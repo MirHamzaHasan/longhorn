@@ -1,6 +1,6 @@
-import{createD1}from'@longhorn/workers/d1'
-import type{D1Binding}from'@longhorn/workers/d1'
-import{migrateSqliteBatch}from'@longhorn/database/batch'
+import{createD1}from'@longhornjs/workers/d1'
+import type{D1Binding}from'@longhornjs/workers/d1'
+import{migrateSqliteBatch}from'@longhornjs/database/batch'
 import{migrations}from'./schema.js'
 /** Trusted deployment-only worker, called privately by local tooling. Never routed by the application. */
 export default{async fetch(_request:Request,bindings:{DB:D1Binding}):Promise<Response>{

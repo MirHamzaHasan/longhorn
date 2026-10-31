@@ -1,4 +1,4 @@
-import type { Longhorn } from '@longhorn/core'
+import type { Longhorn } from '@longhornjs/core'
 export type ConsoleAssets={readonly script:string;readonly style:string}
 const document=(passwordChanges:boolean,sessionControls:boolean,sessionInventory:boolean)=>`<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>LongHorn Console</title><link rel="stylesheet" href="/console/app.css"><script type="module" src="/console/app.js"></script></head>

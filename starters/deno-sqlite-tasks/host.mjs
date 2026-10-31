@@ -5,7 +5,7 @@ import { createRequire } from 'node:module'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { parseEnv } from 'node:util'
-import { ConfigError, loadConfig } from '@longhorn/config'
+import { ConfigError, loadConfig } from '@longhornjs/config'
 
 const require = createRequire(import.meta.url)
 export const binary = join(dirname(require.resolve('deno-runtime/package.json')), process.platform === 'win32' ? 'deno.exe' : 'deno')

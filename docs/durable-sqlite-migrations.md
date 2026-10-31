@@ -1,6 +1,6 @@
 # Durable Object SQL migrations
 
-Owner: `@longhorn/database` migration coordinator with the
+Owner: `@longhornjs/database` migration coordinator with the
 [Durable SQLite provider](workers-durable-sqlite.md). Connects the Object's private
 schema to [application startup](lifecycle.md), [queues](workers-durable-queues.md)
 and [schedule storage](workers-durable-scheduler.md).

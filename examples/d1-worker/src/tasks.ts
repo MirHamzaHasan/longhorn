@@ -1,5 +1,5 @@
-import type{BatchDatabase,SqlRow,SqlStatement}from'@longhorn/database'
-import type{BatchIdempotency}from'@longhorn/idempotency/batch-sqlite'
+import type{BatchDatabase,SqlRow,SqlStatement}from'@longhornjs/database'
+import type{BatchIdempotency}from'@longhornjs/idempotency/batch-sqlite'
 import{z}from'zod'
 const taskSchema=z.object({id:z.string().uuid(),title:z.string().min(1).max(200),completed:z.boolean(),revision:z.number().int().min(1).max(2147483647),createdAt:z.string().datetime(),updatedAt:z.string().datetime()})
 export type Task=z.output<typeof taskSchema>

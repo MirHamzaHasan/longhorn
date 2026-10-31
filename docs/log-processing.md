@@ -1,7 +1,7 @@
 # Buffered asynchronous log delivery
 
 Owner: `BufferedLogProcessor`, `LogExporter`, `LogEntry` and `LogProcessorError`
-from `@longhorn/observability`. Connects the existing synchronous
+from `@longhornjs/observability`. Connects the existing synchronous
 [logger sink](logger-sinks.md) to an exclusively owned async exporter. The root
 imports no HTTP/native transport. [OTLP logs](otlp-logs.md) is one provider.
 

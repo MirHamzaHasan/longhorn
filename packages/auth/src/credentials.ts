@@ -1,5 +1,5 @@
 import { SessionManager, tokenHash, validSessionToken } from './sessions.js'
-import type { SqlExecutor } from '@longhorn/database'
+import type { SqlExecutor } from '@longhornjs/database'
 import type { Authenticated, AuthStore, AuthUser, CredentialUser, IssuedSession, PasswordHasher, PasswordChangeStore, TransactionalAuthStore, SessionControlStore, SessionControlScope } from './types.js'
 
 export class AuthError extends Error {

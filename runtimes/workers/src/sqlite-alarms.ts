@@ -1,6 +1,6 @@
 import type { DurableObjectStorage } from '@cloudflare/workers-types'
-import type { Database, Migration, SqlExecutor } from '@longhorn/database'
-import type { TaskApplication } from '@longhorn/runtime'
+import type { Database, Migration, SqlExecutor } from '@longhornjs/database'
+import type { TaskApplication } from '@longhornjs/runtime'
 import type { DurableSqliteState } from './durable-sqlite.js'
 import { assertOwner, installCommitHook } from './durable-commit.js'
 

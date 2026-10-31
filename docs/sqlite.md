@@ -1,6 +1,6 @@
 # Node SQLite adapter and persistent tasks
 
-Owner: `@longhorn/node/sqlite`. Uses the local SQLite entrypoint of
+Owner: `@longhornjs/node/sqlite`. Uses the local SQLite entrypoint of
 [`@libsql/client`](https://github.com/tursodatabase/libsql-client-ts) and implements
 the [runtime-neutral database contract](database.md). Native driver and filesystem
 imports stay inside this Node-specific entrypoint; importing shared core or the
@@ -14,7 +14,7 @@ its [separate provider](postgres.md). SQL/placeholder syntax is never rewritten.
 ## Open a connection
 
 ```ts
-import { openSqlite } from '@longhorn/node/sqlite'
+import { openSqlite } from '@longhornjs/node/sqlite'
 
 const database = await openSqlite({ filename: './data/app.sqlite', busyTimeoutMs: 5000 })
 try {

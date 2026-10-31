@@ -4,10 +4,10 @@
   "type": "module",
   "scripts": { "build": "node build.mjs", "typecheck": "tsc --noEmit" },
   "dependencies": {
-    "@longhorn/core": "workspace:*", "@longhorn/container": "workspace:*",
-    "@longhorn/logger": "workspace:*", "@longhorn/observability": "workspace:*",
-    "@longhorn/queue": "workspace:*", "@longhorn/scheduler": "workspace:*",
-    "@longhorn/workers": "workspace:*", "zod": "^4.6.7"
+    "@longhornjs/core": "workspace:*", "@longhornjs/container": "workspace:*",
+    "@longhornjs/logger": "workspace:*", "@longhornjs/observability": "workspace:*",
+    "@longhornjs/queue": "workspace:*", "@longhornjs/scheduler": "workspace:*",
+    "@longhornjs/workers": "workspace:*", "zod": "^4.6.7"
   },
   "devDependencies": { "esbuild": "^0.28.2" }
 }

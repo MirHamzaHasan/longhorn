@@ -1,5 +1,5 @@
-import type { Database } from '@longhorn/database'
-import { postgresPasswordFunctions } from '@longhorn/auth/postgres-passwords'
+import type { Database } from '@longhornjs/database'
+import { postgresPasswordFunctions } from '@longhornjs/auth/postgres-passwords'
 
 /** Trusted deployment tool only; does not create roles or remove existing privileges. */
 export async function grantOperatorRuntime(database: Database, role: string): Promise<void> {

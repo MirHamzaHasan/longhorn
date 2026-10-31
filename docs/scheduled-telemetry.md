@@ -1,6 +1,6 @@
 # Scheduled-event telemetry ownership
 
-Owner: application handler plus `@longhorn/observability`. Connects [explicit tracing](tracing.md),
+Owner: application handler plus `@longhornjs/observability`. Connects [explicit tracing](tracing.md),
 [exporters](memory-traces.md), [scheduled events](workers-scheduled.md), and
 [managed work](application-work.md).
 

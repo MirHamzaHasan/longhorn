@@ -1,4 +1,4 @@
-export const PACKAGE_NAME = '@longhorn/observability'
+export const PACKAGE_NAME = '@longhornjs/observability'
 export { BufferedLogProcessor,LogProcessorError } from './logs.js'
 export type { LogEntry,LogExporter,BufferedLogProcessorOptions } from './logs.js'
 export { Readiness } from './readiness.js'

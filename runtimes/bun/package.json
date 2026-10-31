@@ -1,5 +1,5 @@
 {
-  "name": "@longhorn/bun",
+  "name": "@longhornjs/bun",
   "version": "0.1.0",
   "description": "Native Bun host for LongHorn, with bun:sqlite.",
   "license": "MIT",
@@ -40,8 +40,8 @@
     "dist"
   ],
   "dependencies": {
-    "@longhorn/database": "workspace:*",
-    "@longhorn/runtime": "workspace:*",
-    "@longhorn/auth": "workspace:*"
+    "@longhornjs/database": "workspace:*",
+    "@longhornjs/runtime": "workspace:*",
+    "@longhornjs/auth": "workspace:*"
   }
 }

@@ -1,5 +1,5 @@
 import type { ScheduledController } from '@cloudflare/workers-types'
-import type { ContextualFetchApplication,TaskApplication } from '@longhorn/runtime'
+import type { ContextualFetchApplication,TaskApplication } from '@longhornjs/runtime'
 import { createWorker } from './index.js'
 import type { WorkerExecutionContext,WorkerHandler } from './index.js'
 

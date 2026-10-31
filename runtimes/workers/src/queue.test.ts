@@ -1,5 +1,5 @@
 import { expect, it, vi } from 'vitest'
-import { Longhorn } from '@longhorn/core'
+import { Longhorn } from '@longhornjs/core'
 import { createQueueWorker, QueueBatchError } from './queue.js'
 import type { QueueDecision, WorkerQueueBatch, WorkerQueueMessage } from './queue.js'
 import type { WorkerExecutionContext } from './index.js'

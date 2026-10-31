@@ -1,12 +1,12 @@
 # Owned Node child process
 
-Owner: [@longhorn/node/process](../runtimes/node/src/process.ts). This optional
+Owner: [@longhornjs/node/process](../runtimes/node/src/process.ts). This optional
 entrypoint acquires one trusted direct executable and releases its actual process
 lifetime. The Node HTTP adapter and shared packages do not import it. It connects
 to [application lifecycle](lifecycle.md) through an application's returned cleanup.
 
 ```ts
-import { startProcess } from '@longhorn/node/process'
+import { startProcess } from '@longhornjs/node/process'
 
 app.onStart(async () => {
   const child = await startProcess({

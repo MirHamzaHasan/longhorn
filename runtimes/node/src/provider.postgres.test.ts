@@ -1,6 +1,6 @@
 import { afterEach, expect, it } from 'vitest'
-import { migratePostgres } from '@longhorn/database/postgres'
-import type { SqlExecutor } from '@longhorn/database'
+import { migratePostgres } from '@longhornjs/database/postgres'
+import type { SqlExecutor } from '@longhornjs/database'
 import { openPostgres, PostgresCapacityError, PostgresClosedError, PostgresTransactionAbortedError } from './postgres.js'
 import type { PostgresDatabase, PostgresOptions } from './postgres.js'
 const connectionString = process.env.LONGHORN_PG_TEST_URL

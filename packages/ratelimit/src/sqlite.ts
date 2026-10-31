@@ -1,4 +1,4 @@
-import type { Database,Migration } from '@longhorn/database'
+import type { Database,Migration } from '@longhornjs/database'
 import { SqlRateLimitStore } from './sql.js'
 export const rateLimitMigrations:readonly Migration[]=[{id:'longhorn_rate_limit/001_buckets',statements:[
   `CREATE TABLE longhorn_rate_limit_buckets(

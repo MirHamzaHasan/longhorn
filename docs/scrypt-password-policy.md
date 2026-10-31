@@ -1,6 +1,6 @@
 # Shared scrypt policy
 
-Owner: `packages/auth/src/scrypt.ts`, exported separately as `@longhorn/auth/scrypt`.
+Owner: `packages/auth/src/scrypt.ts`, exported separately as `@longhornjs/auth/scrypt`.
 It implements `PasswordHasher` policy while a trusted runtime adapter supplies
 asynchronous native `derive` and equal-length native `equal` operations.
 It imports no native APIs and does not implement a JavaScript KDF.

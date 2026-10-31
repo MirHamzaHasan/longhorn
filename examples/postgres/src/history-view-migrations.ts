@@ -1,4 +1,4 @@
-import type { Database,Migration } from '@longhorn/database'
+import type { Database,Migration } from '@longhornjs/database'
 /** Append to the complete account operations profile; all earlier statements stay immutable. */
 export const postgresHistoryViewMigrations:readonly Migration[]=[{
   id:'postgres_account_operations/005_history_views',statements:[

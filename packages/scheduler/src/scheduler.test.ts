@@ -1,6 +1,6 @@
 import { expect, it, vi } from 'vitest'
-import { Queue } from '@longhorn/queue'
-import type { StandardSchemaV1 } from '@longhorn/validation'
+import { Queue } from '@longhornjs/queue'
+import type { StandardSchemaV1 } from '@longhornjs/validation'
 import { Scheduler, ScheduleConflictError, ScheduleInputError, SchedulerClosedError, SchedulerStoreError } from './scheduler.js'
 import { SchedulerRunner } from './runner.js'
 import { MemorySchedulerStore } from './memory.js'

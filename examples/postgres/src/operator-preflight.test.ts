@@ -1,5 +1,5 @@
 import { beforeEach,expect,it,vi } from 'vitest'
-import type { Database } from '@longhorn/database'
+import type { Database } from '@longhornjs/database'
 import type { OperatorConfig } from './operator-config.js'
 import { checkOperatorApplication } from './operator-preflight.js'
 import { checkPostgresTables } from './postgres-readiness.js'

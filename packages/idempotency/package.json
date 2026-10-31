@@ -1,5 +1,5 @@
 {
-  "name": "@longhorn/idempotency",
+  "name": "@longhornjs/idempotency",
   "version": "0.1.0",
   "description": "Safe retries with saved replies for LongHorn.",
   "license": "MIT",
@@ -41,8 +41,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@longhorn/database": "workspace:*",
-    "@longhorn/runtime": "workspace:*"
+    "@longhornjs/database": "workspace:*",
+    "@longhornjs/runtime": "workspace:*"
   },
   "files": [
     "dist"

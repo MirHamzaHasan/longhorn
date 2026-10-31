@@ -1,5 +1,5 @@
-import { createJsonClient } from '@longhorn/http/client'
-import { createHttpPublisher } from '@longhorn/outbox/http'
+import { createJsonClient } from '@longhornjs/http/client'
+import { createHttpPublisher } from '@longhornjs/outbox/http'
 import { z } from 'zod'
 import type { OperatorConfig } from './operator-config.js'
 import type { AccountOperationsOptions } from './operations.js'

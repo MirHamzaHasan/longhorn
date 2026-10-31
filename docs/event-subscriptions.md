@@ -1,6 +1,6 @@
 # Event subscriptions and lifecycle ownership
 
-Owner: `EventBus.on`, `once`, and `scope` from `@longhorn/events`. Connects typed
+Owner: `EventBus.on`, `once`, and `scope` from `@longhornjs/events`. Connects typed
 [event delivery](events.md) to explicit feature and application lifetimes.
 
 ```ts

@@ -1,6 +1,6 @@
 # PostgreSQL migrations
 
-Owner: `@longhorn/database/postgres` (`migratePostgres`). Connects [SQL transactions](postgres-transactions.md),
+Owner: `@longhornjs/database/postgres` (`migratePostgres`). Connects [SQL transactions](postgres-transactions.md),
 [the Node provider](postgres.md), [roles](postgres-roles.md) and [the example](postgres-example.md).
 The helper imports no Node driver; it requires PostgreSQL transaction/SQL semantics.
 

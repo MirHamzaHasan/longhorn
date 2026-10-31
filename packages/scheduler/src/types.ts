@@ -1,4 +1,4 @@
-import type { PreparedJob } from '@longhorn/queue'
+import type { PreparedJob } from '@longhornjs/queue'
 
 export type ScheduleTiming =
   | { readonly kind: 'once'; readonly at: number }

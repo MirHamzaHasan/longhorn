@@ -1,7 +1,7 @@
 # Managed application work
 
-Owner: `@longhorn/core` (`Longhorn.run`), with the portable `TaskApplication`
-contract in `@longhorn/runtime`. Connects [lifecycle](lifecycle.md) to non-HTTP
+Owner: `@longhornjs/core` (`Longhorn.run`), with the portable `TaskApplication`
+contract in `@longhornjs/runtime`. Connects [lifecycle](lifecycle.md) to non-HTTP
 hosts such as [Worker scheduled events](workers-scheduled.md).
 
 ## API and ownership

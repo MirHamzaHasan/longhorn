@@ -1,6 +1,6 @@
 # Scheduler timing host
 
-Owner: `@longhorn/scheduler` (`SchedulerRunner`). Connects [schedules](scheduler.md)
+Owner: `@longhornjs/scheduler` (`SchedulerRunner`). Connects [schedules](scheduler.md)
 to [application lifecycle](lifecycle.md), [logging](logging.md) and [queue workers](queue-workers.md).
 
 ```ts

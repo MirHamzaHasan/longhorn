@@ -1,5 +1,5 @@
 {
-  "name": "@longhorn/events",
+  "name": "@longhornjs/events",
   "version": "0.1.0",
   "description": "Awaited in-process notifications for LongHorn.",
   "license": "MIT",

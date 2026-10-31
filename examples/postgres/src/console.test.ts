@@ -1,5 +1,5 @@
 import { expect, it } from 'vitest'
-import { Longhorn } from '@longhorn/core'
+import { Longhorn } from '@longhornjs/core'
 import { configureConsole } from './console.js'
 import { createPostgresApp } from './app.js'
 

@@ -1,4 +1,4 @@
-import type { Migration } from '@longhorn/database'
+import type { Migration } from '@longhornjs/database'
 
 /** Append after the complete operations profile; no existing statement/checksum is changed. */
 export const postgresCommandHistoryMigrations: readonly Migration[]=[{

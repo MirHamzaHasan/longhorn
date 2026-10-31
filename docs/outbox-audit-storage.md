@@ -1,7 +1,7 @@
 # Recovery audit schema, upgrades and privileges
 
-Owner: outboxAuditMigrations from `@longhorn/outbox/sqlite` and
-postgresOutboxAuditMigrations from `@longhorn/outbox/postgres`. Connects
+Owner: outboxAuditMigrations from `@longhornjs/outbox/sqlite` and
+postgresOutboxAuditMigrations from `@longhornjs/outbox/postgres`. Connects
 [recovery migrations](outbox-recovery-migrations.md), [audit API](outbox-audit.md),
 [history](outbox-audit-history.md) and [retention](outbox-audit-retention.md).
 

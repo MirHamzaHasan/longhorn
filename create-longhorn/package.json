@@ -25,7 +25,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@longhorn/cli": "workspace:*"
+    "@longhornjs/cli": "workspace:*"
   },
   "bin": {
     "create-longhorn": "./dist/bin.js"

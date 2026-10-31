@@ -1,9 +1,9 @@
 import { Hono } from 'hono'
 import type { Context, Env } from 'hono'
 import { HTTPException } from 'hono/http-exception'
-import type { SqlExecutor } from '@longhorn/database'
+import type { SqlExecutor } from '@longhornjs/database'
 import type { Outbox, DeliveryCursor, RecoveryAuditCursor } from './index.js'
-import { validate } from '@longhorn/validation/hono'
+import { validate } from '@longhornjs/validation/hono'
 import { z } from 'zod'
 
 export type OperationsIdentity = { readonly actor: string }

@@ -22,19 +22,19 @@ try {
   await writeFile(join(source, 'package.json'), JSON.stringify({ name: 'independent-prune-consumer', private: true, type: 'module', packageManager: 'pnpm@12.6.0', dependencies, pnpm: { overrides: dependencies } }, null, 2))
   await writeFile(join(source, 'pnpm-workspace.yaml'), 'packages: []\noverrides:\n' + Object.entries(dependencies).map(([name, value]) => '  "' + name + '": "' + value + '"').join('\n') + '\n')
   await writeFile(join(source, 'proof.mjs'), `import assert from 'node:assert/strict'
-import { PruneWorker } from '@longhorn/runtime/prune-worker'
-import { RateLimiter } from '@longhorn/ratelimit'
-import { RateLimitCleanup } from '@longhorn/ratelimit/cleanup'
-import { MemoryRateLimitStore } from '@longhorn/ratelimit/memory'
-import { IdempotencyCleanup } from '@longhorn/idempotency/cleanup'
+import { PruneWorker } from '@longhornjs/runtime/prune-worker'
+import { RateLimiter } from '@longhornjs/ratelimit'
+import { RateLimitCleanup } from '@longhornjs/ratelimit/cleanup'
+import { MemoryRateLimitStore } from '@longhornjs/ratelimit/memory'
+import { IdempotencyCleanup } from '@longhornjs/idempotency/cleanup'
 let now=100;const limiter=new RateLimiter({scope:'packed',store:new MemoryRateLimitStore(),windowMs:1000,now:()=>now});await limiter.consume('expired');now=1100
 const cleanup=new RateLimitCleanup(limiter,{intervalMs:5});assert.ok(cleanup instanceof PruneWorker);cleanup.start();const end=Date.now()+5000;while(cleanup.snapshot().removed!==1){assert.ok(Date.now()<end);await new Promise(done=>setTimeout(done,1))}await cleanup.close();assert.equal((await limiter.consume('expired')).allowed,true);await limiter.close()
 let runs=0;const previous=new IdempotencyCleanup({prune:async()=>{runs++;return 0}},{intervalMs:5});assert.ok(previous instanceof PruneWorker);previous.start();await new Promise(done=>setTimeout(done,10));await previous.close();assert.ok(runs>=1)
 console.log('Independent packed cleanup exports and shared ownership pass.')
 `)
-  await writeFile(join(source, 'proof.ts'), `import { PruneWorker } from '@longhorn/runtime/prune-worker'
-import { RateLimitCleanup } from '@longhorn/ratelimit/cleanup'
-import { IdempotencyCleanup } from '@longhorn/idempotency/cleanup'
+  await writeFile(join(source, 'proof.ts'), `import { PruneWorker } from '@longhornjs/runtime/prune-worker'
+import { RateLimitCleanup } from '@longhornjs/ratelimit/cleanup'
+import { IdempotencyCleanup } from '@longhornjs/idempotency/cleanup'
 const pruner={prune:async(_limit:number)=>0}
 const owners:PruneWorker[]=[new RateLimitCleanup(pruner),new IdempotencyCleanup(pruner)]
 for(const owner of owners)void owner.close()

@@ -1,5 +1,5 @@
-import type { Database, Migration, SqlExecutor, SqlRow } from '@longhorn/database'
-import { assertTransactionExecutor } from '@longhorn/database/transactions'
+import type { Database, Migration, SqlExecutor, SqlRow } from '@longhornjs/database'
+import { assertTransactionExecutor } from '@longhornjs/database/transactions'
 import type { Claim, FailJob, JobFailure, JobState, NewJob, Ownership, QueueStore, StoredJob } from './types.js'
 
 /** Append to one complete PostgreSQL migration history; the runtime role needs only DML. */

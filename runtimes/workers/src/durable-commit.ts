@@ -1,4 +1,4 @@
-import type { Database, SqlExecutor } from '@longhorn/database'
+import type { Database, SqlExecutor } from '@longhornjs/database'
 
 // Internal runtime composition. Public database callers cannot install arbitrary commit callbacks.
 const owners = new WeakMap<Database, object>()

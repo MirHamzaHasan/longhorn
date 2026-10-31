@@ -24,7 +24,7 @@ it('exports cumulative counters, signed gauges and disjoint histogram buckets wi
   ;(collection.metrics[0]!.series[0] as { value: number }).value=999
   await pending
   const request=calls[0]!,envelope=JSON.parse(String(request.body)).resourceMetrics[0],scope=envelope.scopeMetrics[0]
-  expect(scope.scope).toEqual({ name: '@longhorn/observability',version: '0.1.0' })
+  expect(scope.scope).toEqual({ name: '@longhornjs/observability',version: '0.1.0' })
   expect(envelope.resource.attributes).toContainEqual({ key: 'service.instance.id',value: { stringValue: 'test-instance' } })
   expect(scope.metrics[0].sum).toMatchObject({ aggregationTemporality: 2,isMonotonic: true,dataPoints: [{ asDouble: 3,startTimeUnixNano: '1792760000000000000',timeUnixNano: '1792760000001000000',attributes: [{ key: 'route',value: { stringValue: '/items/:id' } }] }] })
   expect(scope.metrics[1].gauge.dataPoints).toEqual([{ asDouble: -0.5,timeUnixNano: '1792760000001000000',attributes: [] }])

@@ -3,7 +3,7 @@
 Owner: [examples/bun-sqlite](../examples/bun-sqlite/src/index.ts). The Bun host imports
 the existing basic app, configuration, task service, SQL repository, typed events
 and summary cache. Only host/environment/database/listener wiring changes.
-Its production imports do not include `@longhorn/node` or the libSQL driver.
+Its production imports do not include `@longhornjs/node` or the libSQL driver.
 
 ```sh
 pnpm install --frozen-lockfile

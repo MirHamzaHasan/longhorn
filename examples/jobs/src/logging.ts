@@ -1,8 +1,8 @@
-import { createLogger,consoleLogSink,fanoutLogSinks } from '@longhorn/logger'
-import type { LogRecord,LogSink } from '@longhorn/logger'
-import { BufferedLogProcessor } from '@longhorn/observability'
-import type { LogExporter,SpanContext } from '@longhorn/observability'
-import { OtlpHttpLogExporter } from '@longhorn/observability/otlp-logs'
+import { createLogger,consoleLogSink,fanoutLogSinks } from '@longhornjs/logger'
+import type { LogRecord,LogSink } from '@longhornjs/logger'
+import { BufferedLogProcessor } from '@longhornjs/observability'
+import type { LogExporter,SpanContext } from '@longhornjs/observability'
+import { OtlpHttpLogExporter } from '@longhornjs/observability/otlp-logs'
 import type { AppConfig } from './config.js'
 
 const remoteFields=new Set(['app','method','status','durationMs','traceId','spanId','traceSampled','component','operation'])

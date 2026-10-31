@@ -1,5 +1,5 @@
 {
-  "name": "@longhorn/database",
+  "name": "@longhornjs/database",
   "version": "0.1.0",
   "description": "SQL, transactions and checksummed migrations for LongHorn.",
   "license": "MIT",

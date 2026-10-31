@@ -1,6 +1,6 @@
 # Durable SQLite transactions and resource ownership
 
-Owner: `@longhorn/workers/durable-sqlite`. Connects the [provider](workers-durable-sqlite.md)
+Owner: `@longhornjs/workers/durable-sqlite`. Connects the [provider](workers-durable-sqlite.md)
 to core [lifecycle](lifecycle.md), the [queue ownership protocol](workers-durable-queues.md)
 and [atomic schedule dispatch](workers-durable-scheduler.md).
 

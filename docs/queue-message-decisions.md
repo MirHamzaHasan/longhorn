@@ -1,6 +1,6 @@
 # Queue message acknowledgement and retry decisions
 
-Owner: `@longhorn/workers/queue`. Connects [queue events](workers-queue-events.md),
+Owner: `@longhornjs/workers/queue`. Connects [queue events](workers-queue-events.md),
 application validation/effects, [batch completion](queue-batch-lifecycle.md),
 and the platform's own retry/dead-letter policy.
 

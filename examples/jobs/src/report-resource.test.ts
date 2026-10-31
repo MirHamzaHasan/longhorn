@@ -2,7 +2,7 @@ import { expect, it } from 'vitest'
 import { createJobsApp, ReportCompute, ReportDatabase, ReportQueue } from './app.js'
 import { configSchema } from './config.js'
 import { reportHandler } from './reports.js'
-import { openSqlite } from '@longhorn/node/sqlite'
+import { openSqlite } from '@longhornjs/node/sqlite'
 
 const deferred = () => { let resolve!: () => void; const promise = new Promise<void>(r => { resolve = r }); return { promise, resolve } }
 it('acquires computation asynchronously and drains queue work before computation and database cleanup', async () => {

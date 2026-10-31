@@ -1,6 +1,6 @@
 # Application lifecycle
 
-Owner: `@longhorn/core`. Connects to [runtime listeners](runtimes.md),
+Owner: `@longhornjs/core`. Connects to [runtime listeners](runtimes.md),
 [DI services](dependency-injection.md), [configuration](configuration.md), and
 [logging](logging.md).
 

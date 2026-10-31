@@ -1,7 +1,7 @@
 # Atomic SQL-to-alarm wakeup planning
 
-Owner: `@longhorn/workers/sqlite-alarms` with an internal commit extension in
-`@longhorn/workers/durable-sqlite`. Connects [schedule cursors](workers-durable-scheduler.md),
+Owner: `@longhornjs/workers/sqlite-alarms` with an internal commit extension in
+`@longhornjs/workers/durable-sqlite`. Connects [schedule cursors](workers-durable-scheduler.md),
 [queue ownership](workers-durable-queues.md), [schema history](alarm-migrations.md)
 and [Object alarm lifetime](workers-sqlite-alarms.md).
 

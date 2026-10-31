@@ -1,4 +1,4 @@
-import type { Database } from '@longhorn/database'
+import type { Database } from '@longhornjs/database'
 
 /** This host must never run with provisioning or audit-maintenance authority. */
 export async function checkOperatorRuntimeRole(database: Database): Promise<void> {

@@ -1,4 +1,4 @@
-import type { Database, Migration } from '@longhorn/database'
+import type { Database, Migration } from '@longhornjs/database'
 import { SqlIdempotencyStore } from './sql.js'
 
 /** Append to the application's complete ordered history. Object SQL uses this same schema. */

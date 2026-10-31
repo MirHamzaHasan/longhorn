@@ -17,7 +17,7 @@ The framework builds higher-level capabilities around **Web Standards** and **Ho
 
 ```
 longhorn/
-├── packages/              # Modular @longhorn/* framework packages
+├── packages/              # Modular @longhornjs/* framework packages
 │   ├── core/              # Framework lifecycle, runtime target registry & contracts
 │   ├── http/              # Web Standards HTTP abstractions & Hono bindings
 │   ├── config/            # Configuration management & environment loading
@@ -37,15 +37,15 @@ longhorn/
 │   └── runtime/           # Base runtime contracts & adapter interfaces
 │
 ├── runtimes/              # JavaScript runtime adapters
-│   ├── node/              # Node.js runtime adapter (@longhorn/node)
-│   ├── bun/               # Bun runtime adapter (@longhorn/bun)
-│   ├── deno/              # Deno runtime adapter (@longhorn/deno)
-│   └── workers/           # Cloudflare Workers / Edge adapter (@longhorn/workers)
+│   ├── node/              # Node.js runtime adapter (@longhornjs/node)
+│   ├── bun/               # Bun runtime adapter (@longhornjs/bun)
+│   ├── deno/              # Deno runtime adapter (@longhornjs/deno)
+│   └── workers/           # Cloudflare Workers / Edge adapter (@longhornjs/workers)
 │
 ├── native/                # Optional native services space
 │   └── rust/              # Optional Rust report service (not a JS runtime adapter)
 │
-├── cli/                   # @longhorn/cli command-line interface
+├── cli/                   # @longhornjs/cli command-line interface
 ├── create-longhorn/       # Project generation entrypoint (local, unpublished)
 ├── examples/              # Usage examples & starter templates
 │   ├── basic/             # Runnable Hono + DI tasks API on Node.js
@@ -67,10 +67,10 @@ Longhorn enforces strict unidirectional dependency flow:
                   Application Code
                         │
                         ▼
-            Longhorn Framework Packages (@longhorn/*)
+            Longhorn Framework Packages (@longhornjs/*)
                         │
                         ▼
-            HTTP / Runtime Abstractions (@longhorn/http, @longhorn/runtime)
+            HTTP / Runtime Abstractions (@longhornjs/http, @longhornjs/runtime)
                         │
                         ▼
             Hono / Web Standards (Request, Response, Fetch)
@@ -80,7 +80,7 @@ Longhorn enforces strict unidirectional dependency flow:
 ```
 
 ### Critical Rules for Contributors:
-1. **Runtime Isolation**: Framework packages in `packages/*` (especially `@longhorn/core` and `@longhorn/http`) MUST NOT directly depend on Node.js-specific modules (e.g. `node:fs`, `node:net`, `node:buffer`). All environment-specific interactions must be mediated via runtime adapters in `runtimes/*`.
+1. **Runtime Isolation**: Framework packages in `packages/*` (especially `@longhornjs/core` and `@longhornjs/http`) MUST NOT directly depend on Node.js-specific modules (e.g. `node:fs`, `node:net`, `node:buffer`). All environment-specific interactions must be mediated via runtime adapters in `runtimes/*`.
 2. **Web Standards First**: All HTTP primitives should be built on standard `Request`, `Response`, `Headers`, and `Fetch API` implementations.
 3. **Hono Boundary**: Hono is our HTTP foundation. Longhorn builds higher-level framework functionality around Hono without rewriting or duplicating Hono.
 4. **Rust / Native Boundary**: Optional native services live under `native/rust/`. They connect through explicit portable protocols and are not JS runtime adapters.
@@ -89,22 +89,22 @@ Longhorn enforces strict unidirectional dependency flow:
 
 ## 3. Implemented HTTP Slice
 
-`@longhorn/http` provides `createHttpApp()`, which creates a real Hono application
+`@longhornjs/http` provides `createHttpApp()`, which creates a real Hono application
 with JSON 404/500 defaults. Explicit Hono `HTTPException` responses retain their
 status, body, and headers; message-only exceptions use JSON. Unexpected errors are logged server-side; the client gets
 a generic 500 response. Applications can replace Hono's error and not-found handlers.
 
-`@longhorn/core` composes that Hono application with an application-scoped
-`@longhorn/container` instance. Routes and middleware remain native Hono APIs under
+`@longhornjs/core` composes that Hono application with an application-scoped
+`@longhornjs/container` instance. Routes and middleware remain native Hono APIs under
 `app.http`; services are available through `c.get('container')`. `app.fetch` exposes
 the bound Web Standard request handler, including typed environment bindings.
 
-`@longhorn/runtime` defines `FetchApplication`, `ServeOptions`, `ServerHandle`, and
+`@longhornjs/runtime` defines `FetchApplication`, `ServeOptions`, `ServerHandle`, and
 `RuntimeAdapter` without importing a particular JavaScript runtime. `app.listen()`
 starts application resources, then delegates to an adapter supplied by application
 code. Core never imports an adapter.
 
-`@longhorn/node` implements this boundary using `@hono/node-server`. It resolves
+`@longhornjs/node` implements this boundary using `@hono/node-server`. It resolves
 startup after the socket binds, rejects startup errors, supports an ephemeral port
 with `port: 0`, and returns the actual address and an idempotent async `close()`.
 The Node adapter accepts the portable request-only Fetch contract; Node-specific
@@ -131,13 +131,13 @@ resource integration described below; memory stores are explicit test fixtures.
 
 ## 4. Schema Validation
 
-`@longhorn/validation` provides runtime-neutral `parse()` and `safeParse()` helpers
+`@longhornjs/validation` provides runtime-neutral `parse()` and `safeParse()` helpers
 using Standard Schema. They accept synchronous or asynchronous schemas and retain
 inferred output types, including transformations. The root entrypoint imports no
 HTTP implementation. Schema failures carry normalized message/path issues;
 exceptions from schema implementations propagate as application errors.
 
-The `@longhorn/validation/hono` entrypoint exposes `validate(target, schema)` as a
+The `@longhornjs/validation/hono` entrypoint exposes `validate(target, schema)` as a
 thin wrapper around Hono's Standard Schema validator. Hono handles parsing and
 typed `c.req.valid()` output. LongHorn formats schema failures as status 400 JSON
 with `error`, `target`, and normalized `issues`, without returning the raw input or
@@ -153,13 +153,13 @@ opt into validation middleware on individual routes. See [validation](validation
 
 ## 5. Typed Configuration
 
-`@longhorn/config` merges supplied records and validates them through
-`@longhorn/validation` using Standard Schema. It contains no runtime-specific imports.
+`@longhornjs/config` merges supplied records and validates them through
+`@longhornjs/validation` using Standard Schema. It contains no runtime-specific imports.
 Later defined keys take precedence, schema defaults and transformations produce typed
 output, and the top-level result is frozen. Failed validation throws `ConfigError`
 with normalized issues and a field-only summary suitable for startup diagnostics.
 
-`@longhorn/node/config` snapshots process environment values and optionally reads `.env`
+`@longhornjs/node/config` snapshots process environment values and optionally reads `.env`
 files using Node's native parser. Files merge in order; environment values win. It
 does not mutate `process.env`. This separate entrypoint keeps file and environment
 access in the runtime adapter. Node.js 20.19.0+ is the supported Node baseline.
@@ -180,7 +180,7 @@ and runs stop hooks. Failed startup rolls back acquired resources. Errors are
 retained while cleanup continues. Process signals stay in the host entrypoint.
 See [lifecycle](lifecycle.md).
 
-`@longhorn/logger` supplies JSON-safe structured records, levels, child bindings,
+`@longhornjs/logger` supplies JSON-safe structured records, levels, child bindings,
 redaction, and pluggable synchronous sinks. Its Hono entrypoint attaches a request
 ID and child logger. Core connects HTTP errors to that logger and exposes typed
 request context. The default core logger is silent; the example explicitly enables
@@ -194,12 +194,12 @@ The [roadmap](roadmap.md) tracks remaining integrations and next milestones.
 
 ## 7. Database and Persistent Application Resources
 
-`@longhorn/database` defines SQL values, statements, results, executors, transactions,
+`@longhornjs/database` defines SQL values, statements, results, executors, transactions,
 and async connection cleanup. It imports no native driver or runtime API. Its first
 migration runner verifies ordered, checksummed migration history and applies pending
 SQLite-compatible SQL and metadata in a write transaction.
 
-`@longhorn/node/sqlite` implements the contract with the local `@libsql/client`
+`@longhornjs/node/sqlite` implements the contract with the local `@libsql/client`
 driver. File and native imports stay in that separate Node entrypoint. It enables
 foreign keys, WAL, and full synchronization, coordinates operations across local
 handles, and waits for accepted work before closing.
@@ -216,11 +216,11 @@ See [database](database.md), [migrations](migrations.md), and [SQLite](sqlite.md
 
 ## 8. Native Runtime Portability
 
-`@longhorn/bun` and `@longhorn/deno` implement native listener adapters. Shared option
+`@longhornjs/bun` and `@longhornjs/deno` implement native listener adapters. Shared option
 validation keeps defaults and port checks consistent across Node, Bun, and Deno.
 Native type globals remain isolated in adapter type projects.
 
-`@longhorn/workers` wraps contextual Fetch dispatch, forwarding bindings/context per
+`@longhornjs/workers` wraps contextual Fetch dispatch, forwarding bindings/context per
 request without owning a socket or changing global environment state. Core starts
 shared apps lazily; Workers owns isolate and background lifetimes. Node-native
 storage/file adapters do not enter the Worker production graph.
@@ -234,7 +234,7 @@ verify transport, lifecycle, bindings, and background work. See [Bun](bun.md),
 
 ## 9. Development CLI and Project Distribution
 
-`@longhorn/cli` owns argument handling, project script delegation, and one staged
+`@longhornjs/cli` owns argument handling, project script delegation, and one staged
 project generator. `create-longhorn` is a thin creation entrypoint over that API.
 These are Node development tools, outside the runtime-neutral production packages.
 
@@ -255,18 +255,18 @@ and [starter templates](starter-templates.md).
 
 ## 10. Credentials, Sessions, and Authorization
 
-`@longhorn/auth` composes account, password, session, and login-attempt contracts.
+`@longhornjs/auth` composes account, password, session, and login-attempt contracts.
 Shared code creates opaque tokens with Web Crypto and stores only hashes. It owns
 absolute session expiry, rotation, revocation, normalized username/password policy,
 and account-based throttling. Core does not enable auth automatically.
 
-`@longhorn/node/passwords`, `@longhorn/bun/passwords` and `@longhorn/deno/passwords`
-supply bounded asynchronous native scrypt through `@longhorn/auth/scrypt` policy.
-`@longhorn/auth/sqlite` supplies account/session/attempt tables and atomic operations
+`@longhornjs/node/passwords`, `@longhornjs/bun/passwords` and `@longhornjs/deno/passwords`
+supply bounded asynchronous native scrypt through `@longhornjs/auth/scrypt` policy.
+`@longhornjs/auth/sqlite` supplies account/session/attempt tables and atomic operations
 over the SQL contract; application code composes its exported migrations with the
 rest of the database history. Connection ownership stays with lifecycle hooks.
 
-`@longhorn/auth/hono` supplies cookie/session middleware, exact source-origin checks
+`@longhornjs/auth/hono` supplies cookie/session middleware, exact source-origin checks
 for unsafe methods, authenticated/role/asynchronous policy guards, and cookie
 delivery helpers. A typed Hono subrouter composes its context with core's DI context.
 Roles reload from storage per request. Application queries still enforce resource
@@ -285,7 +285,7 @@ and bounded private-note reads are recorded in [section 47](#47-native-password-
 
 ## 11. Typed Events and Subscription Ownership
 
-`@longhorn/events` owns symbol-identified typed definitions, ordered asynchronous
+`@longhornjs/events` owns symbol-identified typed definitions, ordered asynchronous
 dispatch, aggregated listener failures, correlation metadata, and subscription
 lifetimes. It imports no runtime, core, logger, database, or HTTP implementation.
 Applications supply a bus through DI and register cleanup after the resources its
@@ -306,13 +306,13 @@ and expose process/isolate observations at `/events`. See [task events](task-eve
 
 ## 12. Typed Caching and Derived Views
 
-`@longhorn/cache` coordinates one typed value schema over an exclusively owned
+`@longhornjs/cache` coordinates one typed value schema over an exclusively owned
 store. It distinguishes misses from cached undefined, shares concurrent loading,
 copies values, and fences older flights after delete/clear/set. Per-key store queues
 and a clear barrier order provider I/O without serializing independent backend loads.
 Errors remain explicit, and cleanup drains accepted work before closing the store.
 
-`@longhorn/cache/memory` supplies bounded LRU storage with lazy TTL expiry and no
+`@longhornjs/cache/memory` supplies bounded LRU storage with lazy TTL expiry and no
 background timers/native API. Cache/store ownership is per process or isolate.
 The optional Redis adapter below shares retained values while coordinator load
 fences remain local; stronger distributed invalidation needs its own protocol.
@@ -332,7 +332,7 @@ See [cache](cache.md), [memory storage](memory-cache.md), and
 
 ## 13. Durable Jobs and Background Workers
 
-`@longhorn/queue` coordinates a versioned queue name and Standard Schema JSON
+`@longhornjs/queue` coordinates a versioned queue name and Standard Schema JSON
 payload over an atomic QueueStore. It separates metadata from stored data/tokens,
 supports delay/retry budgets, renews running leases, and conditionally acknowledges
 using the current claim token. Expired attempts recover on the next claim, and
@@ -359,7 +359,7 @@ additional providers are later work. See [queues](queues.md),
 
 ## 14. Durable Scheduling and Queue Dispatch
 
-`@longhorn/scheduler` persists one-time, fixed-interval and numeric five-field UTC
+`@longhornjs/scheduler` persists one-time, fixed-interval and numeric five-field UTC
 cron definitions, with stable identities, explicit latest/catch-up missed policies,
 bounded dispatch batches and cancellation. Queue.prepare supplies typed, validated
 JSON snapshots. Durable state belongs to the provider rather than the host's timer.
@@ -383,7 +383,7 @@ See [schedules](scheduler.md), [cron](cron.md), [timing hosts](scheduler-runner.
 
 ## 15. Portable Observability
 
-`@longhorn/observability` separates explicit Readiness checks, a structural Meter
+`@longhornjs/observability` separates explicit Readiness checks, a structural Meter
 interface/bounded registry, and TraceProvider/Tracer/exporter contracts. The root
 has no HTTP, Node or backend SDK import. Separate Hono, Prometheus-text and memory
 export entrypoints keep adapters opt-in. Core does not acquire a telemetry dependency.
@@ -416,7 +416,7 @@ The SQL contract now accepts boolean values and optionally identifies sqlite or
 postgres dialects. SQLite maps boolean binds to integer values; PostgreSQL retains
 booleans and preserves bigint/exact numeric/JSON/time values without lossy object
 conversion. Native SQL/parameters remain the provider's responsibility. Shared core
-does not import pg; @longhorn/node/postgres owns its pool/socket/TLS entrypoint.
+does not import pg; @longhornjs/node/postgres owns its pool/socket/TLS entrypoint.
 
 The PostgreSQL adapter bounds pool and admitted work, leases one connection per
 callback transaction, drains statements before commit/rollback, rejects reentrancy,
@@ -437,7 +437,7 @@ See [provider](postgres.md), [transactions](postgres-transactions.md),
 
 ## 17. PostgreSQL Background Work
 
-The isolated @longhorn/queue/postgres and @longhorn/scheduler/postgres entrypoints
+The isolated @longhornjs/queue/postgres and @longhornjs/scheduler/postgres entrypoints
 borrow the Database contract and import no native driver. PostgreSQL uses constrained
 bigint millisecond state, partial due/expiry indexes and row locks with SKIP LOCKED.
 Queue claims recover bounded expired batches, assign tokens atomically, and release
@@ -459,7 +459,7 @@ See [queues](queue-postgres.md), [schedules](scheduler-postgres.md),
 
 ## 18. PostgreSQL Accounts and Private Data
 
-The @longhorn/auth/postgres entrypoint supplies CredentialStore, SessionStore and
+The @longhornjs/auth/postgres entrypoint supplies CredentialStore, SessionStore and
 LoginAttemptStore through the existing AuthStore contract. It imports no native
 driver or HTTP implementation. Fixed schemas use normalized unique handles, JSONB
 roles, constrained hash-only sessions, foreign keys and indexed expiry/user paths.
@@ -483,7 +483,7 @@ See [credentials](auth-postgres.md), [sessions](postgres-sessions.md),
 
 ## 19. OTLP/HTTP Collector Delivery
 
-The @longhorn/observability/otlp entrypoint implements the existing SpanExporter
+The @longhornjs/observability/otlp entrypoint implements the existing SpanExporter
 boundary using Web Standard Fetch and JSON. Core/root tracing imports no transport.
 Tracer still owns bounded recording/queue/batching and exclusive exporter lifetime;
 the transport admits one batch, snapshots bytes and bounds HTTP attempts, total
@@ -511,7 +511,7 @@ It shares startup with Fetch/listen, preserves values/errors and owns the actual
 callback until settlement. Shutdown drains HTTP and managed work before releasing
 resources. No synthetic request, implicit context or runtime import is required.
 
-The isolated @longhorn/workers/scheduled entrypoint borrows that capability and
+The isolated @longhornjs/workers/scheduled entrypoint borrows that capability and
 retains the existing Fetch adapter. Each scheduled invocation forwards the original
 controller, bindings and execution context; one completion Promise is registered
 with waitUntil before user/startup work and returned to the platform. Instance-local
@@ -537,7 +537,7 @@ See [managed work](application-work.md), [adapter](workers-scheduled.md),
 
 ## 21. Durable Object SQLite and Bounded Report Processing
 
-The @longhorn/workers/durable-sqlite entrypoint adapts a SQLite-backed Object's
+The @longhornjs/workers/durable-sqlite entrypoint adapts a SQLite-backed Object's
 storage to Database without a Node driver. Root operations share a per-storage
 serial gate with bounded admission. Native async transactions own callback SQL;
 the Object input gate prevents other events from entering an unfinished operation.
@@ -571,7 +571,7 @@ shutdown. See [provider](workers-durable-sqlite.md),
 
 ## 22. Platform Queue Events and Explicit Message Decisions
 
-The @longhorn/workers/queue entrypoint adapts native broker batches to TaskApplication
+The @longhornjs/workers/queue entrypoint adapts native broker batches to TaskApplication
 while preserving contextual Fetch. One registered/returned completion Promise owns
 shared startup, a bounded per-batch message pool and an optional awaited afterBatch
 hook. Original batch/message/bindings/context objects remain platform-owned; only
@@ -605,7 +605,7 @@ See [adapter](workers-queue-events.md), [decisions](queue-message-decisions.md),
 
 ## 23. Durable Object Alarm Projection and Recovery
 
-The @longhorn/workers/sqlite-alarms entrypoint owns one alarm for configured queues
+The @longhornjs/workers/sqlite-alarms entrypoint owns one alarm for configured queues
 inside one Object. It follows active schedule cursors, pending availability and
 running lease expiry. Starting it after complete migrations installs an internal
 per-storage commit extension in the existing Object SQL provider. Every successful
@@ -636,7 +636,7 @@ See [host](workers-sqlite-alarms.md), [planning](alarm-wakeup-planning.md),
 
 ## 24. Managed Transactions and Typed Job Publishing
 
-The @longhorn/database/transactions entrypoint registers immutable executor
+The @longhornjs/database/transactions entrypoint registers immutable executor
 capabilities for an exact database owner without changing the SqlExecutor callback
 shape. Public callback executors expire at callback completion. Accepted transaction
 participants retain separate checked executors while providers drain preparation/
@@ -644,7 +644,7 @@ SQL before commit; their executors expire on settlement. Abort prevents later
 participant writes and joins actual work before rollback. Accepted publication
 failure rejects completion even if caught, preserving original failure values.
 
-The @longhorn/queue/transaction entrypoint reuses Queue schema/JSON/size/attempt/
+The @longhornjs/queue/transaction entrypoint reuses Queue schema/JSON/size/attempt/
 delay coordination through an internal admission bridge. SQLite/PostgreSQL stores
 opt in with an ownership-checked insertion capability. Root/cloned/expired/foreign
 executors and unsupported stores cannot silently fall back to independent enqueue.
@@ -669,7 +669,7 @@ broker outbox delivery remain separate guarantees. See [API](transaction-publish
 
 ## 25. Durable Request Idempotency
 
-`@longhorn/idempotency` composes the Database transaction contract with bounded
+`@longhornjs/idempotency` composes the Database transaction contract with bounded
 JSON input fingerprints and saved JSON results. Server-derived scope plus client
 key identifies an operation. Explicit SQLite/PostgreSQL stores take native UPSERT
 ownership before checking expiry/fingerprint, then execute business writes and
@@ -698,7 +698,7 @@ See [API](idempotency.md), [JSON](idempotency-json.md), [storage/retention](idem
 
 ## 26. Transactional Outgoing Broker Messages
 
-`@longhorn/outbox` composes the existing Queue transaction, schema, lease, retry
+`@longhornjs/outbox` composes the existing Queue transaction, schema, lease, retry
 and worker engine under a dedicated prefixed queue. Explicit SQLite/PostgreSQL
 stores add bounded terminal cleanup and an index without duplicating job tables
 or native claim logic. Business/request/outgoing writes share the managed caller
@@ -907,14 +907,14 @@ checksum after successful native verification. See [CI artifacts](ci-review-arti
 
 ## 33. Redis Cache Storage and Explicit Serialization
 
-`@longhorn/cache/redis` implements the existing CacheStore contract over a portable,
+`@longhornjs/cache/redis` implements the existing CacheStore contract over a portable,
 exclusively owned command client. Namespaces isolate keys and bounded SCAN/UNLINK
 clear. Redis 7+ Lua keeps value/absolute expiry together and rejects expiry overflow
-before replacement. `@longhorn/cache/json` adds a versioned bounded envelope and
+before replacement. `@longhornjs/cache/json` adds a versioned bounded envelope and
 application-supplied synchronous/asynchronous schema validation; memory storage
 retains its existing copy behavior without acquiring a serialization requirement.
 
-`@longhorn/node/redis` owns actual authenticated TCP/TLS. Native deadlines destroy
+`@longhornjs/node/redis` owns actual authenticated TCP/TLS. Native deadlines destroy
 the connection, admission is bounded, and offline queues/reconnect/replay are
 disabled. Close drains accepted work before releasing the transport. A timeout
 cannot roll back a server effect committed before acknowledgement loss.
@@ -941,7 +941,7 @@ It splits by point count, sends batches serially and coalesces demand during act
 I/O into a fresh collection. Close stops admission/timers and includes final values
 before releasing the exporter. Source totals are not reset by export or failure.
 
-`@longhorn/observability/otlp-metrics` maps monotonic counters, signed gauges and
+`@longhornjs/observability/otlp-metrics` maps monotonic counters, signed gauges and
 cumulative histogram buckets into bounded OTLP/HTTP JSON. Traces/metrics share one
 delivery implementation while acknowledgements/errors retain their signal counts.
 The reports app opts into metrics independently of traces, refreshes background
@@ -955,7 +955,7 @@ outage/recovery, actual Fetch cancellation and final export. See [reader](metric
 
 ## 35. Synchronous Logging and Owned Remote Delivery
 
-`@longhorn/logger` keeps its existing synchronous record, redaction and console
+`@longhornjs/logger` keeps its existing synchronous record, redaction and console
 behavior. Explicit fanout composes readonly normalized records across isolated
 sinks. Observability consumes the logger's record type, preserving a one-way
 dependency: the logger/core never import an exporter. A BufferedLogProcessor
@@ -963,7 +963,7 @@ snapshots entries and observed time, bounds count/normalized bytes including act
 work, serializes asynchronous export and drops newest overflow without blocking
 business work. It owns final drain and one exporter; no disk spool is implied.
 
-`@longhorn/observability/otlp-logs` encodes severity, event/observed nanoseconds,
+`@longhornjs/observability/otlp-logs` encodes severity, event/observed nanoseconds,
 recursive AnyValue attributes and explicit span context. The existing HTTP engine
 adds log-specific partial acknowledgements while keeping bounded retries, byte
 limits, native cancellation and sanitized errors. A lost reply cannot establish
@@ -1191,7 +1191,7 @@ See [service](rust-reports.md), [client](native-report-client.md),
 
 ## 44. Optional Node Process Ownership and Asynchronous Report Resources
 
-The isolated @longhorn/node/process entrypoint owns one trusted direct executable
+The isolated @longhornjs/node/process entrypoint owns one trusted direct executable
 through explicit argv/environment snapshots, bounded UTF-8 readiness frames and
 lifetime output, startup cancellation and actual exit. Graceful close escalates
 only after its budget and reports forced termination as failure. It does not put
@@ -1218,7 +1218,7 @@ See [process](managed-node-process.md), [DI](report-computer-resources.md),
 
 ## 45. Native Deno SQLite Behind the Existing Database Contract
 
-The optional @longhorn/deno/sqlite entrypoint uses Deno's built-in node:sqlite
+The optional @longhornjs/deno/sqlite entrypoint uses Deno's built-in node:sqlite
 driver without importing native SQL into shared packages or the HTTP adapter.
 The adapter snapshots values, validates exact SQLite slot arity and plans native
 named/positional bindings without rewriting SQL or column names. It reads int64
@@ -1679,7 +1679,7 @@ and [native proof](operator-preflight-testing.md).
 
 ## 66. Explicit Request Budgets over Owned Store Reservations
 
-The independent @longhorn/ratelimit package exposes fixed per-subject windows,
+The independent @longhornjs/ratelimit package exposes fixed per-subject windows,
 scoped SHA-256 keys and copied policy bounds. Memory keeps a bounded indexed
 expiry heap and never evicts a live limit. Managed SQLite/PostgreSQL stores acquire
 native write ownership before sampling time, reject active policy conflicts and

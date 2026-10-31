@@ -1,6 +1,6 @@
 # Authorization and resource ownership
 
-Owner: guards returned by `cookieAuth` from `@longhorn/auth/hono`, plus application
+Owner: guards returned by `cookieAuth` from `@longhornjs/auth/hono`, plus application
 resource queries. Connects a fresh authenticated principal to Hono middleware and
 the application's own data policy. It does not infer permissions from route names.
 

@@ -1,6 +1,6 @@
 # SQLite session inventory store
 
-Owner: optional `@longhorn/auth/sqlite-session-inventory`. Connects
+Owner: optional `@longhornjs/auth/sqlite-session-inventory`. Connects
 [portable service](session-inventory.md), [schema](session-inventory-schema.md),
 [SQL transactions](database.md) and [native proof](session-inventory-testing.md).
 

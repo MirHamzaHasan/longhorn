@@ -1,11 +1,11 @@
 # Typed application events
 
-Owner: `@longhorn/events`. A dependency-free, runtime-neutral event bus for application
+Owner: `@longhornjs/events`. A dependency-free, runtime-neutral event bus for application
 features. Connect it through [DI](dependency-injection.md) and own its shutdown through
 [lifecycle](lifecycle.md). Core does not create a hidden global bus.
 
 ```ts
-import { defineEvent, EventBus, EventDispatchError } from '@longhorn/events'
+import { defineEvent, EventBus, EventDispatchError } from '@longhornjs/events'
 
 const TaskCreated = defineEvent<{ readonly id: string }>('task.created')
 const events = new EventBus()

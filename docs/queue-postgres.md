@@ -1,13 +1,13 @@
 # PostgreSQL queue storage
 
-Owner: `@longhorn/queue/postgres`. Connects the existing [Queue contract](queues.md),
+Owner: `@longhornjs/queue/postgres`. Connects the existing [Queue contract](queues.md),
 [workers](queue-workers.md), [PostgreSQL database](postgres.md), [migrations](postgres-migrations.md),
 and [task reports](postgres-reports.md). This entrypoint imports no native driver;
-the host supplies a PostgreSQL Database, normally from @longhorn/node/postgres.
+the host supplies a PostgreSQL Database, normally from @longhornjs/node/postgres.
 
 ```ts
-import { migratePostgres } from '@longhorn/database/postgres'
-import { PostgresQueueStore, postgresQueueMigrations } from '@longhorn/queue/postgres'
+import { migratePostgres } from '@longhornjs/database/postgres'
+import { PostgresQueueStore, postgresQueueMigrations } from '@longhornjs/queue/postgres'
 
 // Deployment uses the owner connection and the application's complete ordered history.
 await migratePostgres(owner, [...existingMigrations, ...postgresQueueMigrations], { schema: 'app_history' })

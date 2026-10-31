@@ -1,6 +1,6 @@
 import { expect,it } from 'vitest'
 import { Hono } from 'hono'
-import type { AuthEnv } from '@longhorn/auth/hono'
+import type { AuthEnv } from '@longhornjs/auth/hono'
 import { bindAccountViewer } from './viewer-binding.js'
 function setup(authenticated=true){
   const app=new Hono<AuthEnv>();let calls=0

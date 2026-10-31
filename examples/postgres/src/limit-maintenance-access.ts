@@ -1,4 +1,4 @@
-import type { SqlExecutor } from '@longhorn/database'
+import type { SqlExecutor } from '@longhornjs/database'
 
 /** Read-only startup/provisioning checks. This is not an owner migration-history verifier. */
 export async function checkLimitMaintenanceAccess(database: SqlExecutor, role?: string): Promise<void> {

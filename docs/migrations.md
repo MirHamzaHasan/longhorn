@@ -1,6 +1,6 @@
 # Schema migrations
 
-Owner: `@longhorn/database`. Connects application-owned schema definitions to a
+Owner: `@longhornjs/database`. Connects application-owned schema definitions to a
 [database transaction](database.md) during [lifecycle startup](lifecycle.md).
 The initial runner uses SQLite-compatible metadata SQL and positional placeholders.
 It rejects an explicitly PostgreSQL database. Use the separate
@@ -8,7 +8,7 @@ It rejects an explicitly PostgreSQL database. Use the separate
 parameters and transaction-scoped advisory locking; it does not translate SQLite DDL.
 
 ```ts
-import { migrate } from '@longhorn/database'
+import { migrate } from '@longhornjs/database'
 
 const applied = await migrate(database, [{
   id: '001_items',

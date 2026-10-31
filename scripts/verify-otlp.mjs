@@ -44,7 +44,7 @@ function verifyWire(result) {
   const parent=records.find(item => item.span.name==='fixture.root').span
   for (const item of records) {
     assert.equal(item.span.traceId,result.traceId);assert.equal(item.span.startTimeUnixNano,'1792760000000500000')
-    assert.equal(item.scope.name,'@longhorn/observability');assert.equal(item.scope.version,'0.1.0');assert.equal(item.span.flags&1,1)
+    assert.equal(item.scope.name,'@longhornjs/observability');assert.equal(item.scope.version,'0.1.0');assert.equal(item.span.flags&1,1)
     assert.ok(item.resource.attributes.some(attribute => attribute.key==='service.version'&&attribute.value.stringValue==='1.2.3'))
   }
   assert.equal(parent.spanId,result.rootId)

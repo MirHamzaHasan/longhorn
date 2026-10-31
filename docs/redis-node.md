@@ -2,7 +2,7 @@
 
 Implemented with [native TCP/TLS and lifecycle verification](redis-cache-testing.md).
 
-Owner: `openRedis` from `@longhorn/node/redis`, backed by pinned @redis/client 6.3.0.
+Owner: `openRedis` from `@longhornjs/node/redis`, backed by pinned @redis/client 6.3.0.
 Connects the portable [Redis cache protocol](redis-cache.md) to Node TCP/TLS. Its
 public command/close interface does not expose native client types to the shared
 cache package. The Node root entrypoint does not import this optional adapter.

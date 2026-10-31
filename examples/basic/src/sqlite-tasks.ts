@@ -1,5 +1,5 @@
-import { migrate } from '@longhorn/database'
-import type { Database, Migration, SqlRow, SqlValue } from '@longhorn/database'
+import { migrate } from '@longhornjs/database'
+import type { Database, Migration, SqlRow, SqlValue } from '@longhornjs/database'
 import type { Task, TaskCounts, TaskListQuery, TaskPage, TasksStore } from './tasks.js'
 
 export const taskMigrations: readonly Migration[] = [{

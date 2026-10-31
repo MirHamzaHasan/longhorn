@@ -1,6 +1,6 @@
 # Explicit OTLP configuration
 
-Owner: exporter options and parseOtlpHeaders in `@longhorn/observability/otlp`, with
+Owner: exporter options and parseOtlpHeaders in `@longhornjs/observability/otlp`, with
 environment selection in examples/jobs/src/config.ts. Connects [typed config](configuration.md),
 [transport](otlp-http.md), [delivery bounds](otlp-delivery.md) and [the app](jobs-otlp.md).
 

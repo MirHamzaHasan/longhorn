@@ -1,6 +1,6 @@
 # Shared Hono operations adapter
 
-Owner: `createOutboxOperations` from `@longhorn/outbox/hono`. Connects
+Owner: `createOutboxOperations` from `@longhornjs/outbox/hono`. Connects
 [inspection HTTP](outbox-operations-http.md), [audit HTTP](outbox-audit-http.md),
 [service authorization](outbox-operations-authorization.md) and
 [account operations](account-operations.md).

@@ -1,4 +1,4 @@
-import type { Database } from '@longhorn/database'
+import type { Database } from '@longhornjs/database'
 import { IdempotencyConflictError, idempotencyTime } from './index.js'
 import type { IdempotencyStore, StoredRequest, StoredResult } from './index.js'
 
