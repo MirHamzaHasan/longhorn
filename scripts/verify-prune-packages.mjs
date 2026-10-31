@@ -40,7 +40,7 @@ const owners:PruneWorker[]=[new RateLimitCleanup(pruner),new IdempotencyCleanup(
 for(const owner of owners)void owner.close()
 `)
   await writeFile(join(source, 'tsconfig.json'), JSON.stringify({ compilerOptions: { noEmit: true, strict: true, module: 'NodeNext', moduleResolution: 'NodeNext', target: 'ES2022', lib: ['ES2022', 'DOM'], types: [] }, files: ['proof.ts'] }))
-  await run('pnpm', ['install', '--no-frozen-lockfile', '--offline', '--ignore-scripts'], source)
+  await run('pnpm', ['install', '--no-frozen-lockfile', '--prefer-offline', '--ignore-scripts'], source)
   const relocated = join(temporary, 'relocated'); await cp(source, relocated, { recursive: true, filter: path => !path.split('/').includes('node_modules') })
   await rm(source, { recursive: true, force: true }); await run('pnpm', ['install', '--frozen-lockfile', '--offline', '--ignore-scripts'], relocated)
   await run(process.execPath, [join(root, 'node_modules/typescript/lib/tsc.js'), '--project', 'tsconfig.json'], relocated)
