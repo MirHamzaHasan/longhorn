@@ -17,7 +17,7 @@ try {
   for (const name of names) {
     const manifest = JSON.parse(await readFile(join(root, 'packages', name, 'package.json'), 'utf8'))
     await run('pnpm', ['pack', '--pack-destination', archives], join(root, 'packages', name))
-    dependencies[manifest.name] = 'file:packages/longhorn-' + name + '-' + manifest.version + '.tgz'
+    dependencies[manifest.name] = 'file:packages/' + manifest.name.slice(1).replace('/', '-') + '-' + manifest.version + '.tgz'
   }
   await writeFile(join(source, 'package.json'), JSON.stringify({ name: 'independent-prune-consumer', private: true, type: 'module', packageManager: 'pnpm@12.6.0', dependencies, pnpm: { overrides: dependencies } }, null, 2))
   await writeFile(join(source, 'pnpm-workspace.yaml'), 'packages: []\noverrides:\n' + Object.entries(dependencies).map(([name, value]) => '  "' + name + '": "' + value + '"').join('\n') + '\n')
