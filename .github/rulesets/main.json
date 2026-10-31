@@ -2,14 +2,31 @@
   "name": "Protect main",
   "target": "branch",
   "enforcement": "active",
-  "conditions": { "ref_name": { "include": ["~DEFAULT_BRANCH"], "exclude": [] } },
+  "conditions": {
+    "ref_name": {
+      "include": [
+        "~DEFAULT_BRANCH"
+      ],
+      "exclude": []
+    }
+  },
   "bypass_actors": [
-    { "actor_id": 5, "actor_type": "RepositoryRole", "bypass_mode": "pull_request" }
+    {
+      "actor_id": 5,
+      "actor_type": "RepositoryRole",
+      "bypass_mode": "pull_request"
+    }
   ],
   "rules": [
-    { "type": "deletion" },
-    { "type": "non_fast_forward" },
-    { "type": "required_linear_history" },
+    {
+      "type": "deletion"
+    },
+    {
+      "type": "non_fast_forward"
+    },
+    {
+      "type": "required_linear_history"
+    },
     {
       "type": "pull_request",
       "parameters": {
@@ -18,7 +35,51 @@
         "require_code_owner_review": false,
         "require_last_push_approval": false,
         "required_review_thread_resolution": true,
-        "allowed_merge_methods": ["squash", "rebase"]
+        "allowed_merge_methods": [
+          "squash",
+          "rebase"
+        ]
+      }
+    },
+    {
+      "type": "required_status_checks",
+      "parameters": {
+        "strict_required_status_checks_policy": false,
+        "do_not_enforce_on_create": false,
+        "required_status_checks": [
+          {
+            "context": "account-operations",
+            "integration_id": 15368
+          },
+          {
+            "context": "browser",
+            "integration_id": 15368
+          },
+          {
+            "context": "d1-storage",
+            "integration_id": 15368
+          },
+          {
+            "context": "independent-distribution",
+            "integration_id": 15368
+          },
+          {
+            "context": "redis-cache",
+            "integration_id": 15368
+          },
+          {
+            "context": "rust-reports",
+            "integration_id": 15368
+          },
+          {
+            "context": "source-and-runtimes",
+            "integration_id": 15368
+          },
+          {
+            "context": "telemetry",
+            "integration_id": 15368
+          }
+        ]
       }
     }
   ]
