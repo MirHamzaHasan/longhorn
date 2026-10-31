@@ -283,6 +283,8 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - id: build
         run: pnpm build
+      - run: node scripts/verify-password-reset.mjs
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
       - run: node scripts/verify-outbox.mjs
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
       - run: node scripts/verify-outbox-recovery.mjs

@@ -92,8 +92,10 @@ password and atomically revoke subject sessions. Current SQL stores always use
 services; legacy custom stores retain their existing basic login contract.
 
 This initial module supplies local credentials and sessions. OAuth/OIDC, passkeys,
-MFA, password reset, email verification, recovery, breached-password checks,
+MFA, email verification, account recovery with no known contact, breached-password checks,
 and automatic hash upgrades are not implemented. Further sensitive account changes
 need their own reauthentication and revocation policies.
 The [OWASP authentication guidance](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html)
 is a reference for that subsequent work.
+
+[Password reset](password-reset.md) is available as a separate opt-in service.

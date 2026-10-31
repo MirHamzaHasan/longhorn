@@ -1,10 +1,10 @@
 import { SessionInventory } from '@longhornjs/auth/session-inventory'
 import { SqliteSessionInventoryStore,sqliteSessionInventoryMigrations } from '@longhornjs/auth/sqlite-session-inventory'
-import { AuthError, AuthService } from '@longhornjs/auth'
-import type { PasswordHasher } from '@longhornjs/auth'
+import { AuthError, AuthService, PasswordResetError, PasswordResets } from '@longhornjs/auth'
+import type { PasswordHasher, PasswordResetDelivery } from '@longhornjs/auth'
 import { cookieAuth } from '@longhornjs/auth/hono'
 import type { AuthEnv } from '@longhornjs/auth/hono'
-import { authMigrations, SqliteAuthStore } from '@longhornjs/auth/sqlite'
+import { authMigrations, SqliteAuthStore, SqlitePasswordResetStore, sqlitePasswordResetMigrations } from '@longhornjs/auth/sqlite'
 import { Longhorn } from '@longhornjs/core'
 import type { LonghornEnv } from '@longhornjs/core'
 import { provide, token } from '@longhornjs/container'
@@ -22,10 +22,13 @@ import { listNotes, noteListQuery } from './notes.js'
 type Env = LonghornEnv & AuthEnv
 const Inventory=token<SessionInventory>('active authentication sessions')
 const Auth = token<AuthService>('authentication')
+const Resets = token<PasswordResets>('password resets')
 const Connection = token<Database>('auth example database')
 const credentials = z.object({ username: z.string().min(3).max(64), password: z.string().min(1).max(256) }).strict()
 const registration = credentials.extend({ password: z.string().min(15).max(256) })
 const passwordChange = z.object({ currentPassword: z.string().min(1).max(256), nextPassword: z.string().min(15).max(256) }).strict()
+const resetRequest = z.object({ username: z.string().min(1).max(256) }).strict()
+const resetConfirm = z.object({ token: z.string().length(64), nextPassword: z.string().min(15).max(256) }).strict()
 const note = z.object({ title: z.string().trim().min(1).max(200) }).strict()
 
 function failure(c: Context<Env>, error: unknown): Response {
@@ -37,6 +40,8 @@ function failure(c: Context<Env>, error: unknown): Response {
 
 export function createAuthApp(config: AppConfig, resources: {
   openDatabase: () => Promise<Database>; passwords: PasswordHasher; logger?: Logger; clock?: () => number
+  /** Send the reset link. The routes exist only when an application supplies this. */
+  deliverPasswordReset?: (delivery: PasswordResetDelivery) => void | Promise<void>
 }): Longhorn {
   const app = new Longhorn(resources.logger ? { logger: resources.logger } : {})
   app.onStart(async () => {
@@ -49,12 +54,16 @@ export function createAuthApp(config: AppConfig, resources: {
           title TEXT NOT NULL CHECK (length(title) BETWEEN 1 AND 200)
         ) STRICT`,
         'CREATE INDEX private_notes_owner ON private_notes(owner_id)',
-      ] },...sqliteSessionInventoryMigrations])
+      ] },...sqliteSessionInventoryMigrations,...sqlitePasswordResetMigrations])
       app.container.register(provide(Connection, { factory: () => database }))
       app.container.register(provide(Auth, { deps: [Connection], factory: (connection) => new AuthService(
         new SqliteAuthStore(connection), resources.passwords, {
           sessionTtlMs: config.sessionTtlMs, passwordChanges: true, sessionControls: true, ...(resources.clock ? { clock: resources.clock } : {}),
         },
+      ) }))
+      const deliver = resources.deliverPasswordReset
+      if (deliver) app.container.register(provide(Resets, { deps: [Connection], factory: (connection) => new PasswordResets(
+        new SqliteAuthStore(connection), new SqlitePasswordResetStore(connection), resources.passwords, { deliver, ...(resources.clock ? { clock: resources.clock } : {}) },
       ) }))
       app.container.register(provide(Inventory,{deps:[Connection],factory:connection=>new SessionInventory(new SqliteSessionInventoryStore(connection),{...(resources.clock?{clock:resources.clock}:{})})}))
       return () => database.close()
@@ -84,6 +93,24 @@ export function createAuthApp(config: AppConfig, resources: {
       return c.json({ user: result.user, session: { expiresAt: result.session.expiresAt } })
     } catch (error) { return failure(c, error) }
   })
+  if (resources.deliverPasswordReset) {
+    // Answers before doing any work, so neither the reply nor its timing says whether the account exists.
+    routes.post('/auth/password-reset/request', validate('json', resetRequest), (c) => {
+      const resets = c.get('container').resolve(Resets), username = c.req.valid('json').username
+      void app.run(() => resets.request(username)).catch((error: unknown) => {
+        app.logger.error('Password reset request failed', { error: error instanceof Error ? error.name : 'unknown' })
+      })
+      return c.json({ status: 'accepted' }, 202)
+    })
+    routes.post('/auth/password-reset/confirm', validate('json', resetConfirm), async (c) => {
+      const body = c.req.valid('json')
+      try { await c.get('container').resolve(Resets).confirm(body.token, body.nextPassword); auth.clearSession(c); return c.body(null, 204) }
+      catch (error) {
+        if (error instanceof PasswordResetError) return c.json({ error: error.message }, 400)
+        return failure(c, error)
+      }
+    })
+  }
   routes.get('/auth/session', auth.requireUser, (c) => c.json(c.get('auth')!))
   routes.post('/auth/logout', async (c) => {
     await c.get('container').resolve(Auth).logout(auth.token(c))

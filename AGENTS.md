@@ -12,6 +12,11 @@ command application exercises the modules together. It is unpublished.
 
 Newest first. Say what a new direction supersedes.
 
+### New features · owner direction, 1 November 2026
+
+"ok think lets start on new features bro and keep on doing good amount of features we can add to
+make it more mature". This supersedes the development pause below. Feature tasks are on the board.
+
 ### Public repository · owner direction, 31 October 2026
 
 "Make it public create once nice readme which explain proper understanding of project

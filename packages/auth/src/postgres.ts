@@ -148,3 +148,4 @@ export class PostgresAuthStore implements TransactionalAuthStore {
     ) DELETE FROM longhorn_auth.attempts AS counter USING expired WHERE counter.key=expired.key`,args: [now,limit] })).rowsAffected
   }
 }
+export { PostgresPasswordResetStore, postgresPasswordResetMigrations, postgresPasswordResetFunctions, checkPostgresPasswordResetFunctions } from './postgres-password-reset.js'

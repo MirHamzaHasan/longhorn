@@ -83,6 +83,7 @@
     "dev:auth": "pnpm --filter example-auth^... build && pnpm --filter example-auth dev",
     "dev:auth:bun": "pnpm --filter example-auth... build && pnpm --filter example-auth start:bun",
     "dev:auth:deno": "pnpm --filter example-auth... build && pnpm --filter example-auth start:deno",
+    "test:password-reset": "pnpm build && node scripts/verify-password-reset.mjs",
     "test:auth": "pnpm build && node scripts/verify-auth.mjs",
     "test:password-runtimes": "pnpm build && node scripts/verify-password-runtimes.mjs",
     "test:native-auth": "pnpm build && node scripts/verify-password-runtimes.mjs && node scripts/verify-auth.mjs bun",

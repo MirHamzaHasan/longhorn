@@ -16,7 +16,7 @@ export function normalizeUsername(username: string): string {
   if (!/^[a-z0-9][a-z0-9_.-]{2,63}$/.test(normalized)) throw new AuthError('INVALID_INPUT')
   return normalized
 }
-function passwordInput(password: string, registration = false): void {
+export function passwordInput(password: string, registration = false): void {
   if (typeof password !== 'string' || password.length > 256 || [...password].length > 128 || new TextEncoder().encode(password).length > 1024
     || (registration && [...password].length < 15)) throw new AuthError('INVALID_INPUT')
 }

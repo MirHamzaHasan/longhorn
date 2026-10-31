@@ -222,7 +222,7 @@ try {
   const plan = await inspector.execute({ sql: 'EXPLAIN QUERY PLAN SELECT id,title FROM private_notes WHERE owner_id=? AND id>? ORDER BY id LIMIT ?', args: [alice.user.id, 1n, 101] })
   assert.ok(plan.rows.some(row => String(row.detail).includes('private_notes_owner')))
   assert.equal((await inspector.execute('PRAGMA integrity_check')).rows[0]?.integrity_check, 'ok')
-  assert.deepEqual((await inspector.execute('SELECT id FROM longhorn_migrations ORDER BY position')).rows.map(row=>row.id),['longhorn_auth/001_users_sessions_attempts','auth_example/001_notes','longhorn_auth/002_session_inventory'])
+  assert.deepEqual((await inspector.execute('SELECT id FROM longhorn_migrations ORDER BY position')).rows.map(row=>row.id),['longhorn_auth/001_users_sessions_attempts','auth_example/001_notes','longhorn_auth/002_session_inventory','longhorn_auth/password_resets_001'])
   const revokedDevice = await login(b, 'alice')
   const scoped = await request(thirdUrl ?? a, '/auth/sessions/revoke', { method: 'POST', cookie: paged.cookie, body: { scope: 'others' } })
   assert.equal(scoped.status, 200); assert.ok((await scoped.json()).revokedSessions >= 1)

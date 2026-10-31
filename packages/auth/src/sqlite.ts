@@ -123,3 +123,4 @@ export class SqliteAuthStore implements TransactionalAuthStore {
     await this.database.execute({ sql: 'DELETE FROM longhorn_auth_attempts WHERE key = ?', args: [key] })
   }
 }
+export { SqlitePasswordResetStore, sqlitePasswordResetMigrations } from './sqlite-password-reset.js'
