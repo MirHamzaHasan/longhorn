@@ -14,15 +14,16 @@ or rebuilt. Connects [contributing](../CONTRIBUTING.md), [security](../SECURITY.
 | `.github/dependabot.yml` | Weekly updates, except the runtimes pinned for verification |
 | `.github/rulesets/main.json` | Branch protection for `main` |
 
-## Set while private
+## Set on GitHub
 
 Description, topics, squash and rebase merges only, branch deletion after merge,
 Discussions on, wiki off, and Dependabot alerts and security updates.
 
-## Set after going public
+## Applied when going public
 
-GitHub's free plan offers these only on public repositories. Run this once, as an
-admin, after the [history check](#before-going-public):
+Run on 31 October 2026 and confirmed with `gh api`. GitHub's free plan offers these only on
+public repositories. The ruleset's first attempt returned "Repository has been locked" just
+after the visibility change, and a retry worked. To rebuild them:
 
 ```sh
 gh repo edit MirHamzaHasan/longhorn --visibility public --accept-visibility-change-consequences
@@ -43,13 +44,13 @@ gh workflow run "Website" --repo MirHamzaHasan/longhorn
 
 ## Required status checks
 
-Not in the ruleset yet, on purpose. The workflow has not passed on hosted runners, so
+Not in the ruleset yet, on purpose. The workflow has not fully passed on hosted runners, so
 requiring it now would block every merge. After `verify.yml` first passes on `main`, add
 its eight jobs as required checks. That work is `tasks/task004-hosted-ci.md`.
 
-## Before going public
+## Check made before going public
 
-Going public exposes all history, and copies can't be recalled. On 31 October 2026 all
-branches and the files then pending were pattern-scanned for keys, tokens, private keys,
-credentials in connection strings, personal paths and private email addresses. Only test
-fixtures matched. That is a pattern scan, not a guarantee.
+On 31 October 2026 all branches, the files then pending, and the text of every pull request
+were pattern-scanned for keys, tokens, private keys, credentials in connection strings,
+personal paths and private email addresses. Only test fixtures matched. That is a pattern
+scan, not a guarantee.

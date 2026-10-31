@@ -1,7 +1,7 @@
 # LongHorn development handoff
 
-Updated 31 October 2026. Feature development remains paused at the owner's request; the
-framework is on `main` while the project prepares to become open source. Start with the
+Updated 31 October 2026. Feature development remains paused at the owner's request. The
+framework is on `main` and the repository is public. Start with the
 [architecture guide](project-guide.md), then use the [feature index](features.md) and
 [detailed architecture](architecture.md) for individual connections.
 
@@ -10,10 +10,10 @@ framework is on `main` while the project prepares to become open source. Start w
 | Item | State |
 | --- | --- |
 | Code | On `main`, including live command history, the agent workflow and the website |
-| Repository visibility | Private. Going public is the owner's decision |
-| Branch protection | Not active, because this plan needs a public repository. See [repository settings](repository-settings.md) |
-| Website | Not live, for the same reason. See [website](website.md) |
-| Hosted CI | Has not passed on current code. See below |
+| Repository visibility | Public |
+| Branch protection | Active on `main`, without required checks yet. See [repository settings](repository-settings.md) |
+| Website | Live at https://mirhamzahasan.github.io/longhorn/. See [website](website.md) |
+| Hosted CI | 7 of 8 jobs pass. See below |
 | Packages | Not published |
 | Cloud deployment | None performed |
 
@@ -66,9 +66,10 @@ ran them.
 
 ## Hosted review status
 
-Every recent workflow run ended before a runner started, with zero steps, because of the
-Actions budget on this private repository. This is no hosted pass. Recent gates have only
-run on macOS, so expect Linux failures at first. See `tasks/task004-hosted-ci.md`.
+The first full run on `main` was on commit `55a85bb`, after the repository went public. Seven
+jobs passed on Ubuntu 24.04. `source-and-runtimes` passed install, build, typecheck,
+`pnpm test` and `pnpm test:tasks`, then stopped at `verify-prune-packages`, so its later gates
+did not run. See `tasks/task004-hosted-ci.md`.
 
 ## Continuing
 

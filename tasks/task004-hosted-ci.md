@@ -1,7 +1,7 @@
 ---
 id: task004
 title: Get hosted CI running and green
-status: blocked
+status: backlog
 paths:
   - .github/workflows/verify.yml
 ---
@@ -21,10 +21,10 @@ None yet.
 
 ## Scope
 
-Blocked on the owner. The repository is private on a free plan, and every run since at
-least PR #35 ended before a runner started because of the Actions budget. Making the
-repository public gives free Actions minutes, and so does adding budget. After that,
-expect real failures from Linux, because recent gates were only run on macOS ARM64.
+The repository is public, so Actions runs. The first full run, on `55a85bb`, passed 7 of 8
+jobs. `source-and-runtimes` stops at `verify-prune-packages`: its first install is offline,
+and with an empty pnpm cache there is no metadata for the pinned `pnpm@12.6.0`. Later gates in
+that job have not run on Linux, so more failures may follow.
 
 ## Acceptance checks
 
