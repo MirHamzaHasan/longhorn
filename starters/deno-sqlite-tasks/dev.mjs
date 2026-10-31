@@ -14,7 +14,7 @@ function shutdown(code = 0) {
   if (code) process.exitCode = code
   return closing ??= (async () => {
     try { await watcher?.dispose(); await sequence; await stopHost(); report('Development stopped') }
-    catch (error) { process.exitCode = 1; report('Development cleanup failed'); console.log('CLEANUPERROR ' + String(error)) }
+    catch { process.exitCode = 1; report('Development cleanup failed') }
   })()
 }
 for (const signal of ['SIGINT', 'SIGTERM']) process.on(signal, () => { void shutdown() })

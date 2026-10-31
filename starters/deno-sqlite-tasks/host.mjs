@@ -68,6 +68,6 @@ export async function stopHost(owned) {
   }, 10000)
   try {
     const outcome = await owned.ended
-    console.log('HOSTOUTCOME '+JSON.stringify({forced,...outcome}));if (forced || outcome.code !== 0 || outcome.signal !== null) throw new Error('Deno SQLite host did not close successfully')
+    if (forced || outcome.code !== 0 || outcome.signal !== null) throw new Error('Deno SQLite host did not close successfully')
   } finally { clearTimeout(timer) }
 }
