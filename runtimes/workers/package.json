@@ -32,7 +32,7 @@
   },
   "dependencies": {
     "@longhorn/database": "workspace:*",
-    "@cloudflare/workers-types": "^5.20261022.1",
+    "@cloudflare/workers-types": "^5.20261028.1",
     "@longhorn/runtime": "workspace:*"
   },
   "sideEffects": false,

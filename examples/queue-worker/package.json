@@ -6,5 +6,5 @@
     "@longhorn/observability": "workspace:*", "@longhorn/validation": "workspace:*",
     "@longhorn/workers": "workspace:*", "hono": "^4.12.7", "zod": "^4.6.7"
   },
-  "devDependencies": { "esbuild": "^0.28.2", "@cloudflare/workers-types": "^5.20261022.1" }
+  "devDependencies": { "esbuild": "^0.28.2", "@cloudflare/workers-types": "^5.20261028.1" }
 }
