@@ -178,3 +178,40 @@ it('reauthenticates scoped session control, keeps the initiator for others and g
   expect((await request('/auth/session', 'GET', undefined, first.cookie)).status).toBe(401)
   expect((await request('/auth/session', 'GET', undefined, peer.cookie)).status).toBe(200)
 })
+
+async function resetSetup() {
+  const sent: { token: string; user: { username: string } }[] = []
+  const database = await openSqlite({ filename: ':memory:' })
+  const app = createAuthApp(configSchema.parse({ SESSION_TTL_SECONDS: '60' }), { openDatabase: async () => database, passwords, logger: createLogger({ sink: () => {} }), deliverPasswordReset: delivery => { sent.push(delivery) } })
+  applications.push(app)
+  const send = (path: string, body: unknown) => app.fetch(new Request(`http://localhost${path}`, { method: 'POST', headers: { Origin: 'http://127.0.0.1:3001', 'Content-Type': 'application/json' }, body: JSON.stringify(body) }))
+  return { send, sent }
+}
+const settled = () => new Promise(resolve => setTimeout(resolve, 20))
+
+it('answers a reset request identically for known and unknown accounts', async () => {
+  const { send, sent } = await resetSetup()
+  expect((await send('/auth/register', { username: 'alice', password })).status).toBe(201)
+  const known = await send('/auth/password-reset/request', { username: 'alice' }), unknown = await send('/auth/password-reset/request', { username: 'nobody' })
+  expect(known.status).toBe(202); expect(unknown.status).toBe(202)
+  expect(await known.text()).toBe(await unknown.text())
+  await settled()
+  expect(sent.map(delivery => delivery.user.username)).toEqual(['alice'])
+})
+it('recovers an account over HTTP, once', async () => {
+  const { send, sent } = await resetSetup(), nextPassword = 'a completely new test passphrase'
+  await send('/auth/register', { username: 'alice', password })
+  await send('/auth/password-reset/request', { username: 'alice' }); await settled()
+  const body = { token: sent[0]!.token, nextPassword }
+  expect((await send('/auth/password-reset/confirm', body)).status).toBe(204)
+  expect((await send('/auth/login', { username: 'alice', password })).status).toBe(401)
+  expect((await send('/auth/login', { username: 'alice', password: nextPassword })).status).toBe(200)
+  expect((await send('/auth/password-reset/confirm', body)).status).toBe(400)
+})
+it('rejects a reset from another origin and offers no routes without delivery', async () => {
+  const { send } = await resetSetup()
+  expect((await send('/auth/password-reset/confirm', { token: 'f'.repeat(64), nextPassword: 'a completely new test passphrase' })).status).toBe(400)
+  const { request } = await setup()
+  expect((await request('/auth/password-reset/request', 'POST', { username: 'alice' })).status).toBe(404)
+  expect((await request('/auth/login', 'POST', { username: 'alice', password }, undefined, 'https://evil.example')).status).toBe(403)
+})

@@ -126,7 +126,7 @@ try {
     for (const action of ['typecheck', 'test', 'build']) {
       const output = await command(process.execPath, [cli, action, '--cwd', directory], consumer)
       if (action === 'test') {
-        assert.match(output, runtime === 'bun' ? /8 pass/ : /8 passed/)
+        assert.match(output, runtime === 'bun' ? /11 pass/ : /11 passed/)
         console.log(runtime + ': all eight copied auth application cases passed on the selected native test runner.')
       }
     }
@@ -196,7 +196,7 @@ try {
       assert.equal((await request(url, '/auth/session', { cookie: rotated.cookie })).status, 401)
       assert.equal((await request(url, '/auth/session', { cookie: bob.cookie })).status, 200)
       assert.equal((await inspector.execute('PRAGMA integrity_check')).rows[0].integrity_check, 'ok')
-      assert.deepEqual((await inspector.execute('SELECT id FROM longhorn_migrations ORDER BY position')).rows.map(row=>row.id),['longhorn_auth/001_users_sessions_attempts','auth_example/001_notes','longhorn_auth/002_session_inventory'])
+      assert.deepEqual((await inspector.execute('SELECT id FROM longhorn_migrations ORDER BY position')).rows.map(row=>row.id),['longhorn_auth/001_users_sessions_attempts','auth_example/001_notes','longhorn_auth/002_session_inventory','longhorn_auth/password_resets_001'])
       await stop(first); await stop(second)
     } finally { await inspector.close() }
     await assert.rejects(access(join(directory, 'wrong.sqlite')))
