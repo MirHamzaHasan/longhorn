@@ -24,14 +24,16 @@
 ![Runtimes: Node, Bun, Deno, Workers](https://img.shields.io/badge/runtimes-node%20%7C%20bun%20%7C%20deno%20%7C%20workers-0f3a5e)
 [![Pull requests welcome](https://img.shields.io/badge/pull%20requests-welcome-0f3a5e)](CONTRIBUTING.md)
 
+**Write once. Run on Node, Bun, Deno or Workers.**
+
 LongHorn is a modular TypeScript backend framework on [Hono](https://hono.dev) and Web
 Standards. Your app runs on Node, Bun, Deno or Cloudflare Workers, using each platform's
 own server. Add only the modules you use: database, auth, queues, schedules, outbox
 delivery, rate limits, caching and observability.
 
 > [!IMPORTANT]
-> **Pre-release.** Nothing is on npm yet, so you run LongHorn from a checkout, and it has
-> not been deployed to production. APIs can still change.
+> **Early alpha.** LongHorn is on npm, but it has not been deployed to production, and its
+> APIs can still change.
 > See [what is and isn't tested](#what-is-and-isnt-tested).
 
 ## Why LongHorn exists
@@ -58,7 +60,7 @@ It is built on three decisions:
 
 | Worth trying if you | Wait if you need |
 | --- | --- |
-| Want to read and shape a backend framework early | A stable API, or packages from npm |
+| Want to read and shape a backend framework early | A stable API |
 | Care about what happens when a process dies mid-request | A framework already proven in production |
 | Already like Hono and want structure around it | Password reset or MFA out of the box |
 | Want one app model across Node, Bun, Deno and Workers | Generated CRUD, an admin panel or an ORM |
@@ -74,15 +76,12 @@ You need Node 20.19 or newer and [pnpm](https://pnpm.io) 12.6.
 
 <picture>
   <source media="(prefers-reduced-motion: reduce)" srcset="./docs/assets/quickstart-still.svg">
-  <img src="./docs/assets/quickstart.svg" width="100%" alt="A terminal session: clone LongHorn, install, create an app with pnpm create:app, start it, and curl its health route, which returns status ok.">
+  <img src="./docs/assets/quickstart.svg" width="100%" alt="A terminal session: create an app with npm create longhorn, install it, start it, and curl its health route, which returns status ok.">
 </picture>
 
 ```sh
-git clone https://github.com/MirHamzaHasan/longhorn.git
-cd longhorn
-pnpm install
-pnpm create:app ../my-api --runtime node
-cd ../my-api
+npm create longhorn@latest my-api -- --runtime node
+cd my-api
 pnpm install
 pnpm dev
 ```
@@ -97,13 +96,15 @@ and it works outside this repository.
 
 ### Choose a starting point
 
-| You are building | Add to `pnpm create:app ../my-app` | Guide |
+| You are building | Create it with | Guide |
 | --- | --- | --- |
-| An HTTP API | `--runtime node`, `bun`, `deno` or `workers` | [Templates](docs/starter-templates.md) |
-| An app with a database | `--runtime node`, `bun` or `deno`, then `--template sqlite-tasks` | [SQLite starter](docs/sqlite-starter.md) |
-| An app with accounts | `--runtime node`, `bun` or `deno`, then `--template sqlite-auth` | [Auth starter](docs/auth-starter.md) |
-| A Worker with storage | `--runtime workers --template d1-tasks` | [D1 starter](docs/d1-starter.md) |
-| The complete console | `--runtime node --template command-app`, which needs PostgreSQL | [Command project](docs/command-project.md) |
+| An HTTP API | `npm create longhorn@latest my-app -- --runtime node`, or `bun`, `deno`, `workers` | [Templates](docs/starter-templates.md) |
+| An app with a database | `pnpm create:app ../my-app --runtime node --template sqlite-tasks`, or `bun`, `deno` | [SQLite starter](docs/sqlite-starter.md) |
+| An app with accounts | `pnpm create:app ../my-app --runtime node --template sqlite-auth`, or `bun`, `deno` | [Auth starter](docs/auth-starter.md) |
+| A Worker with storage | `pnpm create:app ../my-app --runtime workers --template d1-tasks` | [D1 starter](docs/d1-starter.md) |
+| The complete console | `pnpm create:app ../my-app --runtime node --template command-app`, which needs PostgreSQL | [Command project](docs/command-project.md) |
+
+`--template` does not work from the npm 0.1.0 packages yet, so `pnpm create:app` runs from a clone of this repository, after `pnpm install`.
 
 <picture>
   <source media="(prefers-reduced-motion: reduce)" srcset="./docs/assets/divider-still.svg">
@@ -353,7 +354,7 @@ There's one guide per feature, so you only read what you need.
 
 | Run for real | Not claimed |
 | --- | --- |
-| 749 source tests, and 66 gates that start real engines, processes and browsers | Published packages: nothing is on npm |
+| 749 source tests, and 66 gates that start real engines, processes and browsers | A stable API: this is a first release, and it can still change |
 | Processes killed with SIGKILL during and after commits | Anything on Windows: nothing has run there |
 | Real PostgreSQL 18, Redis, D1, Durable Objects and OpenTelemetry Collector | Production or cloud deployment, failover or replication |
 | Lost HTTP replies, concurrent writers and failed schema upgrades | Exactly-once delivery across systems |
@@ -377,7 +378,6 @@ Feature development is paused while the project opens up. These come next:
 | Next | Why it matters | Track it |
 | --- | --- | --- |
 | A real deployment guide | Every proof so far runs locally | [task006](tasks/task006-deployment-guide.md) |
-| Publish v0.1 to npm | So `npm create longhorn@latest` works without a checkout | [task005](tasks/task005-publish-v0-1.md) |
 | Account recovery | Auth has no password reset or recovery yet | [task008](tasks/task008-account-recovery.md) |
 
 Run `pnpm task list` for the live board. The [handoff](docs/development-handoff.md) has the
