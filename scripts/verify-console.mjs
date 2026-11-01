@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { chromium,expect } from '@playwright/test'
+import { chromium,firefox,webkit,expect } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
 import { createServer } from 'node:net'
 import { mkdir,writeFile } from 'node:fs/promises'
@@ -16,6 +16,7 @@ import { createPostgresApp } from '../examples/postgres/dist/app.js'
 import { loadConsoleAssets } from '../examples/postgres/dist/console-assets.js'
 
 const output=resolve(process.env.LONGHORN_QA_DIR??'.artifacts/console'),password='owned browser account password',violations=[],errors=[],captures=[]
+const browserName=process.env.BROWSER??process.argv[2]??'chromium'
 let sandbox,owner,broker,app,browser,available=true
 async function port(){const socket=createServer();await new Promise((resolve,reject)=>{socket.once('error',reject);socket.listen(0,'127.0.0.1',resolve)});const value=socket.address().port;await new Promise(resolve=>socket.close(resolve));return value}
 const waitFor=async predicate=>{const deadline=Date.now()+20000;while(Date.now()<deadline){const value=await predicate();if(value)return value;await new Promise(resolve=>setTimeout(resolve,30))}throw new Error('Console condition did not settle')}
@@ -33,7 +34,7 @@ async function capture(page,name,{allWidths=true,busy=false}={}){
       const filename=resolve(output,name+'-'+theme+'-'+label+'.png');await page.mouse.move(0,0);await page.screenshot({path:filename,fullPage:true});captures.push(filename)
     }
   }
-  await writeFile(resolve(output,'accessibility.json'),JSON.stringify({violations,captures},null,2));await page.setViewportSize({width:1360,height:960});console.log('Console QA captured: '+name)
+  await writeFile(resolve(output,'accessibility.json'),JSON.stringify({violations,captures},null,2));await page.setViewportSize({width:1360,height:960});console.log('Console QA captured: '+name+' ('+browserName+')')
 }
 async function register(page,username){
   await go(page,'#/register');await expect(page.getByRole('heading',{name:'Create your account'})).toBeVisible()
@@ -50,7 +51,8 @@ try{
     accounts:{origin,secure:false,sessionTtlMs:28800000,passwords:createScryptPasswordHasher(),passwordChanges:true,sessionControls:true},operations:{publisher:{async publish(message,context){if(!available)throw new Error('Owned publisher unavailable');await publisher.publish(message,context)}},readReceipt:id=>broker.dispatchFetch('http://receipts/receipts/'+id)}})
   const server=await app.listen(nodeRuntime,{hostname:'127.0.0.1',port:selected}),url=server.url+'/console'
   const shell=await fetch(url);assert.equal(shell.status,200);assert.match(shell.headers.get('content-security-policy'),/script-src 'self'/);assert.equal(shell.headers.get('x-content-type-options'),'nosniff');assert.equal(shell.headers.get('cache-control'),'no-store')
-  browser=await chromium.launch({headless:true})
+  const launcher=browserName==='firefox'?firefox:browserName==='webkit'?webkit:chromium
+  browser=await launcher.launch({headless:true})
   const memberContext=await browser.newContext({viewport:{width:1360,height:960},colorScheme:'light',reducedMotion:'reduce'}),operatorContext=await browser.newContext({viewport:{width:1360,height:960},colorScheme:'light',reducedMotion:'reduce'})
   const member=await memberContext.newPage(),operator=await operatorContext.newPage(),commandPosts=[]
   member.on('request',request=>{if(new URL(request.url()).pathname==='/account/commands'&&request.method()==='POST')commandPosts.push(request.postDataJSON())})
