@@ -2,13 +2,23 @@
   "name": "@longhornjs/container",
   "version": "0.1.0",
   "description": "Typed tokens and application singletons for LongHorn.",
+  "keywords": [
+    "longhorn",
+    "typescript",
+    "backend",
+    "framework",
+    "hono",
+    "web-standards",
+    "dependency-injection",
+    "di-container"
+  ],
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/MirHamzaHasan/longhorn.git",
     "directory": "packages/container"
   },
-  "homepage": "https://mirhamzahasan.github.io/longhorn/",
+  "homepage": "https://longhorn.run/",
   "bugs": "https://github.com/MirHamzaHasan/longhorn/issues",
   "publishConfig": {
     "access": "public"

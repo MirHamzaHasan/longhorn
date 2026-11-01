@@ -2,13 +2,23 @@
   "name": "@longhornjs/idempotency",
   "version": "0.1.0",
   "description": "Safe retries with saved replies for LongHorn.",
+  "keywords": [
+    "longhorn",
+    "typescript",
+    "backend",
+    "framework",
+    "hono",
+    "web-standards",
+    "idempotency",
+    "retries"
+  ],
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/MirHamzaHasan/longhorn.git",
     "directory": "packages/idempotency"
   },
-  "homepage": "https://mirhamzahasan.github.io/longhorn/",
+  "homepage": "https://longhorn.run/",
   "bugs": "https://github.com/MirHamzaHasan/longhorn/issues",
   "publishConfig": {
     "access": "public"

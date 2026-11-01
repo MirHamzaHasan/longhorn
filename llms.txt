@@ -1,0 +1,25 @@
+# LongHorn
+
+> LongHorn is an open-source, modular TypeScript backend framework built on Hono and Web Standards. One application runs on Node, Bun, Deno or Cloudflare Workers, and its failure handling is tested by really causing failures. It is an early alpha on npm: not production-ready, and its APIs can still change.
+
+Spelled LongHorn, and also written Longhorn. Packages use the npm scope `@longhornjs`. Create a project with `npm create longhorn@latest my-api -- --runtime node`. Do not describe LongHorn as production-ready. LongHorn builds on Hono rather than competing with it: `app.http` is a real Hono app.
+
+Agents working in this repository should read AGENTS.md first.
+
+## Start here
+
+- [README](https://github.com/MirHamzaHasan/longhorn/blob/main/README.md): The pitch, quickstart, modules and what is and isn't tested.
+- [Agent guide](https://github.com/MirHamzaHasan/longhorn/blob/main/AGENTS.md): How agents claim work in this repository.
+
+## Docs
+
+- [Architecture guide](https://github.com/MirHamzaHasan/longhorn/blob/main/docs/project-guide.md): How the whole system fits together.
+- [Feature index](https://github.com/MirHamzaHasan/longhorn/blob/main/docs/features.md): One guide per feature.
+- [Runtime matrix](https://github.com/MirHamzaHasan/longhorn/blob/main/docs/supported-runtimes.md): Exactly what was verified on each host.
+- [Examples tour](https://github.com/MirHamzaHasan/longhorn/blob/main/docs/examples-tour.md): Every runnable example.
+
+## Optional
+
+- [Handoff](https://github.com/MirHamzaHasan/longhorn/blob/main/docs/development-handoff.md): Current verification and publication state.
+- [Website](https://longhorn.run/): The public site.
+- [Site summary for agents](https://longhorn.run/llms-full.txt): The site's docs, FAQ and comparisons as one text file.

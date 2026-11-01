@@ -2,13 +2,25 @@
   "name": "@longhornjs/observability",
   "version": "0.1.0",
   "description": "Health, metrics, traces and OTLP export for LongHorn.",
+  "keywords": [
+    "longhorn",
+    "typescript",
+    "backend",
+    "framework",
+    "hono",
+    "web-standards",
+    "observability",
+    "metrics",
+    "tracing",
+    "opentelemetry"
+  ],
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/MirHamzaHasan/longhorn.git",
     "directory": "packages/observability"
   },
-  "homepage": "https://mirhamzahasan.github.io/longhorn/",
+  "homepage": "https://longhorn.run/",
   "bugs": "https://github.com/MirHamzaHasan/longhorn/issues",
   "publishConfig": {
     "access": "public"

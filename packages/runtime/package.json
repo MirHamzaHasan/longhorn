@@ -2,13 +2,23 @@
   "name": "@longhornjs/runtime",
   "version": "0.1.0",
   "description": "Fetch and listener contracts for LongHorn hosts.",
+  "keywords": [
+    "longhorn",
+    "typescript",
+    "backend",
+    "framework",
+    "hono",
+    "web-standards",
+    "multi-runtime",
+    "runtime"
+  ],
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/MirHamzaHasan/longhorn.git",
     "directory": "packages/runtime"
   },
-  "homepage": "https://mirhamzahasan.github.io/longhorn/",
+  "homepage": "https://longhorn.run/",
   "bugs": "https://github.com/MirHamzaHasan/longhorn/issues",
   "publishConfig": {
     "access": "public"

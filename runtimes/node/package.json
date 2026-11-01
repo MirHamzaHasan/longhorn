@@ -2,13 +2,25 @@
   "name": "@longhornjs/node",
   "version": "0.1.0",
   "description": "Native Node host for LongHorn, with SQLite and PostgreSQL.",
+  "keywords": [
+    "longhorn",
+    "typescript",
+    "backend",
+    "framework",
+    "hono",
+    "web-standards",
+    "nodejs",
+    "multi-runtime",
+    "sqlite",
+    "postgresql"
+  ],
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/MirHamzaHasan/longhorn.git",
     "directory": "runtimes/node"
   },
-  "homepage": "https://mirhamzahasan.github.io/longhorn/",
+  "homepage": "https://longhorn.run/",
   "bugs": "https://github.com/MirHamzaHasan/longhorn/issues",
   "publishConfig": {
     "access": "public"

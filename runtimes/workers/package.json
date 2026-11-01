@@ -2,13 +2,26 @@
   "name": "@longhornjs/workers",
   "version": "0.1.0",
   "description": "Cloudflare Workers host for LongHorn, with D1 and Durable Objects.",
+  "keywords": [
+    "longhorn",
+    "typescript",
+    "backend",
+    "framework",
+    "hono",
+    "web-standards",
+    "cloudflare-workers",
+    "edge",
+    "multi-runtime",
+    "d1",
+    "durable-objects"
+  ],
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/MirHamzaHasan/longhorn.git",
     "directory": "runtimes/workers"
   },
-  "homepage": "https://mirhamzahasan.github.io/longhorn/",
+  "homepage": "https://longhorn.run/",
   "bugs": "https://github.com/MirHamzaHasan/longhorn/issues",
   "publishConfig": {
     "access": "public"
