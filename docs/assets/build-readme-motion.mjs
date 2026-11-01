@@ -358,11 +358,10 @@ const ground = (W, H) => `<defs><pattern id="g" width="28" height="28" patternUn
 /* The terminal session: real commands, typed in order, ending on the real health reply. */
 {
   const W = 1280, H = 560, DUR = 16, REST = 15
-  const f = film('quickstart', W, H, 'A terminal session: clone LongHorn, install, create an app with pnpm create:app, start it, and curl its health route, which returns status ok.', DUR, REST)
+  const f = film('quickstart', W, H, 'A terminal session: create an app with npm create longhorn, install it, start it, and curl its health route, which returns status ok.', DUR, REST)
   const WX = 64, WY = 36, WW = 1152, WH = 488, X = WX + 32, S = 27
   const rows = [
-    ['git clone https://github.com/MirHamzaHasan/longhorn.git', 0.5, 1.5], ['cd longhorn && pnpm install', 2.3, 0.9], ['pnpm create:app ../my-api --runtime node', 3.6, 1.2],
-    ['cd ../my-api && pnpm install', 5.2, 0.9], ['pnpm dev', 6.5, 0.4], ['curl http://127.0.0.1:3000/health', 7.4, 1],
+    ['npm create longhorn@latest my-api -- --runtime node', 0.5, 1.5], ['cd my-api', 2.4, 0.4], ['pnpm install', 3.2, 0.5], ['pnpm dev', 4.2, 0.4], ['curl http://127.0.0.1:3000/health', 5.2, 1],
   ]
   const Y = (i) => WY + 100 + i * 52, adv = mono.getAdvanceWidth('x', S)
   const typed = rows.map(([s, t, secs], i) => {
@@ -371,9 +370,9 @@ const ground = (W, H) => `<defs><pattern id="g" width="28" height="28" patternUn
     f.track(`u${i}`, [[0, { x: 0, o: 0 }], [t, { o: 1 }], [DUR - 0.3, { o: 0 }, 0.26, 'exit']])
     return `<g class="u${i}">${text(mono, '$', X, Y(i), S, C.iron)}${text(mono, s, x, Y(i), S, C.chalk)}</g><clipPath id="r${i}"><rect x="${x - 2}" y="${Y(i) - 28}" width="${w + 6}" height="40"/></clipPath><g clip-path="url(#r${i})"><g class="k${i}"><rect x="${x - 2}" y="${Y(i) - 28}" width="${w + 6}" height="40" fill="${C.panel}"/></g></g>`
   }).join('')
-  f.track('reply', [[0, { o: 0, y: 8 }], [8.9, { o: 1, y: 0 }, 0.4, 'decel'], [DUR - 0.3, { o: 0 }, 0.26, 'exit']])
+  f.track('reply', [[0, { o: 0, y: 8 }], [6.7, { o: 1, y: 0 }, 0.4, 'decel'], [DUR - 0.3, { o: 0 }, 0.26, 'exit']])
   f.write(`${ground(W, H)}<rect x="${WX}" y="${WY}" width="${WW}" height="${WH}" rx="14" fill="${C.panel}" stroke="${C.faint}"/><path d="M${WX} ${WY + 50}H${WX + WW}" stroke="${C.faint}"/>${text(body, 'Terminal', WX + 24, WY + 33, 21, C.muted)}
-    ${typed}<g class="reply">${text(mono, '{"status":"ok","runtime":"node","ready":true}', X, Y(6), S, C.ok)}</g>`)
+    ${typed}<g class="reply">${text(mono, '{"status":"ok","runtime":"node","ready":true}', X, Y(5), S, C.ok)}</g>`)
 }
 
 /* The project in four numbers, read from the repository, on reels that roll into place. */

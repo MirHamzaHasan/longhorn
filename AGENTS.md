@@ -6,7 +6,7 @@ all of them.
 
 LongHorn is a modular TypeScript backend framework on Hono and Web Standards, with
 native hosts for Node, Bun, Deno and Cloudflare Workers. A complete Node/PostgreSQL
-command application exercises the modules together. It is unpublished.
+command application exercises the modules together. Version 0.1.0 is on npm under `@longhornjs`.
 
 ## Owner directions
 

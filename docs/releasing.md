@@ -1,6 +1,13 @@
 # Releasing to npm
 
-Nothing has been published yet. This guide records how the first release is meant to go.
+0.1.0 was published on 31 October 2026 UTC. This guide records how a release goes.
+
+## Known problem in 0.1.0
+
+Only the default API template generates from the npm packages. Every `--template` choice fails with
+"template assets are unavailable or invalid", because npm renames `.gitignore` to `.npmignore` when
+it installs a package, which broke the templates' file hashes. Assets now store it as
+`gitignore.asset`. A checkout with `pnpm create:app` was never affected. The fix needs a new release.
 
 ## What gets published
 
@@ -34,11 +41,15 @@ limits, so treat it as permanent.
 
 ## After publishing
 
+Expect a few minutes before everything resolves. npm publishes new names in stages: a `0.0.0-stage`
+placeholder comes first, and `npm create` can return "could not determine executable" or a 404 until
+all the packages and their files are available.
+
 On a machine with no checkout, run `npm create longhorn@latest my-api`, then install, start and call
 `/health`. Update the README, the handoff and the changelog, which still say nothing is published.
 
 ## What the rehearsal does not prove
 
 It installs local tarballs, so it doesn't prove the npm names are available, your account can publish,
-or the registry serves the result. It generates the Node template only, and runs on the CI's Ubuntu
-and whichever machine you run it on.
+or the registry serves the result. It generates every runtime and template choice, and builds and starts only the
+default and SQLite projects. It runs on the CI's Ubuntu and whichever machine you run it on.
