@@ -76,7 +76,7 @@
     "@longhornjs/config": "workspace:*",
     "@longhornjs/database": "workspace:*",
     "@longhornjs/runtime": "workspace:*",
-    "@redis/client": "6.3.0",
+    "@redis/client": "6.3.1",
     "pg": "8.23.1"
   },
   "engines": {
