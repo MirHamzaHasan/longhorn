@@ -1109,8 +1109,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/runtime
       '@redis/client':
-        specifier: 6.3.0
-        version: 6.3.0
+        specifier: 6.3.1
+        version: 6.3.1
       pg:
         specifier: 8.23.1
         version: 8.23.1
@@ -1749,8 +1749,8 @@ packages:
     engines: {node: '>=20'}
     hasBin: true
 
-  '@redis/client@6.3.0':
-    resolution: {integrity: sha512-fHrjwGCBvAANGi+TuRuwKi83sIOzgHr8eh+Uf48w3fSX7Hhrz174NrWqfJhAC2vnN0d/tfaZpdr6+o6JC3QHwg==}
+  '@redis/client@6.3.1':
+    resolution: {integrity: sha512-masbfVKULdoAofwddepZxRhWa4w6zvBHn6TRn90TRPrRkVIlGCur3pFqwWaCbMxtYI9twepkz63e/T/tEH8GjA==}
     engines: {node: '>= 20.0.0'}
     peerDependencies:
       '@node-rs/xxhash': ^1.1.0
@@ -2893,7 +2893,7 @@ snapshots:
     dependencies:
       playwright: 1.64.1
 
-  '@redis/client@6.3.0': {}
+  '@redis/client@6.3.1': {}
 
   '@rollup/rollup-android-arm-eabi@4.63.5':
     optional: true
