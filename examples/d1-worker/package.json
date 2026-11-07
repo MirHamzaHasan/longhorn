@@ -14,7 +14,7 @@
     "@longhornjs/idempotency": "workspace:*",
     "@longhornjs/validation": "workspace:*",
     "@longhornjs/workers": "workspace:*",
-    "hono": "^4.13.13",
+    "hono": "^4.13.16",
     "zod": "^4.6.7",
     "@longhornjs/ratelimit": "workspace:*"
   },

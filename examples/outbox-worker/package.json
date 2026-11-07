@@ -6,7 +6,7 @@
     "@longhornjs/core": "workspace:*", "@longhornjs/container": "workspace:*", "@longhornjs/database": "workspace:*",
     "@longhornjs/idempotency": "workspace:*", "@longhornjs/outbox": "workspace:*", "@longhornjs/queue": "workspace:*",
     "@longhornjs/scheduler": "workspace:*", "@longhornjs/observability": "workspace:*", "@longhornjs/validation": "workspace:*",
-    "@longhornjs/workers": "workspace:*", "hono": "^4.13.13", "zod": "^4.6.7"
+    "@longhornjs/workers": "workspace:*", "hono": "^4.13.16", "zod": "^4.6.7"
   },
   "devDependencies": { "esbuild": "^0.28.2", "@cloudflare/workers-types": "^5.20261022.1" }
 }

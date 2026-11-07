@@ -63,7 +63,7 @@
   },
   "dependencies": {
     "@longhornjs/database": "workspace:*",
-    "hono": "^4.13.13",
+    "hono": "^4.13.16",
     "@longhornjs/runtime": "workspace:*"
   },
   "files": [

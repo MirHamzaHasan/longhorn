@@ -19,7 +19,7 @@
     "@longhornjs/logger": "workspace:*",
     "@longhornjs/node": "workspace:*",
     "@longhornjs/validation": "workspace:*",
-    "hono": "^4.13.13",
+    "hono": "^4.13.16",
     "zod": "^4.6.7",
     "@longhornjs/bun": "workspace:*",
     "@longhornjs/deno": "workspace:*"
