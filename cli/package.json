@@ -48,7 +48,7 @@
     "@longhornjs/outbox": "workspace:*",
     "@longhornjs/ratelimit": "workspace:*",
     "@longhornjs/idempotency": "workspace:*",
-    "@types/node": "^22.13.10",
+    "@types/node": "^26.6.6",
     "@longhornjs/container": "workspace:*",
     "@longhornjs/runtime": "workspace:*",
     "@longhornjs/http": "workspace:*",
