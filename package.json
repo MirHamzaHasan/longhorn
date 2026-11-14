@@ -5,14 +5,14 @@
   "type": "module",
   "devDependencies": {
     "@axe-core/playwright": "^4.14.0",
-    "@playwright/test": "^1.64.1",
+    "@playwright/test": "^1.65.0",
     "bun-runtime": "npm:bun@1.4.4",
     "deno-runtime": "npm:deno@2.9.6",
     "embedded-postgres": "18.4.0-beta.17",
     "miniflare": "3.20250718.3",
-    "tsup": "^8.5.1",
-    "typescript": "^5.8.2",
-    "vitest": "^3.1.1"
+    "tsup": "^9.0.0",
+    "typescript": "^7.0.2",
+    "vitest": "^5.1.0"
   },
   "scripts": {
     "task": "node scripts/task.mjs",
